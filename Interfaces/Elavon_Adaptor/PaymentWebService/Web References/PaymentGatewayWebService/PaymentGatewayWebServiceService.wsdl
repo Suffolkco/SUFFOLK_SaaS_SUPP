@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://service.webservice.accela.com/" xmlns:ns1="http://cxf.apache.org/bindings/xformat" name="PaymentGatewayWebServiceService" targetNamespace="http://service.webservice.accela.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns="http://model.webservice.accela.com" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://model.webservice.accela.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="OnlinePaymentTransactionModel">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="aaTransId" type="xs:string" />
+          <xs:element minOccurs="0" name="aaTransStatus" type="xs:string" />
+          <xs:element minOccurs="0" name="applicationId" type="xs:string" />
+          <xs:element minOccurs="0" name="authCode" type="xs:string" />
+          <xs:element minOccurs="0" name="ccNumber" type="xs:string" />
+          <xs:element minOccurs="0" name="ccType" type="xs:string" />
+          <xs:element minOccurs="0" name="convenienceFee" type="xs:string" />
+          <xs:element minOccurs="0" name="data1" type="xs:string" />
+          <xs:element minOccurs="0" name="data2" type="xs:string" />
+          <xs:element minOccurs="0" name="data3" type="xs:string" />
+          <xs:element minOccurs="0" name="data4" type="xs:string" />
+          <xs:element minOccurs="0" name="notificationURL" type="xs:string" />
+          <xs:element minOccurs="0" name="paymentAmount" type="xs:string" />
+          <xs:element minOccurs="0" name="payorName" type="xs:string" />
+          <xs:element minOccurs="0" name="procTransId" type="xs:string" />
+          <xs:element minOccurs="0" name="procTransMessage" type="xs:string" />
+          <xs:element minOccurs="0" name="procTransResultCode" type="xs:string" />
+          <xs:element minOccurs="0" name="procTransStatus" type="xs:string" />
+          <xs:element minOccurs="0" name="procTransType" type="xs:string" />
+          <xs:element minOccurs="0" name="recDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="recFulNam" type="xs:string" />
+          <xs:element minOccurs="0" name="recStatus" type="xs:string" />
+          <xs:element minOccurs="0" name="redirectToACAURL" type="xs:string" />
+          <xs:element minOccurs="0" name="transSeqNum" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="OnlinePaymentAudiTrailModel">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="aaTransId" type="xs:string" />
+          <xs:element minOccurs="0" name="applicationId" type="xs:string" />
+          <xs:element minOccurs="0" name="logSeqNbr" type="xs:long" />
+          <xs:element minOccurs="0" name="processContent" type="xs:string" />
+          <xs:element minOccurs="0" name="processName" type="xs:string" />
+          <xs:element minOccurs="0" name="recDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="recFulNam" type="xs:string" />
+          <xs:element minOccurs="0" name="recStatus" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:ns1="http://model.webservice.accela.com" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://service.webservice.accela.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import namespace="http://model.webservice.accela.com" />
+      <xs:element name="createAudiTrail" type="tns:createAudiTrail" />
+      <xs:element name="createAudiTrailResponse" type="tns:createAudiTrailResponse" />
+      <xs:element name="createTrans" type="tns:createTrans" />
+      <xs:element name="createTransResponse" type="tns:createTransResponse" />
+      <xs:element name="getAudiTrailModels" type="tns:getAudiTrailModels" />
+      <xs:element name="getAudiTrailModelsResponse" type="tns:getAudiTrailModelsResponse" />
+      <xs:element name="getTransModels" type="tns:getTransModels" />
+      <xs:element name="getTransModelsResponse" type="tns:getTransModelsResponse" />
+      <xs:element name="onlinePaymentAudiTrail" type="ns1:OnlinePaymentAudiTrailModel" />
+      <xs:element name="onlinePaymentTransaction" type="ns1:OnlinePaymentTransactionModel" />
+      <xs:element name="updateTrans" type="tns:updateTrans" />
+      <xs:element name="updateTransResponse" type="tns:updateTransResponse" />
+      <xs:complexType name="createTrans">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="ns1:OnlinePaymentTransactionModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createTransResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="ns1:OnlinePaymentTransactionModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getTransModels">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="xs:string" />
+          <xs:element minOccurs="0" name="arg1" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getTransModelsResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="ns1:OnlinePaymentTransactionModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getAudiTrailModels">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="ns1:OnlinePaymentAudiTrailModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="getAudiTrailModelsResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="ns1:OnlinePaymentAudiTrailModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createAudiTrail">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="ns1:OnlinePaymentAudiTrailModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createAudiTrailResponse">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="return" type="ns1:OnlinePaymentAudiTrailModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="updateTrans">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="arg0" type="ns1:OnlinePaymentTransactionModel" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="updateTransResponse">
+        <xs:sequence>
+          <xs:element name="return" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="createTransResponse">
+    <wsdl:part name="parameters" element="tns:createTransResponse" />
+  </wsdl:message>
+  <wsdl:message name="createAudiTrail">
+    <wsdl:part name="parameters" element="tns:createAudiTrail" />
+  </wsdl:message>
+  <wsdl:message name="getTransModelsResponse">
+    <wsdl:part name="parameters" element="tns:getTransModelsResponse" />
+  </wsdl:message>
+  <wsdl:message name="createAudiTrailResponse">
+    <wsdl:part name="parameters" element="tns:createAudiTrailResponse" />
+  </wsdl:message>
+  <wsdl:message name="getAudiTrailModelsResponse">
+    <wsdl:part name="parameters" element="tns:getAudiTrailModelsResponse" />
+  </wsdl:message>
+  <wsdl:message name="getAudiTrailModels">
+    <wsdl:part name="parameters" element="tns:getAudiTrailModels" />
+  </wsdl:message>
+  <wsdl:message name="getTransModels">
+    <wsdl:part name="parameters" element="tns:getTransModels" />
+  </wsdl:message>
+  <wsdl:message name="updateTransResponse">
+    <wsdl:part name="parameters" element="tns:updateTransResponse" />
+  </wsdl:message>
+  <wsdl:message name="updateTrans">
+    <wsdl:part name="parameters" element="tns:updateTrans" />
+  </wsdl:message>
+  <wsdl:message name="createTrans">
+    <wsdl:part name="parameters" element="tns:createTrans" />
+  </wsdl:message>
+  <wsdl:portType name="PaymentGatewayWebService">
+    <wsdl:operation name="createTrans">
+      <wsdl:input name="createTrans" message="tns:createTrans" />
+      <wsdl:output name="createTransResponse" message="tns:createTransResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getTransModels">
+      <wsdl:input name="getTransModels" message="tns:getTransModels" />
+      <wsdl:output name="getTransModelsResponse" message="tns:getTransModelsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAudiTrailModels">
+      <wsdl:input name="getAudiTrailModels" message="tns:getAudiTrailModels" />
+      <wsdl:output name="getAudiTrailModelsResponse" message="tns:getAudiTrailModelsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createAudiTrail">
+      <wsdl:input name="createAudiTrail" message="tns:createAudiTrail" />
+      <wsdl:output name="createAudiTrailResponse" message="tns:createAudiTrailResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="updateTrans">
+      <wsdl:input name="updateTrans" message="tns:updateTrans" />
+      <wsdl:output name="updateTransResponse" message="tns:updateTransResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PaymentGatewayWebServiceServiceSoapBinding" type="tns:PaymentGatewayWebService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="createTrans">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="createTrans">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createTransResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getTransModels">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getTransModels">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getTransModelsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAudiTrailModels">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="getAudiTrailModels">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getAudiTrailModelsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createAudiTrail">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="createAudiTrail">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createAudiTrailResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateTrans">
+      <soap:operation soapAction="" style="document" />
+      <wsdl:input name="updateTrans">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="updateTransResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PaymentGatewayWebServiceService">
+    <wsdl:port name="PaymentGatewayWebServicePort" binding="tns:PaymentGatewayWebServiceServiceSoapBinding">
+      <soap:address location="http://192.168.121.22:3080/av-aca-ws/services/PaymentGatewayWebService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

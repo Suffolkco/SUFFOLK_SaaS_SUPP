@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ParamMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Adapter AdapterName="EVA">
+      <Parameter MappingName="ApplicationID"       ACA="ApplicationID"       ThirdParty="ApplicationID"></Parameter>
+      <Parameter MappingName="PaymentAmount"       ACA="PaymentAmount"       ThirdParty="MerchantAmount"></Parameter>
+      <Parameter MappingName="ConvFee"             ACA="ConvFee"             ThirdParty=""></Parameter>
+      <Parameter MappingName="PostbackURL"         ACA="PostbackURL"         ThirdParty=""></Parameter>
+      <Parameter MappingName="RedirectURL"         ACA="RedirectURL"         ThirdParty=""></Parameter>
+      <Parameter MappingName="UserID"              ACA="UserID"              ThirdParty=""></Parameter>
+      <Parameter MappingName="FullName"            ACA="FullName"            ThirdParty="BillingName"></Parameter>
+      <Parameter MappingName="TransactionID"       ACA="TransactionID"       ThirdParty="TransactionId"></Parameter>
+      <Parameter MappingName="ReturnCode"          ACA=""                    ThirdParty=""></Parameter>
+      <Parameter MappingName="SecurityId"          ACA=""                    ThirdParty=""></Parameter>
+      <Parameter MappingName="UserMessage"         ACA="user_message"         ThirdParty="message"></Parameter>
+      <Parameter MappingName="PaymentType"         ACA="PaymentType"         ThirdParty="PaymentMethodCode"></Parameter>
+      <Parameter MappingName="CCType"              ACA="ccType"              ThirdParty="PaymentMethodDescription"></Parameter>
+      <Parameter MappingName="CCNumber"            ACA=""                    ThirdParty="MaskedPaymentAccountNumber"></Parameter>
+      <Parameter MappingName="ACATransSuccess"     ACA="success"             ThirdParty=""></Parameter>
+      <Parameter MappingName="ProcTransactionID"   ACA="ProcTransactionID"   ThirdParty="AuthorizationNumber"></Parameter>
+      <Parameter MappingName="ProcTransStatus"     ACA=""                    ThirdParty=""></Parameter>
+      <Parameter MappingName="ProcTransactionType" ACA="ProcTransactionType" ThirdParty=""></Parameter>
+      <Parameter MappingName="AgencyCode"          ACA="AgencyCode"          ThirdParty=""></Parameter>
+      <Parameter MappingName="Address1"            ACA=""                    ThirdParty="BillingAddress"></Parameter>
+      <Parameter MappingName="Phone"               ACA=""                    ThirdParty="BillingPhone"></Parameter>
+      <Parameter MappingName="City"                ACA=""                    ThirdParty="BillingCity"></Parameter>
+      <Parameter MappingName="State"               ACA=""                    ThirdParty="BillingState"></Parameter>
+      <Parameter MappingName="Zip"                 ACA=""                    ThirdParty="BillingZip"></Parameter>
+      <Parameter MappingName="Country"             ACA=""                    ThirdParty="BillingCountry"></Parameter>
+      <Parameter MappingName="Cancel"              ACA=""                    ThirdParty="cancelTXN"></Parameter>
+      <Parameter MappingName="UserPart1"           ACA=""                    ThirdParty="UserPart1"></Parameter>
+      <Parameter MappingName="MerchantAccountID"   ACA="MerchantAccountID"   ThirdParty=""></Parameter>
+      <Parameter MappingName="PaymentType"   	   ACA="PaymentType"         ThirdParty=""></Parameter>
+  </Adapter>
+</ParamMapping>

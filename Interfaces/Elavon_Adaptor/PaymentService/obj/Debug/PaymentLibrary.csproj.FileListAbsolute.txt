@@ -1,0 +1,16 @@
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.Service.dll.config
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.Service.dll
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.Service.pdb
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.WebService.dll
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\log4net.dll
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Newtonsoft.Json.dll
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.WebService.pdb
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.WebService.dll.config
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\log4net.xml
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Newtonsoft.Json.xml
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\bin\Debug\Accela.ACA.PaymentAdapter.WebService.XmlSerializers.dll
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\obj\Debug\PaymentLibrary.csprojAssemblyReference.cache
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\obj\Debug\PaymentLibrary.csproj.CoreCompileInputs.cache
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\obj\Debug\PaymentLibrary.csproj.CopyComplete
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\obj\Debug\Accela.ACA.PaymentAdapter.Service.dll
+C:\GIT\SUFFOLKCO_PROD\Interfaces\Elavon_Adaptor\PaymentService\obj\Debug\Accela.ACA.PaymentAdapter.Service.pdb

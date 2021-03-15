@@ -1,0 +1,204 @@
+//ASA:DEQ/ECOLOGY/IA/TRANSFER
+
+var showDebug = false;
+ 
+var parentId = getParent();
+var b1ExpResult = aa.expiration.getLicensesByCapID(parentId);
+var parAppArray = [];
+var amAppArray = [];
+var numArray = [];
+var tranPropType = getAppSpecific("Type");
+var tranPropUse = getAppSpecific("Use");
+
+copyLicensedProf(parentId, capId);
+
+editAppSpecific("Type", tranPropType, parentId);
+editAppSpecific("Use", tranPropUse, parentId);
+
+if (b1ExpResult.getSuccess())
+{
+    b1Exp = b1ExpResult.getOutput();
+    var todaysDate = new Date();
+    var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+    //logDebug("This is the current month: " + todaysDate.getMonth());
+    //logDebug("This is the current day: " + todaysDate.getDate());
+    //logDebug("This is the current year: " + todaysDate.getFullYear());
+    b1Exp = b1ExpResult.getOutput();
+    var dateAdd = addDays(todDateCon, 1095);
+    var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+
+    dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+    b1Exp.setExpDate(dateMMDDYYY);
+    aa.expiration.editB1Expiration(b1Exp.getB1Expiration());      
+}
+
+var capContactResult = aa.people.getCapContactByCapID(parentId);
+if (capContactResult.getSuccess()) 
+{
+    var parContacts = capContactResult.getOutput();
+    logDebug(parContacts.length);
+    for (con in parContacts)
+    {
+        var newContact = parContacts[con].getCapContactModel();
+        //debugObject(newContact);
+        if(newContact.getPeople().getContactType() == "Property Owner")
+        {
+            //Gathering all Applicants
+            logDebug("Pushing Applicant into Array");
+            parAppArray.push(newContact);
+        }
+    }
+    for (par in parAppArray)
+    {
+        if (parAppArray[par].getPrimaryFlag() == "Y")
+        {
+            conName = parAppArray[par].getPeople().getFirstName();
+            conStat = parAppArray[par].getPeople().getAuditStatus();
+            logDebug(conName);
+            logDebug(conStat);
+            date = parAppArray[par].getPeople().getStartDate();
+            logDebug(date);
+            //Setting old Property Owner's Primary Flag to N and setting an End Date
+            parAppArray[par].getPeople().setAuditStatus("I");
+            parAppArray[par].setEndDate(new Date());
+            parAppArray[par].setPrimaryFlag("N");
+
+            aa.people.editCapContact(parAppArray[par]);
+
+            endDate = parAppArray[par].getPeople().getEndDate();
+            flag = parAppArray[par].getPrimaryFlag();
+
+            logDebug(endDate);
+            logDebug(flag);
+            break;  
+        }
+    }
+}
+
+//Copying Applicant from Amendment to the Parent
+copyContactsTransfer(capId, parentId);
+
+var capContactResult = aa.people.getCapContactByCapID(parentId);
+if (capContactResult.getSuccess()) 
+{
+    var parContacts = capContactResult.getOutput();
+    logDebug(parContacts.length);
+    for (con in parContacts)
+    {
+        var newContact = parContacts[con].getCapContactModel();
+        if(newContact.getPeople().getContactType() == "Property Owner")
+        {
+            //Gathering all Applicants
+            logDebug("Pushing Applicant into Array");
+            amAppArray.push(newContact);
+        }
+    }
+    for (var i = 0; i < amAppArray.length; i++)
+    {  
+        conName = amAppArray[i].getPeople().getFirstName();
+        logDebug(conName);
+        conNum = amAppArray[i].getPeople().getContactSeqNumber();
+        numArray.push(parseInt(conNum));
+        logDebug(conNum);
+    }
+
+    logDebug(numArray);
+    var newSeq = Math.max.apply(null, numArray);
+    logDebug(newSeq);
+
+    for (var j = 0; j < amAppArray.length; j++)
+    {
+        if (amAppArray[j].getPeople().getContactSeqNumber() == newSeq)
+        {
+            date = amAppArray[j].getPeople().setStartDate(new Date());
+            date = amAppArray[j].getPeople().getStartDate();
+            logDebug(date);
+            amAppArray[j].setPrimaryFlag("Y");
+
+            aa.people.editCapContact(amAppArray[j]);
+
+            flag = amAppArray[j].getPrimaryFlag();
+            logDebug(flag); 
+        }
+    }
+}
+
+function addDays(date, days) 
+{
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+function jsDateToMMDDYYYY(pJavaScriptDate) {
+	//converts javascript date to string in MM/DD/YYYY format
+	if (pJavaScriptDate != null) {
+		if (Date.prototype.isPrototypeOf(pJavaScriptDate)) {
+			return (pJavaScriptDate.getMonth() + 1).toString() + "/" + pJavaScriptDate.getDate() + "/" + pJavaScriptDate.getFullYear();
+		} else {
+			logDebug("Parameter is not a javascript date");
+			return ("INVALID JAVASCRIPT DATE");
+		}
+	} else {
+		logDebug("Parameter is null");
+		return ("NULL PARAMETER VALUE");
+	}
+}
+function copyContactsTransfer(pFromCapId, pToCapId) {
+    //Copies all contacts from pFromCapId to pToCapId
+    //07SSP-00037/SP5017
+    //
+    if (pToCapId == null)
+     var vToCapId = capId;
+    else
+     var vToCapId = pToCapId;
+   
+   var capContactResult = aa.people.getCapContactByCapID(pFromCapId);
+    var copied = 0;
+    if (capContactResult.getSuccess()) {
+     var Contacts = capContactResult.getOutput();
+      for (yy in Contacts) {
+        var newContact = Contacts[yy].getCapContactModel();
+        if (Contacts[yy].getPeople().getContactType() == "Property Owner") {
+  
+      // Retrieve contact address list and set to related contact
+        var contactAddressrs = aa.address.getContactAddressListByCapContact(newContact);
+        if (contactAddressrs.getSuccess()) {
+        var contactAddressModelArr = convertContactAddressModelArr(contactAddressrs.getOutput());
+        newContact.getPeople().setContactAddressList(contactAddressModelArr);
+        }
+        newContact.setCapID(vToCapId);
+    
+  
+  
+  
+      // Create cap contact, contact address and contact template
+        aa.people.createCapContactWithAttribute(newContact);
+        copied++;
+        //logDebug("Copied contact from " + pFromCapId.getCustomID() + " to " + vToCapId.getCustomID());
+      }
+    }
+    } else {
+     logMessage("**ERROR: Failed to get contacts: " + capContactResult.getErrorMessage());
+     return false;
+    }
+    logDebug("Copied");
+    return copied;
+   }
+
+   function copyLicensedProf(sCapId, tCapId)
+{
+	//Function will copy all licensed professionals from source CapID to target CapID
+
+  var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(sCapId).getOutput();
+	if (licProf != null){
+    for (x in licProf)
+    {
+        licProf[x].setCapID(tCapId);
+        aa.licenseProfessional.createLicensedProfessional(licProf[x]);
+    }
+  }
+  else{
+  
+    //logDebug("No licensed professional on source");
+  }
+}
