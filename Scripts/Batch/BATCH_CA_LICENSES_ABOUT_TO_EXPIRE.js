@@ -163,97 +163,76 @@ function mainProcess()
 {
     try
     {
-        for (r in recTypeArray)
+        var startDate = new Date();
+        var dateCheck = dateAdd(null, 30);
+        dateCheckString = String(dateCheck).split("/")
+        var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1_PER_CATEGORY = 'NA' ";
+        //  
+        var output = "Record ID | Expiration Date \n";
+        var vResult = doSQLSelect_local(vSQL);
+
+        for (r in vResult)
         {
-            var thisType = recTypeArray[r];
-            var appTypeArray = thisType.split("/");
-            var capSearchModel = aa.cap.capModel.getOutput();
-            var capTypeModel = capSearchModel.capType;
-            capTypeModel.setGroup(appTypeArray[0]);
-            capTypeModel.setType(appTypeArray[1]);
-            capTypeModel.setSubType(appTypeArray[2]);
-            capTypeModel.setCategory(appTypeArray[3]);
-            capSearchModel.setCapType(capTypeModel);
-            var recordListResult = aa.cap.getCapListByCollection(capSearchModel, null, null, fromDate, toDate, null, new Array());
-            if (!recordListResult.getSuccess())
+            recordID = vResult[r]["recordNumber"];
+            expirationDate = vResult[r]["ExpDate"];
+            output += recordID + " | " + expirationDate + "\n";
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
             {
-                logDebugLocal("**ERROR: Failed to get capId List : " + recordListResult.getErrorMessage());
-            }
-            else
-            {
-                var recArray = recordListResult.getOutput();
-                logDebugLocal("Looping through " + recArray.length + " records of type " + thisType);
-                for (var j in recArray)
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
                 {
-                    capId = recArray[j].getCapID();
-                    capIDString = capId.getCustomID();
-                    cap = aa.cap.getCap(capId).getOutput();
-                    if (cap)
+                    if (!matches(getAppStatus(), "Expired", "About to Expire"))
                     {
-                        var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
-                        if (capmodel.isCompleteCap())
+                        /*var workflowResult = aa.workflow.getTasks(capId);
+                        if (workflowResult.getSuccess())
                         {
-                            if (!matches(getAppStatus(), "Expired", "About to Expire"))
+                            var wfObj = workflowResult.getOutput();*/
+
+                        var vEParams = aa.util.newHashtable();
+                        addParameter(vEParams, "$$altID$$", capIDString);
+                        addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+                        addParameter(vEParams, "$$expirDate$$", expirationDate);
+
+                        var capName = cap.getSpecialText();
+                        //Some departments are not using the application name field, resulting in commas preceded by an empty string. This will handle adding commas as necessary. 
+                        var capNameInSubject = matches(capName, null, undefined, 'undefined', "") ? "" : capName + "";
+                        addParameter(vEParams, "$$capNameInSubject$$", capNameInSubject);
+                        addACAUrlsVarToEmail(vEParams);
+                        /* This section would close remaining workflow tasks but it is unclear whether the client's workflow would support this need.
+                        for (i in wfObj)
+                        {
+                            if (wfObj[i].getTaskDescription() == "Final Review")
                             {
-                                var workflowResult = aa.workflow.getTasks(capId);
-                                if (workflowResult.getSuccess())
+                                if (wfObj[i].getDisposition() != "About to Expire")
                                 {
-                                    var wfObj = workflowResult.getOutput();
-                                    var vEParams = aa.util.newHashtable();
-                                    var expDate1 = getAppSpecific("Expiration Date", capId);
-                                    var dateDif;
-
-                                        if (expDate1 != null)
-                                        {
-                                            //If Extension hasn't been issued, use 'Permit Expiration Date'
-                                            dateDif = parseInt(dateDiff(todayDate, expDate1));
-                                        }
-                                    //This is defaulted to check for 30 days out for now, but may change depending on how much notice the customer should have.
-                                    if (dateDif <= 30)
+                                    aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "About to Expire", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj, "Y");
+                                }
+                            }
+                        }*/
+                        aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj);
+                        logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
+                        var contactResult = aa.people.getCapContactByCapID(capId);
+                        if (contactResult.getSuccess())
+                        {
+                            var capContacts = contactResult.getOutput();
+                            for (c in capContacts)
+                            {
+                                if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
+                                {
+                                    addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                    if (!matches(capContacts[c].email, null, undefined, ""))
                                     {
-                                        var vEParams = aa.util.newHashtable();
-                                        addParameter(vEParams, "$$altID$$", capIDString);
-                                        addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
-                                        addParameter(vEParams, "$$expirDate$$", expdate1);
-
-                                        var capName = cap.getSpecialText();
-                                        //Some departments are not using the application name field, resulting in commas preceded by an empty string. This will handle adding commas as necessary. 
-                                        var capNameInSubject = matches(capName, null, undefined, 'undefined', "") ? "" : capName + "";
-                                        addParameter(vEParams, "$$capNameInSubject$$", capNameInSubject);
-                                        addACAUrlsVarToEmail(vEParams);
-                                        /* This section would close remaining workflow tasks but it is unclear whether the client's workflow would support this need.
-                                        for (i in wfObj)
-                                        {
-                                            if (wfObj[i].getTaskDescription() == "Final Review")
-                                            {
-                                                if (wfObj[i].getDisposition() != "About to Expire")
-                                                {
-                                                    aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "About to Expire", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj, "Y");
-                                                }
-                                            }
-                                        }*/
-                                        aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj);
-                                        logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
-                                        var contactResult = aa.people.getCapContactByCapID(capId);
-                                        if (contactResult.getSuccess())
-                                        {
-                                            var capContacts = contactResult.getOutput();
-                                            for (c in capContacts)
-                                            {
-                                                if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
-                                                {
-                                                    addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-                                                    if (!matches(capContacts[c].email, null, undefined, ""))
-                                                    {
-                                                        sendNotification("", capContacts[c].email, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, null);
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        sendNotification("", capContacts[c].email, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, null);
                                     }
                                 }
                             }
                         }
+
+                        //}
                     }
                 }
             }
@@ -388,6 +367,46 @@ function getAppStatus()
         logDebugLocal("ERROR: Failed to get app status: " + capResult.getErrorMessage());
     }
     return appStatus;
+}
+function doSQLSelect_local(sql)
+{
+    try
+    {
+        //logdebug("iNSIDE FUNCTION");
+        var array = [];
+        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
+        var ds = initialContext.lookup("java:/SUFFOLKCO");
+        var conn = ds.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+        if (sql.toUpperCase().indexOf("SELECT") == 0)
+        {
+            //logdebug("executing " + sql);
+            var rSet = sStmt.executeQuery();
+            while (rSet.next())
+            {
+                var obj = {};
+                var md = rSet.getMetaData();
+                var columns = md.getColumnCount();
+                for (i = 1; i <= columns; i++)
+                {
+                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
+                    //logdebug(rSet.getString(md.getColumnName(i)));
+                }
+                obj.count = rSet.getRow();
+                array.push(obj)
+            }
+            rSet.close();
+            //logdebug("...returned " + array.length + " rows");
+            //logdebug(JSON.stringify(array));
+        }
+        sStmt.close();
+        conn.close();
+        return array
+    } catch (err)
+    {
+        //logdebug("ERROR: "+ err.message);
+        return array
+    }
 }
 
 
