@@ -1,10 +1,10 @@
-
 //Purpose: Create License and link to Application as Parent, update Expiration date to "Expiration Date" field from application
 //Author: RLittlefield
-if (wfTask == "Issuance" && wfStatus == "Issued")
+if (wfTask == "IssuanceZZZ" && wfStatus == "Issued")
 {
     //Creating License
     var result = aa.cap.createApp(appTypeArray[0], appTypeArray[1], appTypeArray[2], "NA", '');
+
     //if the final parameter above causes an error, enter either the alias of the record or a comment
     if (result.getSuccess())
     {
@@ -13,6 +13,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
         var linkResult = aa.cap.createAppHierarchy(parentId, capId);
         if (linkResult.getSuccess())
         {
+            var expDateASI = getAppSpecific("Expiration Date", capId);
             logDebug("Successfully linked to Application : " + capIDString);
             //Copying relevant info from Application to License
             copyContacts(capId, parentId);
@@ -21,10 +22,12 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             copyDocuments(capId, parentId);
             aa.cap.updateAccessByACA(capId, "N");
             //Updating Expiration Date of License
-            var expDate = getAppSpecific("Expiration Date", capId);
-            expDate = new Date(expDate)
-            var newExpDate = (expDate.getMonth() + 1) + "/" + 1 + "/" + (expDate.getYear() + 2);
-            if (expDate != null)
+            logDebug("ASI Expdate is: " + expDateASI);
+            expDateASI = new Date(expDateASI);
+            logDebug("New Date Exp Date is: " + expDateASI)
+            var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
+            logDebug("New Exp Date is: " + newExpDate);
+            if (expDateASI != null)
             {
                 var b1ExpResult = aa.expiration.getLicensesByCapID(parentId);
                 if (b1ExpResult.getSuccess())
@@ -32,7 +35,6 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
                     var b1Exp = b1ExpResult.getOutput();
                     b1Exp.setExpStatus("Active");
                     b1Exp.setExpDate(aa.date.parseDate(newExpDate));
-                    editAppSpecific("Expiration Date", newExpDate);
                     aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                 }
             }
@@ -57,5 +59,3 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
         }
     }
 }
-
-
