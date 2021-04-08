@@ -11,7 +11,7 @@ if(matches(itemCapType, "DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/App
     {
         // In ACA, the project name field is empty.
         // We want to copy the application name to project name on ACA submittal.
-        updateShortNotes(appName);
+        updateShortNotes(appName); 
     }
     else
     {
