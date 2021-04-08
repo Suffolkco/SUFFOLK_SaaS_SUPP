@@ -31,7 +31,7 @@ var msgMissingRestrict = "At least one row is required in Restrictions list.<br/
 var msgMissingEmployment = "At least one row is required in Employment list.<br/>";
 var msgMissingEdu = "At least one row is required in Education list.<br/>";
 
-if(ApplicationTypeLevel3.equalsIgnoreCase('Restricted Electrical') || ApplicationTypeLevel3.equalsIgnoreCase('Restricted Plumbing') || ApplicationTypeLevel3.equalsIgnoreCase('Master Plumbing') || ApplicationTypeLevel3.equalsIgnoreCase('Master Electrical')){
+if(ApplicationTypeLevel3.equalsIgnoreCase('Restricted Electrical') || ApplicationTypeLevel3.equalsIgnoreCase('Restricted Plumbing') || ApplicationTypeLevel3.equalsIgnoreCase('Master Plumber') || ApplicationTypeLevel3.equalsIgnoreCase('Master Electrician')){
     if(asitBankAccounts == null || asitBankAccounts.length <= 0){
         validationMessage += msgMissingBank;
     }
