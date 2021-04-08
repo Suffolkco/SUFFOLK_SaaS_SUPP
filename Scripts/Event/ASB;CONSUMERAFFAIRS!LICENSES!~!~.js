@@ -59,13 +59,9 @@ if(ApplicationTypeLevel3.equalsIgnoreCase('Appliance Repair') || ApplicationType
 if (validationMessage != "") {
     showMessage = true;
     cancel = true;
-    if (isPublicUser) {
-        aa.env.setValue("ErrorCode", "1");
-        aa.env.setValue("ErrorMessage", validationMessage);
-    } else {
+  
         comment(validationMessage);
     }
-}
 
 /**
  * this function will return the ASIT on the application submit before event.
