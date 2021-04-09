@@ -194,7 +194,6 @@ function mainProcess()
                             if (curExp != null)
                             {
                                 var curSt = b1Exp.getExpStatus();
-                                aa.print(curSt);
                                 if (curSt != null)
                                 {
                                     if (curSt != "About to Expire")
