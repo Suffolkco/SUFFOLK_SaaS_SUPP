@@ -215,11 +215,6 @@ function mainProcess()
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
-
-                            var capName = cap.getSpecialText();
-                            //Some departments are not using the application name field, resulting in commas preceded by an empty string. This will handle adding commas as necessary. 
-                            var capNameInSubject = matches(capName, null, undefined, 'undefined', "") ? "" : capName + "";
-                            addParameter(vEParams, "$$capNameInSubject$$", capNameInSubject);
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {

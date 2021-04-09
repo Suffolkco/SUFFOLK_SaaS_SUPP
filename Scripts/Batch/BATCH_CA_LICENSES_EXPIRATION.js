@@ -184,6 +184,26 @@ function mainProcess()
                 {
                     if (getAppStatus() != "Expired")
                     {
+                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+                        if (b1ExpResult.getSuccess())
+                        {
+                            var b1Exp = b1ExpResult.getOutput();
+                            var curExp = b1Exp.getExpDate();
+                            if (curExp != null)
+                            {
+                                var curSt = b1Exp.getExpStatus();
+                                aa.print(curSt);
+                                if (curSt != null)
+                                {
+                                    if (curSt == "About to Expire")
+                                    {
+                                            b1Exp.setExpStatus("Expired");
+                                            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+                                            logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to Expired");
+                                    }
+                                }
+                            }
+                        }
                         var workflowResult = aa.workflow.getTasks(capId);
                         if (workflowResult.getSuccess())
                         {
@@ -192,11 +212,6 @@ function mainProcess()
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
-
-                            var capName = cap.getSpecialText();
-                            //Some departments are not using the application name field, resulting in commas preceded by an empty string. This will handle adding commas as necessary. 
-                            var capNameInSubject = matches(capName, null, undefined, 'undefined', "") ? "" : capName + "";
-                            addParameter(vEParams, "$$capNameInSubject$$", capNameInSubject);
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
