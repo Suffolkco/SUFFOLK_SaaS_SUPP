@@ -43,7 +43,7 @@ if (wfTask == "IssuanceZZZ" && wfStatus == "Issued")
             var capModelResult = capResult.getCapModel();
             var pUser = capModelResult.getCreatedBy();
             var publicUserModelResult = aa.publicUser.getPublicUserByPUser(pUser);
-            if (!publicUserModelResult.getSuccess() || !publicUserModelResult.getOutput())
+            if (!publicUserModelResult.getSuccess() || !publicUserModelResult.getOutput()) 
             {
                 logDebug("**WARNING** couldn't find public user " + publicUser + " " + publicUserModelResult.getErrorMessage());
             }
