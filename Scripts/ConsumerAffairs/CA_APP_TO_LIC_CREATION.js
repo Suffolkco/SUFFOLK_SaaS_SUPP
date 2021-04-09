@@ -52,6 +52,8 @@ if (wfTask == "IssuanceZZZ" && wfStatus == "Issued")
                 var userSeqNum = publicUserModelResult.getOutput().getUserSeqNum();
                 var attachResult = aa.cap.updateCreatedAccessBy4ACA(parentId, 'PUBLICUSER' + userSeqNum, 'Y', 'Y');
             }
+            activateTask("License Status", "", parentId);
+            updateTask("License Status", "Active", "", "", "", parentId);
         }
         else
         {
