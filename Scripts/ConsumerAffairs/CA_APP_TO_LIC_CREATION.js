@@ -1,6 +1,6 @@
 //Purpose: Create License and link to Application as Parent, update Expiration date to "Expiration Date" field from application
 //Author: RLittlefield
-if (wfTask == "IssuanceZZZ" && wfStatus == "Issued")
+if (wfTask == "Issuance" && wfStatus == "Issued")
 {
     //Creating License
     var result = aa.cap.createApp(appTypeArray[0], appTypeArray[1], appTypeArray[2], "NA", '');
