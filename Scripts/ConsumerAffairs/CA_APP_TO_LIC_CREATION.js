@@ -27,6 +27,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             logDebug("New Date Exp Date is: " + expDateASI)
             var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
             logDebug("New Exp Date is: " + newExpDate);
+            editAppSpecific("Expiration Date", "", parentId);
             if (expDateASI != null)
             {
                 var b1ExpResult = aa.expiration.getLicensesByCapID(parentId);
