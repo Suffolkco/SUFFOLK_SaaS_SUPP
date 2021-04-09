@@ -12,7 +12,7 @@
 // EDUCATION 
 
 
-if (appTypeArray[3] != "Renewal")
+if (appTypeArray[3] != "Renewal" && !publicUser)
 {
 	var validationMessage = "";
 	var asitBankAccounts = getASITBefore('BANK ACCOUNTS');

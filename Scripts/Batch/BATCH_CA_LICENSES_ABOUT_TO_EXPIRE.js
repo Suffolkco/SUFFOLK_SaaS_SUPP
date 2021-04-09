@@ -163,7 +163,6 @@ function mainProcess()
 {
     try
     {
-        var startDate = new Date();
         var dateCheck = dateAdd(null, 32);
         dateCheckString = String(dateCheck).split("/")
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
@@ -218,7 +217,7 @@ function mainProcess()
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
-                                if (wfObj[i].getTaskDescription() == "Final Review")
+                                if (wfObj[i].getTaskDescription() == "License Status")
                                 {
                                     if (wfObj[i].getDisposition() != "About to Expire")
                                     {
