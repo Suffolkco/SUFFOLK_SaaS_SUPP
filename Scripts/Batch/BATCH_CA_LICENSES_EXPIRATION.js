@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: BATCH_CA_LICENSES_ABOUT_TO_EXPIRE.js
+| Program: BATCH_CA_LICENSES_EXPIRATION.js
 | Trigger: Batch
 | Client: Suffolk
-| Version 1.0 04/08/2021
+| Version 1.0 04/09/2021
 | Author: RLittlefield
 | This batch script will run daily.
 /------------------------------------------------------------------------------------------------------*/
@@ -116,7 +116,6 @@ else
 {
     logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
-var recTypeArray = ["ConsumerAffairs/Licenses/Home Improvement/NA"];
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: END CONFIGURABLE PARAMETERS
@@ -152,7 +151,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_LICENSES_EXPIRATION", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -163,12 +162,10 @@ function mainProcess()
 {
     try
     {
-        var startDate = new Date();
-        var dateCheck = dateAdd(null, 32);
-        dateCheckString = String(dateCheck).split("/")
-        var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1_PER_CATEGORY = 'NA' ";
-        //  
+        var sysDate = aa.date.getCurrentDate();
+        var sysDateMMDDYYYY = dateFormatted(sysDate.getMonth(), sysDate.getDayOfMonth(), sysDate.getYear(), "");
+        dateCheckString = sysDateMMDDYYYY;
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateCheckString + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1_PER_CATEGORY = 'NA' ";
         var output = "Record ID | Expiration Date \n";
         var vResult = doSQLSelect_local(vSQL);
 
@@ -185,28 +182,8 @@ function mainProcess()
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
-                    if (!matches(getAppStatus(), "Expired", "About to Expire"))
+                    if (getAppStatus() != "Expired")
                     {
-                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                        if (b1ExpResult.getSuccess())
-                        {
-                            var b1Exp = b1ExpResult.getOutput();
-                            var curExp = b1Exp.getExpDate();
-                            if (curExp != null)
-                            {
-                                var curSt = b1Exp.getExpStatus();
-                                aa.print(curSt);
-                                if (curSt != null)
-                                {
-                                    if (curSt != "About to Expire")
-                                    {
-                                        b1Exp.setExpStatus("About to Expire");
-                                        aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                        logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
-                                    }
-                                }
-                            }
-                        }
                         var workflowResult = aa.workflow.getTasks(capId);
                         if (workflowResult.getSuccess())
                         {
@@ -223,16 +200,16 @@ function mainProcess()
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
-                                if (wfObj[i].getTaskDescription() == "Final Review")
+                                if (wfObj[i].getTaskDescription() == "License Status")
                                 {
-                                    if (wfObj[i].getDisposition() != "About to Expire")
+                                    if (wfObj[i].getDisposition() != "Expired")
                                     {
-                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "About to Expire", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj, "Y");
+                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Expired", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_EXPIRATION", "Updated via BATCH_CA_LICENSES_EXPIRATION", systemUserObj, "Y");
                                     }
                                 }
                             }
-                            aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj);
-                            logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
+                            aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_LICENSES_EXPIRATION", systemUserObj);
+                            logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())
                             {
@@ -244,12 +221,11 @@ function mainProcess()
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                         {
-                                            sendNotification("", capContacts[c].email, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, null);
+                                            sendNotification("", capContacts[c].email, "", "CA_LICENSE_EXPIRATION", vEParams, null);
                                         }
                                     }
                                 }
                             }
-
                         }
                     }
                 }
