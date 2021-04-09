@@ -19,12 +19,6 @@ var asitRestrictions = getASITBefore('RESTRICTIONS');
 var asitEmployment = getASITBefore('EMPLOYMENT');
 var asitEducation = getASITBefore('EDUCATION');
 
-var isPublicUser = false;
-if (typeof publicUser === 'undefined') {
-	isPublicUser = currentUserID.indexOf("PUBLICUSER") == 0;
-} else {
-	isPublicUser = publicUser;
-}
 
 var msgMissingBank = "At least one row is required in Bank Accounts list.<br/>";
 var msgMissingRestrict = "At least one row is required in Restrictions list.<br/>";
