@@ -1,0 +1,7 @@
+// ASA;CONSUMERAFFAIRS!LICENSES!HOME IMPROVEMENT!RENEWAL
+
+//showDebug = 1;
+//logDebug("Entering Renew ASA");
+
+//aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
+aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
