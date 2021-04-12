@@ -55,6 +55,8 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             }
             activateTask("License Status", "", parentId);
             updateTask("License Status", "Active", "", "", "", parentId);
+            updateAppStatus("Active", "", parentId);
+
         }
         else
         {
