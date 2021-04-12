@@ -68,11 +68,9 @@ function copy() {
 
         copyAppSpecificTable(parentCapId, targetCapId);
 
-        //copyApplicationSpecificInfo(parentCapId, targetCapId);
 
         copyASIFields(parentCapId, targetCapId);
-        //push
-        // copyAppSpecificInfo(parentCapId, targetCapId);
+
 
         copyContacts(parentCapId, targetCapId);
 
@@ -124,82 +122,8 @@ function copyAppName(srcCapId, capModel) {
   }
 }
 
-function copyAppSpecificTableForDEQ(srcCapId, targetCapId) {
-  var tableNameArray = getTableName(srcCapId);
-  var targetTableNameArray = getTableName(targetCapId);
-  if (tableNameArray == null) {
-    //logDebug("tableNameArray is null, returning");
-    return;
-  }
-  for (loopk in tableNameArray) {
-    var tableName = tableNameArray[loopk];
-    if (IsStrInArry(tableName, targetTableNameArray)) {
-      //1. Get appSpecificTableModel with source CAPID
-      var sourceAppSpecificTable = getAppSpecificTableForDEQ(
-        srcCapId,
-        tableName
-      );
-      //2. Edit AppSpecificTableInfos with target CAPID
-      var srcTableModel = null;
-      if (sourceAppSpecificTable == null) {
-        //logDebug("sourceAppSpecificTable is null");
-        return;
-      } else {
-        srcTableModel = sourceAppSpecificTable.getAppSpecificTableModel();
 
-        tgtTableModelResult = aa.appSpecificTableScript.getAppSpecificTableModel(
-          targetCapId,
-          tableName
-        );
-        if (tgtTableModelResult.getSuccess()) {
-          tgtTableModel = tgtTableModelResult.getOutput();
-          if (tgtTableModel == null) {
-            //logDebug("target table model is null");
-          } else {
-            tgtGroupName = tgtTableModel.getGroupName();
-            srcTableModel.setGroupName(tgtGroupName);
-          }
-        } else {
-          logDebug(
-            "Error getting target table model " +
-              tgtTableModelResult.getErrorMessage()
-          );
-        }
-      }
-      editResult = aa.appSpecificTableScript.editAppSpecificTableInfos(
-        srcTableModel,
-        targetCapId,
-        null
-      );
-      if (editResult.getSuccess()) {
-        //logDebug("Successfully editing appSpecificTableInfos");
-      } else {
-        //logDebug("Error editing appSpecificTableInfos " + editResult.getErrorMessage());
-      }
-    } else {
-      //logDebug("Table " + tableName + " is not defined on target");
-    }
-  }
-}
 
-function copyLicensedProf(sCapId, tCapId)
-{
-	//Function will copy all licensed professionals from source CapID to target CapID
-
-	var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(sCapId).getOutput();
-	if (licProf != null){
-		for(x in licProf)
-		{
-			licProf[x].setCapID(tCapId);
-			aa.licenseProfessional.createLicensedProfessional(licProf[x]);
-			//logDebug("Copied " + licProf[x].getLicenseNbr());
-    }
-  }
-  else{
-  
-    //logDebug("No licensed professional on source");
-  }
-}
 function IsStrInArry(eVal, argArr) {
   for (x in argArr) {
     if (eVal == argArr[x]) {
@@ -208,33 +132,7 @@ function IsStrInArry(eVal, argArr) {
   }
   return false;
 }
-function getAppSpecificTableForDEQ(capId, tableName) {
-  appSpecificTable = null;
-  var s_result = aa.appSpecificTableScript.getAppSpecificTableModel(
-    capId,
-    tableName
-  );
-  if (s_result.getSuccess()) {
-    appSpecificTable = s_result.getOutput();
-    if (appSpecificTable == null || appSpecificTable.length == 0) {
-      //logDebug("WARNING: no appSpecificTable on this CAP:" + capId);
-      appSpecificTable = null;
-    }
-  } else {
-    //logDebug("ERROR: Failed to appSpecificTable: " + s_result.getErrorMessage());
-    appSpecificTable = null;
-  }
-  return appSpecificTable;
-}
 
-function copyApplicationSpecificInfo(srcCapId, targetCapId) {
-  AInfo = new Array();
-  capId = srcCapId;
-  useAppSpecificGroupName = false;
-  loadAppSpecific(AInfo, srcCapId);
-  editAppSpecific("Serial Number", srcCapId.getCustomID(), targetCapId);
-  copyAppSpecific(targetCapId, "AMENDMENTS");
-}
 function copyASITables(pFromCapId, pToCapId) {
   // Function dependencies on addASITable()
   // par3 is optional 0 based string array of table to ignore
