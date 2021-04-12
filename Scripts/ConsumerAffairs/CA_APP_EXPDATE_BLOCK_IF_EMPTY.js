@@ -1,5 +1,5 @@
 //Block License Issuance if Expiration Date is Empty
-showDebug = true;
+showDebug = false;
 
 var expDate = AInfo["Expiration Date"];
 
