@@ -6,8 +6,6 @@
 //aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
 //aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
-showDebug = true;
-
 var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
 aa.cap.updateAccessByACA(capId, "N");
