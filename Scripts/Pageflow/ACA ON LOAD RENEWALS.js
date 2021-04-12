@@ -22,6 +22,7 @@ var cap = aa.env.getValue("CapModel");
 var capId = cap.getCapID();
 useAppSpecificGroupName = false;
 var br = "<BR>";
+showDebug = true;
 
 //eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
 //eval(getScriptText("INCLUDES_CUSTOM"));
