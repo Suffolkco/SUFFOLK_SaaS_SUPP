@@ -14,6 +14,8 @@
  *  Date,                  Who,                 What
  */
 
+using InterfaceLib.Common.Service;
+
 namespace Accela.ACA.PaymentAdapter.Service
 {
     /// <summary>
@@ -33,19 +35,44 @@ namespace Accela.ACA.PaymentAdapter.Service
         /// </summary>
         /// <param name="transactionModel">transaction model</param>
         /// <returns>the transaction model after commit to database</returns>
-        public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel CreatePaymentGatewayTrans(PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel transactionModel)
-        {
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
+        //public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel CreatePaymentGatewayTrans(PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel transactionModel)
+        //{
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
 
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel result = null;
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel result = null;
+
+        //    try
+        //    {
+        //        result = gateway.createTrans(transactionModel);
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        _logger.Error("Error occurred when creating payment gateway transaction.", ex);
+        //    }
+
+        //    return result;
+        //}
+
+        public OnlinePaymentTransactionModel CreatePaymentGatewayTrans(OnlinePaymentTransactionModel transactionModel)
+        {
+
+            PaymentAPIHelper gateway = new PaymentAPIHelper();
+
+            OnlinePaymentTransactionModel result = null;
+
 
             try
             {
+                _logger.Info(gateway.Url);
+                if (gateway.Url == "")
+                {
+                    _logger.Error("Error occurred when creating payment gateway transaction.");
+                }
                 result = gateway.createTrans(transactionModel);
             }
             catch (System.Exception ex)
             {
-                _logger.Error("Error occurred when creating payment gateway transaction.", ex);
+                //_logger.Error("Error occurred when creating payment gateway transaction.", ex);
             }
 
             return result;
@@ -55,9 +82,14 @@ namespace Accela.ACA.PaymentAdapter.Service
         /// Update payment transaction
         /// </summary>
         /// <param name="transactionModel">transaction model</param>
-        public void UpdatePaymentGatewayTrans(PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel transactionModel)
+        //public void UpdatePaymentGatewayTrans(PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel transactionModel)
+        //{
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
+        //    gateway.updateTrans(transactionModel);
+        //}
+        public void UpdatePaymentGatewayTrans(OnlinePaymentTransactionModel transactionModel)
         {
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
+            PaymentAPIHelper gateway = new PaymentAPIHelper();
             gateway.updateTrans(transactionModel);
         }
 
@@ -67,10 +99,18 @@ namespace Accela.ACA.PaymentAdapter.Service
         /// <param name="aaTransId">AA transaction id</param>
         /// <param name="applicationId">application id</param>
         /// <returns>payment transaction model</returns>
-        public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel GetPaymentGatewayTrans(string aaTransId, string applicationId)
+        //public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel GetPaymentGatewayTrans(string aaTransId, string applicationId)
+        //{
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel result = gateway.getTransModels(applicationId, aaTransId);
+
+        //    return result;
+        //}
+
+        public OnlinePaymentTransactionModel GetPaymentGatewayTrans(string aaTransId, string applicationId)
         {
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel result = gateway.getTransModels(applicationId, aaTransId);
+            PaymentAPIHelper gateway = new PaymentAPIHelper();
+            OnlinePaymentTransactionModel result = gateway.getTransModels(applicationId, aaTransId);
 
             return result;
         }
@@ -84,12 +124,19 @@ namespace Accela.ACA.PaymentAdapter.Service
         /// </summary>
         /// <param name="logModel">payment log model</param>
         /// <returns>the log model after commit to database</returns>
-        public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel CreatePaymentGatewayLog(PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel logModel)
-        {
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel result = gateway.createAudiTrail(logModel);
-            return result;
-        }
+        //public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel CreatePaymentGatewayLog(PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel logModel)
+        //{
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel result = gateway.createAudiTrail(logModel);
+        //    return result;
+        //}
+
+        //public OnlinePaymentAudiTrailModel CreatePaymentGatewayLog(OnlinePaymentAudiTrailModel logModel)
+        //{
+        //    PaymentAPIHelper gateway = new PaymentAPIHelper();
+        //    OnlinePaymentAudiTrailModel result = gateway.createAudiTrail(logModel);
+        //    return result;
+        //}
 
         /// <summary>
         /// Get payment logs
@@ -97,16 +144,28 @@ namespace Accela.ACA.PaymentAdapter.Service
         /// <param name="aaTransId">AA transaction id</param>
         /// <param name="applicationId">application id</param>
         /// <returns>the transaction logs</returns>
-        public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel[] GetPaymentGatewayLogs(string aaTransId, string applicationId)
-        {
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel logModel = new PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel();
-            logModel.aaTransId = aaTransId;
-            logModel.applicationId = applicationId;
+        //public PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel[] GetPaymentGatewayLogs(string aaTransId, string applicationId)
+        //{
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel logModel = new PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel();
+        //    logModel.aaTransId = aaTransId;
+        //    logModel.applicationId = applicationId;
 
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel[] result = gateway.getAudiTrailModels(logModel);
-            return result;
-        }
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
+        //    PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel[] result = gateway.getAudiTrailModels(logModel);
+        //    return result;
+        //}
+
+        //public OnlinePaymentAudiTrailModel[] GetPaymentGatewayLogs(string aaTransId, string applicationId)
+        //{
+        //    OnlinePaymentAudiTrailModel logModel = new OnlinePaymentAudiTrailModel();
+        //    logModel.aaTransId = aaTransId;
+        //    logModel.applicationId = applicationId;
+
+        //    PaymentAPIHelper gateway = new PaymentAPIHelper();
+        //    OnlinePaymentAudiTrailModel[] result = gateway.getAudiTrailModels(logModel);
+        //    return result;
+        //}
+
 
         #endregion
     }

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elavon_Adaptor", "Elavon_Adaptor\Elavon_Adaptor.csproj", "{B864013C-9934-48E6-8EB8-42D04C56A30A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elavon_Adaptor", "Elavon_Adaptor.csproj", "{B864013C-9934-48E6-8EB8-42D04C56A30A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentLibrary", "Elavon_Adaptor\PaymentService\PaymentLibrary.csproj", "{A58DFBE8-2972-4ACF-9EC6-C886041F11CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentLibrary", "PaymentService\PaymentLibrary.csproj", "{A58DFBE8-2972-4ACF-9EC6-C886041F11CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentWebService", "Elavon_Adaptor\PaymentWebService\PaymentWebService.csproj", "{EB80CA45-BFBB-4D9B-98C3-7CE01D884EE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentWebService", "PaymentWebService\PaymentWebService.csproj", "{EB80CA45-BFBB-4D9B-98C3-7CE01D884EE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

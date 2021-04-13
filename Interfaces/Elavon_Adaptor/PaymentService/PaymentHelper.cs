@@ -45,7 +45,7 @@ namespace Accela.ACA.PaymentAdapter
         /// <param name="parameters">parameters to be saved</param>
         public static void InitialTransaction(Hashtable parameters)
         {
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel transactionModel = new PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentTransactionModel();
+            OnlinePaymentTransactionModel transactionModel = new OnlinePaymentTransactionModel();
 
             transactionModel.aaTransId = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.TRANSACTION_ID);
             transactionModel.applicationId = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.APPLICATION_ID);

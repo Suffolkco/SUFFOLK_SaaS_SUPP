@@ -1,0 +1,86 @@
+﻿{
+  "styleGroup": [
+    {
+      "styleGroupId": "Header_Content_Setting",
+      "styleGroupName": "Header",
+      "styleList": [
+        {
+          "styleId": "banner-title-text",
+          "styleType": "text",
+          "label": "Set Title",
+          "selector": ".agency-title",
+          "property": "value",
+          "styleValue": "Welcome to Petaluma!",
+          "force": true,
+          "styleExtension": ""
+        },
+        {
+          "styleId": "banner-secondary-text",
+          "styleType": "text",
+          "label": "Set Contact Number",
+          "selector": ".agency-contact",
+          "property": "value",
+          "styleValue": "Help (800) 400-9999",
+          "force": false,
+          "styleExtension": ""
+        },
+        {
+          "styleId": "banner-logo",
+          "styleType": "logo-custom",
+          "label": "Logo Image",
+          "selector": "#img-agency-logo",
+          "property": "src",
+          "styleValue": "logo.png",
+          "force": false,
+          "styleExtension": ""
+        },
+        {
+          "styleId": "show-return-link-toggle",
+          "styleType": "boolean",
+          "label": "Show Return to website link",
+          "selector": ".rta",
+          "property": "display",
+          "styleValue": true,
+          "force": false,
+          "styleExtension": ""
+        },
+        {
+          "styleId": "rto-button-text",
+          "styleType": "text",
+          "label": "Button Tittle",
+          "selector": ".rta-tittle a ",
+          "property": "value",
+          "styleValue": "Return to",
+          "force": false,
+          "styleExtension": ""
+        },
+        {
+          "styleId": "rto-button-url",
+          "styleType": "text",
+          "label": "Navigate to URL",
+          "selector": ".rta-tittle a",
+          "property": "href",
+          "styleValue": "",
+          "force": false,
+          "styleExtension": ""
+        }
+      ]
+    },
+    {
+      "styleGroupId": "Footer_Content_Setting",
+      "styleGroupName": "Footer",
+      "styleList": [
+        {
+          "styleId": "footer-title-text",
+          "styleType": "text",
+          "label": "Set Footer Text",
+          "selector": ".footer-text",
+          "property": "value",
+          "styleValue": "@2016 Accela Inc",
+          "force": false,
+          "styleExtension": ""
+        }  
+      ]
+    }
+  ]
+}

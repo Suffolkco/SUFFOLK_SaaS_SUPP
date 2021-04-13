@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Web;
 using Accela.ACA.PaymentAdapter.Service;
+using InterfaceLib.Common.Service;
 using log4net;
 
 namespace Accela.ACA.PaymentAdapter
@@ -41,7 +42,7 @@ namespace Accela.ACA.PaymentAdapter
         public static void AudiTrail(Hashtable parameters, string processName, string content)
         {
             // Log to database
-            OnlinePaymentAudiTrail(parameters, processName, content);
+            //OnlinePaymentAudiTrail(parameters, processName, content);
 
             // Log to log file
             string msg = String.Concat(processName, ": ", content);
@@ -59,7 +60,7 @@ namespace Accela.ACA.PaymentAdapter
         public static void AudiTrail(string title, string content, string applicationId, string transactionId, string fullName)
         {
             // Log to database
-             OnlinePaymentAudiTrail(title, content, applicationId, transactionId, fullName);
+            // OnlinePaymentAudiTrail(title, content, applicationId, transactionId, fullName);
 
             // Log to log file
             string msg = String.Concat(title, ": ", content);
@@ -74,25 +75,25 @@ namespace Accela.ACA.PaymentAdapter
         /// <param name="parameters">the parameters key and value pairs</param>
         /// <param name="processName">process name</param>
         /// <param name="content">the content to be saved</param>
-        public static void OnlinePaymentAudiTrail(Hashtable parameters, string processName, string content)
-        {
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel logModel = new  PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel();
-            //logModel.applicationId = PaymentHelper.GetDataFromCache<string>(PaymentConstant.APPLICATION_ID);
-            logModel.applicationId = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.APPLICATION_ID);
-            logModel.aaTransId = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.TRANSACTION_ID);
-            logModel.processContent = HttpUtility.UrlDecode(content);
-            logModel.processName = processName;
-            logModel.recFulNam = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.USER_ID);
-            logModel.recDate = DateTime.Now;
-  
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
-             try {
-                gateway.createAudiTrail(logModel);
-            }
-            catch (Exception ex) {
-                _logger.Debug("Exception creating call createAudiTrail : " + ex.Message);
-            }
-         }
+        //public static void OnlinePaymentAudiTrail(Hashtable parameters, string processName, string content)
+        //{
+        //    OnlinePaymentAudiTrailModel logModel = new  OnlinePaymentAudiTrailModel();
+        //    //logModel.applicationId = PaymentHelper.GetDataFromCache<string>(PaymentConstant.APPLICATION_ID);
+        //    logModel.applicationId = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.APPLICATION_ID);
+        //    logModel.aaTransId = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.TRANSACTION_ID);
+        //    logModel.processContent = HttpUtility.UrlDecode(content);
+        //    logModel.processName = processName;
+        //    logModel.recFulNam = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.USER_ID);
+        //    logModel.recDate = DateTime.Now;
+
+        //    PaymentAPIHelper gateway = new PaymentAPIHelper();
+        //     try {
+        //        gateway.createAudiTrail(logModel);
+        //    }
+        //    catch (Exception ex) {
+        //        _logger.Debug("Exception creating call createAudiTrail : " + ex.Message);
+        //    }
+        // }
 
         /// <summary>
         /// log data to database
@@ -102,23 +103,23 @@ namespace Accela.ACA.PaymentAdapter
         /// <param name="applicationId">aa application id</param>
         /// <param name="transactionId">aa transaction id</param>
         /// <param name="fullName">public user id</param>
-        public static void OnlinePaymentAudiTrail(string title, string content, string applicationId, string transactionId, string fullName)
-        {
-            PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel logModel = new PaymentAdapter.WebService.PaymentGatewayWebService.OnlinePaymentAudiTrailModel();
-            logModel.aaTransId = transactionId;
-            logModel.applicationId = applicationId;
-            logModel.processContent = content;
-            logModel.processName = title;
-            logModel.recFulNam = fullName;
+        //public static void OnlinePaymentAudiTrail(string title, string content, string applicationId, string transactionId, string fullName)
+        //{
+        //    OnlinePaymentAudiTrailModel logModel = new OnlinePaymentAudiTrailModel();
+        //    logModel.aaTransId = transactionId;
+        //    logModel.applicationId = applicationId;
+        //    logModel.processContent = content;
+        //    logModel.processName = title;
+        //    logModel.recFulNam = fullName;
 
-            PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService gateway = WSFactory.Instance.GetPaymentGatewayWebService();
-             try {
-                gateway.createAudiTrail(logModel);
-            }
-            catch (Exception ex) {
-                _logger.Debug("Exception creating call createAudiTrail : " + ex.Message);
-            }
-        }
+        //    PaymentAPIHelper gateway = new PaymentAPIHelper();
+        //    try {
+        //        gateway.createAudiTrail(logModel);
+        //    }
+        //    catch (Exception ex) {
+        //        _logger.Debug("Exception creating call createAudiTrail : " + ex.Message);
+        //    }
+        //}
 
         #endregion
     }

@@ -59,25 +59,25 @@ namespace Accela.ACA.PaymentAdapter.Service
         /// </summary>
         /// <returns>The instance of PaymentGatewayWebService</returns>
         /// 
-       public PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService GetPaymentGatewayWebService()
-        {
-            if (_paymentGatewayWebService == null)
-            {
-                lock (typeof(PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService))
-                {
-                    if (_paymentGatewayWebService == null)
-                    {
-                        _paymentGatewayWebService = new PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService();
-                    }
+       //public PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService GetPaymentGatewayWebService()
+       // {
+       //     if (_paymentGatewayWebService == null)
+       //     {
+       //         lock (typeof(PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService))
+       //         {
+       //             if (_paymentGatewayWebService == null)
+       //             {
+       //                 _paymentGatewayWebService = new PaymentAdapter.WebService.PaymentGatewayWebService.PaymentGatewayWebServiceService();
+       //             }
 
-                    NameValueCollection urlRoot = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+       //             NameValueCollection urlRoot = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
 
-                    _paymentGatewayWebService.Url = String.Concat(urlRoot["WebServiceURLRoot"], "PaymentGatewayWebService");
-                    _paymentGatewayWebService.Timeout = 300000;
-                }
-            }
+       //             _paymentGatewayWebService.Url = String.Concat(urlRoot["WebServiceURLRoot"], "PaymentGatewayWebService");
+       //             _paymentGatewayWebService.Timeout = 300000;
+       //         }
+       //     }
 
-            return _paymentGatewayWebService;
-        }
+       //     return _paymentGatewayWebService;
+       // }
     }
 }
