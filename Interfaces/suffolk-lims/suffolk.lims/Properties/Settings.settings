@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="suffolk.lims.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="srcpath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\temp\in\</Value>
+    </Setting>
+    <Setting Name="destpath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\temp\out\</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
