@@ -189,18 +189,21 @@ function mainProcess()
                         b1ExpResult = aa.expiration.getLicensesByCapID(capId)
                         if (b1ExpResult.getSuccess())
                         {
-                            var b1Exp = b1ExpResult.getOutput();
-                            var curExp = b1Exp.getExpDate();
-                            if (curExp != null)
+                            if (b1ExpResult.getOutput() != "" && b1ExpResult.getOutput() != null)
                             {
-                                var curSt = b1Exp.getExpStatus();
-                                if (curSt != null)
+                                var b1Exp = b1ExpResult.getOutput();
+                                var curExp = b1Exp.getExpDate();
+                                if (curExp != null)
                                 {
-                                    if (curSt != "About to Expire")
+                                    var curSt = b1Exp.getExpStatus();
+                                    if (curSt != null)
                                     {
-                                        b1Exp.setExpStatus("About to Expire");
-                                        aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                        logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
+                                        if (curSt != "About to Expire")
+                                        {
+                                            b1Exp.setExpStatus("About to Expire");
+                                            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+                                            logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
+                                        }
                                     }
                                 }
                             }
@@ -210,6 +213,14 @@ function mainProcess()
                         {
                             var wfObj = workflowResult.getOutput();
                             var vEParams = aa.util.newHashtable();
+                            var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+                            acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+
+                            //Save Base ACA URL
+                            addParameter(vEParams, "$$acaURL$$", acaSite);
+
+                            //Save Record Direct URL
+                            addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl());
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
