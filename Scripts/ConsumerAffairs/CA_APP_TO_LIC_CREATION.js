@@ -13,7 +13,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
         var linkResult = aa.cap.createAppHierarchy(parentId, capId);
         if (linkResult.getSuccess())
         {
-            var expDateASI = getAppSpecific("Expiration Date", capId);
+            var issueDateASI = getAppSpecific("Issued Date", capId);
             logDebug("Successfully linked to Application : " + capIDString);
             //Copying relevant info from Application to License
             copyContacts(capId, parentId);
@@ -22,13 +22,13 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             copyDocuments(capId, parentId);
             aa.cap.updateAccessByACA(capId, "N");
             //Updating Expiration Date of License
-            logDebug("ASI Expdate is: " + expDateASI);
-            expDateASI = new Date(expDateASI);
-            logDebug("New Date Exp Date is: " + expDateASI)
-            var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
+            logDebug("ASI Expdate is: " + issueDateASI);
+            issueDateASI = new Date(issueDateASI);
+            logDebug("New Date Exp Date is: " + issueDateASI)
+            var newExpDate = (issueDateASI.getMonth() + 1) + "/" + 1 + "/" + (issueDateASI.getFullYear() + 2);
             logDebug("New Exp Date is: " + newExpDate);
             editAppSpecific("Expiration Date", newExpDate, parentId);
-            if (expDateASI != null)
+            if (issueDateASI != null)
             {
                 var b1ExpResult = aa.expiration.getLicensesByCapID(parentId);
                 if (b1ExpResult.getSuccess())
@@ -36,7 +36,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
                     var b1Exp = b1ExpResult.getOutput();
                     b1Exp.setExpStatus("Active");
                     b1Exp.setExpDate(aa.date.parseDate(newExpDate));
-                    aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+                    aa.expiration.editB1Expiration(b1Exp.getB1Expiration()); 
                 }
             }
             //Giving user Access to License in ACA
