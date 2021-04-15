@@ -213,7 +213,7 @@ function mainProcess()
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
-                                if (wfObj[i].getTaskDescription() == "License Status")
+                                if (wfObj[i].getTaskDescription() == "Issuance")
                                 {
                                     if (wfObj[i].getDisposition() != "Expired")
                                     {
