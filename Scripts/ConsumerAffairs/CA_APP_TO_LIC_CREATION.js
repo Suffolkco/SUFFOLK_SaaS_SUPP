@@ -56,8 +56,8 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             deactivateTaskByCap("Application", parentId);
             deactivateTaskByCap("Review", parentId);
             deactivateTaskByCap("Test", parentId);
-            activateTask("Issuance", "", parentId);
             updateTask("Issuance", "Issued", "", "", "", parentId);
+            activateTask("Issuance", "", parentId);
             updateAppStatus("Active", "", parentId);
 
         }
