@@ -10,7 +10,7 @@ function activateTaskByCap(wfstr, capId)
         return false;
     }
   
-    for (var i in wfObj) 
+    for (var i in wfObj)
     {
         var fTask = wfObj[i];
         if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase())) 
