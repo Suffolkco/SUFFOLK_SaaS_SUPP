@@ -1,7 +1,7 @@
 //Block License Issuance if Expiration Date is Empty
 showDebug = false;
 
-var expDate = AInfo["Expiration Date"];
+var expDate = AInfo["Issued Date"];
 
 if (wfTask == "Issuance" && wfStatus == "Issued")
 {
@@ -10,7 +10,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
         {
             cancel = true;
             showMessage = true;
-            comment("In order to issue a License, an expiration date must be provided.");
+            comment("In order to issue a License, an issued date must be provided.");
         }
 
 }
