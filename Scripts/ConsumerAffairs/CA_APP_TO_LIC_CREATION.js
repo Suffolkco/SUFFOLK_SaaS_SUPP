@@ -59,7 +59,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             updateTask("Issuance", "Issued", "", "", "", parentId);
             activateTaskByCap("Issuance", parentId);
             updateAppStatus("Active", "", parentId);
-            updateAppStatus("Closed", "Application record closed and License issued via script", capId);
+            updateAppStatus("Closed", "", capId);
             deactivateTask("Issuance");
 
 
