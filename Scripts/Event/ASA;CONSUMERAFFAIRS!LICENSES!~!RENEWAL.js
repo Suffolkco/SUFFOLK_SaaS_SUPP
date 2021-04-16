@@ -12,3 +12,4 @@ aa.cap.updateAccessByACA(capId, "N");
 copyContacts(parentCapId, capId);
 copyASIFields(parentCapId, capId);
 copyASITables(parentCapId, capId);
+copyDocuments(parentCapId, capId);
