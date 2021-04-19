@@ -22,8 +22,8 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
                 b1Exp.setExpDate(aa.date.parseDate(newExpDate));
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                 updateAppStatus("Active", "", parentCapId);
-                activateTask("License Status", "", parentCapId);
-                updateTask("License Status", "Active", "", "", parentCapId);
+                activateTask("Issuance", "", parentCapId);
+                updateTask("Issuance", "Issued", "", "", parentCapId);
             }
         }
     

@@ -213,7 +213,7 @@ function mainProcess()
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
-                                if (wfObj[i].getTaskDescription() == "License Status")
+                                if (wfObj[i].getTaskDescription() == "Issuance")
                                 {
                                     if (wfObj[i].getDisposition() != "Expired")
                                     {
@@ -229,7 +229,7 @@ function mainProcess()
                                 var capContacts = contactResult.getOutput();
                                 for (c in capContacts)
                                 {
-                                    if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
+                                    if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
                                     {
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))

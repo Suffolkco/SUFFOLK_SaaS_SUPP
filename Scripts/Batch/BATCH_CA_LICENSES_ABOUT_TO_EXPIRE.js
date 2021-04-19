@@ -227,11 +227,11 @@ function mainProcess()
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
-                                if (wfObj[i].getTaskDescription() == "License Status")
+                                if (wfObj[i].getTaskDescription() == "Issuance")
                                 {
-                                    if (wfObj[i].getDisposition() != "About to Expire")
+                                    if (wfObj[i].getDisposition() != "Pending Renewal")
                                     {
-                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "About to Expire", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj, "Y");
+                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Pending Renewal", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj, "Y");
                                     }
                                 }
                             }
@@ -243,7 +243,7 @@ function mainProcess()
                                 var capContacts = contactResult.getOutput();
                                 for (c in capContacts)
                                 {
-                                    if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
+                                    if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
                                     {
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))
