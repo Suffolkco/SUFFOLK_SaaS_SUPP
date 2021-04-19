@@ -229,7 +229,7 @@ function mainProcess()
                                 var capContacts = contactResult.getOutput();
                                 for (c in capContacts)
                                 {
-                                    if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
+                                    if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
                                     {
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))
