@@ -6,9 +6,13 @@
 //aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
 //aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
+/*
 var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
 aa.cap.updateAccessByACA(capId, "N");
 copyContacts(parentCapId, capId);
 copyASIFields(parentCapId, capId);
 copyASITables(parentCapId, capId);
+*/ 
+
+//no longer in use 4/20/21
