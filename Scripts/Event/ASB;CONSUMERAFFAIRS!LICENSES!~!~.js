@@ -6,13 +6,13 @@
 // CONSUMERAFFAIRS/LICENSES/Restricted Plumbing/NA
 
 
-// BANK ACCOUNTS
+// BANK ACCOUNTS 
 // RESTRICTIONS 
 // EMPLOYMENT 
 // EDUCATION 
 
 
-if (appTypeArray[3] != "Renewal")
+if (appTypeArray[3] != "Renewal" && !publicUser)
 {
 	var validationMessage = "";
 	var asitBankAccounts = getASITBefore('BANK ACCOUNTS');
