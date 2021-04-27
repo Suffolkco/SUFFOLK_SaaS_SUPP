@@ -1,0 +1,3 @@
+//CTRCA
+
+include("CA_SET_VENDOR_PRIMARY");
