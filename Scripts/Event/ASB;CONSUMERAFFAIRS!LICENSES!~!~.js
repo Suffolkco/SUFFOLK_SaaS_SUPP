@@ -47,7 +47,7 @@ if (appTypeArray[3] != "Renewal" && !publicUser)
 	}
 
 
-	if (ApplicationTypeLevel3.equalsIgnoreCase('Appliance Repair') || ApplicationTypeLevel3.equalsIgnoreCase('Home Improvement') || ApplicationTypeLevel3.equalsIgnoreCase('Liquid Waste'))
+	if (ApplicationTypeLevel3.equalsIgnoreCase('Appliance Repair') || ApplicationTypeLevel3.equalsIgnoreCase('Liquid Waste'))
 	{
 		if (asitBankAccounts == null || asitBankAccounts.length <= 0)
 		{
