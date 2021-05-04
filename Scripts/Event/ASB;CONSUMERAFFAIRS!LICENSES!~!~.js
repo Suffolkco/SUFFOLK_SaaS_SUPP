@@ -6,12 +6,12 @@
 // CONSUMERAFFAIRS/LICENSES/Restricted Plumbing/NA
 
 
-// BANK ACCOUNTS
+// BANK ACCOUNTS 
 // RESTRICTIONS 
 // EMPLOYMENT 
 // EDUCATION 
 
-
+/*
 if (appTypeArray[3] != "Renewal" && !publicUser)
 {
 	var validationMessage = "";
@@ -47,7 +47,7 @@ if (appTypeArray[3] != "Renewal" && !publicUser)
 	}
 
 
-	if (ApplicationTypeLevel3.equalsIgnoreCase('Appliance Repair') || ApplicationTypeLevel3.equalsIgnoreCase('Home Improvement') || ApplicationTypeLevel3.equalsIgnoreCase('Liquid Waste'))
+	if (ApplicationTypeLevel3.equalsIgnoreCase('Appliance Repair') || ApplicationTypeLevel3.equalsIgnoreCase('Liquid Waste'))
 	{
 		if (asitBankAccounts == null || asitBankAccounts.length <= 0)
 		{
@@ -69,12 +69,12 @@ if (appTypeArray[3] != "Renewal" && !publicUser)
 
 }
 
-
+*/
 /**
  * this function will return the ASIT on the application submit before event.
  * @param asitName the name of the ASIT
  * @returns the ASIT object if exists else will returns null
- */
+ *//*
 function getASITBefore(asitName)
 {
 	var gm = aa.env.getValue("AppSpecificTableGroupModel");
@@ -130,4 +130,4 @@ function getASITBefore(asitName)
 	}
 
 	return null;
-}
+}*/
