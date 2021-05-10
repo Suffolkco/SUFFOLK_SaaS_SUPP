@@ -4,7 +4,6 @@ if (!publicUser)
     var condArray = [];
     var parentCapId = getParentCapID4Renewal();
     var vEParams = aa.util.newHashtable();
-    addParameter(vEParams, '$$altID$$', capId.getCustomID());
 
     //checking parent record for Child Support Condition
     if (condResult.getSuccess()) 
@@ -23,6 +22,7 @@ if (!publicUser)
                 //other stuff where condition exists - sending email to Matt
 
                 var parentAltID = parentCapId.getCustomID();
+                addParameter(vEParams, '$$altID$$', capId.getCustomID());
                 addParameter(vEParams, '$$parentCapID$$', parentAltID);
 
                 sendNotification('', 'ryan.littlefield@scubeenterprise.com', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
@@ -74,7 +74,8 @@ if (!publicUser)
             {
                 if (!matches(conArray[con].email, null, undefined, ""))
                 {
-                    addParameter(vEParams, "$$expDate$$", expDateASI);
+                    addParameter(vEParams, '$$altID$$', capId.getCustomID());
+                    addParameter(vEParams, "$$expDate$$", newExpDate);
                     conEmail += conArray[con].email + "; ";
                     logDebug("Email addresses: " + conEmail);
                     sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
