@@ -1,4 +1,3 @@
-//Workflow update for Renewal to push information back to license
+//accounting for scenarios where a condition is on the parent license record and the workflow needs to be pushed through manually by staff
 
-//include("CA_REN_TO_LIC_UPDATE");
-//no longer in use 4/20/21
+include("CA_REN_TO_LIC_BY_WF");

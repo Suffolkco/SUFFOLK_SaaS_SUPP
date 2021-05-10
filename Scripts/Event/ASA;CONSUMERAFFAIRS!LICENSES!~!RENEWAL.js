@@ -3,16 +3,21 @@
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
 
-//aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
-//aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
+aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
+aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
-/*
+
 var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
 aa.cap.updateAccessByACA(capId, "N");
-copyContacts(parentCapId, capId);
-copyASIFields(parentCapId, capId);
-copyASITables(parentCapId, capId);
-*/ 
+if (publicUser)
+{
+    //copying the contacts from the parent to the renewal record when beginning the renewal for ACA records only
+    copyContacts(parentCapId, capId);
+    copyASIFields(parentCapId, capId);
+    copyASITables(parentCapId, capId);
+}
 
-//no longer in use 4/20/21
+// Only run the below script on this ASA event when submitted from AA          
+include("CA_REN_TO_LIC_UPDATE_AA_COPY");
+
