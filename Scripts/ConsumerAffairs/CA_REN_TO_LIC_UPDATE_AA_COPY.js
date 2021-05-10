@@ -1,8 +1,8 @@
 if (!publicUser)
 {
-    var parentCapId = getParentCapID4Renewal();
     var condResult = aa.capCondition.getCapConditions(parentCapId);
     var condArray = [];
+    var parentCapId = getParentCapID4Renewal();
     var vEParams = aa.util.newHashtable();
     addParameter(vEParams, '$$altID$$', capId.getCustomID());
 

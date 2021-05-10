@@ -1,8 +1,8 @@
 
 if (publicUser)
 {
-    var parentCapId = getParentCapID4Renewal();
     var condResult = aa.capCondition.getCapConditions(parentCapId);
+    var parentCapId = getParentCapID4Renewal();
     var condArray = [];
     //checking parent record for Child Support Condition
     if (condResult.getSuccess()) 
