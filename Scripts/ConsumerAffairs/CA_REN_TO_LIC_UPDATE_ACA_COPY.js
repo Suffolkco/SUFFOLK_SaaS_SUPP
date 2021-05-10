@@ -1,6 +1,7 @@
 
 if (publicUser)
 {
+    var parentCapId = getParentCapID4Renewal();
     var condResult = aa.capCondition.getCapConditions(parentCapId);
     var condArray = [];
     //checking parent record for Child Support Condition
@@ -29,7 +30,6 @@ if (publicUser)
             }
             else
             {
-                var parentCapId = getParentCapID4Renewal();
                 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
                 //Updating Expiration Date of License
@@ -62,6 +62,26 @@ if (publicUser)
                 copyContacts(capId, parentCapId);
                 copyASIFields(capId, parentCapId);
                 copyASITables(capId, parentCapId);
+
+                var conArray = getContactArray();
+                var conEmail = "";
+
+                for (con in conArray)
+                {
+                    if (conArray[con].contactType == "Applicant")
+                    {
+                        if (!matches(conArray[con].email, null, undefined, ""))
+                        {
+                            addParameter(vEParams, "$$expDate$$", expDateASI);
+                            conEmail += conArray[con].email + "; ";
+                            logDebug("Email addresses: " + conEmail);
+                            sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
+                        }
+                    }
+                }
+
+
+
             }
         }
     }

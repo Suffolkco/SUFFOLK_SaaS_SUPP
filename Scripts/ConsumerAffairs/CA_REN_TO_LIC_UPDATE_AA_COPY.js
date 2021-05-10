@@ -1,8 +1,11 @@
-
 if (!publicUser)
 {
+    var parentCapId = getParentCapID4Renewal();
     var condResult = aa.capCondition.getCapConditions(parentCapId);
     var condArray = [];
+    var vEParams = aa.util.newHashtable();
+    addParameter(vEParams, '$$altID$$', capId.getCustomID());
+
     //checking parent record for Child Support Condition
     if (condResult.getSuccess()) 
     {
@@ -19,17 +22,14 @@ if (!publicUser)
 
                 //other stuff where condition exists - sending email to Matt
 
-                var vEParams = aa.util.newHashtable();
-                addParameter(vEParams, '$$altID$$', capId.getCustomID());
-                addParameter(vEParams, '$$parentCapID$$', parentCapId.getCustomID())
-        
+                var parentAltID = parentCapId.getCustomID();
+                addParameter(vEParams, '$$parentCapID$$', parentAltID);
 
-                sendNotification('', 'Matthew.Cereola@suffolkcountyny.gov', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
-                
+                sendNotification('', 'ryan.littlefield@scubeenterprise.com', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
+
             }
             else
             {
-                var parentCapId = getParentCapID4Renewal();
                 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
                 //Updating Expiration Date of License
@@ -62,6 +62,26 @@ if (!publicUser)
                 copyContacts(capId, parentCapId);
                 copyASIFields(capId, parentCapId);
                 copyASITables(capId, parentCapId);
+
+                var conArray = getContactArray();
+                var conEmail = "";
+
+                for (con in conArray)
+                {
+                    if (conArray[con].contactType == "Applicant")
+                    {
+                        if (!matches(conArray[con].email, null, undefined, ""))
+                        {
+                            addParameter(vEParams, "$$expDate$$", expDateASI);
+                            conEmail += conArray[con].email + "; ";
+                            logDebug("Email addresses: " + conEmail);
+                            sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
+                        }
+                    }
+                }
+
+
+
             }
         }
     }
