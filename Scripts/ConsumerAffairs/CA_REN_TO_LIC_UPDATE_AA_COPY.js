@@ -26,7 +26,6 @@ if (!publicUser)
                 addParameter(vEParams, '$$parentCapID$$', parentAltID);
 
                 sendNotification('', 'ryan.littlefield@scubeenterprise.com', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
-
             }
         }
     }
@@ -60,10 +59,6 @@ if (!publicUser)
         {
             closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
         }
-        //copying back from the renewal to the parent for AA records where the condition has been met
-        copyContacts(capId, parentCapId);
-        copyASIFields(capId, parentCapId);
-        copyASITables(capId, parentCapId);
 
         var conArray = getContactArray();
         var conEmail = "";
@@ -82,5 +77,9 @@ if (!publicUser)
                 }
             }
         }
+        //copying back from the renewal to the parent for AA records where the condition has been met
+        copyContacts(capId, parentCapId);
+        copyASIFields(capId, parentCapId);
+        copyASITables(capId, parentCapId);
     }
 }
