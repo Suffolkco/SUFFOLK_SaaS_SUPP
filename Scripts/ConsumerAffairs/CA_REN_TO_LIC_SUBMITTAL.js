@@ -1,7 +1,5 @@
 showDebug = true;
 var vEParams = aa.util.newHashtable();
-var conArray = getContactArray();
-var conEmail = "";
 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 var parentAltID = parentCapId.getCustomID();
 
