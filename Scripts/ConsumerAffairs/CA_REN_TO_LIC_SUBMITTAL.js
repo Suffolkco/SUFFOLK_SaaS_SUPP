@@ -1,19 +1,21 @@
-showDebug = true;
 parentCapId = getParentCapID4Renewal();
+logDebug("parent cap id is: " + parentCapId);
+
 var vEParams = aa.util.newHashtable();
 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
-var parentAltID = parentCapId.getCustomID();
-
-
 
 if (!publicUser)
 {
+    logDebug("We're not a public user");
     //checking parent record for Child Support Condition
     var condResult = aa.capCondition.getCapConditions(parentCapId);
     var condArray = [];
-    if (condResult.getSuccess()) 
+    var capConds = condResult.getOutput();
+
+    if (capConds.length) 
     {
-        var capConds = condResult.getOutput();
+        logDebug("successful condition check");
+
         for (cc in capConds) 
         {
             logDebug("Condition name is: " + capConds[cc].getConditionDescription());
@@ -25,6 +27,7 @@ if (!publicUser)
                 logDebug("cType " + cType);
 
                 //other stuff where condition exists - sending email to Matt
+                var parentAltID = parentCapId.getCustomID();
 
                 addParameter(vEParams, '$$altID$$', capId.getCustomID());
                 addParameter(vEParams, '$$parentCapID$$', parentAltID);
@@ -35,6 +38,8 @@ if (!publicUser)
     }
     else
     {
+        logDebug("no conditions on record");
+
         //Updating Expiration Date of License
         logDebug("ASI Expdate is: " + expDateASI);
         expDateASI = new Date(expDateASI);
@@ -58,22 +63,19 @@ if (!publicUser)
 
             }
         }
-        var conArray = getContactArray();
+        var conArray = getContactByType("Applicant", capId);
         var conEmail = "";
-        for (con in conArray)
+
+        if (!matches(conArray.email, null, undefined, ""))
         {
-            if (conArray[con].contactType == "Applicant")
-            {
-                if (!matches(conArray[con].email, null, undefined, ""))
-                {
-                    addParameter(vEParams, '$$altID$$', capId.getCustomID());
-                    addParameter(vEParams, "$$expDate$$", newExpDate);
-                    conEmail += conArray[con].email + "; ";
-                    logDebug("Email addresses: " + conEmail);
-                    sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
-                }
-            }
+            addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
+            addParameter(vEParams, "$$expDate$$", newExpDate);
+            conEmail += conArray.email + "; ";
+            logDebug("Email addresses: " + conEmail);
+            sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
         }
+
+
         //copying back from the renewal to the parent for records where the condition has been met
         copyContacts(capId, parentCapId);
         copyASIFields(capId, parentCapId);
@@ -83,12 +85,14 @@ if (!publicUser)
 
 if (publicUser)
 {
+    logDebug("we're a public user");
     //checking parent record for Child Support Condition
     var condResult = aa.capCondition.getCapConditions(parentCapId);
     var condArray = [];
-    if (condResult.getSuccess()) 
+    var capConds = condResult.getOutput();
+
+    if (capConds.length) 
     {
-        var capConds = condResult.getOutput();
         for (cc in capConds) 
         {
             logDebug("Condition name is: " + capConds[cc].getConditionDescription());
@@ -101,7 +105,8 @@ if (publicUser)
 
                 //other stuff where condition exists - sending email to Matt
 
-                var vEParams = aa.util.newHashtable();
+                var parentAltID = parentCapId.getCustomID();
+
                 addParameter(vEParams, '$$altID$$', capId.getCustomID());
                 addParameter(vEParams, '$$parentCapID$$', parentAltID)
 
@@ -142,20 +147,16 @@ if (publicUser)
                 copyASIFields(capId, parentCapId);
                 copyASITables(capId, parentCapId);
 
-                var conArray = getContactArray();
+                var conArray = getContactByType("Applicant", capId);
                 var conEmail = "";
-                for (con in conArray)
+
+                if (!matches(conArray.email, null, undefined, ""))
                 {
-                    if (conArray[con].contactType == "Applicant")
-                    {
-                        if (!matches(conArray[con].email, null, undefined, ""))
-                        {
-                            addParameter(vEParams, "$$expDate$$", expDateASI);
-                            conEmail += conArray[con].email + "; ";
-                            logDebug("Email addresses: " + conEmail);
-                            sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
-                        }
-                    }
+                    addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
+                    addParameter(vEParams, "$$expDate$$", newExpDate);
+                    conEmail += conArray.email + "; ";
+                    logDebug("Email addresses: " + conEmail);
+                    sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
                 }
             }
         }
