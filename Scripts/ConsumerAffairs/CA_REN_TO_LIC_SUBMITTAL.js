@@ -59,6 +59,8 @@ if (!publicUser)
 
             }
         }
+        var conArray = getContactArray();
+        var conEmail = "";
         for (con in conArray)
         {
             if (conArray[con].contactType == "Applicant")
@@ -141,6 +143,8 @@ if (publicUser)
                 copyASIFields(capId, parentCapId);
                 copyASITables(capId, parentCapId);
 
+                var conArray = getContactArray();
+                var conEmail = "";
                 for (con in conArray)
                 {
                     if (conArray[con].contactType == "Applicant")
