@@ -18,6 +18,5 @@ if (publicUser)
     copyASITables(parentCapId, capId);
 }
 
-// Only run the below script on this ASA event when submitted from AA          
-include("CA_REN_TO_LIC_UPDATE_AA_COPY");
+
 

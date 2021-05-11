@@ -2,7 +2,6 @@
 if (publicUser)
 {
     var condResult = aa.capCondition.getCapConditions(parentCapId);
-    var parentCapId = getParentCapID4Renewal();
     var condArray = [];
     //checking parent record for Child Support Condition
     if (condResult.getSuccess()) 
@@ -25,7 +24,7 @@ if (publicUser)
                 addParameter(vEParams, '$$parentCapID$$', parentCapId.getCustomID())
 
 
-                sendNotification('', 'Matthew.Cereola@suffolkcountyny.gov', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
+                sendNotification('', 'ryan.littlefield@scubeenterprise.com', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
 
             }
             else
