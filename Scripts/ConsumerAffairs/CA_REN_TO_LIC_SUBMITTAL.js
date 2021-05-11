@@ -5,7 +5,7 @@ var vEParams = aa.util.newHashtable();
 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 if (!publicUser)
 {
-    invoiceFee('LIC_01', 'FINAL');
+    invoiceFee('LIC_02', 'FINAL');
 }
 if (publicUser)
 {
