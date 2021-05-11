@@ -1,4 +1,4 @@
-
+showDebug = true;
 var vEParams = aa.util.newHashtable();
 var conArray = getContactArray();
 var conEmail = "";
@@ -55,11 +55,9 @@ if (!publicUser)
                 updateAppStatus("Active", "", parentCapId);
                 activateTask("Issuance", "", parentCapId);
                 updateTask("Issuance", "Issued", "", "", parentCapId);
+                closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
+
             }
-        }
-        if (isTaskActive("Renewal Review"))
-        {
-            closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
         }
         for (con in conArray)
         {
