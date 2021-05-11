@@ -1,4 +1,5 @@
 showDebug = true;
+parentCapId = getParentCapID4Renewal();
 var vEParams = aa.util.newHashtable();
 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 var parentAltID = parentCapId.getCustomID();
