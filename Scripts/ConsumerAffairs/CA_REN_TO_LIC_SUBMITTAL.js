@@ -1,5 +1,4 @@
-var condResult = aa.capCondition.getCapConditions(parentCapId);
-var condArray = [];
+
 var vEParams = aa.util.newHashtable();
 var conArray = getContactArray();
 var conEmail = "";
@@ -11,6 +10,8 @@ var parentAltID = parentCapId.getCustomID();
 if (!publicUser)
 {
     //checking parent record for Child Support Condition
+    var condResult = aa.capCondition.getCapConditions(parentCapId);
+    var condArray = [];
     if (condResult.getSuccess()) 
     {
         var capConds = condResult.getOutput();
@@ -84,6 +85,8 @@ if (!publicUser)
 if (publicUser)
 {
     //checking parent record for Child Support Condition
+    var condResult = aa.capCondition.getCapConditions(parentCapId);
+    var condArray = [];
     if (condResult.getSuccess()) 
     {
         var capConds = condResult.getOutput();
