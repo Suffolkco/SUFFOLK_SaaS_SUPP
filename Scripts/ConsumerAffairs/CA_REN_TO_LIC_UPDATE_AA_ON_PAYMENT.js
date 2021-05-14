@@ -4,8 +4,7 @@ logDebug("parent cap id is: " + parentCapId);
 var vEParams = aa.util.newHashtable();
 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
-if (!publicUser)
-{
+
     logDebug("We're not a public user");
     if (balanceDue == 0)
     {
@@ -55,7 +54,6 @@ if (!publicUser)
         }
         copyASITables(capId, parentCapId);
     }
-}
 
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap

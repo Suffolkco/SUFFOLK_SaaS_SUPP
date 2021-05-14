@@ -28,4 +28,17 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
     copyContacts(capId, parentCapId);
     copyASIFields(capId, parentCapId);
     copyASITables(capId, parentCapId);
+
+    var conArray = getContactByType("Applicant", capId);
+    var conEmail = "";
+
+    if (!matches(conArray.email, null, undefined, ""))
+    {
+        addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
+        addParameter(vEParams, "$$expDate$$", newExpDate);
+        conEmail += conArray.email + "; ";
+        logDebug("Email addresses: " + conEmail);
+        sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
+    }
 }
+
