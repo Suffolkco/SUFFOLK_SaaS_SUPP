@@ -14,7 +14,6 @@ var expDateASI = getAppSpecific("Expiration Date", parentCapId);
         logDebug("New Date Exp Date is: " + expDateASI)
         var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
         logDebug("New Exp Date is: " + newExpDate);
-        editAppSpecific("Expiration Date", newExpDate, capId);
 
         if (expDateASI != null)
         {
