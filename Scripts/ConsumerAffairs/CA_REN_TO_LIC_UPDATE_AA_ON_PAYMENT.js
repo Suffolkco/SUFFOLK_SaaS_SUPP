@@ -45,6 +45,16 @@ if (b1Exp.getExpStatus() != "Active")
         //copying back from the renewal to the parent for records where the condition has been met
         AInfo = new Array();
         loadAppSpecific(AInfo, capId);
+        var capContacts = aa.people.getCapContactByCapID(parentCapId);
+        if (capContacts.getSuccess())
+        {
+            capContacts = capContacts.getOutput();
+            logDebug("capContacts: " + capContacts);
+            for (var yy in capContacts)
+            {
+                aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+            }
+        }
         copyContacts(capId, parentCapId);
         for (asi in AInfo)
         {
