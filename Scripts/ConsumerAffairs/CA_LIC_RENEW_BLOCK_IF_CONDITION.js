@@ -1,7 +1,7 @@
 //CA_LIC_RENEW_BLOCK_IF_CONDITION
 
 //If Condition for Child Support Exists, block WorkFlow Step 'Renewal Review' from being marked as 'Complete'
-showDebug=true;
+
 
 
 if (wfTask == "Renewal Review" && wfStatus == "Complete")
