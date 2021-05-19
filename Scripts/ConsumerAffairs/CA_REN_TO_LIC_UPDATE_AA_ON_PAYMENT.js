@@ -7,62 +7,65 @@ var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
 var b1Exp = b1ExpResult.getOutput();
 
-
-if (b1Exp.getExpStatus() != "Active")
+var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+logDebug("isCompleteCap? " + capmodel.isCompleteCap());
+if (capmodel.isCompleteCap())								
 {
-    if (balanceDue == 0)
+    if (b1Exp.getExpStatus() != "Active")
     {
-        //Updating Expiration Date of License
-        logDebug("ASI Expdate is: " + expDateASI);
-        expDateASI = new Date(expDateASI);
-        logDebug("New Date Exp Date is: " + expDateASI)
-        var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
-        logDebug("New Exp Date is: " + newExpDate);
-        editAppSpecificLOCAL("Expiration Date", newExpDate, capId);
+        if (balanceDue == 0)
+        {
+            //Updating Expiration Date of License
+            logDebug("ASI Expdate is: " + expDateASI);
+            expDateASI = new Date(expDateASI);
+            logDebug("New Date Exp Date is: " + expDateASI)
+            var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
+            logDebug("New Exp Date is: " + newExpDate);
+            editAppSpecificLOCAL("Expiration Date", newExpDate, capId);
 
-        if (expDateASI != null)
-        {
-            b1Exp.setExpStatus("Active");
-            b1Exp.setExpDate(aa.date.parseDate(newExpDate));
-            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-            updateAppStatus("Active", "", parentCapId);
-            activateTask("Issuance", "", parentCapId);
-            updateTask("Issuance", "Issued", "", "", parentCapId);
-            closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
-        }
-        var conArray = getContactByType("Applicant", capId);
-        var conEmail = "";
-
-        if (!matches(conArray.email, null, undefined, ""))
-        {
-            addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
-            addParameter(vEParams, "$$expDate$$", newExpDate);
-            conEmail += conArray.email + "; ";
-            logDebug("Email addresses: " + conEmail);
-            sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
-        }
-        //copying back from the renewal to the parent for records where the condition has been met
-        AInfo = new Array();
-        loadAppSpecific(AInfo, capId);
-        var capContacts = aa.people.getCapContactByCapID(parentCapId);
-        if (capContacts.getSuccess())
-        {
-            capContacts = capContacts.getOutput();
-            logDebug("capContacts: " + capContacts);
-            for (var yy in capContacts)
+            if (expDateASI != null)
             {
-                aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+                b1Exp.setExpStatus("Active");
+                b1Exp.setExpDate(aa.date.parseDate(newExpDate));
+                aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+                updateAppStatus("Active", "", parentCapId);
+                activateTask("Issuance", "", parentCapId);
+                updateTask("Issuance", "Issued", "", "", parentCapId);
+                closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
             }
-        }
-        copyContacts(capId, parentCapId);
-        for (asi in AInfo)
-        {
-            //Check list
-            logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
-            editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
-        }
-        copyASITables(capId, parentCapId);
+            var conArray = getContactByType("Applicant", capId);
+            var conEmail = "";
 
+            if (!matches(conArray.email, null, undefined, ""))
+            {
+                addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
+                addParameter(vEParams, "$$expDate$$", newExpDate);
+                conEmail += conArray.email + "; ";
+                logDebug("Email addresses: " + conEmail);
+                sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
+            }
+            //copying back from the renewal to the parent for records where the condition has been met
+            AInfo = new Array();
+            loadAppSpecific(AInfo, capId);
+            var capContacts = aa.people.getCapContactByCapID(parentCapId);
+            if (capContacts.getSuccess())
+            {
+                capContacts = capContacts.getOutput();
+                logDebug("capContacts: " + capContacts);
+                for (var yy in capContacts)
+                {
+                    aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+                }
+            }
+            copyContacts(capId, parentCapId);
+            for (asi in AInfo)
+            {
+                //Check list
+                logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
+                editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
+            }
+            copyASITables(capId, parentCapId);
+        }
     }
 }
 
