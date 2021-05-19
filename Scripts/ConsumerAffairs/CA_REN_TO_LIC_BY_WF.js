@@ -1,6 +1,6 @@
 if (wfTask == "Renewal Review" && wfStatus == "Complete")
 {
-
+    var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();
     var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
