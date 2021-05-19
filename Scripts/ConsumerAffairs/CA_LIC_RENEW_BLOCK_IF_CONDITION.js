@@ -24,7 +24,7 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
                 cancel = true;
                 showMessage = true;
                 comment("This Renewal cannot be marked as complete until the following Conditions are Met: " + "<br>" + cDesc);
-            }
+            } 
         }
     }
 }
