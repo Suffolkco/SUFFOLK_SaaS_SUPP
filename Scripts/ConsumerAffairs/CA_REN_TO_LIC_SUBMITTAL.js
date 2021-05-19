@@ -66,6 +66,7 @@ if (publicUser)
 
                 if (isTaskActive("Renewal Review"))
                 {
+                    logDebug("Task is closing"); 
                     closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
                 }
                 //copying back from the renewal to the parent for records where the condition has been met
