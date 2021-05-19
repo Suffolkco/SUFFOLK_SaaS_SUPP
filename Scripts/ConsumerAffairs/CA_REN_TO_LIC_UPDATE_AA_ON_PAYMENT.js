@@ -5,9 +5,12 @@ logDebug("parent cap id is: " + parentCapId);
 
 var vEParams = aa.util.newHashtable();
 var expDateASI = getAppSpecific("Expiration Date", parentCapId);
+var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
+var b1Exp = b1ExpResult.getOutput();
 
 
-    logDebug("We're not a public user");
+if (b1Exp.getExpStatus() != "Active")
+{
     if (balanceDue == 0)
     {
         //Updating Expiration Date of License
@@ -20,19 +23,13 @@ var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
         if (expDateASI != null)
         {
-            var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
-            if (b1ExpResult.getSuccess())
-            {
-                var b1Exp = b1ExpResult.getOutput();
-                b1Exp.setExpStatus("Active");
-                b1Exp.setExpDate(aa.date.parseDate(newExpDate));
-                aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                updateAppStatus("Active", "", parentCapId);
-                activateTask("Issuance", "", parentCapId);
-                updateTask("Issuance", "Issued", "", "", parentCapId);
-                closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
-
-            }
+            b1Exp.setExpStatus("Active");
+            b1Exp.setExpDate(aa.date.parseDate(newExpDate));
+            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+            updateAppStatus("Active", "", parentCapId);
+            activateTask("Issuance", "", parentCapId);
+            updateTask("Issuance", "Issued", "", "", parentCapId);
+            closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
         }
         var conArray = getContactByType("Applicant", capId);
         var conEmail = "";
@@ -58,6 +55,7 @@ var expDateASI = getAppSpecific("Expiration Date", parentCapId);
         copyASITables(capId, parentCapId);
 
     }
+}
 
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
