@@ -31,7 +31,7 @@ if (capmodel.isCompleteCap())
                 updateAppStatus("Active", "", parentCapId);
                 activateTask("Issuance", "", parentCapId);
                 updateTask("Issuance", "Issued", "", "", parentCapId);
-                closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
+                closeTask("Renewal Review", "Complete", "Updated by Renewal Script 2", "Updated by Renewal Script 2");
             }
             var conArray = getContactByType("Applicant", capId);
             var conEmail = "";
