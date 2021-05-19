@@ -1,4 +1,3 @@
-showDebug = true;
 
 parentCapId = getParentCapID4Renewal();
 logDebug("parent cap id is: " + parentCapId);
