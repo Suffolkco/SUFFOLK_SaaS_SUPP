@@ -28,5 +28,5 @@ if (publicUser)
     copyASITables(parentCapId, capId);
 }
 
-include("CA_SET_VENDOR_PRIMARY"); 
+include("CA_REN_TO_LIC_SUBMITTAL");
 
