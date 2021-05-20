@@ -25,6 +25,16 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
             updateTask("Issuance", "Issued", "", "", parentCapId);
         }
     }
+    var capContacts = aa.people.getCapContactByCapID(parentCapId);
+    if (capContacts.getSuccess())
+    {
+        capContacts = capContacts.getOutput();
+        logDebug("capContacts: " + capContacts);
+        for (var yy in capContacts)
+        {
+            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+        }
+    }
     copyContacts(capId, parentCapId);
     copyASIFields(capId, parentCapId);
     copyASITables(capId, parentCapId);
