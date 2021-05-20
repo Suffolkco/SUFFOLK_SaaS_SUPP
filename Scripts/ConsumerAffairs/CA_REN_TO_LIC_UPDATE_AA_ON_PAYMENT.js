@@ -13,7 +13,7 @@ var capResult = aa.cap.getCap(capId).getOutput();
 var capModelResult = capResult.getCapModel();
 var pUser = capModelResult.getCreatedBy();
 logDebug("Record creator is: " + pUser);
-if (!pUser.contains("PUBLIC"))
+if (!pUser.contains("PUBLICUSER"))
 {
     if (capmodel.isCompleteCap())								
     {
