@@ -67,7 +67,8 @@ if ((wfTask == "Application Review" && wfStatus == "Awaiting Client Reply") &&
         logDebug("done in applicaiton review OPC.")
     //}            
 }
-else if (wfTask == "Final Review" && wfStatus == "Awaiting Client Reply")
+else if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
+(wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
 {
     if (appTypeArray[1] == "OPC")
 	{
@@ -171,7 +172,7 @@ if (wfTask == 'Plans Coordination' && wfStatus == 'Plan Revisions Needed')
         if(!matches(itemCapType, "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application", "DEQ/WWM/Subdivision/Application")) 
         {            
             activateTask("Plans Distribution");
-            updateTask("Plans Distribution", "Awaiting Client Reply", "Awaiting Plan Revisions", "Awaiting Plan Revisions"); 
+            updateTask("Plans Distribution", "Awaiting Client Reply", "Awaiting Plan Revisions", ""); 
         } 
         if (matches(itemCapType, "DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application")) 
         {
@@ -242,5 +243,47 @@ if (wfTask == "Final Review" && wfStatus == "Approved")
         updateAppStatus("Complete");
     }
 }
+
+if (wfTask == "Inspections") 
+{        
+    var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+    if(matches(itemCapType, "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Swimming Pool/Application"))
+    {
+        if (wfStatus == "Permit Expired")        
+        {
+            b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+            if (b1ExpResult.getSuccess())
+            {
+                b1Exp = b1ExpResult.getOutput();
+                b1Exp.setExpStatus("Expired");
+                aa.expiration.editB1Expiration(b1Exp.getB1Expiration());                
+            }
+            updateAppStatus("Permit Expired");
+        }
+        else if (wfStatus == "Permit Renewed")  
+        {
+            b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+            if (b1ExpResult.getSuccess())
+            {
+                b1Exp = b1ExpResult.getOutput();
+                curExp = b1Exp.getExpDate();         
+                expDateCon = new Date(curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear());
+                logDebug("Current expiration is: " + expDateCon);
+                var year = expDateCon.getFullYear();
+                var month = expDateCon.getMonth();
+                var day = expDateCon.getDate();
+                var newDate = new Date(year + 1, month, day);
+                var dateMMDDYYYY = jsDateToMMDDYYYY(newDate);
+                dateMMDDYYYY = aa.date.parseDate(dateMMDDYYYY);
+                b1Exp.setExpDate(dateMMDDYYYY);
+                logDebug("New expiration date is: " + dateMMDDYYYY);
+                b1Exp.setExpStatus("Pending");
+                aa.expiration.editB1Expiration(b1Exp.getB1Expiration());                
+            }
+            updateAppStatus("Plan Approved");
+        }
+    }
+}
+
 
 
