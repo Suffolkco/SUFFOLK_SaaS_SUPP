@@ -68,7 +68,7 @@ if ((wfTask == "Application Review" && wfStatus == "Awaiting Client Reply") &&
     //}            
 }
 else if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
-(wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
+    (wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
 {
     if (appTypeArray[1] == "OPC")
 	{
