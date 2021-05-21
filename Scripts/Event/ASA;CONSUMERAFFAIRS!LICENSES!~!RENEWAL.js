@@ -3,16 +3,30 @@
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
 
-//aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
-//aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
+aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
+aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
-/*
+
 var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
 aa.cap.updateAccessByACA(capId, "N");
-copyContacts(parentCapId, capId);
-copyASIFields(parentCapId, capId);
-copyASITables(parentCapId, capId);
-*/ 
+if (publicUser)
+{
+    //copying the contacts from the parent to the renewal record when beginning the renewal for ACA records only
+    var capContacts = aa.people.getCapContactByCapID(parentCapId);
+    if (capContacts.getSuccess())
+    {
+        capContacts = capContacts.getOutput();
+        logDebug("capContacts: " + capContacts);
+        for (var yy in capContacts)
+        {
+            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+        }
+    }
+    copyContacts(parentCapId, capId);
+    copyASIFields(parentCapId, capId);
+    copyASITables(parentCapId, capId);
+}
 
-//no longer in use 4/20/21
+
+
