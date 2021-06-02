@@ -114,7 +114,8 @@ function mainProcess()
                 
                 cap = aa.cap.getCap(capId).getOutput();	
                 // TEST only: Use these 3 records for TESTING ONLY. TO BE REMOVED.
-                if (cap && ((capIDString == "T-HM-21-00082" || capIDString == "GC-21-00001" || capIDString == "SP-21-00008")))
+                //if (cap && ((capIDString == "T-HM-21-00082" || capIDString == "GC-21-00001" || capIDString == "SP-21-00008")))
+				if (cap && capIDString == "SP-21-00008")
                 {
                     logDebug("Looping to record: " + capIDString);
                     var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
@@ -201,6 +202,16 @@ function mainProcess()
 										var alreadyExisted = false;
 
 										logDebug("Get conditions on :" + capIDString);
+										
+										var s_result = aa.capCondition.getCapConditions(capId);
+										if (s_result.getSuccess()) {
+											logDebug("Success");
+										  capConditionScriptModels = s_result.getOutput();
+										  
+										  logDebug("capConditionScriptModels : " + capConditionScriptModels);
+										logDebug("capConditionScriptModels.length: " + capConditionScriptModels.length);
+										}
+
 										var capConditions = getCapConditionByCapID(capId);
 										if (capConditions != null)
 										{
