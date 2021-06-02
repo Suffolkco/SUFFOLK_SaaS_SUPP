@@ -13,7 +13,7 @@ var emailText = "";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = true;
-var systemUserObj = aa.person.getUser("OPC").getOutput();
+var systemUserObj = aa.person.getUser("ADMIN").getOutput();
 var useAppSpecificGroupName = false;
 var timeExpired = false;
 var br = "<BR>";
@@ -203,11 +203,12 @@ function mainProcess()
 
 										logDebug("Get conditions on :" + capIDString);
 										
+										
 										var s_result = aa.capCondition.getCapConditions(capId);
 										if (s_result.getSuccess()) {
 											logDebug("Success");
 										  capConditionScriptModels = s_result.getOutput();
-										  
+										  debugObject(capConditionScriptModels);
 										  logDebug("capConditionScriptModels : " + capConditionScriptModels);
 										logDebug("capConditionScriptModels.length: " + capConditionScriptModels.length);
 										}
