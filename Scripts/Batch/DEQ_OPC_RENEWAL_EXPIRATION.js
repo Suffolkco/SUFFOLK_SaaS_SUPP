@@ -340,7 +340,7 @@ function mainProcess()
                                         fTask = wfObj[i];
                                                                     
                                         //logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
-                                        if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspection")))
+                                        if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
                                             var emailParams = aa.util.newHashtable();
                                             var conArray = getContactArray();
