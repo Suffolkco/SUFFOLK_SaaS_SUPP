@@ -300,20 +300,20 @@ function mainProcess()
 																if (assName != undefined)
 																{
 																	logDebug("******");
-																	debugObject(userOut[0]);
+																	//debugObject(userOut[0]);
 																	assignEmail = userOut[0].getEmail();
 																	assignTitle = userOut[0].getTitle();
 																	logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
 																	//sourceCapCondition.setIssuedByUser(userOut);
-																	sourceCapCondition.setStatusByUser(userOut);      
+																	//sourceCapCondition.setStatusByUser(userOut);      
 																}
 															}
 
 															//var dpt = aa.people.getDepartmentList(null).getOutput();
 															//debugObject(dpt);
 															//logDebug("getDepartmentName : " + getDepartmentName(assUserStr));
-															sourceCapCondition.setAppliedDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
-															sourceCapCondition.setActionDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
+															//sourceCapCondition.setAppliedDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
+															//sourceCapCondition.setActionDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
 															//debugObject(sourceCapCondition);
 														}
 														
