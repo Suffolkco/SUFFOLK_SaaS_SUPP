@@ -373,11 +373,8 @@ function mainProcess()
                                             }	
 
                                             var lpEmail = "";
-                                            var lpEmailParams = aa.util.newHashtable();	                                                                                   
-                                            var lpReportFile = new Array();	                                                      
-                                            getRecordParams4Notification(lpEmailParams);
-                                            getWorkflowParams4Notification(lpEmailParams);
-
+											var lpReportFile = new Array();
+                                            var lpEmailParams = aa.util.newHashtable();	                                                                                                                                                                  
                                             var lpResult = aa.licenseScript.getLicenseProf(capId);
                                             if (lpResult.getSuccess())
                                             { 
@@ -408,6 +405,7 @@ function mainProcess()
                                                     logDebug("Sending email to: " + lpEmail); 
                                                     sendNotification("", lpEmail, "", "DEQ_OPC_HAZARDIOUS_TANK_RENEWAL", lpEmailParams, lpReportFile);
                                                 }                                                
+                                                                                           
                                             }
 
                                         }
