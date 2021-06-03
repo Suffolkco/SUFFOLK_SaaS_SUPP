@@ -149,13 +149,7 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
                             logDebug("This is the report that should not be saved: " + thisReport);
                         }
 
-                        // NOI report
-                        rFile = generateReport(thisReport,reportParams, appTypeArray[0])
-                        logDebug("This is the NOI report: " + rFile);           
                         
-                        if (rFile) {
-                        reportFile.push(rFile);
-                        }
                         saveToRecord = false;
                         
                         // No public user linkage, send also the ACA Pin instruction letter
@@ -173,6 +167,14 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
                             localCId = conArray[con].getCapContactModel().getPeople().getContactSeqNumber();			
                             reportParams1.put("ContactID", localCId);
                         
+                                // NOI report
+                            rFile = generateReport(thisReport,reportParams, appTypeArray[0])
+                            logDebug("This is the NOI report: " + rFile);           
+                            
+                            if (rFile) {
+                            reportFile.push(rFile);
+                            }
+
                             rFile = generateReport("ACA Registration Pins-WWM",reportParams1, appTypeArray[0])
                             
                             logDebug("This is the ACA Pin File we are emailing: " + rFile);           
@@ -254,7 +256,7 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
                             if (conEmail != null)
                             {
                                 logDebug("emailAddressArray.length:" + emailAddressArray.length);
-
+                              
                                 for (x in emailAddressArray)
                                 {
                                     logDebug("Checking emailAddressArray: " + peop.getEmail());
@@ -271,9 +273,18 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
                                         logDebug("Matched: " + peop.getEmail() + " in the array. Not sending email again.");
                                     }
                                 }
+
                                 logDebug("emailSent: " + emailSent);          
+
                                 if (!emailSent)
                                 {
+                                      // NOI report
+                                    rFile = generateReport(thisReport,reportParams, appTypeArray[0])
+                                    logDebug("This is the NOI report: " + rFile);           
+
+                                    if (rFile) {
+                                    reportFile.push(rFile);
+                                    }
                                     sendNotification("", conEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY", emailParams, reportFile);
                                     emailAddressArray.push(peop.getEmail());                                  
                                     logDebug("Push email: " + peop.getEmail() + " to emailAddressArray.");
