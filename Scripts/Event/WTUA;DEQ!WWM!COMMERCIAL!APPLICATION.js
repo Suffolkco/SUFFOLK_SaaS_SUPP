@@ -116,6 +116,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 		}
 	}
 }
+
 if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
     (wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
     {

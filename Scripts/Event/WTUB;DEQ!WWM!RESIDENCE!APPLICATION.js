@@ -105,7 +105,6 @@ if (wfTask == "Inspections" &&  (wfStatus == "Inspection Failure" || wfStatus ==
     }
     
 }
-
 if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") || 
 (wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
 {    
