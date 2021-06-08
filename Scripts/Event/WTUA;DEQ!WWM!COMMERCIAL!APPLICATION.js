@@ -116,7 +116,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 		}
 	}
 }
-if (wfTask == "Final Review" && wfStatus == "Awaiting Client Reply")
+if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
+    (wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
     {
 		//wwmWorkflowAdditionalInfo("Notice of Incomplete Final Script", "RecordID");
 		var finalNoticeTxt = AInfo["Final Notice Text"];

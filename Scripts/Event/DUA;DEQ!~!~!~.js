@@ -43,4 +43,9 @@ if (publicUser)
             updateAppStatus("Resubmitted");
         }
 
+    if (isTaskActive("Inspections") && isTaskStatus("Inspections","Awaiting Client Reply"))
+    {
+        updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
+        updateAppStatus("Resubmitted");
+    }
 }

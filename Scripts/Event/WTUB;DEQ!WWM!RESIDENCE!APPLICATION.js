@@ -106,7 +106,8 @@ if (wfTask == "Inspections" &&  (wfStatus == "Inspection Failure" || wfStatus ==
     
 }
 
-if (wfTask == "Final Review" && wfStatus == "Awaiting Client Reply")
+if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") || 
+(wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
 {    
     var finalNoticeTxt = AInfo["Final Notice Text"];
     if (matches(finalNoticeTxt, null, undefined, ""))				
