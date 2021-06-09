@@ -691,10 +691,18 @@ function processCombos(resId) {
         var totalMetals = 0.0;
         for (var mIndex in metalCombos) {
             thisMetal = metalCombos[mIndex];
-            if (thisMetal["Analyte Name"] == "Iron (Fe)")
-                totalMetals += parseFloat(thisMetal["Numeric Result"]);
-            if (thisMetal["Analyte Name"] == "Manganese (Mn)")
-                totalMetals += parseFloat(thisMetal["Numeric Result"]) / 1000;
+            if (thisMetal["Analyte Name"] == "Iron (Fe)") {
+                var floatIron = parseFloat(thisMetal["Numeric Result"]);
+                var threeFixedFe = parseFloat(floatIron).toFixed(3);
+                var floatThreeFixedFe = parseFloat(threeFixedFe);
+                totalMetals += floatThreeFixedFe;               
+            }
+            if (thisMetal["Analyte Name"] == "Manganese (Mn)") {
+                var floatMn = parseFloat(thisMetal["Numeric Result"]) / 1000;               
+                var threeFixedMn = parseFloat(floatMn).toFixed(3);                
+                var floatThreeFixedMn = parseFloat(threeFixedMn);                
+                totalMetals += floatThreeFixedMn;                
+            }
         }
         // add total metal row
         if (totalMetals > 0) {
