@@ -6,7 +6,6 @@ for a unique field Number/Inspection Sequence Number/CheckList ID will be passed
 will contain at least one result record but may contain more than one result record from
 the lab.
 
-
 *********************************************************************************************************/
 var myCapId = "";
 var myUserId = "ADMIN";
