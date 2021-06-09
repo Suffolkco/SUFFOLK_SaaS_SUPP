@@ -30,7 +30,7 @@ var selectChildValueString = "SELECT c.BIZDOMAIN_VALUE AS CHILD_VALUE from RBIZD
 var selectParentValueString = "SELECT p.BIZDOMAIN_VALUE AS PARENT_VALUE from RBIZDOMAIN_VALUE p INNER JOIN RASITAB_DRLLD_VAL_MAP map ON (p.serv_prov_code = map.serv_prov_code and p.BDV_SEQ_NBR = map.PARENT_VAL_ID and p.BIZDOMAIN='DEQ_GRP_NAME') " +
     " INNER JOIN RBIZDOMAIN_VALUE c on (map.serv_prov_code = c.serv_prov_code and map.child_val_id = c.BDV_SEQ_NBR and c.BIZDOMAIN = 'DEQ_ANALYTE_NAME' and c.BIZDOMAIN_VALUE = ?) " +
     " WHERE p.SERV_PROV_CODE = 'SUFFOLKCO' and map.DRLLD_SERIES_ID = ? and p.REC_STATUS = 'A' and map.REC_STATUS = 'A' and c.REC_STATUS = 'A'";
-var updateInspString = "UPDATE g6ACTION set g6_DESI_DD = to_date(?, 'MM/DD/YYYY') where serv_prov_code = 'SUFFOLKCO' and g6_act_num = ?";
+var updateInspString = "UPDATE g6ACTION set g6_DESI_DD = convert(datetime, ?) where serv_prov_code = 'SUFFOLKCO' and g6_act_num = ?";
 
 
 var inspRecordId = null;
