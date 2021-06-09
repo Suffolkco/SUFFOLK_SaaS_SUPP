@@ -1,10 +1,10 @@
 /**********************************************************************************************
- LIMS Interface EMSE script
+LIMS Interface EMSE script
 
- This script will be called by the .NET portion of the LIMS interface. A set of result records
- for a unique field Number/Inspection Sequence Number/CheckList ID will be passed. This set
- will contain at least one result record but may contain more than one result record from
- the lab.
+This script will be called by the .NET portion of the LIMS interface. A set of result records
+for a unique field Number/Inspection Sequence Number/CheckList ID will be passed. This set
+will contain at least one result record but may contain more than one result record from
+the lab.
 
 
 *********************************************************************************************************/
@@ -83,7 +83,7 @@ if (operation == "PROCESSDATA") {
     d = JSON.parse(jsonIN);
     resultsRecords = d;
     initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-    ds = initialContext.lookup("java:/AA");
+    ds = initialContext.lookup("java:/SUFFOLKCO");
     conn = ds.getConnection();
     sDrillDownSeriesStmt = conn.prepareStatement(selectDrillDownSeriesString);
     sChildValueStmt = conn.prepareStatement(selectChildValueString);
@@ -160,7 +160,7 @@ if (operation == "COMPLETEPROCESSING") {
     var aadb = new db();
     var fieldNum = String(aa.env.getValue("fieldNum"));
     initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-    ds = initialContext.lookup("java:/AA");
+    ds = initialContext.lookup("java:/SUFFOLKCO");
     conn = ds.getConnection();
     uInspStmt = conn.prepareStatement(updateInspString);
     sDrillDownSeriesStmt = conn.prepareStatement(selectDrillDownSeriesString);
@@ -517,7 +517,7 @@ function makeTable(labResults, resId, inspEmail) {
         }
 
         prettyName = getPrettyName(analyteName);
-                
+
         cMethod = getCertifiedMethod(analysisCode);
         if (!cMethod) cMethod = "";
         key = prettyName + "|" + cMethod;
@@ -1105,7 +1105,7 @@ function db() {
         }
         try {
             var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-            var ds = initialContext.lookup("java:/AA");
+            var ds = initialContext.lookup("java:/SUFFOLKCO");
             var conn = ds.getConnection();
             var sStmt = conn.prepareStatement(sql);
             sStmt.setMaxRows(maxRows);
@@ -1134,7 +1134,7 @@ function db() {
     this.dbExecute = function (sql) {
         try {
             var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-            var ds = initialContext.lookup("java:/AA");
+            var ds = initialContext.lookup("java:/SUFFOLKCO");
             var conn = ds.getConnection();
             var sStmt = conn.prepareStatement(sql);
             sStmt.setMaxRows(1);
@@ -1156,7 +1156,7 @@ function db() {
         var out = null;
         try {
             var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-            var ds = initialContext.lookup("java:/AA");
+            var ds = initialContext.lookup("java:/SUFFOLKCO");
             var conn = ds.getConnection();
             var sStmt = conn.prepareStatement(sql);
             sStmt.setMaxRows(1);
