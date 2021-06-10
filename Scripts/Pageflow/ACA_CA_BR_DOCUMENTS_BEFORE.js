@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_ID_DOCUMENTS_BEFORE.js
+| Program : ACA_CA_BR_DOCUMENTS_BEFORE.js
 | Event   : ACA_BEFORE Event
 |
 |
@@ -32,21 +32,36 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-    if (!determineACADocumentAttached("Applicant Background"))
+    if (!determineACADocumentAttached("Background Explanation"))
     {
-        docComments += "Applicant Background" + "<br>";
+        docComments += "Background Explanation" + "<br>";
     }
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of NYS Driver's License"))
+    if (!determineACADocumentAttached("New York State Driver's License"))
     {
-        docComments += "Copy of NYS Driver's License" + "<br>";
+        docComments += "New York State Driver's License" + "<br>";
     }
-    if (!determineACADocumentAttached("Banking Information"))
+    if (!determineACADocumentAttached("Proof of Banking"))
     {
-        docComments += "Banking Information" + "<br>";
+        docComments += "Proof of Banking" + "<br>";
+    }
+
+    if (!determineACADocumentAttached("DBA Certificate of New York State Filing Receipt"))
+    {
+        docComments += "DBA Certificate of New York State Filing Receipt" + "<br>";
+    }
+
+    if (!determineACADocumentAttached("Certificate of Liability Insurance"))
+    {
+        docComments += "Certificate of Liability Insurance" + "<br>";
+    }
+
+    if (!determineACADocumentAttached("License and Permit in the amount of $10,000.00"))
+    {
+        docComments += "License and Permit in the amount of $10,000.00" + "<br>";
     }
 
     if (docComments != "") 
