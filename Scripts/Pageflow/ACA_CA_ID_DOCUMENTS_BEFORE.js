@@ -32,22 +32,19 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-    if (!determineACADocumentAttached("Applicant Background"))
+    if (!determineACADocumentAttached("Background Explanation"))
     {
-        docComments += "Applicant Background" + "<br>";
+        docComments += "Background Explanation" + "<br>";
     }
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of NYS Driver's License"))
+    if (!determineACADocumentAttached("	Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
     {
-        docComments += "Copy of NYS Driver's License" + "<br>";
+        docComments += "	Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
-    if (!determineACADocumentAttached("Banking Information"))
-    {
-        docComments += "Banking Information" + "<br>";
-    }
+  
 
     if (docComments != "") 
     {
