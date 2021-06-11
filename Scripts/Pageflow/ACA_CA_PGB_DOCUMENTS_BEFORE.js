@@ -40,33 +40,28 @@ try
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("New York State Driver's License"))
+    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
     {
-        docComments += "New York State Driver's License" + "<br>";
+        docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
     if (!determineACADocumentAttached("Proof of Banking"))
     {
         docComments += "Proof of Banking" + "<br>";
     }
 
-    if (!determineACADocumentAttached("DBA Certificate of New York State Filing Receipt"))
+    if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
-        docComments += "DBA Certificate of New York State Filing Receipt" + "<br>";
+        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
 
-    if (!determineACADocumentAttached("Certificate of Liability Insurance"))
+    if (!determineACADocumentAttached("Certificate of Liability and Property Damage Insurance"))
     {
-        docComments += "Certificate of Liability Insurance" + "<br>";
+        docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
 
-    if (!determineACADocumentAttached("Documented Proof of Pet Grooming Training"))
+    if (!determineACADocumentAttached("Documented Proof of Pet Grooming Training/Employment"))
     {
-        docComments += "Documented Proof of Pet Grooming Training" + "<br>";
-    }
-
-    if (!determineACADocumentAttached("Pet Grooming Employment History"))
-    {
-        docComments += "Pet Grooming Employment History" + "<br>";
+        docComments += "Documented Proof of Pet Grooming Training/Employment" + "<br>";
     }
 
     if (docComments != "") 
