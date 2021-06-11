@@ -40,28 +40,28 @@ try
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("New York State Driver's License"))
+    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
     {
-        docComments += "New York State Driver's License" + "<br>";
+        docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
     if (!determineACADocumentAttached("Proof of Banking"))
     {
         docComments += "Proof of Banking" + "<br>";
     }
 
-    if (!determineACADocumentAttached("DBA Certificate of New York State Filing Receipt"))
+    if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
-        docComments += "DBA Certificate of New York State Filing Receipt" + "<br>";
+        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
 
-    if (!determineACADocumentAttached("Certificate of Liability Insurance"))
+    if (!determineACADocumentAttached("Certificate of Liability and Property Damage Insurance"))
     {
-        docComments += "Certificate of Liability Insurance" + "<br>";
+        docComments += "Certificate of Liability and Property Damage Insurance   " + "<br>";
     }
 
-    if (!determineACADocumentAttached("License and Permit in the amount of $10,000.00"))
+    if (!determineACADocumentAttached("License and Permit Bond"))
     {
-        docComments += "License and Permit in the amount of $10,000.00" + "<br>";
+        docComments += "License and Permit Bond" + "<br>";
     }
 
     if (docComments != "") 
