@@ -48,9 +48,9 @@ try
     {
         docComments += "Banking Information" + "<br>";
     }
-    if (!determineACADocumentAttached("Proof of Completion of an Accredited Program"))
+    if (!determineACADocumentAttached("Proof of Accredited Program or Copy of Islip, Babylon or Huntington License"))
     {
-        docComments += "Proof of Completion of an Accredited Program" + "<br>";
+        docComments += "Proof of Accredited Program or Copy of Islip, Babylon or Huntington License" + "<br>";
     }
 
     if (docComments != "")
