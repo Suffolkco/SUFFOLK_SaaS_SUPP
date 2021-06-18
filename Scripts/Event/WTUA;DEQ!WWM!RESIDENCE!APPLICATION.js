@@ -1,6 +1,6 @@
 //WTUA:DEQ/WWM/RESIDENCE/APPLICATION
 var showDebug = false; 
-var maxSeconds = 3;   // 3 seconds	
+var maxSeconds = 1;   // 1 seconds	
 var sewMeth = AInfo["Method of Sewage Disposal"];
 //If workflow is approved, add 3 years to the Expiration date//
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
