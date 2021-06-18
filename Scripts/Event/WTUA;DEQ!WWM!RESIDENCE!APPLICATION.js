@@ -189,6 +189,12 @@ function inspectionCompleted()
 	return inspCompleted;
 }
 
+function elapsed() {
+	var thisDate = new Date();
+	var thisTime = thisDate.getTime();
+	return ((thisTime - startTime) / 1000)
+}
+
 function matches(eVal, argList) {
 	for (var i = 1; i < arguments.length; i++) {
 		if (arguments[i] == eVal) {
