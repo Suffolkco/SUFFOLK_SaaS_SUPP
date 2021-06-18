@@ -126,12 +126,17 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 		var finalNoticeTxt = AInfo["Final Notice Text"];
 		if (!matches(finalNoticeTxt, null, undefined, ""))				
 		{
-			do
+			do 
 			{
-				wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");
-				break;
+				// nothing
 			}
-			while (elapsed() > maxSeconds) 
+			while (elapsed() < maxSeconds);
+			
+			logDebug("Elapsed: " + elapsed());
+			wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");
+			
+			
+			
 		}
 	}
 if (wfTask == "Final Review" && wfStatus == "Approved")
