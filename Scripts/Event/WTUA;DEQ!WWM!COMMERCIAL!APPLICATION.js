@@ -125,7 +125,8 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 		if (!matches(finalNoticeTxt, null, undefined, ""))				
 		{
 			// One second delay before executing this function due to EHIMS-4661
-			setTimeout(wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID"),1000);
+			setTimeout(function(){wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");},3000);
+			
 		}
 	}
 if (wfTask == "Final Review" && wfStatus == "Approved")
