@@ -1,5 +1,7 @@
 //WTUA:DEQ/WWM/COMMERCIAL/APPLICATION
 var showDebug = false; 
+var maxSeconds = 3;   // 3 seconds	
+
 //If workflow is approved, add 3 years to the Expiration date//
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {
@@ -124,11 +126,12 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 		var finalNoticeTxt = AInfo["Final Notice Text"];
 		if (!matches(finalNoticeTxt, null, undefined, ""))				
 		{
-			// One second delay before executing this function due to EHIMS-4661
-			setTimeout(function(){logDebug("Hello")}, 1000);
-			setTimeout(function(){wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");},3000);
-					
-
+			do
+			{
+				wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");
+				break;
+			}
+			while (elapsed() > maxSeconds) 
 		}
 	}
 if (wfTask == "Final Review" && wfStatus == "Approved")
@@ -189,6 +192,14 @@ if (wfTask == "Final Review" && wfStatus == "Approved")
 	}
 	
 	return inspResultComments;
+}
+
+
+function elapsed() 
+{
+	var thisDate = new Date();
+	var thisTime = thisDate.getTime();
+	return ((thisTime - startTime) / 1000)
 }
 
 
