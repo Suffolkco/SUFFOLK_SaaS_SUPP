@@ -87,7 +87,9 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 	var finalNoticeTxt = AInfo["Final Notice Text"];
 	if (!matches(finalNoticeTxt, null, undefined, ""))				
 	{
-		wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");
+		// One second delay before executing this function due to EHIMS-4661
+		setTimeout(wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID"), 1000);
+		
 	}
 }
 if (wfTask == "Final Review" && wfStatus == "Approved")
