@@ -1,4 +1,5 @@
 // ASA;CONSUMERAFFAIRS!~!RENEWAL!NA
+showDebug = true;
 
 var vGoodToRenew;
 var vOrgCapId;
