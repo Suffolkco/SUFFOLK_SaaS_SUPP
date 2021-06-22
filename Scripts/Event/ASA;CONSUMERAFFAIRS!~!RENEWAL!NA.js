@@ -21,7 +21,7 @@ if (publicUser)
             aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
         }
     }
+    copyContacts(parentCapId, capId);
 }
-copyContacts(parentCapId, capId);
 copyASIFields(parentCapId, capId);
 copyASITables(parentCapId, capId);
