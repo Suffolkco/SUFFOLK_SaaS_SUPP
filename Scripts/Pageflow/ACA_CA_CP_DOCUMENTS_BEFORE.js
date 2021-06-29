@@ -52,10 +52,7 @@ try
     {
         docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
-    if (!determineACADocumentAttached("Background Explanation"))
-    {
-        docComments += "Background Explanation" + "<br>";
-    }
+  
 
     if (docComments != "")
     {

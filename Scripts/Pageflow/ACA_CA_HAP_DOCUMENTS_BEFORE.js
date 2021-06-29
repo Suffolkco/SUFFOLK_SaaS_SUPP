@@ -48,11 +48,7 @@ try
     {
         docComments += "Trade Invoices" + "<br>";
     }
-    if (!determineACADocumentAttached("Background Explanation"))
-    {
-        docComments += "Background Explanation" + "<br>";
-    }
-
+  
     if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
         docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
