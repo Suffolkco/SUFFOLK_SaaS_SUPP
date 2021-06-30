@@ -32,10 +32,6 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-    if (!determineACADocumentAttached("Applicant Background"))
-    {
-        docComments += "Applicant Background" + "<br>";
-    }
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
