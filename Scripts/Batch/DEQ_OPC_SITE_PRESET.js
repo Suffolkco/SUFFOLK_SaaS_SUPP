@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program:DEQ_OPC_SITE_PRESET Trigger: Batch| 
+| Program:DEQ_OPC_SITE_PRESET Trigger: Batch
 | 
 | This batch script will run one time to All OPC SITE records 
 | to first preset if there is NO TANK child
