@@ -121,25 +121,24 @@ function mainProcess()
                     var opcCheck = getAppSpecific("OPC");                    
                     if ((opcCheck == "CHECKED")) 
                     {                    
-                        logDebug("OPC Site Record: " + capId.getCustomID());
-                       
+                        logDebug("OPC Site Record: " + capId.getCustomID());                       
                                           
-                    var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
-                    var noTankChild = true;
+                        var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
+                        var noTankChild = true;
 
-                    if (childArray && childArray.length > 0)
-                    {
-                        noTankChild = false;
-                    }    
-                    if (noTankChild)
-                    {    
-                        logDebug("OPC Site Record: " + capId.getCustomID() + " has no tank child.");
-                        //getAppSpecific("Article 18 Regulated Site", capId);
-                        //getAppSpecific("PBS Regulated Site", capId);
-                        count++;
+                        if (childArray && childArray.length > 0)
+                        {
+                            noTankChild = false;
+                        }    
+                        if (noTankChild)
+                        {    
+                            logDebug("OPC Site Record: " + capId.getCustomID() + " has no tank child.");
+                            //getAppSpecific("Article 18 Regulated Site", capId);
+                            //getAppSpecific("PBS Regulated Site", capId);
+                            count++;
 
-                    }   
-                    totalCnt++;                               
+                        }   
+                        totalCnt++;                               
                        
                     }
                 }
