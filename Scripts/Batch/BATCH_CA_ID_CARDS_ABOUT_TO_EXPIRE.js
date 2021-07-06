@@ -152,7 +152,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_ID_CARDS_ABOUT_TO_EXPIRE", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -231,11 +231,11 @@ function mainProcess()
                                 {
                                     if (wfObj[i].getDisposition() != "Pending Renewal")
                                     {
-                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Pending Renewal", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj, "Y");
+                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Pending Renewal", aa.date.getCurrentDate(), "Updated via BATCH_CA_ID_CARDS_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_ID_CARDS_ABOUT_TO_EXPIRE", systemUserObj, "Y");
                                     }
                                 }
                             }
-                            aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj);
+                            aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_ID_CARDS_ABOUT_TO_EXPIRE", systemUserObj);
                             logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())

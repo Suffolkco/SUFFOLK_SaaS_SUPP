@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: BATCH_CA_Registrations_EXPIRATION.js
+| Program: BATCH_CA_REGISTRATIONS_EXPIRATION.js
 | Trigger: Batch
 | Client: Suffolk
 | Version 1.0 07/01/2021
@@ -151,7 +151,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_LICENSES_EXPIRATION", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_REGISTRATIONS_EXPIRATION", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -217,11 +217,11 @@ function mainProcess()
                                 {
                                     if (wfObj[i].getDisposition() != "Expired")
                                     {
-                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Expired", aa.date.getCurrentDate(), "Updated via BATCH_CA_LICENSES_EXPIRATION", "Updated via BATCH_CA_LICENSES_EXPIRATION", systemUserObj, "Y");
+                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Expired", aa.date.getCurrentDate(), "Updated via BATCH_CA_REGISTRATIONS_EXPIRATION", "Updated via BATCH_CA_REGISTRATIONS_EXPIRATION", systemUserObj, "Y");
                                     }
                                 }
                             }
-                            aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_LICENSES_EXPIRATION", systemUserObj);
+                            aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_REGISTRATIONS_EXPIRATION", systemUserObj);
                             logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())
