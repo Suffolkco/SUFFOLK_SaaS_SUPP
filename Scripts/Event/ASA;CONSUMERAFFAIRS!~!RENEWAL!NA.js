@@ -1,7 +1,5 @@
-// ASA;CONSUMERAFFAIRS!LICENSES!HOME IMPROVEMENT!RENEWAL
-
-//showDebug = 1;
-//logDebug("Entering Renew ASA");
+// ASA;CONSUMERAFFAIRS!~!RENEWAL!NA
+showDebug = true;
 
 aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
 aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
@@ -23,10 +21,7 @@ if (publicUser)
             aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
         }
     }
+    copyContacts(parentCapId, capId);
 }
-copyContacts(parentCapId, capId);
 copyASIFields(parentCapId, capId);
 copyASITables(parentCapId, capId);
-
-
-

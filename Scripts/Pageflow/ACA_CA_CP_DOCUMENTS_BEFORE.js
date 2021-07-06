@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_SPM_DOCUMENTS_BEFORE.js
+| Program : ACA_CA_LW_DOCUMENTS_BEFORE.js
 | Event   : ACA_BEFORE Event
 |
 |
 | 
-| Author:jgreene
+| Author:RLittlefield
 /------------------------------------------------------------------------------------------------------*/
 
 var documentOnly = false;
@@ -32,36 +32,30 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-
+    if (!determineACADocumentAttached("W2 Forms"))
+    {
+        docComments += "W2 Forms" + "<br>";
+    }
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
+    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV Non-Driver Photo I.D."))
     {
-        docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
+        docComments += "Copy of New York State Driver's License or NYSDMV Non-Driver Photo I.D." + "<br>";
     }
-    if (!determineACADocumentAttached("Proof of Banking"))
+    if (!determineACADocumentAttached("Trade Invoices"))
     {
-        docComments += "Proof of Banking" + "<br>";
+        docComments += "Trade Invoices" + "<br>";
     }
-
     if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
         docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
 
-    if (!determineACADocumentAttached("Certificate of Liability and Property Damage Insurance"))
-    {
-        docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
-    }
+   
 
-    if (!determineACADocumentAttached("Certification by the Association of Pool and Spa Certificate"))
-    {
-        docComments += "Certification by the Association of Pool and Spa Certificate" + "<br>";
-    }
-
-    if (docComments != "") 
+    if (docComments != "")
     {
         cancel = true;
         showMessage = true;

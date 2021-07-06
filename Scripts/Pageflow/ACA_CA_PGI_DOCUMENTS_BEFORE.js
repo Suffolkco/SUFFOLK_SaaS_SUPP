@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_SPM_DOCUMENTS_BEFORE.js
+| Program : ACA_CA_PGB_DOCUMENTS_BEFORE.js
 | Event   : ACA_BEFORE Event
 |
 |
@@ -56,12 +56,7 @@ try
         docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
 
-    if (!determineACADocumentAttached("Certification by the Association of Pool and Spa Certificate"))
-    {
-        docComments += "Certification by the Association of Pool and Spa Certificate" + "<br>";
-    }
-
-    if (docComments != "") 
+       if (docComments != "") 
     {
         cancel = true;
         showMessage = true;

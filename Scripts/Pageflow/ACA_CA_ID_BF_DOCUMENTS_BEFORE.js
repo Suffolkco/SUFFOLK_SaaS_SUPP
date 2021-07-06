@@ -32,10 +32,6 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-    if (!determineACADocumentAttached("Applicant Background"))
-    {
-        docComments += "Applicant Background" + "<br>";
-    }
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
@@ -44,9 +40,9 @@ try
     {
         docComments += "Copy of NYS Driver's License" + "<br>";
     }
-    if (!determineACADocumentAttached("Banking Information"))
+    if (!determineACADocumentAttached("Proof of Banking"))
     {
-        docComments += "Banking Information" + "<br>";
+        docComments += "Proof of Banking" + "<br>";
     }
     if (!determineACADocumentAttached("Proof of Accredited Program or Copy of Islip, Babylon or Huntington License"))
     {

@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_SPM_DOCUMENTS_BEFORE.js
+| Program : ACA_CA_LIC_PPT_DOCUMENTS_BEFORE.js
 | Event   : ACA_BEFORE Event
 |
 |
@@ -32,7 +32,7 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-
+ 
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
@@ -41,26 +41,16 @@ try
     {
         docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
-    if (!determineACADocumentAttached("Proof of Banking"))
+    if (!determineACADocumentAttached("Banking Information"))
     {
-        docComments += "Proof of Banking" + "<br>";
+        docComments += "Banking Information" + "<br>";
     }
-
     if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
-        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
+        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>"; 
     }
 
-    if (!determineACADocumentAttached("Certificate of Liability and Property Damage Insurance"))
-    {
-        docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
-    }
-
-    if (!determineACADocumentAttached("Certification by the Association of Pool and Spa Certificate"))
-    {
-        docComments += "Certification by the Association of Pool and Spa Certificate" + "<br>";
-    }
-
+  
     if (docComments != "") 
     {
         cancel = true;
