@@ -84,6 +84,31 @@ if (paramsOK)
 function mainProcess() 
 {
     logDebug("Batch script will run");
+
+    var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1.B1_PER_TYPE = 'General' and B1.B1_PER_SUB_TYPE = 'Site'and B1_PER_CATEGORY = 'NA' ";
+        
+    //  
+    var output = "Record ID\n";
+    var vResult = doSQLSelect_local(vSQL);
+    logDebug("Looping through " + vResult.length + " records from SQL.");
+    /*
+    for (r in vResult)
+    {
+        recordID = vResult[r]["recordNumber"];      
+        output += recordID + " | " + expirationDate + "\n";
+        capId = getApplication(recordID);
+        capIDString = capId.getCustomID();
+        cap = aa.cap.getCap(capId).getOutput();
+        if (cap)
+        {
+            var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+            if (capmodel.isCompleteCap())
+            {
+
+            }
+        }
+    }
+    */
     try 
     {
         for (var i in rtArray) 
@@ -163,6 +188,47 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function doSQLSelect_local(sql)
+{
+    try
+    {
+        //logdebug("iNSIDE FUNCTION");
+        var array = [];
+        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
+        var ds = initialContext.lookup("java:/SUFFOLKCO");
+        var conn = ds.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+        if (sql.toUpperCase().indexOf("SELECT") == 0)
+        {
+            //logdebug("executing " + sql);
+            var rSet = sStmt.executeQuery();
+            while (rSet.next())
+            {
+                var obj = {};
+                var md = rSet.getMetaData();
+                var columns = md.getColumnCount();
+                for (i = 1; i <= columns; i++)
+                {
+                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
+                    //logdebug(rSet.getString(md.getColumnName(i)));
+                }
+                obj.count = rSet.getRow();
+                array.push(obj)
+            }
+            rSet.close();
+            //logdebug("...returned " + array.length + " rows");
+            //logdebug(JSON.stringify(array));
+        }
+        sStmt.close();
+        conn.close();
+        return array
+    } catch (err)
+    {
+        //logdebug("ERROR: "+ err.message);
+        return array
+    }
+}
+
 function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
 {
   if (capConditionScriptModel1 == null || capConditionScriptModel2 == null)
