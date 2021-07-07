@@ -104,6 +104,31 @@ if (wfTask == "Notice of Hearing" && wfStatus == "Notice Sent-Certified/Regular"
     
 }
 
+//Notify Primary Vendor Contact When WF task Payment has a status of Collections External, or Collections Internal
+
+if (!publicUser)
+{
+    var vEParams = aa.util.newHashtable();
+    var conArray = getContactByType("Vendor", capId);
+    var conEmail = "";   
+}
+
+if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")
+{
+    if (conArray.getSuccess())
+    {
+        var addArray = conArray.getOutput();
+        for (add in addArray)
+        {
+         if (addArray[add].getPrimaryFlag() == "Y")
+         addParameter(vEParams, '$$altID$$', capId.getCustomID());
+         conEmail += conArray.email + "; ";
+         logDebug("Email addresses: " + conEmail);
+         sendNotification("", conEmail, "", "CA_VIOLATION_FEES_DUE", vEParams, null);
+        }
+    }
+}
+
 function debugObject(object) {
     var output = ''; 
     for (property in object) { 
