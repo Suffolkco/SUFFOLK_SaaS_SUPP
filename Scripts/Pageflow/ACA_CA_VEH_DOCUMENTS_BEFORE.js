@@ -53,7 +53,7 @@ try
 
     if (docComments != "") 
     {
-        cancel = true;
+        cancel = true; 
         showMessage = true;
         comment("This submission requires you to submit the following documents: <br>" + docComments);
     }
