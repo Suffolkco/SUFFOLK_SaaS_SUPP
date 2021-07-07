@@ -47,7 +47,7 @@ try
     }
     if (!determineACADocumentAttached("Copy of two forms of ID"))
     {
-        docComments += "Copy of two forms of ID " + "<br>";
+        docComments += "Copy of two forms of ID " + "<br>"; 
     }
   
 
