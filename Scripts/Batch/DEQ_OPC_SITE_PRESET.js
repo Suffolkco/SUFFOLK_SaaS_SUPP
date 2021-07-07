@@ -83,65 +83,31 @@ if (paramsOK)
 /-----------------------------------------------------------------------------------------------------*/
 function mainProcess() 
 {
-    logDebug("Batch script will run");
-
-    var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1.B1_PER_TYPE = 'General' and B1.B1_PER_SUB_TYPE = 'Site'and B1_PER_CATEGORY = 'NA' ";
-        
-    //  
-    var output = "Record ID\n";
-    var vResult = doSQLSelect_local(vSQL);
-    logDebug("Looping through " + vResult.length + " records from SQL.");
-    /*
-    for (r in vResult)
-    {
-        recordID = vResult[r]["recordNumber"];      
-        output += recordID + " | " + expirationDate + "\n";
-        capId = getApplication(recordID);
-        capIDString = capId.getCustomID();
-        cap = aa.cap.getCap(capId).getOutput();
-        if (cap)
-        {
-            var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
-            if (capmodel.isCompleteCap())
-            {
-
-            }
-        }
-    }
-    */
+    
     try 
     {
-        for (var i in rtArray) 
+        logDebug("Batch script will run");
+
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1.B1_PER_TYPE = 'General' and B1.B1_PER_SUB_TYPE = 'Site'and B1_PER_CATEGORY = 'NA' ";
+            
+        //  
+        var output = "Record ID\n";
+        var vResult = doSQLSelect_local(vSQL);
+        logDebug("Looping through " + vResult.length + " records from SQL.");
+        var count = 0;
+        var totalCnt = 0;
+        var childTankCnt = 0;
+        for (r in vResult)
         {
-            var thisType = rtArray[i];
-            var capModel = aa.cap.getCapModel().getOutput();
-            appTypeArray = thisType.split("/");
-            // Specify the record type to query
-            capTypeModel = capModel.getCapType();
-            capTypeModel.setGroup(appTypeArray[0]);
-            capTypeModel.setType(appTypeArray[1]);
-            capTypeModel.setSubType(appTypeArray[2]);
-            capTypeModel.setCategory(appTypeArray[3]);
-            capModel.setCapType(capTypeModel);
-            //capModel.setCapStatus(sArray[i]); if needed
-
-            var recordListResult = aa.cap.getCapIDListByCapModel(capModel);
-            if (!recordListResult.getSuccess()) 
+            recordID = vResult[r]["recordNumber"];      
+            output += recordID + " | " + expirationDate + "\n";
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
             {
-                logDebug("**ERROR: Failed to get capId List : " + recordListResult.getErrorMessage());
-                continue;
-            }
-            var recArray = recordListResult.getOutput();
-            logDebug("Looping through " + recArray.length + " records of type " + thisType);
-            var count = 0;
-            var totalCnt = 0;
-            for (var j in recArray) 
-            {
-                capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput();                
-                capIDString = capId.getCustomID();                
-                cap = aa.cap.getCap(capId).getOutput();	
-
-                if (cap) 
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
                 {
                     var opcCheck = getAppSpecific("OPC");                    
                     if ((opcCheck == "CHECKED")) 
@@ -154,6 +120,7 @@ function mainProcess()
                         if (childArray && childArray.length > 0)
                         {
                             noTankChild = false;
+                            childTankCnt++;
                         }    
                         if (noTankChild)
                         {    
@@ -167,11 +134,13 @@ function mainProcess()
                        
                     }
                 }
-                
             }
+        }       
 
-            logDebug("Total records that need to be updated: " + count + " out of a total of " + totalCnt + "OPC Site records.");
-        }                       
+        logDebug("Total Site-OPC records that has a child tank: " + childTankCnt);
+        logDebug("Total Site-OPC records that has no child tank and need to be updated: " + count);
+        logDebug("Total Site-OPC records:" + totalCnt);
+        logDebug("Total Site records:" +  vResult.length);               
     }
     catch (err) 
     {
