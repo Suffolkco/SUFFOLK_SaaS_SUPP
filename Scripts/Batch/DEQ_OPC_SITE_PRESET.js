@@ -6,10 +6,17 @@
 | Article 18 Regulated Site = No;PBS Regulated Site = No;
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
-|
-| START: USER CONFIGURABLE PARAMETERS 
-|
+| USER CONFIGURABLE PARAMETERS
 /------------------------------------------------------------------------------------------------------*/
+currentUserID = "ADMIN";
+useAppSpecificGroupName = false;
+/*------------------------------------------------------------------------------------------------------/
+| GLOBAL VARIABLES
+/------------------------------------------------------------------------------------------------------*/
+br = "<br>";
+debug = "";
+systemUserObj = aa.person.getUser(currentUserID).getOutput();
+publicUser = false;
 /*------------------------------------------------------------------------------------------------------/
 | INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
 /------------------------------------------------------------------------------------------------------*/
@@ -40,7 +47,6 @@ if (SA)
 
 eval(getScriptText("INCLUDES_BATCH"));
 eval(getMasterScriptText("INCLUDES_CUSTOM"));
-
 
 function getMasterScriptText(vScriptName)
 {
@@ -75,8 +81,11 @@ function getScriptText(vScriptName)
         return "";
     }
 }
-
-
+/*------------------------------------------------------------------------------------------------------/
+|
+| START: USER CONFIGURABLE PARAMETERS
+|
+/------------------------------------------------------------------------------------------------------*/
 var emailText = "";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
