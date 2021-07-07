@@ -100,7 +100,7 @@ function mainProcess()
         for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
-            output += recordID + " | " + expirationDate + "\n";
+            //output += recordID + "\n";
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
@@ -125,6 +125,7 @@ function mainProcess()
                         if (noTankChild)
                         {    
                             logDebug("OPC Site Record: " + capId.getCustomID() + " has no tank child.");
+                            //output += recordID + "\n";
                             //getAppSpecific("Article 18 Regulated Site", capId);
                             //getAppSpecific("PBS Regulated Site", capId);
                             count++;
