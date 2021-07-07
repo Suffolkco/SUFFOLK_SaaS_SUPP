@@ -111,7 +111,7 @@ if (!publicUser)
     var vEParams = aa.util.newHashtable();
     var conArray = getContactByType("Vendor", capId);
     var conEmail = "";
-    if (conArray.getPrimaryFlag() == "Y")
+    if (conArray.flag == "Y")
     {
         if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")
         {
