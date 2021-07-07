@@ -110,25 +110,17 @@ if (!publicUser)
 {
     var vEParams = aa.util.newHashtable();
     var conArray = getContactByType("Vendor", capId);
-    if (conArray.getSuccess())
+    var conEmail = "";
+    if (conArray.getPrimaryFlag() == "Y")
     {
-        var addArray = conArray.getOutput();
-        for (add in addArray)
+        if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")
         {
-            if (addArray[add].getPrimaryFlag() == "Y")
-            {
-                var conEmail = "";
-                if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")
-                {
-                    addParameter(vEParams, '$$altID$$', capId.getCustomID());
-                    conEmail += conArray.email + "; ";
-                    logDebug("Email addresses: " + conEmail);
-                    sendNotification("", conEmail, "", "CA_VIOLATION_FEES_DUE", vEParams, null);
-                }
-            }
+            addParameter(vEParams, '$$altID$$', capId.getCustomID());
+            conEmail += conArray.email + "; ";
+            logDebug("Email addresses: " + conEmail);
+            sendNotification("", conEmail, "", "CA_VIOLATION_FEES_DUE", vEParams, null);
         }
     }
-
 }
 
 
