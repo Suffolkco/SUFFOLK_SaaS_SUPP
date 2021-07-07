@@ -6,8 +6,84 @@
 | Article 18 Regulated Site = No;PBS Regulated Site = No;
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
+| USER CONFIGURABLE PARAMETERS
+/------------------------------------------------------------------------------------------------------*/
+currentUserID = "ADMIN";
+useAppSpecificGroupName = false;
+/*------------------------------------------------------------------------------------------------------/
+| GLOBAL VARIABLES
+/------------------------------------------------------------------------------------------------------*/
+br = "<br>";
+debug = "";
+systemUserObj = aa.person.getUser(currentUserID).getOutput();
+publicUser = false;
+/*------------------------------------------------------------------------------------------------------/
+| INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
+/------------------------------------------------------------------------------------------------------*/
+SCRIPT_VERSION = 3.0;
+var useSA = false;
+var SA = null;
+var SAScript = null;
+var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
+{
+    useSA = true;
+    SA = bzr.getOutput().getDescription();
+    bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
+    if (bzr.getSuccess())
+    {
+        SAScript = bzr.getOutput().getDescription();
+    }
+}
+
+if (SA)
+{
+    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
+    eval(getMasterScriptText(SAScript, SA));
+} else
+{
+    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+}
+
+eval(getScriptText("INCLUDES_BATCH"));
+eval(getMasterScriptText("INCLUDES_CUSTOM"));
+
+function getMasterScriptText(vScriptName)
+{
+    var servProvCode = aa.getServiceProviderCode();
+    if (arguments.length > 1)
+        servProvCode = arguments[1]; // use different serv prov code
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
+}
+
+function getScriptText(vScriptName)
+{
+    var servProvCode = aa.getServiceProviderCode();
+    if (arguments.length > 1)
+        servProvCode = arguments[1]; // use different serv prov code
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        var emseScript = emseBiz.getScriptByPK(servProvCode, vScriptName, "ADMIN");
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
+}
+/*------------------------------------------------------------------------------------------------------/
 |
-| START: USER CONFIGURABLE PARAMETERS 
+| START: USER CONFIGURABLE PARAMETERS
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
@@ -83,72 +159,65 @@ if (paramsOK)
 /-----------------------------------------------------------------------------------------------------*/
 function mainProcess() 
 {
-    logDebug("Batch script will run");
+    
     try 
     {
-        for (var i in rtArray) 
+        logDebug("Batch script will run");
+
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1.B1_PER_TYPE = 'General' and B1.B1_PER_SUB_TYPE = 'Site'and B1_PER_CATEGORY = 'NA' ";
+            
+        //  
+        var output = "Record ID\n";
+        var vResult = doSQLSelect_local(vSQL);
+        logDebug("Looping through " + vResult.length + " records from SQL.");
+        var count = 0;
+        var totalCnt = 0;
+        var childTankCnt = 0;
+        for (r in vResult)
         {
-            var thisType = rtArray[i];
-            var capModel = aa.cap.getCapModel().getOutput();
-            appTypeArray = thisType.split("/");
-            // Specify the record type to query
-            capTypeModel = capModel.getCapType();
-            capTypeModel.setGroup(appTypeArray[0]);
-            capTypeModel.setType(appTypeArray[1]);
-            capTypeModel.setSubType(appTypeArray[2]);
-            capTypeModel.setCategory(appTypeArray[3]);
-            capModel.setCapType(capTypeModel);
-            //capModel.setCapStatus(sArray[i]); if needed
-
-            var recordListResult = aa.cap.getCapIDListByCapModel(capModel);
-            if (!recordListResult.getSuccess()) 
+            recordID = vResult[r]["recordNumber"];      
+            //output += recordID + "\n";
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
             {
-                logDebug("**ERROR: Failed to get capId List : " + recordListResult.getErrorMessage());
-                continue;
-            }
-            var recArray = recordListResult.getOutput();
-            logDebug("Looping through " + recArray.length + " records of type " + thisType);
-            var count = 0;
-            var totalCnt = 0;
-            for (var j in recArray) 
-            {
-                capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput();                
-                capIDString = capId.getCustomID();                
-                cap = aa.cap.getCap(capId).getOutput();	
-
-                if (cap) 
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
                 {
                     var opcCheck = getAppSpecific("OPC");                    
                     if ((opcCheck == "CHECKED")) 
                     {                    
-                        logDebug("OPC Site Record: " + capId.getCustomID());
-                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                        if (b1ExpResult.getSuccess()) 
-                        {                    
-                            var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
-                            var noTankChild = true;
-    
-                            if (childArray && childArray.length > 0)
-                            {
-                                noTankChild = false;
-                            }    
-                            if (noTankChild)
-                            {    
-                                logDebug("OPC Site Record: " + capId.getCustomID() + " has no tank child.");
-                                //getAppSpecific("Article 18 Regulated Site", capId);
-                                //getAppSpecific("PBS Regulated Site", capId);
-                                count++;
-    
-                            }   
-                            totalCnt++;                               
-                        }
+                        logDebug("OPC Site Record: " + capId.getCustomID());                       
+                                          
+                        var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
+                        var noTankChild = true;
+
+                        if (childArray && childArray.length > 0)
+                        {
+                            noTankChild = false;
+                            childTankCnt++;
+                        }    
+                        if (noTankChild)
+                        {    
+                            logDebug("OPC Site Record: " + capId.getCustomID() + " has no tank child.");
+                            //output += recordID + "\n";
+                            //getAppSpecific("Article 18 Regulated Site", capId);
+                            //getAppSpecific("PBS Regulated Site", capId);
+                            count++;
+
+                        }   
+                        totalCnt++;                               
+                       
                     }
                 }
-                
             }
+        }       
 
-            logDebug("Total records that need to be updated: " + count + " out of a total of " + totalCnt + "OPC Site records.");
-        }                       
+        logDebug("Total Site-OPC records that has a child tank: " + childTankCnt);
+        logDebug("Total Site-OPC records that has no child tank and need to be updated: " + count);
+        logDebug("Total Site-OPC records:" + totalCnt);
+        logDebug("Total Site records:" +  vResult.length);               
     }
     catch (err) 
     {
@@ -165,6 +234,47 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function doSQLSelect_local(sql)
+{
+    try
+    {
+        //logdebug("iNSIDE FUNCTION");
+        var array = [];
+        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
+        var ds = initialContext.lookup("java:/SUFFOLKCO");
+        var conn = ds.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+        if (sql.toUpperCase().indexOf("SELECT") == 0)
+        {
+            //logdebug("executing " + sql);
+            var rSet = sStmt.executeQuery();
+            while (rSet.next())
+            {
+                var obj = {};
+                var md = rSet.getMetaData();
+                var columns = md.getColumnCount();
+                for (i = 1; i <= columns; i++)
+                {
+                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
+                    //logdebug(rSet.getString(md.getColumnName(i)));
+                }
+                obj.count = rSet.getRow();
+                array.push(obj)
+            }
+            rSet.close();
+            //logdebug("...returned " + array.length + " rows");
+            //logdebug(JSON.stringify(array));
+        }
+        sStmt.close();
+        conn.close();
+        return array
+    } catch (err)
+    {
+        //logdebug("ERROR: "+ err.message);
+        return array
+    }
+}
+
 function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
 {
   if (capConditionScriptModel1 == null || capConditionScriptModel2 == null)
