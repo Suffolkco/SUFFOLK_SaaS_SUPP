@@ -145,12 +145,12 @@ var paramsOK = true;
 
 if (paramsOK) 
 {
-    logDebugLocal("Start Date: " + startDate + br);
+    logDebug("Start Date: " + startDate + br);
     if (!timeExpired) 
     {
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-        logDebugLocal("End Date: " + startDate);
+        logDebug("End Date: " + startDate);
         aa.sendMail("ada.chan@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
     }
 }
