@@ -195,11 +195,11 @@ function mainProcess()
         logDebug("Looping through Article 19 with CHILD tank that needs to be set:" + vartNoYesTankResult.length + " from SQL.");
         var vpbsHasTankResult = doSQLSelect_local(pbsHasTankSql);
         logDebug("Looping through PBS with CHILD tank that needs to be set:" + vpbsHasTankResult.length + " from SQL.");
-*/
+*//*
         var count = 0;
         var totalCnt = 0;
         var childTankCnt = 0;
-        /*
+        
         for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
