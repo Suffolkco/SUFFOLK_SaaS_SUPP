@@ -89,30 +89,33 @@ function getScriptText(vScriptName)
 var emailText = "";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
-var showMessage = true;
-var systemUserObj = aa.person.getUser("ADMIN").getOutput();
-var useAppSpecificGroupName = false;
+var showMessage = false;
 var timeExpired = false;
-var br = "<BR>";
-var emailAddress = "ada.chan@suffolkcountyny.com";//email to send report
-var lockParentLicense = "N";
-var capId;;
-var cap;
-var appTypeArray;
-var appExpDateCon;
+var emailAddress = "";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
 batchJobID = 0;
+var pgParms = aa.env.getParamValues();
+var pgParmK = pgParms.keys();
+while (pgParmK.hasNext())
+{
+    k = pgParmK.next();
+    if (k == "Send Batch log to:")
+    {
+        emailAddress = pgParms.get(k);
+    }
+}
 if (batchJobResult.getSuccess()) 
 {
-	batchJobID = batchJobResult.getOutput();
-	logDebug("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
+    batchJobID = batchJobResult.getOutput();
+    logDebugLocal("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
 }
 else
 {
-	logDebug("Batch job ID not found " + batchJobResult.getErrorMessage());
+    logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
+var recTypeArray = ["ConsumerAffairs/Licenses/Home Improvement/NA"];
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: END CONFIGURABLE PARAMETERS
@@ -126,10 +129,9 @@ else
 var message = "";
 var startDate = new Date();
 var startTime = startDate.getTime(); // Start timer
-var todayDate = "" + startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
-// all record types to check
-var rtArray = ["DEQ/General/Site/NA"];
-// Child records:  DEQ/OPC/Hazardous Tank/Permit
+var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+var fromDate = aa.date.parseDate("1/1/1980");
+var toDate = aa.date.parseDate((new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
 /*----------------------------------------------------------------------------------------------------/
 |
 | End: BATCH PARAMETERS//
@@ -143,20 +145,20 @@ var paramsOK = true;
 
 if (paramsOK) 
 {
-	logDebug("Start Date: " + startDate + br);
-	logDebug("Starting the timer for this job.  If it takes longer than 5 minutes an error will be listed at the bottom of the email." + br);
-	if (!timeExpired) 
-	{
-		mainProcess();
-		//logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-		logDebug("End Date: " + startDate);
-		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
-	}
+    logDebugLocal("Start Date: " + startDate + br);
+    if (!timeExpired) 
+    {
+        mainProcess();
+        //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
+        logDebugLocal("End Date: " + startDate);
+        aa.sendMail("ada.chan@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
+    }
 }
 /*------------------------------------------------------------------------------------------------------/
 | <===========End Main=Loop================>
 |
 /-----------------------------------------------------------------------------------------------------*/
+
 function mainProcess() 
 {    
     try 
@@ -164,7 +166,7 @@ function mainProcess()
         logDebug("Batch script will run");
         //var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1.B1_PER_TYPE = 'General' and B1.B1_PER_SUB_TYPE = 'Site'and B1_PER_CATEGORY = 'NA' ";
         // SQL to pull active OPC site records that  HAS child Tank records
-        var vSQL = "SELECT DISTINCT B.B1_ALT_ID FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1     AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2     AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3     WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General'     AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ'     AND B2.B1_PER_TYPE = 'OPC'     AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank'     AND B2.B1_PER_CATEGORY = 'Permit' )";       
+        var vSQL = "SELECT DISTINCT B.B1_ALT_ID FROM B1PERMIT B OIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit' )";       
         
         /*
         // SQL to pull active OPC site records that has NO child Tank records
