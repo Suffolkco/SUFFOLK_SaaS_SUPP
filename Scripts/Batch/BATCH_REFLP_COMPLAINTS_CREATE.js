@@ -15,6 +15,7 @@
         | START : SET COMMON VALUES
         |
         /-----------------------------------------------------------------------------------------------------*/
+        
         var showMessage = false;				// Set to true to see results in popup window
         var disableTokens = false;	
         var showDebug = true;					// Set to true to see debug messages in email confirmation

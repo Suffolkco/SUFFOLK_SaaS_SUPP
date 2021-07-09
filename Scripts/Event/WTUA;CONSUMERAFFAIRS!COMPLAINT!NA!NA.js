@@ -1,5 +1,6 @@
 // WTUA:CONSUMERAFFAIRS/COMPLAINT/NA/NA
 // WTUA;CONSUMERAFFAIRS!COMPLAINT!NA!NA.js
+
 if (matches(appTypeArray[1], "Complaint")) {
 	//if ( wfTask == "Case Disposition-Notification" && wfStatus == "Complete" ){
 	if ( wfTask == "Intake" && wfStatus == "Complete" ){
