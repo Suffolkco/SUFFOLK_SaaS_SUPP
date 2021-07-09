@@ -129,7 +129,7 @@ function mainProcess()
                 {
                     capId = recArray[j].getCapID();
                     capIDString = capId.getCustomID();
-                    cap = aa.cap.getCap(capId).getOutput(); 
+                    cap = aa.cap.getCap(capId).getOutput();
                     if (cap)
                     {
                         var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
@@ -141,62 +141,75 @@ function mainProcess()
                                 if (b1ExpResult.getSuccess())
                                 {
                                     var b1Exp = b1ExpResult.getOutput();
-                                    var curExp = b1Exp.getExpDate();
-                                    if (curExp != null)
+                                    var curExp = null;
+
+                                    try
                                     {
-                                        var curSt = b1Exp.getExpStatus();
-                                        if (curSt != null)
+                                        var curExp = b1Exp.getExpDate();
+                                    }
+                                    catch (err)
+                                    {
+                                        logDebug("<b>" + capIDString + "<b>" + "has no Expiration code, bypassing");
+                                    }
+                                    finally
+                                    {
+                                        if (curExp != null)
                                         {
-                                            if (curSt == "About to Expire")
+                                            var curSt = b1Exp.getExpStatus();
+                                            if (curSt != null)
                                             {
-                                                var dateDif;
-                                                dateDif = parseFloat(dateDiff(todayDate, curExp));
-                                                var dateDifRound = Math.floor(dateDif);
-                                                if (dateDifRound == 0)
+                                                if (curSt == "About to Expire")
                                                 {
-                                                    //Setting renewal info status to Expired
-                                                    b1Exp.setExpStatus("Expired");
-                                                    aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                                    logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to Expired");
-
-                                                    //Setting app status to Expired
-                                                    aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_TLC_EXPIRATION", systemUserObj);
-
-                                                    var vEParams = aa.util.newHashtable();
-
-                                                    addParameter(vEParams, "$$altID$$", capIDString);
-                                                    addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
-
-                                                    logDebug("<b>" + capIDString + "</b>" + " Expired");
-                                                    var contactResult = aa.people.getCapContactByCapID(capId);
-                                                    if (contactResult.getSuccess())
+                                                    var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
+                                                    var dateDif;
+                                                    dateDif = parseFloat(dateDiff(todayDate, curExpCon));
+                                                    var dateDifRound = Math.floor(dateDif);
+                                                    if (dateDifRound == 0)
                                                     {
-                                                        var capContacts = contactResult.getOutput();
-                                                        for (c in capContacts)
-                                                        {
-                                                            if (appTypeArray[2] == "Drivers")
-                                                            {
-                                                                if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
-                                                                {
-                                                                    addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-                                                                    if (!matches(capContacts[c].email, null, undefined, ""))
-                                                                    {
-                                                                        sendNotification("", capContacts[c].email, "", "CA_DRIVER_EXPIRATION", vEParams, null);
-                                                                    }
-                                                                }
-                                                            }
-                                                            if (appTypeArray[2] == "Vehicles")
-                                                            {
-                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Applicant", "Vehicle Owner"))
-                                                                {
-                                                                    addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-                                                                    if (!matches(capContacts[c].email, null, undefined, ""))
-                                                                    {
-                                                                        sendNotification("", capContacts[c].email, "", "CA_VEHICLE_REG_EXPIRATION", vEParams, null);
-                                                                    }
-                                                                }
-                                                            }
+                                                        //Setting renewal info status to Expired
+                                                        b1Exp.setExpStatus("Expired");
+                                                        aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+                                                        logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to Expired");
 
+                                                        //Setting app status to Expired
+                                                        aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_TLC_EXPIRATION", systemUserObj);
+
+                                                        var vEParams = aa.util.newHashtable();
+
+                                                        addParameter(vEParams, "$$altID$$", capIDString);
+                                                        addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+
+                                                        logDebug("<b>" + capIDString + "</b>" + " Expired");
+                                                        var contactResult = aa.people.getCapContactByCapID(capId);
+                                                        if (contactResult.getSuccess())
+                                                        {
+                                                            var capContacts = contactResult.getOutput();
+                                                            for (c in capContacts)
+                                                            {
+                                                                if (appTypeArray[2] == "Drivers")
+                                                                {
+                                                                    if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
+                                                                    {
+                                                                        addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                                                        if (!matches(capContacts[c].email, null, undefined, ""))
+                                                                        {
+                                                                            sendNotification("", capContacts[c].email, "", "CA_DRIVER_EXPIRATION", vEParams, null);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if (appTypeArray[2] == "Vehicles")
+                                                                {
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Applicant", "Vehicle Owner"))
+                                                                    {
+                                                                        addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                                                        if (!matches(capContacts[c].email, null, undefined, ""))
+                                                                        {
+                                                                            sendNotification("", capContacts[c].email, "", "CA_VEHICLE_REG_EXPIRATION", vEParams, null);
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                            }
                                                         }
                                                     }
                                                 }
