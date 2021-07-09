@@ -129,6 +129,7 @@ function mainProcess()
                 {
                     capId = recArray[j].getCapID();
                     capIDString = capId.getCustomID();
+                    logDebug("CapIDString is: " + capIDString);
                     cap = aa.cap.getCap(capId).getOutput();
                     if (cap)
                     {
@@ -143,6 +144,8 @@ function mainProcess()
                                 {
                                     var b1Exp = b1ExpResult.getOutput();
                                     var curExp = b1Exp.getExpDate();
+                                    curExp = convertDate(curExp);
+                                    logDebug("curExp is: " + curExp);
                                     if (curExp != null)
                                     {
                                         var curSt = b1Exp.getExpStatus();
