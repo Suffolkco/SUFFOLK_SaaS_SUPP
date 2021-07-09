@@ -94,7 +94,7 @@ if (paramsOK)
         mainProcess();
         //logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebug("End Date: " + startDate);
-        aa.sendMail("matthew.cereola@suffolkcounty.gov", emailAddress, "", "Batch Job - BATCH_CA_TLC_EXPIRE", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcounty.gov", emailAddress, "", "Batch Job - BATCH_CA_TLC_EXPIRE", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
