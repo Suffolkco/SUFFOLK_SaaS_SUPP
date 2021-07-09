@@ -2,86 +2,10 @@
 | Program: BATCH_CA_TLC_ABOUT_TO_EXPIRE.js
 | Trigger: Batch
 | Client: Suffolk
-| Version 1.0 07/01/2021
+| Version 1.0 7/9/2021
 | Author: JGreene
 | This batch script will run daily.
 /------------------------------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------------------------------/
-| USER CONFIGURABLE PARAMETERS
-/------------------------------------------------------------------------------------------------------*/
-currentUserID = "ADMIN";
-useAppSpecificGroupName = false;
-/*------------------------------------------------------------------------------------------------------/
-| GLOBAL VARIABLES
-/------------------------------------------------------------------------------------------------------*/
-br = "<br>";
-debug = "";
-systemUserObj = aa.person.getUser(currentUserID).getOutput();
-publicUser = false;
-/*------------------------------------------------------------------------------------------------------/
-| INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
-/------------------------------------------------------------------------------------------------------*/
-SCRIPT_VERSION = 3.0;
-var useSA = false;
-var SA = null;
-var SAScript = null;
-var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
-if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
-{
-    useSA = true;
-    SA = bzr.getOutput().getDescription();
-    bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
-    if (bzr.getSuccess())
-    {
-        SAScript = bzr.getOutput().getDescription();
-    }
-}
-
-if (SA)
-{
-    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
-    eval(getMasterScriptText(SAScript, SA));
-} else
-{
-    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS"));
-}
-
-eval(getScriptText("INCLUDES_BATCH"));
-eval(getMasterScriptText("INCLUDES_CUSTOM"));
-
-function getMasterScriptText(vScriptName)
-{
-    var servProvCode = aa.getServiceProviderCode();
-    if (arguments.length > 1)
-        servProvCode = arguments[1]; // use different serv prov code
-    vScriptName = vScriptName.toUpperCase();
-    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-    try
-    {
-        var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
-        return emseScript.getScriptText() + "";
-    } catch (err)
-    {
-        return "";
-    }
-}
-
-function getScriptText(vScriptName)
-{
-    var servProvCode = aa.getServiceProviderCode();
-    if (arguments.length > 1)
-        servProvCode = arguments[1]; // use different serv prov code
-    vScriptName = vScriptName.toUpperCase();
-    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-    try
-    {
-        var emseScript = emseBiz.getScriptByPK(servProvCode, vScriptName, "ADMIN");
-        return emseScript.getScriptText() + "";
-    } catch (err)
-    {
-        return "";
-    }
-}
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: USER CONFIGURABLE PARAMETERS
@@ -91,7 +15,10 @@ var emailText = "";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = false;
+var systemUserObj = aa.person.getUser("ADMIN").getOutput();
+var useAppSpecificGroupName = false;
 var timeExpired = false;
+var br = "<BR>";
 var emailAddress = "";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
@@ -110,16 +37,29 @@ while (pgParmK.hasNext())
 if (batchJobResult.getSuccess()) 
 {
     batchJobID = batchJobResult.getOutput();
-    logDebugLocal("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
+    logDebug("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
 }
 else
 {
-    logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
+    logDebug("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
-var recTypeArray = ["ConsumerAffairs/Licenses/Home Improvement/NA"];
+var recTypeArray = [];
+var fList = aa.cap.getCapTypeListByModule("ConsumerAffairs", null);
+if (fList.getSuccess())
+{
+    var fListOut = fList.getOutput();
+    for (f in fListOut)
+    {
+        if (fListOut[f].getType() == "TLC" && matches(fListOut[f].getSubType(), "Drivers", "Vehicles") && fListOut[f].getCategory() == "New")
+        {
+            var recType = "ConsumerAffairs" + "/" + fListOut[f].getType() + "/" + fListOut[f].getSubType() + "/" + fListOut[f].getCategory();
+            recTypeArray.push(recType);
+        }
+    }
+}
 /*------------------------------------------------------------------------------------------------------/
 |
-| START: END CONFIGURABLE PARAMETERS 
+| START: END CONFIGURABLE PARAMETERS
 |
 /------------------------------------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------------------------------/
@@ -144,15 +84,17 @@ var toDate = aa.date.parseDate((new Date().getMonth() + 1) + "/" + new Date().ge
 /-----------------------------------------------------------------------------------------------------*/
 var paramsOK = true;
 
+
 if (paramsOK) 
 {
-    logDebugLocal("Start Date: " + startDate + br);
+    logDebug("Start Date: " + startDate + br);
+    logDebug("Starting the timer for this job.  If it takes longer than 5 minutes an error will be listed at the bottom of the email." + br);
     if (!timeExpired) 
     {
         mainProcess();
-        //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-        logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_TLC_ABOUT_TO_EXPIRE", emailText);
+        //logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
+        logDebug("End Date: " + startDate);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcounty.gov", emailAddress, "", "Batch Job - BATCH_CA_TLC_ABOUT_TO_EXPIRE", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -163,97 +105,108 @@ function mainProcess()
 {
     try
     {
-        var dateCheck = dateAdd(null, 32);
-        dateCheckString = String(dateCheck).split("/")
-        var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'TLC' and B1_PER_CATEGORY = 'NA' ";
-        //  
-        var output = "Record ID | Expiration Date \n";
-        var vResult = doSQLSelect_local(vSQL);
-
-        for (r in vResult)
+        for (r in recTypeArray)
         {
-            recordID = vResult[r]["recordNumber"];
-            expirationDate = vResult[r]["ExpDate"];
-            output += recordID + " | " + expirationDate + "\n";
-            capId = getApplication(recordID);
-            capIDString = capId.getCustomID();
-            cap = aa.cap.getCap(capId).getOutput();
-            if (cap)
+            var thisType = recTypeArray[r];
+            var appTypeArray = thisType.split("/");
+            var capSearchModel = aa.cap.capModel.getOutput();
+            var capTypeModel = capSearchModel.capType;
+            capTypeModel.setGroup(appTypeArray[0]);
+            capTypeModel.setType(appTypeArray[1]);
+            capTypeModel.setSubType(appTypeArray[2]);
+            capTypeModel.setCategory(appTypeArray[3]);
+            capSearchModel.setCapType(capTypeModel);
+            var recordListResult = aa.cap.getCapListByCollection(capSearchModel, null, null, fromDate, toDate, null, new Array());
+            if (!recordListResult.getSuccess())
             {
-                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
-                if (capmodel.isCompleteCap())
+                logDebug("**ERROR: Failed to get capId List : " + recordListResult.getErrorMessage());
+            }
+            else
+            {
+                var recArray = recordListResult.getOutput();
+                logDebug("Looping through " + recArray.length + " records of type " + thisType);
+                for (var j in recArray)
                 {
-                    if (!matches(getAppStatus(), "Expired", "About to Expire"))
+                    capId = recArray[j].getCapID();
+                    capIDString = capId.getCustomID();
+                    cap = aa.cap.getCap(capId).getOutput();
+                    if (cap)
                     {
-                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                        if (b1ExpResult.getSuccess())
+                        var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                        if (capmodel.isCompleteCap())
                         {
-                            if (b1ExpResult.getOutput() != "" && b1ExpResult.getOutput() != null)
+                        logDebug("app status is: " + getAppStatus());
+                            if (!matches(getAppStatus(),"About to Expire", "Expired"))
                             {
-                                var b1Exp = b1ExpResult.getOutput();
-                                var curExp = b1Exp.getExpDate();
-                                if (curExp != null)
+                                b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+                                if (b1ExpResult.getSuccess())
                                 {
-                                    var curSt = b1Exp.getExpStatus();
-                                    if (curSt != null)
+                                    var b1Exp = b1ExpResult.getOutput();
+                                    var curExp = b1Exp.getExpDate();
+                                    if (curExp != null)
                                     {
-                                        if (curSt != "About to Expire")
+                                        var curSt = b1Exp.getExpStatus();
+                                        if (curSt != null)
                                         {
-                                            b1Exp.setExpStatus("About to Expire");
-                                            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                            logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
+                                            if (curSt != "About to Expire")
+                                            {
+                                                var dateDif;
+                                                dateDif = parseFloat(dateDiff(todayDate, curExp));
+                                                var dateDifRound = Math.floor(dateDif);
+                                                logDebug("Number of days out = " + dateDifRound);
+                                                if (dateDifRound == 32)
+                                                {
+                                                    //Setting renewal info status to About to Expire
+                                                    b1Exp.setExpStatus("About to Expire");
+                                                    aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+                                                    logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
+
+                                                    //Setting app status to About to Expire
+                                                    aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_TLC_ABOUT_TO_EXPIRE", systemUserObj);
+
+                                                    var vEParams = aa.util.newHashtable();
+
+                                                    addParameter(vEParams, "$$altID$$", capIDString);
+                                                    addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+
+                                                    logDebug("<b>" + capIDString + "</b>" + " About to Expire");
+                                                    var contactResult = aa.people.getCapContactByCapID(capId);
+                                                    if (contactResult.getSuccess())
+                                                    {
+                                                        var capContacts = contactResult.getOutput();
+                                                        for (c in capContacts)
+                                                        {
+                                                            if (appTypeArray[2] == "Drivers")
+                                                            {
+                                                                if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
+                                                                {
+                                                                    addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                                                    if (!matches(capContacts[c].email, null, undefined, ""))
+                                                                    {
+                                                                        sendNotification("", capContacts[c].email, "", "CA_DRIVER_ABOUT_TO_EXPIRE", vEParams, null);
+                                                                    }
+                                                                }
+                                                            }
+                                                            if (appTypeArray[2] == "Vehicles")
+                                                            {
+                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Applicant", "Vehicle Owner"))
+                                                                {
+                                                                    addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                                                    if (!matches(capContacts[c].email, null, undefined, ""))
+                                                                    {
+                                                                        sendNotification("", capContacts[c].email, "", "CA_VEHICLE_REG_ABOUT_TO_EXPIRE", vEParams, null);
+                                                                    }
+                                                                }
+                                                            }
+
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        var workflowResult = aa.workflow.getTasks(capId);
-                        if (workflowResult.getSuccess())
-                        {
-                            var wfObj = workflowResult.getOutput();
-                            var vEParams = aa.util.newHashtable();
-                            var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
-                            acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-
-                            //Save Base ACA URL
-                            addParameter(vEParams, "$$acaURL$$", acaSite);
-
-                            //Save Record Direct URL
-                            addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl());
-                            addParameter(vEParams, "$$altID$$", capIDString);
-                            addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
-                            addParameter(vEParams, "$$expirDate$$", expirationDate);
-                            addACAUrlsVarToEmail(vEParams);
-                            /*for (i in wfObj)
-                            {
-                                if (wfObj[i].getTaskDescription() == "Issuance")
-                                {
-                                    if (wfObj[i].getDisposition() != "Pending Renewal")
-                                    {
-                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Pending Renewal", aa.date.getCurrentDate(), "Updated via BATCH_CA_TLC_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_TLC_ABOUT_TO_EXPIRE", systemUserObj, "Y");
-                                    }
-                                }
-                            }*/
-                            aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_TLC_ABOUT_TO_EXPIRE", systemUserObj);
-                            logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
-                            var contactResult = aa.people.getCapContactByCapID(capId);
-                            if (contactResult.getSuccess())
-                            {
-                                var capContacts = contactResult.getOutput();
-                                for (c in capContacts)
-                                {
-                                    if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
-                                    {
-                                        addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-                                        if (!matches(capContacts[c].email, null, undefined, ""))
-                                        {
-                                            sendNotification("", capContacts[c].email, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, null);
-                                        }
-                                    }
-                                }
-                            }
-
                         }
                     }
                 }
@@ -262,9 +215,9 @@ function mainProcess()
     }
     catch (err)
     {
-        logDebugLocal("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
+        logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
-    logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
+    logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
 }
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
@@ -273,6 +226,27 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
+{
+    var itemCap = capId;
+    if (arguments.length == 7) itemCap = arguments[6]; // use cap ID specified in args
+    var id1 = itemCap.ID1;
+    var id2 = itemCap.ID2;
+    var id3 = itemCap.ID3;
+    var capIDScriptModel = aa.cap.createCapIDScriptModel(id1, id2, id3);
+    var result = null;
+    result = aa.document.sendEmailAndSaveAsDocument(emailFrom, emailTo, emailCC, templateName, params, capIDScriptModel, reportFile);
+    if (result.getSuccess())
+    {
+        logDebug("Sent email successfully!");
+        return true;
+    }
+    else
+    {
+        logDebug("Failed to send mail. - " + result.getErrorType());
+        return false;
+    }
+}
 function getContactName(vConObj)
 {
     if (vConObj.people.getContactTypeFlag() == "organization")
@@ -308,6 +282,34 @@ function matches(eVal, argList)
         }
     }
     return false;
+}
+function addParameter(pamaremeters, key, value)
+{
+    if (key != null)
+    {
+        if (value == null)
+        {
+            value = "";
+        }
+        pamaremeters.put(key, value);
+    }
+}
+function lookup(stdChoice, stdValue) 
+{
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess())
+    {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+        //logDebug("lookup(" + stdChoice + "," + stdValue + ") = " + strControl);
+    }
+    else
+    {
+        //logDebug("lookup(" + stdChoice + "," + stdValue + ") does not exist");
+    }
+    return strControl;
 }
 
 function dateDiff(date1, date2)
@@ -346,7 +348,7 @@ function convertDate(thisDate)
     {
         return new Date(thisDate);  // assume milliseconds
     }
-    //logDebugLocal("**WARNING** convertDate cannot parse date : " + thisDate);
+    //logDebug("**WARNING** convertDate cannot parse date : " + thisDate);
     return null;
 }
 function elapsed()
@@ -355,7 +357,7 @@ function elapsed()
     var thisTime = thisDate.getTime();
     return ((thisTime - startTime) / 1000)
 }
-function logDebugLocal(dstr)
+function logDebug(dstr)
 {
     if (showDebug)
     {
@@ -386,51 +388,7 @@ function getAppStatus()
         }
     } else
     {
-        logDebugLocal("ERROR: Failed to get app status: " + capResult.getErrorMessage());
+        logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
     }
     return appStatus;
 }
-function doSQLSelect_local(sql)
-{
-    try
-    {
-        //logdebug("iNSIDE FUNCTION");
-        var array = [];
-        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-        var ds = initialContext.lookup("java:/SUFFOLKCO");
-        var conn = ds.getConnection();
-        var sStmt = conn.prepareStatement(sql);
-        if (sql.toUpperCase().indexOf("SELECT") == 0)
-        {
-            //logdebug("executing " + sql);
-            var rSet = sStmt.executeQuery();
-            while (rSet.next())
-            {
-                var obj = {};
-                var md = rSet.getMetaData();
-                var columns = md.getColumnCount();
-                for (i = 1; i <= columns; i++)
-                {
-                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
-                    //logdebug(rSet.getString(md.getColumnName(i)));
-                }
-                obj.count = rSet.getRow();
-                array.push(obj)
-            }
-            rSet.close();
-            //logdebug("...returned " + array.length + " rows");
-            //logdebug(JSON.stringify(array));
-        }
-        sStmt.close();
-        conn.close();
-        return array
-    } catch (err)
-    {
-        //logdebug("ERROR: "+ err.message);
-        return array
-    }
-}
-
-
-
-
