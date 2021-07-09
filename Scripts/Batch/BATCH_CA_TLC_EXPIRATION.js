@@ -129,7 +129,7 @@ function mainProcess()
                 {
                     capId = recArray[j].getCapID();
                     capIDString = capId.getCustomID();
-                    cap = aa.cap.getCap(capId).getOutput();
+                    cap = aa.cap.getCap(capId).getOutput(); 
                     if (cap)
                     {
                         var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
