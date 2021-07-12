@@ -9,7 +9,7 @@ if (capDocResult.getSuccess())
     for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
     {
         var documentObject = capDocResult.getOutput().get(docInx);        
-        
+        debugObject("**********" + documentObject);
         if (documentObject.getDocName() == "*")
         {
             logDebug("*** documentNo *****" + documentObject.getDocumentNo());
@@ -25,3 +25,12 @@ if (capDocResult.getSuccess())
 }
 
 //aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
+
+
+function debugObject(object) {
+    var output = ''; 
+    for (property in object) { 
+      output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+    } 
+    logDebug(output);
+} 
