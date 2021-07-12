@@ -3,8 +3,7 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 
 if (!publicUser)
-{
-   
+{   
     var docsList = new Array();
     docsList = getDocumentList();	//Get all Documents on a Record
     var assignDocList = aa.util.newArrayList();
