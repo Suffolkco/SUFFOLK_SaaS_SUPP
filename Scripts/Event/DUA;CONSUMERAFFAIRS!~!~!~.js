@@ -28,7 +28,7 @@ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
                 logDebug("*** documentNo *****" + documentObject.getDocumentNo());
                 logDebug("docName:" + documentObject.getDocName());
                 logDebug("fileName:" + documentObject.getFileName());
-                documentObject.setDocName(fileName);
+                documentObject.setDocName(documentObject.getFileName());
                 logDebug("Setting docName to filename:" + documentObject.getFileName());
                 
                                
