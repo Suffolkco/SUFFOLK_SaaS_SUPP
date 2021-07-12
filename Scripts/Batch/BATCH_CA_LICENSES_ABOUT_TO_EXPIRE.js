@@ -116,7 +116,6 @@ else
 {
     logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
-var recTypeArray = ["ConsumerAffairs/Licenses/Home Improvement/NA"];
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: END CONFIGURABLE PARAMETERS
