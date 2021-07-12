@@ -11,17 +11,14 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
     if (capDocResult.getSuccess())
     {       
+        logDebug("*** count *** " + capDocResult.getOutput().size());
+
         for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
         {
             var documentObject = capDocResult.getOutput().get(docInx);
            
-            logDebug("docName:" + documentObject.getDocName());
-            logDebug("fileName:" + documentObject.getFileName());
-            logDebug("documentNo:" + documentObject.getDocumentNo());
-            debugObject("documentObject:" + documentObject);
-            emailText = publicUser + "/n" + documentObject.getDocumentNo() + "/n" + documentObject.getDocName() + "/n" + documentObject.getFileName()+ "/n";
-
-
+           
+            emailText = publicUser + "\n" + documentObject.getDocumentNo() + "\n" + documentObject.getDocName() + "\n" + documentObject.getFileName()+ "\n";
 
             if (documentObject.getDocName() == "*")
             {
@@ -30,7 +27,7 @@ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
                 logDebug("fileName:" + documentObject.getFileName());
                 documentObject.setDocName(documentObject.getFileName());
                 logDebug("Setting docName to filename:" + documentObject.getFileName());
-                
+                logDebug("Getting docName:" + documentObject.getDocumentNo() + ":" + documentObject.getDocName());
                                
             }
         }
