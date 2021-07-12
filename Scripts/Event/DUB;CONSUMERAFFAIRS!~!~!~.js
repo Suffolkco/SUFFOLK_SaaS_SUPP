@@ -11,23 +11,27 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 emailText = publicUser;
 if (!publicUser)
 {   
-    var docsList = new Array();
-    docsList = getDocumentList();	//Get all Documents on a Record
-    var assignDocList = aa.util.newArrayList();
-    for(var counter = 0; counter < docsList.length; counter++)
-    {
-        //logDebug("Looping through docList.  Iterator = " + counter+ "  this is the type " +  docsList[counter].getDocCategory());
-        var thisDocument = docsList[counter];
-        logDebug("thisDocument.getDocName():" + thisDocument.getDocName());
-        logDebug("thisDocument.getFileName():" + thisDocument.getFileName());
-        var fileName = thisDocument.getFileName()
-        thisDocument.setDocName(fileName);
-        emailText = emailText + ";" + showDebug + ";" + fileName;
-        // thisDocument.getDocDescription()
-        // thisDocument.getDocName()
-        // thisDocument.getFileName()
-        // thisDocument.setDocName()
+    var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
+    if (capDocResult.getSuccess())
+    {       
+        if (capDocResult.getOutput().size() > 0)
+        {
+            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+            {
+                var documentObject = capDocResult.getOutput().get(docInx);
+                var fileName = documentObject.getFileName();
+                var docName = documentObject.getDocName();
+                emailText = emailText + ". docName: " + docName;
+                emailText = emailText + ". Filename: " + fileName;
+                if (docName == "*")
+                {
+                    documentObject.setDocName(fileName);
+                    emailText = emailText + ". Setting Doc name to: " + fileName;
+                    emailText = emailText + "Set to: " + documentObject.getDocName();
+                }
+            }
+        }
+       
     }
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUB script", emailText);
 }
-
-aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUB script", emailText);
