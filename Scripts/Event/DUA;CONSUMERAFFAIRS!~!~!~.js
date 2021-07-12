@@ -9,26 +9,26 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 
 
-logDebug("docName:" + docName);
-logDebug("fileName:" + fileName);
-logDebug("documentNo:" + documentNo);
-logDebug("documentObject:" + documentObject);
-emailText = publicUser + "/n" + documentNo + "/n" + docName + "/n" + fileName+ "/n";
+logDebug("docName:" + documentObject.getDocName());
+logDebug("fileName:" + documentObject.getFileName());
+logDebug("documentNo:" + documentObject.getDocumentNo());
+DebugObject("documentObject:" + documentObject);
+emailText = publicUser + "/n" + documentObject.getDocumentNo() + "/n" + documentObject.getDocName() + "/n" + documentObject.getFileName()+ "/n";
 
 var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
     if (capDocResult.getSuccess())
     {       
         for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
         {
-            var documentObject = capDocResult.getOutput().get(docInx);
-            if (documentNo == documentObject.getDocumentNo())
+            var documentObj = capDocResult.getOutput().get(docInx);
+            if (documentObject.getDocumentNo() == documentObj.getDocumentNo())
             {
-                logDebug("*** documentNo *****" + documentNo);
-                logDebug("docName:" + documentNo);
-                logDebug("fileName:" + fileName);
-                if (documentObject.getFileName() == "*")
+                logDebug("*** documentNo *****" + documentObject.getDocumentNo());
+                logDebug("docName:" + documentObject.getDocName());
+                logDebug("fileName:" + documentObject.getFileName());
+                if (documentObj.getFileName() == "*")
                 {
-                    logDebug("Setting docName to filename:" + fileName);
+                    logDebug("Setting docName to filename:" + documentObject.getFileName());
                     documentObject.setDocName(fileName);
                 }
                
@@ -94,3 +94,11 @@ if (!publicUser)
 
 aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
 */
+
+function debugObject(object) {
+    var output = ''; 
+    for (property in object) { 
+      output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+    } 
+    logDebug(output);
+} 
