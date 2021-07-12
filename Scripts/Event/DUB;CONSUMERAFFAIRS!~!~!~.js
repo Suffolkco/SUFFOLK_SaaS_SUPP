@@ -8,6 +8,18 @@ showMessage = true;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 
+var fileName = DocumentModel.getFileName();
+var docName = DocumentModel.getDocName();
+logDebug("DocumentModel.getFileName():" + fileName);
+logDebug("DocumentModel.getDocName()" + docName);
+
+if (docName == "*")
+{
+    DocumentModel.setDocName(fileName);
+    logDebug("Get Doc name after setting" + DocumentModel.getDocName());
+}
+
+/*
 var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
     if (capDocResult.getSuccess())
     {       
@@ -28,13 +40,13 @@ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
                 documentObject.setDocName(documentObject.getFileName());
                 logDebug("Setting docName to filename:" + documentObject.getFileName());
                 logDebug("Getting docName:" + documentObject.getDocumentNo() + ":" + documentObject.getDocName());
-                               
+                emailText = emailText + documentObject.getDocName();
             }
         }
     }
 
-aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
-
+aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUB script", emailText);
+*/
 /*
 if (!publicUser)
 {   
