@@ -16,7 +16,7 @@ if (capDocResult.getSuccess())
             logDebug("docName:" + documentObject.getDocName());
             logDebug("fileName:" + documentObject.getFileName());
             documentObject.setDocName(documentObject.getFileName());
-            documentObject.setCapId(capId);
+            //documentObject.setCapId(capId);
             logDebug("Setting docName to filename:" + documentObject.getFileName());
             logDebug("Getting docName:" + documentObject.getDocumentNo() + ":" + documentObject.getDocName());
             emailText = emailText + documentObject.getDocName();
