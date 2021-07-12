@@ -26,7 +26,7 @@ if (!publicUser)
                     var docName = documentObject.getDocName();
                     emailText = emailText + ". docName: " + docName;
                     emailText = emailText + ". Filename: " + fileName;
-                    if (fileName == "*")
+                    if (docName == "*")
                     {
                         documentObject.setDocName(fileName);
                         emailText = emailText + ". Setting Doc name to: " + fileName;
