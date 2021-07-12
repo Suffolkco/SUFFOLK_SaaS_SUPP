@@ -39,7 +39,6 @@ if (!publicUser)
 }
 //aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
 
-
 function debugObject(object) {
     var output = ''; 
     for (property in object) { 
