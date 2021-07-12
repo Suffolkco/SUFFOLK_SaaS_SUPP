@@ -8,6 +8,25 @@ showMessage = true;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 
+//documentModelArray 
+//var documentModel = documentModelArray.split(",");
+
+for (docModel in documentModelArray)
+{
+    var doc = documentModelArray[docModel];
+    logDebug ("doc: " + doc);
+    debugObject("doc object: " + docModel);
+    
+}
+
+
+var capDocList = aa.document.getCapDocumentList(capId);
+if (capDocList.getSuccess()) 
+{
+    logDebug ("size: " + capDocList.getOutput().size());
+
+}
+/*
 var docList = aa.document.getDocumentListByEntity(capId, "CAP");
 if (docList.getSuccess()) 
 {
@@ -44,7 +63,7 @@ else
     logDebug("fail");
 }
 
-
+*/
 
 /*
 var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
