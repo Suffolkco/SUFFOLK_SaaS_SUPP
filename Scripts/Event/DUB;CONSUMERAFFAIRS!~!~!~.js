@@ -8,16 +8,43 @@ showMessage = true;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 
-var fileName = DocumentModel.getFileName();
-var docName = DocumentModel.getDocName();
-logDebug("DocumentModel.getFileName():" + fileName);
-logDebug("DocumentModel.getDocName()" + docName);
-
-if (docName == "*")
+var docList = aa.document.getDocumentListByEntity(capId, "CAP");
+if (docList.getSuccess()) 
 {
-    DocumentModel.setDocName(fileName);
-    logDebug("Get Doc name after setting" + DocumentModel.getDocName());
+    docsOut = docList.getOutput();
+    logDebug("Docs Out " + docsOut.isEmpty());
+    if (docsOut.isEmpty()) 
+    {
+        logDebug("empty");        
+    }
+    else 
+    {
+            docsOuti = docsOut.iterator();
+            while (docsOuti.hasNext()) 
+			{
+                doc = docsOuti.next();
+				//debugObject(doc);
+                docName = doc.getDocName();
+                logDebug("docName is: " + docName);
+
+                if (docName.equals("*")) 
+				{
+                    fileName = doc.getFileName();
+                    logDebug("fileName is: " + fileName);
+                    doc.setDocName(fileName);
+                    logDebug("docName set to: " + doc.getDocName());
+                }
+            }
+            
+        
+    }
 }
+else 
+{
+    logDebug("fail");
+}
+
+
 
 /*
 var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
