@@ -15,7 +15,6 @@
         | START : SET COMMON VALUES
         |
         /-----------------------------------------------------------------------------------------------------*/
-        
         var showMessage = false;				// Set to true to see results in popup window
         var disableTokens = false;	
         var showDebug = true;					// Set to true to see debug messages in email confirmation
@@ -300,29 +299,46 @@
             var sStmt;
             var conn;
             try{
+                //var selectString = "";
+                //selectString += "SELECT  ";
+                //selectString += "       B1P.B1_ALT_ID ";
+                //selectString += "     , B1P.B1_PER_ID1 ";
+                //selectString += "     , B1P.B1_PER_ID2 ";
+                //selectString += "     , B1P.B1_PER_ID3 ";
+                //selectString += "  FROM B1PERMIT B1P "
+                //selectString += "     , GPROCESS GPROC "
+                //selectString += " WHERE 1 = 1 ";
+                //selectString += "   AND B1P.SERV_PROV_CODE = '" + aa.getServiceProviderCode() +"' ";
+                //selectString += "   AND B1P.B1_PER_ID1 = GPROC.B1_PER_ID1 ";
+                //selectString += "   AND B1P.B1_PER_ID2 = GPROC.B1_PER_ID2 ";
+                //selectString += "   AND B1P.B1_PER_ID3 = GPROC.B1_PER_ID3 ";
+                //selectString += "   AND B1P.REC_STATUS = 'A' ";
+                //selectString += "   AND B1P.B1_PER_GROUP = 'ConsumerAffairs' ";
+                //selectString += "   AND B1P.B1_PER_TYPE = 'Complaint' ";
+                //////selectString += "   AND B1P.B1_APPL_STATUS = 'Closed' ";
+                //selectString += "   AND SD_CHK_LV1 = 'N' "; // Current Task Completion Flag 'Y' OR 'N'
+                //selectString += "   AND SD_CHK_LV2 = 'Y' "; // Current Task Status 'Y' or 'N'
+                ////selectString += "   AND SD_PRO_DES = 'Case Disposition-Notification' "  ;
+                //selectString += "   AND SD_PRO_DES = 'Intake' "  ;
+                ////selectString += "   AND SD_APP_DES = 'Complete' "  ;
+                //selectString += "   AND SD_APP_DES = 'Completed' "  ;
+                //selectString += "   AND ROWNUM < 200 ";
+
                 var selectString = "";
                 selectString += "SELECT  ";
                 selectString += "       B1P.B1_ALT_ID ";
                 selectString += "     , B1P.B1_PER_ID1 ";
                 selectString += "     , B1P.B1_PER_ID2 ";
                 selectString += "     , B1P.B1_PER_ID3 ";
-                selectString += "  FROM B1PERMIT B1P "
-                selectString += "     , GPROCESS GPROC "
+                selectString += "  FROM B1PERMIT B1P ";
                 selectString += " WHERE 1 = 1 ";
                 selectString += "   AND B1P.SERV_PROV_CODE = '" + aa.getServiceProviderCode() +"' ";
-                selectString += "   AND B1P.B1_PER_ID1 = GPROC.B1_PER_ID1 ";
-                selectString += "   AND B1P.B1_PER_ID2 = GPROC.B1_PER_ID2 ";
-                selectString += "   AND B1P.B1_PER_ID3 = GPROC.B1_PER_ID3 ";
                 selectString += "   AND B1P.REC_STATUS = 'A' ";
                 selectString += "   AND B1P.B1_PER_GROUP = 'ConsumerAffairs' ";
                 selectString += "   AND B1P.B1_PER_TYPE = 'Complaint' ";
-                ////selectString += "   AND B1P.B1_APPL_STATUS = 'Closed' ";
-                selectString += "   AND SD_CHK_LV1 = 'N' "; // Current Task Completion Flag 'Y' OR 'N'
-                selectString += "   AND SD_CHK_LV2 = 'Y' "; // Current Task Status 'Y' or 'N'
-                //selectString += "   AND SD_PRO_DES = 'Case Disposition-Notification' "  ;
-                selectString += "   AND SD_PRO_DES = 'Intake' "  ;
-                selectString += "   AND SD_APP_DES = 'Complete' "  ;
+                selectString += "   AND B1P.B1_APPL_STATUS IN ('Assigned','Awaiting Response','Contract Under Review','In Collections External','In Mediation','In Review','Ongoing Investigation','Open Case','Pending Contact','Pending Contract Review','Pending Disposition','Pending Field Investigation','Pending Mediation','Ready for Assignment','To Mediation') ";
                 //selectString += "   AND ROWNUM < 200 ";
+
             
                 logDebug(selectString);
                 var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
@@ -426,3 +442,7 @@
             var thisTime = thisDate.getTime();
             return ((thisTime - startTime) / 1000);
         }
+        
+
+
+
