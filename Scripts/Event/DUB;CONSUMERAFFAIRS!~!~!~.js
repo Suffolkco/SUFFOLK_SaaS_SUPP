@@ -10,22 +10,25 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 
 //documentModelArray 
 //var documentModel = documentModelArray.split(",");
+// var cap = aa.env.getValue("CapModel");
 
-for (docModel in documentModelArray)
+var docNamesArray = aa.document.getDocumentListByEntity(capId, "CAP").getOutput().toArray();
+
+for (d in docNamesArray)
 {
-    var doc = documentModelArray[docModel];
-    logDebug ("doc: " + doc);
-    debugObject("doc object: " + docModel);
-    
+var documentName = docNamesArray[d];
+logDebug(documentName);
+
 }
 
 
+/*
 var capDocList = aa.document.getCapDocumentList(capId);
 if (capDocList.getSuccess()) 
 {
     logDebug ("size: " + capDocList.getOutput().size());
 
-}
+}*/
 /*
 var docList = aa.document.getDocumentListByEntity(capId, "CAP");
 if (docList.getSuccess()) 
