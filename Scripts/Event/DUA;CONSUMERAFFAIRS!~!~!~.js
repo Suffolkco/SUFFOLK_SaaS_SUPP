@@ -18,11 +18,11 @@ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
             logDebug("docName:" + documentObject.getDocName());
             logDebug("fileName:" + documentObject.getFileName());
             logDebug("documentNo:" + documentObject.getDocumentNo());
-            DebugObject("documentObject:" + documentObject);
+            debugObject("documentObject:" + documentObject);
             emailText = publicUser + "/n" + documentObject.getDocumentNo() + "/n" + documentObject.getDocName() + "/n" + documentObject.getFileName()+ "/n";
 
 
-            
+
             if (documentObject.getDocName() == "*")
             {
                 logDebug("*** documentNo *****" + documentObject.getDocumentNo());
