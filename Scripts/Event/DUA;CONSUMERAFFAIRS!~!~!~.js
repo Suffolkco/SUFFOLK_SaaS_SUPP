@@ -1,7 +1,14 @@
+if (String(aa.env.getValue("showDebug")).length > 0) {
+    showDebug = aa.env.getValue("showDebug").substring(0, 1).toUpperCase().equals("Y");
+}
+// override showdebug
 showDebug = true;
+showMessage = true;
+
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 
+emailText = publicUser;
 if (!publicUser)
 {   
     var docsList = new Array();
@@ -15,9 +22,12 @@ if (!publicUser)
         logDebug("thisDocument.getFileName():" + thisDocument.getFileName());
         var fileName = thisDocument.getFileName()
         thisDocument.setDocName(fileName);
+        emailText = emailText + ";" + showDebug + ";" + fileName;
         // thisDocument.getDocDescription()
         // thisDocument.getDocName()
         // thisDocument.getFileName()
         // thisDocument.setDocName()
     }
 }
+
+aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
