@@ -24,7 +24,7 @@ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
             if (documentNo == documentObject.getDocumentNo())
             {
                 logDebug("*** documentNo *****" + documentNo);
-                logDebug("docName:" + docName);
+                logDebug("docName:" + documentNo);
                 logDebug("fileName:" + fileName);
                 if (documentObject.getFileName() == "*")
                 {
