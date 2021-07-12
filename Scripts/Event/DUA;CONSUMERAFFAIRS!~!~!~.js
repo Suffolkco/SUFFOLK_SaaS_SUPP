@@ -3,9 +3,7 @@ showMessage = true;
 
 if (!publicUser)
 {
-    aa.ads.ads.DocumentModel
-
-    var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
+      var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
     if (capDocResult.getSuccess())
     {       
         logDebug("*** count *** " + capDocResult.getOutput().size());
