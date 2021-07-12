@@ -21,13 +21,15 @@ if (!publicUser)
                 var documentObject = capDocResult.getOutput().get(docInx);
                 var fileName = documentObject.getFileName();
                 var docName = documentObject.getDocName();
-                emailText = emailText + ". docName: " + docName;
-                emailText = emailText + ". Filename: " + fileName;
+               
                 if (docName == "*")
                 {
                     documentObject.setDocName(fileName);
                     emailText = emailText + ". Setting Doc name to: " + fileName;
                     emailText = emailText + "Set to: " + documentObject.getDocName();
+
+                    logDebug("thisDocument.getDocName():" + documentObject.getFileName());
+                    logDebug("thisDocument.getDocName():" + documentObject.getDocName());
                 }
             }
         }
