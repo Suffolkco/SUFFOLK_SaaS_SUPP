@@ -5,11 +5,12 @@ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
 if (capDocResult.getSuccess())
 {       
     logDebug("*** count *** " + capDocResult.getOutput().size());
+    debugObject("**********" + capDocResult.getOutput());
 
     for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
     {
         var documentObject = capDocResult.getOutput().get(docInx);        
-        debugObject("**********" + documentObject);
+       
         if (documentObject.getDocName() == "*")
         {
             logDebug("*** documentNo *****" + documentObject.getDocumentNo());
