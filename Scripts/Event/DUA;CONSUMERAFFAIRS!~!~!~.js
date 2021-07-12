@@ -11,6 +11,35 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 emailText = publicUser;
 if (!publicUser)
 {   
+    var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
+    if (capDocResult.getSuccess())
+    {
+        for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+        {
+            var documentObject = capDocResult.getOutput().get(docInx);
+            if (capDocResult.getOutput().size() > 0)
+            {
+                for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+                {
+                    var documentObject = capDocResult.getOutput().get(docInx);
+                    var fileName = documentObject.getFileName();
+                    var docName = documentObject.getDocName();
+                    emailText = emailText + ". docName: " + docName;
+                    emailText = emailText + ". Filename: " + fileName;
+                    if (fileName == "*")
+                    {
+                        documentObject.setDocName(fileName);
+                        emailText = emailText + ". Setting Doc name to: " + fileName;
+                        emailText = emailText + "Set to: " + documentObject.getDocName();
+                    }
+                }
+            }
+        }
+    }
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
+}
+
+/*
     var docsList = new Array();
     docsList = getDocumentList();	//Get all Documents on a Record
     var assignDocList = aa.util.newArrayList();
@@ -21,6 +50,8 @@ if (!publicUser)
         logDebug("thisDocument.getDocName():" + thisDocument.getDocName());
         logDebug("thisDocument.getFileName():" + thisDocument.getFileName());
         var fileName = thisDocument.getFileName()
+       
+
         thisDocument.setDocName(fileName);
         emailText = emailText + ";" + showDebug + ";" + fileName;
         // thisDocument.getDocDescription()
@@ -31,3 +62,4 @@ if (!publicUser)
 }
 
 aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
+*/
