@@ -19,9 +19,9 @@ if (capDocResult.getSuccess())
             //documentObject.setCapId(capId);
             logDebug("Setting docName to filename:" + documentObject.getFileName());
             logDebug("Getting docName:" + documentObject.getDocumentNo() + ":" + documentObject.getDocName());
-            emailText = emailText + documentObject.getDocName();
+            //emailText = emailText + documentObject.getDocName();
         }
     }
 }
 
-aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUB script", emailText);
+//aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
