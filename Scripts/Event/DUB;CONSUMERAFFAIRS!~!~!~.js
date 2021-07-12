@@ -13,6 +13,8 @@ if (!publicUser)
         var thisDocument = docsList[counter];
         logDebug("thisDocument.getDocName():" + thisDocument.getDocName());
         logDebug("thisDocument.getFileName():" + thisDocument.getFileName());
+        var fileName = thisDocument.getFileName()
+        thisDocument.setDocName(fileName);
         // thisDocument.getDocDescription()
         // thisDocument.getDocName()
         // thisDocument.getFileName()
