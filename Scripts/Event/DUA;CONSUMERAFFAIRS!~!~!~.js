@@ -13,28 +13,25 @@ if (!publicUser)
 {   
     var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
     if (capDocResult.getSuccess())
-    {
-        for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+    {       
+        if (capDocResult.getOutput().size() > 0)
         {
-            var documentObject = capDocResult.getOutput().get(docInx);
-            if (capDocResult.getOutput().size() > 0)
+            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
             {
-                for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+                var documentObject = capDocResult.getOutput().get(docInx);
+                var fileName = documentObject.getFileName();
+                var docName = documentObject.getDocName();
+                emailText = emailText + ". docName: " + docName;
+                emailText = emailText + ". Filename: " + fileName;
+                if (docName == "*")
                 {
-                    var documentObject = capDocResult.getOutput().get(docInx);
-                    var fileName = documentObject.getFileName();
-                    var docName = documentObject.getDocName();
-                    emailText = emailText + ". docName: " + docName;
-                    emailText = emailText + ". Filename: " + fileName;
-                    if (docName == "*")
-                    {
-                        documentObject.setDocName(fileName);
-                        emailText = emailText + ". Setting Doc name to: " + fileName;
-                        emailText = emailText + "Set to: " + documentObject.getDocName();
-                    }
+                    documentObject.setDocName(fileName);
+                    emailText = emailText + ". Setting Doc name to: " + fileName;
+                    emailText = emailText + "Set to: " + documentObject.getDocName();
                 }
             }
         }
+       
     }
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA script", emailText);
 }
