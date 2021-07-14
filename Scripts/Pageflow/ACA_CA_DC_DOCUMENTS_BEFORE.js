@@ -45,7 +45,7 @@ try
     {
         docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
-    if (!determineACADocumentAttached("Banking Information "))
+    if (!determineACADocumentAttached("Banking Information"))
     {
         docComments += "	Banking Information " + "<br>";
     }
