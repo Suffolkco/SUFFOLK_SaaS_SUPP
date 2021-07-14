@@ -36,20 +36,20 @@ try
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("	Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
+    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
     {
-        docComments += "	Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
+        docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
 
-    if (!determineACADocumentAttached("	Copy of DBA Certificate or State Filing Receipt"))
+    if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
-        docComments += "	Copy of DBA Certificate or State Filing Receipt" + "<br>";
+        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
-    if (!determineACADocumentAttached("	Banking Information "))
+    if (!determineACADocumentAttached("Banking Information "))
     {
         docComments += "	Banking Information " + "<br>";
     }
-    if (!determineACADocumentAttached("	Owner Operator Certificate"))
+    if (!determineACADocumentAttached("Owner Operator Certificate"))
     {
         docComments += "Owner Operator Certificate" + "<br>";
     }
