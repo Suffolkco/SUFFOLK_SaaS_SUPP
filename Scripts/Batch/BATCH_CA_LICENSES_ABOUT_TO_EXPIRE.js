@@ -210,9 +210,12 @@ function mainProcess()
                         var workflowResult = aa.workflow.getTasks(capId);
                         if (workflowResult.getSuccess())
                         {
-                            var wfObj = workflowResult.getOutput();
+                            var wfObj = workflowResult.getOutput(); 
                             var vEParams = aa.util.newHashtable();
                             var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+                            var AInfo = new Array();
+                            loadAppSpecific(AInfo);
+                            var PIN = AInfo["PIN Number"];
                             acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 
                             //Save Base ACA URL
@@ -223,6 +226,7 @@ function mainProcess()
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
+                            addParameter(vEParams, "$$PINNumber$$", PIN);
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
