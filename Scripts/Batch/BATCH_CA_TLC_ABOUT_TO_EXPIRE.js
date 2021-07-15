@@ -179,9 +179,11 @@ function mainProcess()
                                                         aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_TLC_ABOUT_TO_EXPIRE", systemUserObj);
 
                                                         var vEParams = aa.util.newHashtable();
+                                                        var vRParams = aa.util.newHashtable();
 
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+                                                        addParameter(vRParams, "RecordID", capIDString);
 
                                                         logDebug("<b>" + capIDString + "</b>" + " About to Expire");
                                                         var contactResult = aa.people.getCapContactByCapID(capId);
@@ -195,9 +197,10 @@ function mainProcess()
                                                                     if (capContacts[c].getCapContactModel().getContactType() == "Applicant")
                                                                     {
                                                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                                                        
                                                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                                                         {
-                                                                            sendNotification("", capContacts[c].email, "", "CA_DRIVER_ABOUT_TO_EXPIRE", vEParams, null);
+                                                                            emailWithReportAttachASync(capContacts[c].email, "CA_DRIVER_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
                                                                         }
                                                                     }
                                                                 }
@@ -208,7 +211,7 @@ function mainProcess()
                                                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                                                         {
-                                                                            sendNotification("", capContacts[c].email, "", "CA_VEHICLE_REG_ABOUT_TO_EXPIRE", vEParams, null);
+                                                                            emailWithReportAttachASync(capContacts[c].email, "CA_VEHICLE_REG_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
                                                                         }
                                                                     }
                                                                 }
