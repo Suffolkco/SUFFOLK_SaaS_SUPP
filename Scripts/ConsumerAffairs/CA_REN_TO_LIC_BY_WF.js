@@ -1,4 +1,4 @@
-if (wfTask == "Renewal Review" && wfStatus == "Complete")
+if (wfTask == "Issuance" && wfStatus == "Renewed")
 {
     var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();
