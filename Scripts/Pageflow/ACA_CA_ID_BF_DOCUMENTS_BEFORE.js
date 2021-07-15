@@ -40,9 +40,9 @@ try
     {
         docComments += "Copy of NYS Driver's License" + "<br>";
     }
-    if (!determineACADocumentAttached("Proof of Banking"))
+    if (!determineACADocumentAttached("Banking Information"))
     {
-        docComments += "Proof of Banking" + "<br>";
+        docComments += "Banking Information" + "<br>";
     }
     if (!determineACADocumentAttached("Proof of Accredited Program or Copy of Islip, Babylon or Huntington License"))
     {
