@@ -54,6 +54,10 @@ try
     {
         docComments += "Description of Work Experience" + "<br>";
     }
+    if (!determineACADocumentAttached("Copy of License and Permit Bond in the amount of $5,000.00"))
+    {
+        docComments += "Copy of License and Permit Bond in the amount of $5,000.00" + "<br>";
+    }
   
 
     if (docComments != "") 
