@@ -2,22 +2,21 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
 {
     var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();
-
-    //Updating Expiration Date of License
-    var todayExpDate = new Date();
-    logDebug("New Date Exp Date is: " + todayExpDate)
-    var newExpDate = (todayExpDate.getMonth() + 1) + "/" + 1 + "/" + (todayExpDate.getFullYear() + 2);
-    logDebug("New Exp Date is: " + newExpDate);
-
-        var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
-        if (b1ExpResult.getSuccess())
-        {
-            var b1Exp = b1ExpResult.getOutput();
-            b1Exp.setExpStatus("Active");
-            b1Exp.setExpDate(aa.date.parseDate(newExpDate));
-            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-        }
+    var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
     
+    if (b1ExpResult.getSuccess())
+    {
+        //Updating Expiration Date of License
+        var b1Exp = b1ExpResult.getOutput();
+        var todayExpDate = b1Exp.getExpDate();
+        logDebug("New Date Exp Date is: " + todayExpDate)
+        var newExpDate = (todayExpDate.getMonth() + 1) + "/" + 1 + "/" + (todayExpDate.getFullYear() + 2);
+        logDebug("New Exp Date is: " + newExpDate);
+        b1Exp.setExpStatus("Active");
+        b1Exp.setExpDate(aa.date.parseDate(newExpDate));
+        aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+    }
+
     var capContacts = aa.people.getCapContactByCapID(parentCapId);
     if (capContacts.getSuccess())
     {
