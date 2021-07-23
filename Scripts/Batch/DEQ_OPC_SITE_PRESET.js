@@ -91,7 +91,7 @@ var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = true;
 var timeExpired = false;
-var emailAddress = "ada.chan@suffolkcoutnyny.gov";
+var emailAddress = "ada.chan@suffolkcountyny.gov";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
@@ -145,11 +145,13 @@ var paramsOK = true;
 if (paramsOK) 
 {
     logDebugLocal("Start Date: " + startDate + br);
+	logDebugLocal("Start Time: " + startTime + br);
     if (!timeExpired) 
     {
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-        logDebugLocal("End Date: " + startDate);
+        logDebugLocal("End Date: " + startDate + br);
+		logDebugLocal("End Time: " + startDate.getTime());
         aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
     }
 }
@@ -219,7 +221,7 @@ function mainProcess()
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "*********\n");
+		/*logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "*********\n");
 		for (r in vNoChildResult)
         {
             recordID = vNoChildResult[r]["recordNumber"];      
@@ -237,12 +239,12 @@ function mainProcess()
 					//editAppSpecific("Article 18 Regulated Site", "No", capId);
 					//editAppSpecific("PBS Regulated Site", "No", capId);
 
-					if (art18 == "Yes" || art18 == null)
+					if (art18 != "No")
 					{
 						logDebugLocal("Article 18 for " + capId + " has a value of " + art18);
 						childTankCnt18++;
 					}
-					if (pbsSite == null || pbsSite == "Yes")
+					if (pbsSite != "No")
 					{
 						logDebugLocal("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
 						childTankCntPBS++;
@@ -250,14 +252,14 @@ function mainProcess()
 					
 				}
 			}
-		}
+		}*/
 
 		/* GOAL # 2 **********************************************************************
 		All OPC SITE records first preset to this if there is child tank
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		/*logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
+		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
 		for (r in vResult)
         {			
             recordID = vResult[r]["recordNumber"];      
@@ -275,12 +277,12 @@ function mainProcess()
 					//editAppSpecific("Article 18 Regulated Site", "No", capId);
 					//editAppSpecific("PBS Regulated Site", "No", capId);
 
-					if (art18 == "Yes" || art18 == null)
+					if (art18 != "No")
 					{
 						logDebugLocal("Article 18 for " + capId + " has a value of " + art18);
 						noChildTankCnt18++;
 					}
-					if (pbsSite == null || pbsSite == "Yes")
+					if (pbsSite != "No")
 					{
 						logDebugLocal("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
 						noChildTankCntPBS++;
@@ -288,13 +290,13 @@ function mainProcess()
 					
 				}
 			}
-		}*/
+		}
 
-		logDebugLocal("Total Site-OPC records that has a child tank with Artcle 18 that need to update: " + childTankCnt18);
-		logDebugLocal("Total Site-OPC records that has a child tank with PBSthat need to update: " + childTankCntPBS);
+		//logDebugLocal("Total Site-OPC records that has a child tank with Article 18 that need to update to NO: " + childTankCnt18);
+		//logDebugLocal("Total Site-OPC records that has a child tank with PBS that need to update to NO: " + childTankCntPBS);
 		
-		//logDebugLocal("Total Site-OPC records that has NO child tank with Artcle 18 that need to update: " + noChildTankCnt18);
-		//logDebugLocal("Total Site-OPC records that has NO child tank with PBSthat need to update: " + noChildTankCntPBS);
+		logDebugLocal("Total Site-OPC records that has NO child tank with Article 18 that need to update to NO: " + noChildTankCnt18);
+		logDebugLocal("Total Site-OPC records that has NO child tank with PBS that need to update to NO: " + noChildTankCntPBS);
         
        
     }
