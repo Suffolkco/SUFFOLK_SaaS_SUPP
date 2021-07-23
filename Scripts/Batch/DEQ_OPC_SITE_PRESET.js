@@ -219,7 +219,7 @@ function mainProcess()
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		logDebug("********OPC site records that has NO child tank: " + vNoChildResult.length + "\n");
+		logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "\n");
 		for (r in vNoChildResult)
         {
             recordID = vNoChildResult[r]["recordNumber"];      
@@ -239,12 +239,12 @@ function mainProcess()
 
 					if (art18 == "Yes" || art18 == null)
 					{
-						logDebug("Article 18 for " + capId + " has a value of " + art18);
+						logDebugLocal("Article 18 for " + capId + " has a value of " + art18);
 						childTankCnt18++;
 					}
 					if (pbsSite == null || pbsSite == "Yes")
 					{
-						logDebug("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
+						logDebugLocal("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
 						childTankCntPBS++;
 					}
 					
@@ -257,7 +257,7 @@ function mainProcess()
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		logDebug("********OPC site records that HAS child tank: " + vResult.length + "\n");
+		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "\n");
 		for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
@@ -277,12 +277,12 @@ function mainProcess()
 
 					if (art18 == "Yes" || art18 == null)
 					{
-						logDebug("Article 18 for " + capId + " has a value of " + art18);
+						logDebugLocal("Article 18 for " + capId + " has a value of " + art18);
 						noChildTankCnt18++;
 					}
 					if (pbsSite == null || pbsSite == "Yes")
 					{
-						logDebug("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
+						logDebugLocal("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
 						noChildTankCntPBS++;
 					}
 					
@@ -290,11 +290,11 @@ function mainProcess()
 			}
 		}
 
-		logDebug("Total Site-OPC records that has a child tank with Artcle 18 that need to update: " + childTankCnt18);
-		logDebug("Total Site-OPC records that has a child tank with PBSthat need to update: " + childTankCntPBS);
+		logDebugLocal("Total Site-OPC records that has a child tank with Artcle 18 that need to update: " + childTankCnt18);
+		logDebugLocal("Total Site-OPC records that has a child tank with PBSthat need to update: " + childTankCntPBS);
 		
-		logDebug("Total Site-OPC records that has NO child tank with Artcle 18 that need to update: " + noChildTankCnt18);
-		logDebug("Total Site-OPC records that has NO child tank with PBSthat need to update: " + noChildTankCntPBS);
+		logDebugLocal("Total Site-OPC records that has NO child tank with Artcle 18 that need to update: " + noChildTankCnt18);
+		logDebugLocal("Total Site-OPC records that has NO child tank with PBSthat need to update: " + noChildTankCntPBS);
         
 
 		/*
