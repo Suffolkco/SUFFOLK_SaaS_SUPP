@@ -20,7 +20,28 @@ publicUser = false;
 /*------------------------------------------------------------------------------------------------------/
 | INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
 /------------------------------------------------------------------------------------------------------*/
-SCRIPT_VERSION = 3.0;
+var useSA = false;
+var SA = null;
+var SAScript = null;
+var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS","SUPER_AGENCY_FOR_EMSE"); 
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I") { 
+   useSA = true;      
+   SA = bzr.getOutput().getDescription();
+   bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS","SUPER_AGENCY_INCLUDE_SCRIPT"); 
+   if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
+   }
+if (SA) {
+   eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS",SA));
+   eval(getScriptText(SAScript,SA));
+   }
+else {
+   eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+  }
+               
+eval(getScriptText("INCLUDES_CUSTOM"));
+
+
+/*SCRIPT_VERSION = 3.0;
 var useSA = false;
 var SA = null;
 var SAScript = null;
@@ -47,7 +68,7 @@ if (SA)
 
 eval(getScriptText("INCLUDES_BATCH"));
 eval(getMasterScriptText("INCLUDES_CUSTOM"));
-
+*/
 function getMasterScriptText(vScriptName)
 {
     var servProvCode = aa.getServiceProviderCode();
