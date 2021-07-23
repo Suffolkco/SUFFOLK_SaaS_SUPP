@@ -20,27 +20,6 @@ publicUser = false;
 /*------------------------------------------------------------------------------------------------------/
 | INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
 /------------------------------------------------------------------------------------------------------*/
-var useSA = false;
-var SA = null;
-var SAScript = null;
-var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS","SUPER_AGENCY_FOR_EMSE"); 
-if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I") { 
-   useSA = true;      
-   SA = bzr.getOutput().getDescription();
-   bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS","SUPER_AGENCY_INCLUDE_SCRIPT"); 
-   if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
-   }
-if (SA) {
-   eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS",SA));
-   eval(getScriptText(SAScript,SA));
-   }
-else {
-   eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
-  }
-               
-eval(getScriptText("INCLUDES_CUSTOM"));
-
-
 /*SCRIPT_VERSION = 3.0;
 var useSA = false;
 var SA = null;
@@ -115,6 +94,8 @@ var timeExpired = false;
 var emailAddress = "";
 var systemUserObj = aa.person.getUser("ADMIN").getOutput();
 var useAppSpecificGroupName = false;
+eval(getScriptText("INCLUDES_CUSTOM", null, true));
+eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
