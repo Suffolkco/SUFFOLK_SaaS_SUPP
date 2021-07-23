@@ -8,14 +8,14 @@
 /*------------------------------------------------------------------------------------------------------/
 | USER CONFIGURABLE PARAMETERS
 /------------------------------------------------------------------------------------------------------*/
-/*currentUserID = "ADMIN";
+//currentUserID = "ADMIN";
 useAppSpecificGroupName = false;
 /*------------------------------------------------------------------------------------------------------/
 | GLOBAL VARIABLES
 /------------------------------------------------------------------------------------------------------*/
 var br = "<br>";
 debug = "";
-systemUserObj = aa.person.getUser(currentUserID).getOutput();
+//systemUserObj = aa.person.getUser(currentUserID).getOutput();
 publicUser = false;
 /*------------------------------------------------------------------------------------------------------/
 | INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
@@ -92,6 +92,8 @@ var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usual
 var showMessage = true;
 var timeExpired = false;
 var emailAddress = "";
+var systemUserObj = aa.person.getUser("ADMIN").getOutput();
+var useAppSpecificGroupName = false;
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
