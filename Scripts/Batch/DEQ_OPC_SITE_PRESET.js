@@ -13,7 +13,7 @@ useAppSpecificGroupName = false;
 /*------------------------------------------------------------------------------------------------------/
 | GLOBAL VARIABLES
 /------------------------------------------------------------------------------------------------------*/
-br = "<br>";
+var br = "<br>";
 debug = "";
 systemUserObj = aa.person.getUser(currentUserID).getOutput();
 publicUser = false;
