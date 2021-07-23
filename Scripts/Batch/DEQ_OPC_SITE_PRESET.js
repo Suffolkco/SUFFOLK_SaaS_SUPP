@@ -20,7 +20,7 @@ publicUser = false;
 /*------------------------------------------------------------------------------------------------------/
 | INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
 /------------------------------------------------------------------------------------------------------*/
-/*SCRIPT_VERSION = 3.0;
+SCRIPT_VERSION = 3.0;
 var useSA = false;
 var SA = null;
 var SAScript = null;
