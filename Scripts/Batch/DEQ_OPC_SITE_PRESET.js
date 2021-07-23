@@ -80,7 +80,7 @@ function getScriptText(vScriptName)
     {
         return "";
     }
-}
+} 
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: USER CONFIGURABLE PARAMETERS
@@ -109,11 +109,11 @@ while (pgParmK.hasNext())
 if (batchJobResult.getSuccess()) 
 {
     batchJobID = batchJobResult.getOutput();
-    logDebugLocal("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
+    logDebug("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
 }
 else
 {
-    logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
+    logDebug("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
 var recTypeArray = ["ConsumerAffairs/Licenses/Home Improvement/NA"];
 /*------------------------------------------------------------------------------------------------------/
@@ -145,12 +145,12 @@ var paramsOK = true;
 
 if (paramsOK) 
 {
-    logDebugLocal("Start Date: " + startDate + br);
+    logDebug("Start Date: " + startDate + br);
     if (!timeExpired) 
     {
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-        logDebugLocal("End Date: " + startDate);
+        logDebug("End Date: " + startDate);
         aa.sendMail("ada.chan@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
     }
 }
