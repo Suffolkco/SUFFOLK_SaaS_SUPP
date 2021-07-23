@@ -184,8 +184,8 @@ function mainProcess()
         */
        //  
         var output = "Record ID\n";
-        //var vResult = doSQLSelect_local(vSQL);
-        //logDebug("OPC site records that has child tank: " + vResult.length);
+        var vResult = doSQLSelect_local(vSQL);
+        logDebug("OPC site records that has child tank: " + vResult.length);
 		
        
       
@@ -204,14 +204,53 @@ function mainProcess()
 */
         var count = 0;
         var totalCnt = 0;
-        var childTankCnt = 0;
-        
-		/* GOAL**********************************************************************
+        var childTankCnt18 = 0;
+		var childTankCntPBS = 0;
+        var noChildTankCnt18 = 0;
+		var noChildTankCntPBS = 0;
+		/* GOAL # 1**********************************************************************
 		All OPC SITE records first preset to this if there is NO TANK child
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
 
+		for (r in vNoChildResult)
+        {
+            recordID = vNoChildResult[r]["recordNumber"];      
+            //output += recordID + "\n";
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
+            {
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
+                {
+                    var art18 = getAppSpecific("Article 18 Regulated Site", capId);   
+					var pbsSite = getAppSpecific("PBS Regulated Site", capId);
+					//editAppSpecific("Article 18 Regulated Site", "No", capId);
+					//editAppSpecific("PBS Regulated Site", "No", capId);
+
+					if (art18 == "Yes" || art18 == null)
+					{
+						logDebug("Article 18 for " + capId + " has a value of " + art18);
+						childTankCnt18++;
+					}
+					if (pbsSite == null || pbsSite == "Yes")
+					{
+						logDebug("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
+						childTankCntPBS++;
+					}
+					
+				}
+			}
+		}
+
+		/* GOAL # 2 **********************************************************************
+		All OPC SITE records first preset to this if there is child tank
+		Article 18 Regulated Site = No;
+		PBS Regulated Site = No;
+		***********************************************************************/
 		for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
@@ -232,15 +271,24 @@ function mainProcess()
 					if (art18 == "Yes" || art18 == null)
 					{
 						logDebug("Article 18 for " + capId + " has a value of " + art18);
+						noChildTankCnt18++;
 					}
 					if (pbsSite == null || pbsSite == "Yes")
 					{
 						logDebug("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
+						noChildTankCntPBS++;
 					}
 					
 				}
 			}
 		}
+
+		logDebug("Total Site-OPC records that has a child tank with Artcle 18 that need to update: " + childTankCnt18);
+		logDebug("Total Site-OPC records that has a child tank with PBSthat need to update: " + childTankCntPBS);
+		
+		logDebug("Total Site-OPC records that has NO child tank with Artcle 18 that need to update: " + noChildTankCnt18);
+		logDebug("Total Site-OPC records that has NO child tank with PBSthat need to update: " + noChildTankCntPBS);
+        
 
 		/*
         for (r in vResult)
