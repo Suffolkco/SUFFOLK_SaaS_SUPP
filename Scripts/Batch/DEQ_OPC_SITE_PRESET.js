@@ -94,9 +94,6 @@ var timeExpired = false;
 var emailAddress = "";
 var systemUserObj = aa.person.getUser("ADMIN").getOutput();
 var useAppSpecificGroupName = false;
-eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS"));
-eval(getScriptText("INCLUDES_CUSTOM", null, true));
-eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
@@ -356,6 +353,18 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function getApplication(appNum) 
+//
+// returns the capId object of an application
+//
+	{
+	var getCapResult = aa.cap.getCapID(appNum);
+	if (getCapResult.getSuccess())
+		return getCapResult.getOutput();
+	else
+		{ logDebug( "**ERROR: getting cap id (" + appNum + "): " + getCapResult.getErrorMessage()) }
+	}
+	
 function logDebugLocal(dstr)
 {
     if (showDebug)
