@@ -219,7 +219,7 @@ function mainProcess()
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + br);
+		logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "*********");
 		for (r in vNoChildResult)
         {
             recordID = vNoChildResult[r]["recordNumber"];      
@@ -257,7 +257,7 @@ function mainProcess()
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + br);
+		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********");
 		for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
