@@ -257,7 +257,7 @@ function mainProcess()
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
+		/*logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
 		for (r in vResult)
         {			
             recordID = vResult[r]["recordNumber"];      
@@ -288,61 +288,15 @@ function mainProcess()
 					
 				}
 			}
-		}
+		}*/
 
 		logDebugLocal("Total Site-OPC records that has a child tank with Artcle 18 that need to update: " + childTankCnt18);
 		logDebugLocal("Total Site-OPC records that has a child tank with PBSthat need to update: " + childTankCntPBS);
 		
-		logDebugLocal("Total Site-OPC records that has NO child tank with Artcle 18 that need to update: " + noChildTankCnt18);
-		logDebugLocal("Total Site-OPC records that has NO child tank with PBSthat need to update: " + noChildTankCntPBS);
+		//logDebugLocal("Total Site-OPC records that has NO child tank with Artcle 18 that need to update: " + noChildTankCnt18);
+		//logDebugLocal("Total Site-OPC records that has NO child tank with PBSthat need to update: " + noChildTankCntPBS);
         
-
-		/*
-        for (r in vResult)
-        {
-            recordID = vResult[r]["recordNumber"];      
-            //output += recordID + "\n";
-            capId = getApplication(recordID);
-            capIDString = capId.getCustomID();
-            cap = aa.cap.getCap(capId).getOutput();
-            if (cap)
-            {
-                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
-                if (capmodel.isCompleteCap())
-                {
-                    var opcCheck = getAppSpecific("OPC");                    
-                    if ((opcCheck == "CHECKED")) 
-                    {                    
-                        logDebug("OPC Site Record: " + capId.getCustomID());                       
-                                          
-                        var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
-                        var noTankChild = true;
-
-                        if (childArray && childArray.length > 0)
-                        {
-                            noTankChild = false;
-                            childTankCnt++;
-                        }    
-                        if (noTankChild)
-                        {    
-                            logDebug("OPC Site Record: " + capId.getCustomID() + " has no tank child.");
-                            //output += recordID + "\n";
-                            //getAppSpecific("Article 18 Regulated Site", capId);
-                            //getAppSpecific("PBS Regulated Site", capId);
-                            count++;
-
-                        }   
-                        totalCnt++;                               
-                       
-                    }
-                }
-            }
-        }       
-
-        logDebug("Total Site-OPC records that has a child tank: " + childTankCnt);
-        logDebug("Total Site-OPC records that has no child tank and need to be updated: " + count);
-        logDebug("Total Site-OPC records:" + totalCnt); 
-        logDebug("Total Site records:" +  vResult.length);    */           
+       
     }
     catch (err) 
     {
