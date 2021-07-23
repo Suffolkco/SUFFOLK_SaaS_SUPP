@@ -1,4 +1,4 @@
-if (wfTask == "Issuance" && wfStatus == "Renewed")
+if (wfTask == "Renewal Review" && wfStatus == "Complete")
 {
     var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();
@@ -21,8 +21,16 @@ if (wfTask == "Issuance" && wfStatus == "Renewed")
             b1Exp.setExpDate(aa.date.parseDate(newExpDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
-            activateTask("Issuance", "", parentCapId);
-            updateTask("Issuance", "Issued", "", "", parentCapId);
+            if (appTypeArray[2] != "Home Energy Auditor")
+            {
+                activateTask("Issuance", "", parentCapId);
+                updateTask("Issuance", "Renewed", "", "", parentCapId);
+            }
+            if (appTypeArray[2] == "Home Energy Auditor")
+            {
+                activateTask("Registraton", "", parentCapId);
+                updateTask("Registraton", "Renewed", "", "", parentCapId);
+            }
         }
     }
     var capContacts = aa.people.getCapContactByCapID(parentCapId);

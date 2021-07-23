@@ -50,15 +50,11 @@ try
     {
         docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
-    if (!determineACADocumentAttached("Description of Work Experience"))
+    if (!determineACADocumentAttached("Certificate of Liability and Property Damage Insurance"))
     {
-        docComments += "Description of Work Experience" + "<br>";
+        docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of License and Permit Bond in the amount of $5,000.00"))
-    {
-        docComments += "Copy of License and Permit Bond in the amount of $5,000.00" + "<br>";
-    }
-  
+ 
 
     if (docComments != "") 
     {

@@ -36,13 +36,13 @@ try
     {
         docComments += "Passport Photo" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of NYS Driver's License"))
+    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
     {
-        docComments += "Copy of NYS Driver's License" + "<br>";
+        docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
-    if (!determineACADocumentAttached("Proof of Banking"))
+    if (!determineACADocumentAttached("Banking Information"))
     {
-        docComments += "Proof of Banking" + "<br>";
+        docComments += "Banking Information" + "<br>";
     }
     if (!determineACADocumentAttached("Proof of Accredited Program or Copy of Islip, Babylon or Huntington License"))
     {

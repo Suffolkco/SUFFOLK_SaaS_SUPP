@@ -178,6 +178,9 @@ function mainProcess()
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
+            var appTypeResult = cap.getCapType();
+            var appTypeString = appTypeResult.toString();
+            var appTypeArray = appTypeString.split("/");
             if (cap)
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
@@ -212,7 +215,11 @@ function mainProcess()
                         {
                             var wfObj = workflowResult.getOutput();
                             var vEParams = aa.util.newHashtable();
+                            var vRParams = aa.util.newHashtable();
                             var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+                            var AInfo = new Array();
+                            loadAppSpecific(AInfo);
+                            var PIN = AInfo["PIN Number"];
                             acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 
                             //Save Base ACA URL
@@ -223,6 +230,7 @@ function mainProcess()
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
+                            addParameter(vEParams, "$$PINNumber$$", PIN);
                             addACAUrlsVarToEmail(vEParams);
                             for (i in wfObj)
                             {
@@ -247,7 +255,16 @@ function mainProcess()
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                         {
-                                            sendNotification("", capContacts[c].email, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, null);
+                                            if (appTypeArray[2] != "Polygraph Examiner")
+                                            {
+                                                addParameter(vRParams, "RecordID", capIDString);
+
+                                                emailWithReportAttachASync(capContacts[c].email, "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
+                                            }
+                                            if (appTypeArray[2] == "Polygraph Examiner")
+                                            {
+                                                sendNotification("", "matthew.cereola@suffolkcountyny.gov", "", "CA_POLYGRAPH_EXAMINER_ABOUT_TO_EXPIRE", vEParams, null);
+                                            }
                                         }
                                     }
                                 }
@@ -429,7 +446,88 @@ function doSQLSelect_local(sql)
         return array
     }
 }
+function emailWithReportAttachASync(pSendToEmailAddresses, pEmailTemplate, pEParams, pReportTemplate, pRParams, pAddAdHocTask, pChangeReportDescription)
+{
+    var x = 0;
+    var vAsyncScript = "SEND_EMAIL_ATTACH_ASYNC";
+    var envParameters = aa.util.newHashMap();
 
+    //Initialize optional parameters	
+    var vEParams = aa.util.newHashtable();
+    var vReportTemplate = "";
+    var vRParams = aa.util.newHashtable();
+    var vAddAdHocTask = true;
+    var vChangeReportDescription = "";
+
+    if (pEParams != undefined && pEParams != null && pEParams != "")
+    {
+        logDebug("pEParams is defined");
+        vEParams = pEParams;
+    }
+
+    if (pReportTemplate != undefined && pReportTemplate != null && pReportTemplate != "")
+    {
+        logDebug("pReportTemplate is defined");
+        vReportTemplate = pReportTemplate;
+    }
+
+    if (pRParams != undefined && pRParams != null && pRParams != "")
+    {
+        logDebug("pRParams is defined");
+        vRParams = pRParams;
+    }
+
+    if (pAddAdHocTask != undefined && pAddAdHocTask != null && pAddAdHocTask != "")
+    {
+        logDebug("pAddAdHocTask is defined");
+        if (pAddAdHocTask == "N")
+        {
+            vAddAdHocTask = false;
+        } else if (pAddAdHocTask == false)
+        {
+            vAddAdHocTask = false;
+        }
+    }
+
+    if (pChangeReportDescription != undefined && pChangeReportDescription != null && pChangeReportDescription != "")
+    {
+        logDebug("pChangeReportDescription is defined");
+        vChangeReportDescription = pChangeReportDescription;
+    }
+
+    //Save variables to the hash table and call sendEmailASync script. This allows for the email to contain an ACA deep link for the document
+    envParameters.put("sendToEmailAddresses", pSendToEmailAddresses);
+    envParameters.put("emailTemplate", pEmailTemplate);
+    envParameters.put("vEParams", vEParams);
+    envParameters.put("reportTemplate", vReportTemplate);
+    envParameters.put("vRParams", vRParams);
+    envParameters.put("vChangeReportDescription", vChangeReportDescription);
+    envParameters.put("CapId", capId);
+
+    //Start modification to support batch script
+    var vEvntTyp = aa.env.getValue("eventType");
+    if (vEvntTyp == "Batch Process")
+    {
+        aa.env.setValue("sendToEmailAddresses", pSendToEmailAddresses);
+        aa.env.setValue("emailTemplate", pEmailTemplate);
+        aa.env.setValue("vEParams", vEParams);
+        aa.env.setValue("reportTemplate", vReportTemplate);
+        aa.env.setValue("vRParams", vRParams);
+        aa.env.setValue("vChangeReportDescription", vChangeReportDescription);
+        aa.env.setValue("CapId", capId);
+        //call sendEmailASync script
+        logDebug("Attempting to run Non-Async: " + vAsyncScript);
+        aa.includeScript(vAsyncScript);
+    } else
+    {
+        //call sendEmailASync script
+        logDebug("Attempting to run Async: " + vAsyncScript);
+        aa.runAsyncScript(vAsyncScript, envParameters);
+    }
+    //End modification to support batch script
+
+    return true;
+}
 
 
 

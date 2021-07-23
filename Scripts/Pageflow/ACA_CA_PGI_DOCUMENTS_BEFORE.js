@@ -55,6 +55,10 @@ try
     {
         docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
+    if (!determineACADocumentAttached("Documented Proof of Pet Grooming Training/Employment"))
+    {
+        docComments += "Documented Proof of Pet Grooming Training/Employment" + "<br>";
+    }
 
        if (docComments != "") 
     {

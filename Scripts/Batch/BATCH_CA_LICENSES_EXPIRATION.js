@@ -207,10 +207,14 @@ function mainProcess()
                         {
                             var wfObj = workflowResult.getOutput();
                             var vEParams = aa.util.newHashtable();
+                            var AInfo = new Array();
+                            loadAppSpecific(AInfo);
+                            var PIN = AInfo["PIN Number"];
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
-                            addACAUrlsVarToEmail(vEParams);
+                            addParameter(vEParams, "$$PINNumber$$", PIN);
+                            addACAUrlsVarToEmail(vEParams); 
                             for (i in wfObj)
                             {
                                 if (wfObj[i].getTaskDescription() == "Issuance")

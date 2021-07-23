@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_LIC_PPT_DOCUMENTS_BEFORE.js
+| Program : ACA_CA_EX_DOCUMENTS_BEFORE.js
 | Event   : ACA_BEFORE Event
 |
 |
@@ -32,33 +32,24 @@ loadAppSpecific4ACA(AInfo);
 try
 {
     var docComments = "";
-   
     if (!determineACADocumentAttached("Passport Photo"))
     {
         docComments += "Passport Photo" + "<br>";
-    }
-    if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
-    {
-        docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
-    }
-
-    if (!determineACADocumentAttached("Banking Information"))
-    {
-        docComments += "Banking Information" + "<br>";
-    }
-    if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
-    {
-        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
     }
     if (!determineACADocumentAttached("Description of Work Experience"))
     {
         docComments += "Description of Work Experience" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of License and Permit Bond in the amount of $5,000.00"))
+    if (!determineACADocumentAttached("Verification of Employment"))
     {
-        docComments += "Copy of License and Permit Bond in the amount of $5,000.00" + "<br>";
+        docComments += "Verification of Employment" + "<br>";
     }
-  
+
+    if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
+    {
+        docComments += "Copy of DBA Certificate or State Filing Receipt" + "<br>";
+    }
+
 
     if (docComments != "") 
     {
