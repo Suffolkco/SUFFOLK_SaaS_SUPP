@@ -176,13 +176,9 @@ function mainProcess()
         logDebug("Batch script will run");
         //var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1.B1_PER_TYPE = 'General' and B1.B1_PER_SUB_TYPE = 'Site'and B1_PER_CATEGORY = 'NA' ";
 
-        // SQL to pull active OPC site records that  HAS child Tank records
-        var vSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit' )";       
+      
         
-        
-        // SQL to pull active OPC site records that has NO child Tank records
-        var  vNoChildSQL= "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID NOT IN ( SELECT B1.B1_ALT_ID FROM B1PERMIT B1  JOIN XAPP2REF XAPP ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1 AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2 AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3  JOIN B1PERMIT B2 ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3 WHERE B1.B1_APPL_STATUS = 'Active'  AND B1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP = 'DEQ' AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
-        
+      
         // SQL Article 18 No Tank Child
         /*var artNoTankSql ="SELECT DISTINCT(B.B1_ALT_ID) as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.REC_STATUS = 'A' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND B.B1_APPL_STATUS = 'Active' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN (     SELECT DISTINCT(B3.B1_ALT_ID)     FROM B1PERMIT B3 JOIN BCHCKBOX C1     ON B3.B1_PER_ID1 = C1.B1_PER_ID1     AND B3.B1_PER_ID2 = C1.B1_PER_ID2     AND B3.B1_PER_ID3 = C1.B1_PER_ID3     WHERE B3.REC_STATUS = 'A'         AND B3.SERV_PROV_CODE = 'SUFFOLKCO'     AND B3.B1_PER_GROUP = 'DEQ'     AND B3.B1_PER_TYPE = 'General'     AND B3.B1_PER_SUB_TYPE = 'Site'     AND B3.B1_PER_CATEGORY = 'NA'     AND B3.B1_APPL_STATUS = 'Active'     AND C1.B1_CHECKBOX_DESC = 'Article 18 Regulated Site'          AND C1.B1_CHECKLIST_COMMENT <> 'No' ) AND B.B1_ALT_ID NOT IN (     SELECT DISTINCT(B1.B1_ALT_ID)     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3         JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1     AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2     AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3     WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General'     AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ'     AND B2.B1_PER_TYPE = 'OPC'     AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank'     AND B2.B1_PER_CATEGORY = 'Permit' )";
         // SQL PBS No Tank C hild
@@ -193,35 +189,25 @@ function mainProcess()
         var pbsHasTankSql ="SELECT DISTINCT(B.B1_ALT_ID) FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.REC_STATUS = 'A' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND B.B1_APPL_STATUS = 'Active' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN (     SELECT DISTINCT(B3.B1_ALT_ID)     FROM B1PERMIT B3 JOIN BCHCKBOX C1     ON B3.B1_PER_ID1 = C1.B1_PER_ID1     AND B3.B1_PER_ID2 = C1.B1_PER_ID2     AND B3.B1_PER_ID3 = C1.B1_PER_ID3     WHERE B3.REC_STATUS = 'A'         AND B3.SERV_PROV_CODE = 'SUFFOLKCO'     AND B3.B1_PER_GROUP = 'DEQ'     AND B3.B1_PER_TYPE = 'General'     AND B3.B1_PER_SUB_TYPE = 'Site'     AND B3.B1_PER_CATEGORY = 'NA'     AND B3.B1_APPL_STATUS = 'Active'    AND C1.B1_CHECKBOX_DESC = 'PBS'        AND C1.B1_CHECKLIST_COMMENT <> 'No' ) AND B.B1_ALT_ID IN (     SELECT DISTINCT(B1.B1_ALT_ID)     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3         JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1     AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2     AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3     WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General'     AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ'     AND B2.B1_PER_TYPE = 'OPC'     AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank'     AND B2.B1_PER_CATEGORY = 'Permit' )";
         */
        //  
-        var output = "Record ID\n";
-        var vResult = doSQLSelect_local(vSQL);
-        //logDebug("OPC site records that has child tank: " + vResult.length);       
-      
-        var vNoChildResult = doSQLSelect_local(vNoChildSQL);
-        
-/*
-        var vartNoTankResult = doSQLSelect_local(artNoTankSql);
-        logDebug("OPC site records  Article 18(Yes) with NO child tank that needs to be set:" + vartNoTankResult.length);
-
-	var vpbsNoTankResult = doSQLSelect_local(pbsNoTankSql);
-        logDebug("Looping through PBS with no tank needs to be set: " + vpbsNoTankResult.length + " from SQL.");
-        var vartNoYesTankResult = doSQLSelect_local(artNoYesTankSql);
-        logDebug("Looping through Article 19 with CHILD tank that needs to be set:" + vartNoYesTankResult.length + " from SQL.");
-        var vpbsHasTankResult = doSQLSelect_local(pbsHasTankSql);
-        logDebug("Looping through PBS with CHILD tank that needs to be set:" + vpbsHasTankResult.length + " from SQL.");
-*/
-        var count = 0;
-        var totalCnt = 0;
-        var childTankCnt18 = 0;
-		var childTankCntPBS = 0;
+        var output = "Record ID\n";  		
+        // Batch # 1
         var noChildTankCnt18 = 0;
 		var noChildTankCntPBS = 0;
+		// Batch # 2
+		var childTankCnt18 = 0;
+		var childTankCntPBS = 0;
+		// Batch # 3
+		var sitePBSSiteSetCnt = 0;
+		var siteCnt = 0;
 		/* GOAL # 1**********************************************************************
 		All OPC SITE records first preset to this if there is NO TANK child
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
-		/*logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "*********\n");
+		// SQL to pull active OPC site records that has NO child Tank records
+		/*var  vNoChildSQL= "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID NOT IN ( SELECT B1.B1_ALT_ID FROM B1PERMIT B1  JOIN XAPP2REF XAPP ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1 AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2 AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3  JOIN B1PERMIT B2 ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3 WHERE B1.B1_APPL_STATUS = 'Active'  AND B1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP = 'DEQ' AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";               
+		var vNoChildResult = doSQLSelect_local(vNoChildSQL);  	     
+		logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "*********\n");
 		for (r in vNoChildResult)
         {
             recordID = vNoChildResult[r]["recordNumber"];      
@@ -241,24 +227,28 @@ function mainProcess()
 
 					if (art18 != "No")
 					{
-						logDebugLocal("Article 18 for " + capId + " has a value of " + art18);
+						logDebugLocal("Article 18 for " + capIDString + " has a value of " + art18);
 						childTankCnt18++;
 					}
 					if (pbsSite != "No")
 					{
-						logDebugLocal("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
+						logDebugLocal("PBS Regulated Site " + capIDString + " has  a value of " + pbsSite);
 						childTankCntPBS++;
 					}
 					
 				}
 			}
-		}*/
+		}
 
 		/* GOAL # 2 **********************************************************************
 		All OPC SITE records first preset to this if there is child tank
 		Article 18 Regulated Site = No;
 		PBS Regulated Site = No;
 		***********************************************************************/
+		// SQL to pull active OPC site records that  HAS child Tank records
+		/*var vSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit' )";       
+        var vResult = doSQLSelect_local(vSQL);
+       
 		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
 		for (r in vResult)
         {			
@@ -279,12 +269,12 @@ function mainProcess()
 
 					if (art18 != "No")
 					{
-						logDebugLocal("Article 18 for " + capId + " has a value of " + art18);
+						logDebugLocal("Article 18 for " + capIDString + " has a value of " + art18);
 						noChildTankCnt18++;
 					}
 					if (pbsSite != "No")
 					{
-						logDebugLocal("PBS Regulated Site " + capId + " has  a value of " + pbsSite);
+						logDebugLocal("PBS Regulated Site " + capIDString + " has  a value of " + pbsSite);
 						noChildTankCntPBS++;
 					}
 					
@@ -292,12 +282,56 @@ function mainProcess()
 			}
 		}
 
-		//logDebugLocal("Total Site-OPC records that has a child tank with Article 18 that need to update to NO: " + childTankCnt18);
-		//logDebugLocal("Total Site-OPC records that has a child tank with PBS that need to update to NO: " + childTankCntPBS);
+		logDebugLocal("Total Site-OPC records that has a child tank with Article 18 that need to update to NO: " + childTankCnt18);
+		logDebugLocal("Total Site-OPC records that has a child tank with PBS that need to update to NO: " + childTankCntPBS);
 		
 		logDebugLocal("Total Site-OPC records that has NO child tank with Article 18 that need to update to NO: " + noChildTankCnt18);
 		logDebugLocal("Total Site-OPC records that has NO child tank with PBS that need to update to NO: " + noChildTankCntPBS);
         
+		/* GOAL # 3 **********************************************************************
+		At the end, set all OPC Site base on the below on the SITE.
+		If Article 18 is Yes, set PBS Regulated Site = Yes; and if owner type = 2 or MOSF is Yes, set Article 18 to No		
+		***********************************************************************/
+		var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
+		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
+		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
+				
+		for (r in vOpcSite)
+        {			
+            recordID = vOpcSite[r]["recordNumber"];      
+            //output += recordID + "\n";
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
+            {
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
+                {
+                    var art18 = getAppSpecific("Article 18 Regulated Site", capId);   								
+
+					if (art18 == "Yes")
+					{
+						//editAppSpecific("PBS Regulated Site", "Yes", capId);
+						logDebugLocal("Update PBS Regulated Site to Yes: " + capIDString);
+						sitePBSSiteSetCnt++;
+						var ownerType = getAppSpecific("Owner Type", capId);   
+						var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
+						if (ownerType == "2-State Government" || regulatedSite == "Yes")
+						{
+							//editAppSpecific("Article 18 Regulated Site", "No", capId);	
+							logDebugLocal("Owner Type: " + ownerType + ", " + "MOSF Regulated Site: " + regulatedSite);					
+							logDebugLocal("Update Article 18 Regulated Site to No: " + capIDString);
+							siteCnt++;
+						}	
+					}					
+					
+				}
+			}
+		}
+		logDebugLocal("Batch # 3: Total Site-OPC records that has updated PBS Regulated Site to YES: " + sitePBSSiteSetCnt);
+		logDebugLocal("Batch # 3: Total Site-OPC records with owner type or MOSF that has updated Artcle 18 to NO: " + siteCnt);
+
        
     }
     catch (err) 
