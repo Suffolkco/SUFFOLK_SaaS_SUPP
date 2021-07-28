@@ -116,6 +116,8 @@ if (!publicUser)
         if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")
         {
             addParameter(vEParams, '$$altID$$', capId.getCustomID());
+            addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl());
+            addParameter(vEParams, "$$PINNumber$$", PIN);
             conEmail += conArray.email + "; ";
             logDebug("Email addresses: " + conEmail);
             sendNotification("", conEmail, "", "CA_VIOLATION_FEES_DUE", vEParams, null);
