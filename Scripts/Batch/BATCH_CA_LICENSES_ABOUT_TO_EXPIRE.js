@@ -248,18 +248,18 @@ function mainProcess()
                             if (contactResult.getSuccess()) 
                             {
                                 var capContacts = contactResult.getOutput();
-                                var conEmail = ""
+                                var conEmail = "";
                                 for (c in capContacts) 
                                 {
                                     if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
-                                    {   conEmail += capContacts[c].email;
+                                    {   
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                         {
                                             if (appTypeArray[2] != "Polygraph Examiner") 
                                             {
                                                 addParameter(vRParams, "RecordID", capIDString);
-
+                                                conEmail += capContacts[c].email;
                                                 emailWithReportAttachASync(conEmail, "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
                                             }
                                             if (appTypeArray[2] == "Polygraph Examiner")
