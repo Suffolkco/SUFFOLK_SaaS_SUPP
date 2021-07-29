@@ -116,7 +116,7 @@ if (!publicUser)
     var PIN = AInfo["PIN Number"];
     if (conArray.flag == "Y")
     {
-        if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")
+        if (wfTask == "Payment" && (matches(wfStatus, "Collections External", "Collections Internal")))
         {
             addParameter(vEParams, '$$altID$$', capId.getCustomID());
             addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl());
