@@ -24,7 +24,7 @@ if (publicUser)
         }
     }
 }
-copyContacts(parentCapId, capId);
+copyContacts(parentCapId, capId); 
 copyASIFields(parentCapId, capId);
 copyASITables(parentCapId, capId);
 
