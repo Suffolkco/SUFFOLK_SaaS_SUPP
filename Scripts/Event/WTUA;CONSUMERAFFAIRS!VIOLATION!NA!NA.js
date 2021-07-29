@@ -109,8 +109,11 @@ if (wfTask == "Notice of Hearing" && wfStatus == "Notice Sent-Certified/Regular"
 if (!publicUser)
 {
     var vEParams = aa.util.newHashtable();
-    var conArray = getContactByType("Vendor", capId);
+    var conArray = getContactByType("Vendor", capId); 
     var conEmail = "";
+    var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+    acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+    var PIN = AInfo["PIN Number"];
     if (conArray.flag == "Y")
     {
         if (wfTask == "Payment" && wfStatus == "Collections External" || "Collections Internal")

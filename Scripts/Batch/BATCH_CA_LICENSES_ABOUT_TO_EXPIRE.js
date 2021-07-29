@@ -245,21 +245,22 @@ function mainProcess()
                             aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", systemUserObj);
                             logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
                             var contactResult = aa.people.getCapContactByCapID(capId);
-                            if (contactResult.getSuccess())
+                            if (contactResult.getSuccess()) 
                             {
                                 var capContacts = contactResult.getOutput();
-                                for (c in capContacts)
+                                var conEmail = ""
+                                for (c in capContacts) 
                                 {
                                     if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
-                                    {
+                                    {   conEmail += capContacts[c].email;
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                         {
-                                            if (appTypeArray[2] != "Polygraph Examiner")
+                                            if (appTypeArray[2] != "Polygraph Examiner") 
                                             {
                                                 addParameter(vRParams, "RecordID", capIDString);
 
-                                                emailWithReportAttachASync(capContacts[c].email, "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
+                                                emailWithReportAttachASync(conEmail, "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
                                             }
                                             if (appTypeArray[2] == "Polygraph Examiner")
                                             {
