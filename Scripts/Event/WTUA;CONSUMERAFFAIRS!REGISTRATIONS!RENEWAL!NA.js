@@ -20,9 +20,12 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
             b1Exp.setExpStatus("Active");
             b1Exp.setExpDate(aa.date.parseDate(newExpDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+            //updating Renewal record workflow and appStatus
             activateTask("Issuance");
             updateTask("Issuance", "Renewed", "", "");
             updateAppStatus("Active", "", parentCapId);
+
+            //updating parent record workflows
             if (appTypeArray[2] != "Home Energy Auditor")
             {
                 activateTask("Issuance", "", parentCapId);
