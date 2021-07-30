@@ -1,4 +1,4 @@
-if (wfTask == "Renewal Review" && wfStatus == "Complete")
+if (wfTask == "Issuance" && wfStatus == "Renewed")
 {
     var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();
@@ -22,7 +22,7 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             //updating Renewal record workflow and appStatus
             activateTask("Issuance");
-            updateTask("Issuance", "Renewed", "", "");
+            updateTask("Issuance", "Issued", "", "");
             updateAppStatus("Active", "", parentCapId);
 
             //updating parent record workflows

@@ -21,8 +21,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             b1Exp.setExpDate(aa.date.parseDate(newExpDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
-            activateTask("Issuance", "", parentCapId);
-            updateTask("Issuance", "Issued", "", "", parentCapId);
+            updateTask("Issuance", "Issued", "", "", "", parentCapId);
         }
     }
     var capContacts = aa.people.getCapContactByCapID(parentCapId);

@@ -67,8 +67,7 @@ if (publicUser)
                 b1Exp.setExpDate(aa.date.parseDate(newExpDate));
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                 updateAppStatus("Active", "", parentCapId);
-                activateTask("Issuance", "", parentCapId);
-                updateTask("Issuance", "Issued", "", "", parentCapId);
+                updateTask("Issuance", "Issued", "", "", "", parentCapId);
             }
         }
 
@@ -91,7 +90,8 @@ if (publicUser)
             //Check list
             logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
             editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
-        }        copyASITables(capId, parentCapId);
+        }        
+        copyASITables(capId, parentCapId);
 
         var conArray = getContactByType("Applicant", capId);
         var conEmail = "";
