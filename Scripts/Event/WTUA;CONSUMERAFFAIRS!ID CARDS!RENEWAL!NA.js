@@ -22,7 +22,7 @@ if (wfTask == "Issuance" && wfStatus == "Renewed")
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
             activateTask("Issuance", "", parentCapId);
-            updateTask("Issuance", "Issued", "", "", parentCapId);
+            updateTask("Issuance", "Issued", "", "", "", parentCapId);
         }
     }
     var capContacts = aa.people.getCapContactByCapID(parentCapId);
