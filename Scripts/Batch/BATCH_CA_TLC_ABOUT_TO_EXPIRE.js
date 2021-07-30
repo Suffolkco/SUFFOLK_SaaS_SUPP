@@ -184,8 +184,8 @@ function mainProcess()
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                                                         addParameter(vRParams, "RecordID", capIDString);
-                                                        addParameter(vRParams, "FromDate", dateToCheck);
-                                                        addParameter(vRParams, "ToDate", dateToCheck);
+                                                        addParameter(vRParams, "FromDate", curExpCon);
+                                                        addParameter(vRParams, "ToDate", curExpCon);
                                                         addParameter(vRParams, "Email", "Yes");
 
                                                         logDebug("<b>" + capIDString + "</b>" + " About to Expire");
