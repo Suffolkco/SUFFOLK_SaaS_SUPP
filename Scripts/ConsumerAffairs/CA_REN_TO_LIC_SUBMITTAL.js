@@ -77,6 +77,11 @@ if (publicUser)
             logDebug("Task is closing");
             closeTask("Issuance", "Renewed", "Updated by Renewal Script", "Updated by Renewal Script");
         }
+        if (isTaskActive("Renewal Review"))
+        {
+            logDebug("Task is closing");
+            closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
+        }
         //copying back from the renewal to the parent for records where the condition has been met
         copyContacts(capId, parentCapId);
         AInfo = new Array();
