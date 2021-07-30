@@ -8,7 +8,7 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
     {
         //Updating Expiration Date of License
         var b1Exp = b1ExpResult.getOutput();
-        var todayExpDate = b1Exp.getExpDate();
+        var todayExpDate = convertDate(b1Exp.getExpDate());
         logDebug("New Date Exp Date is: " + todayExpDate)
         var newExpDate = (todayExpDate.getMonth() + 1) + "/" + 1 + "/" + (todayExpDate.getFullYear() + 2);
         logDebug("New Exp Date is: " + newExpDate);
