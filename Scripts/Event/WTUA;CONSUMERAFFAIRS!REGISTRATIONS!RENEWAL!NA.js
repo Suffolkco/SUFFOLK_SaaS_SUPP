@@ -22,19 +22,19 @@ if (wfTask == "Issuance" && wfStatus == "Renewed")
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             //updating Renewal record workflow and appStatus
             activateTask("Issuance");
-            updateTask("Issuance", "Issued", "", "");
+            updateTask("Issuance", "Issued", "", "", "", parentCapId);
             updateAppStatus("Active", "", parentCapId);
 
             //updating parent record workflows
             if (appTypeArray[2] != "Home Energy Auditor")
             {
                 activateTask("Issuance", "", parentCapId);
-                updateTask("Issuance", "Renewed", "", "", parentCapId);
+                updateTask("Issuance", "Issued", "", "", "", parentCapId);
             }
             if (appTypeArray[2] == "Home Energy Auditor")
             {
                 activateTask("Registraton", "", parentCapId);
-                updateTask("Registraton", "Renewed", "", "", parentCapId);
+                updateTask("Registraton", "Issued", "", "", "", parentCapId);
             }
         }
     }
