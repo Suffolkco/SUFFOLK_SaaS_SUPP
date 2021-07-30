@@ -36,7 +36,7 @@ if (!pUser.contains("PUBLICUSER"))
                     aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                     updateAppStatus("Active", "", parentCapId);
                     activateTask("Issuance", "", parentCapId);
-                    updateTask("Issuance", "Issued", "", "", parentCapId);
+                    updateTask("Issuance", "Issued", "", "", "", parentCapId);
                     if (appTypeArray[2] != "Polygraph Examiner")
                     {
                         closeTask("Issuance", "Renewed", "Updated by Renewal Script 2", "Updated by Renewal Script 2");
