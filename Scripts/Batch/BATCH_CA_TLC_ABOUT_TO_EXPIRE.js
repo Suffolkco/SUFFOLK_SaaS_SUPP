@@ -19,6 +19,7 @@ var systemUserObj = aa.person.getUser("ADMIN").getOutput();
 var useAppSpecificGroupName = false;
 var timeExpired = false;
 var br = "<BR>";
+var currentUserID = "ADMIN";
 var emailAddress = "";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
@@ -205,7 +206,7 @@ function mainProcess()
                                                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                                                         {
                                                                             conEmail += capContacts[c].email;
-                                                                            logDebugLocal("Conemail is: " + conEmail);
+                                                                            
 
                                                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", appTypeArray[0], vRParams);
                                                                             if (caReport)
