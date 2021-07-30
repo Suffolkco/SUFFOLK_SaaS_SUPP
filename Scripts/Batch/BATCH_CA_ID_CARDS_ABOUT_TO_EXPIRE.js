@@ -243,6 +243,7 @@ function mainProcess()
                             if (contactResult.getSuccess())
                             {
                                 var capContacts = contactResult.getOutput();
+                                var conEmail = "";
                                 for (c in capContacts)
                                 {
                                     if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
@@ -251,8 +252,21 @@ function mainProcess()
                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                         {
                                             addParameter(vRParams, "RecordID", capIDString);
+                                            addParameter(vRParams, "FromDate", dateToCheck);
+                                            addParameter(vRParams, "ToDate", dateToCheck);
+                                            addParameter(vRParams, "Email", "Yes");
 
-                                            emailWithReportAttachASync(capContacts[c].email, "CA_ID_CARDS_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
+                                            conEmail += capContacts[c].email;
+                                            logDebugLocal("Conemail is: " + conEmail);
+
+                                            var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", appTypeArray[0], vRParams);
+                                            if (caReport)
+                                            {
+                                                var caReports = new Array();
+                                                caReports.push(caReport);
+                                            }
+
+                                            sendNotification("", conEmail, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, caReports);
                                         }
                                     }
                                 }
@@ -518,6 +532,43 @@ function emailWithReportAttachASync(pSendToEmailAddresses, pEmailTemplate, pEPar
     return true;
 }
 
+function generateReportBatch(itemCap, reportName, module, parameters)
+{
+    //returns the report file which can be attached to an email.
+    var user = currentUserID; // Setting the User Name
+    var report = aa.reportManager.getReportInfoModelByName(reportName);
+    if (!report.getSuccess() || report.getOutput() == null)
+    {
+        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
+        return false;
+    }
+    report = report.getOutput();
+    report.setModule(module);
+    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName, user);
+
+    if (permit.getOutput().booleanValue())
+    {
+        var reportResult = aa.reportManager.getReportResult(report);
+        if (reportResult.getSuccess())
+        {
+            reportOutput = reportResult.getOutput();
+            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
+            reportFile = reportFile.getOutput();
+            return reportFile;
+        } else
+        {
+            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
+            return false;
+        }
+    } else
+    {
+        logDebug("You have no permission.");
+        return false;
+    }
+}
 
 
 
