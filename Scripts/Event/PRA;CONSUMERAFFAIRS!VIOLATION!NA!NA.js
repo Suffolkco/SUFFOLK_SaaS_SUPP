@@ -71,6 +71,7 @@ var conEmail = "";
 var PaymentTotalPaidAmount = aa.env.getValue("PaymentTotalPaidAmount");
 var itemCapDetail = capDetailObjResult.getOutput();
 var itemBalanceDue = itemCapDetail.getBalance();
+var capContacts = contactResult.getOutput();
 
 for (c in capContacts) 
 {
