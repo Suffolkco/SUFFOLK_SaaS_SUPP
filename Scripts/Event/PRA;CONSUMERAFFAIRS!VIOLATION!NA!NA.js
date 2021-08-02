@@ -72,6 +72,7 @@ var PaymentTotalPaidAmount = aa.env.getValue("PaymentTotalPaidAmount");
 var itemCapDetail = capDetailObjResult.getOutput();
 var itemBalanceDue = itemCapDetail.getBalance();
 var capContacts = contactResult.getOutput();
+var contactResult = aa.people.getCapContactByCapID(capId);
 
 for (c in capContacts) 
 {
