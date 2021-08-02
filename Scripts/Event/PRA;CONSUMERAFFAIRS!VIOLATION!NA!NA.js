@@ -66,29 +66,31 @@ if (balanceDue == 0)
 
 
 var vEParams = aa.util.newHashtable();
-var conArray = getContactByType("Public User", capId);
-var conEmail = "";
 var PaymentTotalPaidAmount = aa.env.getValue("PaymentTotalPaidAmount");
 var itemCapDetail = capDetailObjResult.getOutput();
 var itemBalanceDue = itemCapDetail.getBalance();
-var capContacts = contactResult.getOutput();
 var contactResult = aa.people.getCapContactByCapID(capId);
-
-for (c in capContacts) 
+if (contactResult.getSuccess())
 {
-
-    if (!matches(conArray.email, null, undefined, ""))
+    var capContacts = contactResult.getOutput();
+    var conEmail = "";
+    for (c in capContacts) 
     {
-
+        if (capContacts[c].getCapContactModel().getContactType() == "Public User")
         {
             addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-            addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
-            addParameter(vEParams, '$$altID$$', capId.getCustomID());
-            addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
+            if (!matches(capContacts[c].email, null, undefined, ""))
+            {
 
-            conEmail += conArray.email + "; ";
-            logDebug("Email addresses: " + conEmail);
-            sendNotification("", conEmail, "", "CA_VIOLATION_PAYMENT_RECEIVED", vEParams, null);
+                {
+                    addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
+                    addParameter(vEParams, '$$altID$$', capId.getCustomID());
+                    addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
+                    conEmail += capContacts[c].email + "; ";
+                    logDebug("Email addresses: " + conEmail);
+                    sendNotification("", conEmail, "", "CA_VIOLATION_PAYMENT_RECEIVED", vEParams, null);
+                }
+            }
         }
     }
-}
+}    
