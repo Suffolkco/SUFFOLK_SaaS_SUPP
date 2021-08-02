@@ -74,14 +74,16 @@ var itemBalanceDue = itemCapDetail.getBalance();
 
 for (c in capContacts) 
 {
+
     if (!matches(conArray.email, null, undefined, ""))
     {
-        if (capContacts[c].getCapContactModel().getContactType() == "Public User")
+
         {
+            addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
             addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
             addParameter(vEParams, '$$altID$$', capId.getCustomID());
             addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
-            addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+
             conEmail += conArray.email + "; ";
             logDebug("Email addresses: " + conEmail);
             sendNotification("", conEmail, "", "CA_VIOLATION_PAYMENT_RECEIVED", vEParams, null);
