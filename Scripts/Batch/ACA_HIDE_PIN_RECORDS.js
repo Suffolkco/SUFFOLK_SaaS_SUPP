@@ -109,7 +109,7 @@ function mainProcess()
           
                 if (cap)
                 {
-                    if (getAppStatus() == "Received")
+                    if (getAppStatus() == "Complete")
                     {
                         aa.print("Remove ACA Access:" + capIDString);
                         aa.cap.updateAccessByACA(capId, "N");
