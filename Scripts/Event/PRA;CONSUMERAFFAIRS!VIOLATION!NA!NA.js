@@ -88,7 +88,7 @@ if (contactResult.getSuccess())
                     addParameter(vEParams, '$$altID$$', capId.getCustomID());
                     addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
                     addParameter(vRParams, "capid", "-1");
-                    addParameter(vRParams, "batchtransactionnbr", f4payment.BATCH_TRANSACTION_NBR);
+                    addParameter(vRParams, "batchtransactionnbr", "-1");
                     conEmail += capContacts[c].email + "; ";
                     logDebug("Email addresses: " + conEmail);
 
