@@ -413,7 +413,6 @@ function mainProcess()
 												logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
 												break;
 											}
-
 										}	
 
 										// First 4 digits are numbers, check what they are end with
