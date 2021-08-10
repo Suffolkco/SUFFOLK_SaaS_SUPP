@@ -351,6 +351,7 @@ function mainProcess()
           
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
+			
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
@@ -364,13 +365,13 @@ function mainProcess()
 
 						if (childArray.length > 0)
 						{
-							logDebugLocal("********OPC site " + capIDString + " has tank child ");
+							logDebugLocal("********OPC site " + capIDString + " has tank child. ");
 
 							for (yy in childArray)
 							{
 								var childCapId = childArray[yy];
 								//var childCapStatus = getAppStatus(childCapId);
-								logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with this status: "+ childCapStatus);
+								logDebugLocal("We found this child tank: " + childCapId.getCustomID());
 							
 								var offUseCode = getAppSpecific("Official Use Code", childCapId);
 								var match = false;
