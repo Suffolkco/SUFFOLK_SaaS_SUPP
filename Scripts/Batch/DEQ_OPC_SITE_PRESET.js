@@ -360,8 +360,12 @@ function mainProcess()
 					var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
 					if (childArray)
 					{
+						logDebugLocal("********OPC site has tank child***** ");
+
 						if (childArray.length > 0)
 						{
+							logDebugLocal("********OPC site " + capIDString + " has tank child ");
+
 							for (yy in childArray)
 							{
 								var childCapId = childArray[yy];
