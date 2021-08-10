@@ -344,7 +344,7 @@ function mainProcess()
 		var heatingOilGreaterThan1100 = 0;
 
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
-		for (r in vRevTankSQLResultsult)
+		for (r in vTankSQLResult)
         {		
 			var totalCapacity = 0;	
             recordID = vTankSQLResult[r]["recordNumber"];      
