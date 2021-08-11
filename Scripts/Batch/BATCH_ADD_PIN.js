@@ -14,7 +14,7 @@
         /// TESTING ... REMOVE    
         
         // Address limitation of Batch Parm default.
-        // Setting this value explicit in code.
+        // Setting this value explicit in code. 
         // Adjust as needed.
 
         var recTypesList = '';

@@ -24,7 +24,7 @@ try {
     		//tmpTable = loadASITable("RECORD MATCH CRITERIA");
     		tmpTable = loadASITable("PIN ENTRY");
    			for (rowIndex in tmpTable) {
-				thisRow = tmpTable[rowIndex];
+				thisRow = tmpTable[rowIndex]; 
 				//recNum = thisRow["Record Number"].fieldValue;
 				recNum = thisRow["License Number"].fieldValue;
 				if (recNum && recNum != "") {
