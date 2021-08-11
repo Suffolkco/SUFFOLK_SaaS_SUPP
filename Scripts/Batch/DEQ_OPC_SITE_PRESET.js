@@ -385,13 +385,13 @@ function mainProcess()
 								|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
 								{									
 									match = true;
-									logDebugLocal("Match offUsecode." );
+									//logDebugLocal("Match offUsecode." );
 								} 
 								else
 								{
 									//First check to see if it can be ###EMB
 									
-									logDebugLocal("Official Use code length is: " + length);
+									//logDebugLocal("Official Use code length is: " + length);
 
 									if (length == 6)
 									{
@@ -406,13 +406,13 @@ function mainProcess()
 										if (isEMB)
 										{
 											isEMB = offUseCode.endsWith('EMB');
-											logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
+											//logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
 										}
 
 									}	
 									if (!isEMB)
 									{
-										logDebugLocal("isEMB: " + isEMB);
+										//logDebugLocal("isEMB: " + isEMB);
 
 										if (length > 4)
 										{
@@ -421,13 +421,15 @@ function mainProcess()
 											for (i = 0; i < 4; i++)
 											{
 												var c = offUseCode.charAt(i);			
-												logDebugLocal("Char at : " + i, ":" + c);									
+												//logDebugLocal("Char at : " + i, ":" + c);									
 												isFourDigit = (c >= '0' && c <= '9');
-												logDebugLocal("isFourDigit: " + isFourDigit);
+												//logDebugLocal("isFourDigit: " + isFourDigit);
 												// Any mistmatch should break the loop since we only for first 4 to be digit
 												if(!isFourDigit) 
 												{
 													logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
+													// Quit for that site. No need to check additional tank child
+													finalCheck(totalCapacity, capId, capIDString);
 													break;
 												}
 											}	
@@ -436,7 +438,7 @@ function mainProcess()
 											// ####P, ####UAP, ####OOS, ####TOS, ####HO
 											if (isFourDigit)
 											{
-												logDebugLocal("First 4 digit is digits. Now checking the end string." + childCapId.getCustomID());
+												//logDebugLocal("First 4 digit is digits. Now checking the end string." + childCapId.getCustomID());
 												if (length == 5) //####P
 												{
 													isFourDigit = offUseCode.endsWith('P');
@@ -456,6 +458,8 @@ function mainProcess()
 												else
 												{												
 													logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
+													// Quit for that site. No need to check additional tank child
+													finalCheck(totalCapacity, capId, capIDString);
 													break;
 												}																			
 												logDebugLocal("4 digit and ends with P, HO, UAP, OOS or TOS: " + offUseCode);
@@ -468,19 +472,19 @@ function mainProcess()
 								// we update Article 18 site
 								if (match || isFourDigit || isEMB)
 								{
-									logDebugLocal("Official use code matched: " + offUseCode + "," + capIDString);
+									//logDebugLocal("Official use code matched: " + offUseCode + "," + capIDString);
 									// Get SITE custom field
 									var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
 
-									logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
+									//logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
 
 									var prodStoredCat = getAppSpecific("Product Stored", childCapId);
 									var storageType = getAppSpecific("Storage Type", childCapId);
 									var capacity = getAppSpecific("Capacity", childCapId);
 
-									logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
-									logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
-									logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
+									//logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
+									//logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
+									//logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
 
 									if (storageType == "0-Tank" || storageType == null)
 									{
@@ -573,6 +577,7 @@ function mainProcess()
 /------------------------------------------------------------------------------------------------------*/
 function finalCheck(totalCapacity, capId, capIDString)
 {
+	logDebugLocal("Final Check capcity");
 	if (totalCapacity > 1100)
 	{
 		//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
