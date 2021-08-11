@@ -502,7 +502,7 @@ function mainProcess()
 												}
 												else
 												{
-													var petroFac = getAppSpecific("Type of Petroleum Facility", capId);
+													var petroFac = getAppSpecific("Type of Petro Facility", capId);
 													if (capacity > 1100)
 													{ 
 														// Set Site Article 18 to No																							
@@ -518,7 +518,7 @@ function mainProcess()
 														if (petroFac != "9-Farm" && petroFac != "10-Private Residence")
 														{
 															totalCapacity = totalCapacity + capacity;
-															logDebugLocal("Adding capacity due to type of petroleum Fac: " + petroFac + "," + capIDString + "," + childCapId.getCustomID());
+															logDebugLocal("Adding capacity " + capacity + " due to type of petroleum Fac: " + petroFac + ", " + capIDString + ", " + childCapId.getCustomID());
 														}
 
 													}
@@ -577,7 +577,7 @@ function isNumeric(n) {
 
 function finalCheck(totalCapacity, capId, capIDString)
 {
-	logDebugLocal("Final Check capcity");
+	logDebugLocal("Final Check capcity total: " + totalCapacity);
 	if (totalCapacity > 1100)
 	{
 		//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
