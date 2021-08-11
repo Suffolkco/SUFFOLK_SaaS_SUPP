@@ -421,9 +421,10 @@ function mainProcess()
 											for (i = 0; i < 4; i++)
 											{
 												var c = offUseCode.charAt(i);			
-												//logDebugLocal("Char at : " + i, ":" + c);									
+												logDebugLocal("Char at : " + i, " is " + c);									
 												isFourDigit = (c >= '0' && c <= '9');
-												//logDebugLocal("isFourDigit: " + isFourDigit);
+
+												logDebugLocal("isFourDigit: " + isFourDigit + " since c is: " + c);
 												// Any mistmatch should break the loop since we only for first 4 to be digit
 												if(!isFourDigit) 
 												{
@@ -434,6 +435,7 @@ function mainProcess()
 												}
 											}	
 
+											
 											// First 4 digits are numbers, check what they are end with
 											// ####P, ####UAP, ####OOS, ####TOS, ####HO
 											if (isFourDigit)
