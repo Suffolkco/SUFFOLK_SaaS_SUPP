@@ -389,7 +389,7 @@ function mainProcess()
 								else
 								{
 									//First check to see if it can be ###EMB
-									var length = offUseCode.length;
+									var length = offUseCode.length();
 									logDebugLocal("Official Use code length is: " + length);
 
 									if (length == 6)
