@@ -397,7 +397,7 @@ function mainProcess()
 									{
 										for (i = 0; i < 3; i++)
 										{
-											var c = offUseCode.ChartAt(i);
+											var c = offUseCode.CharAt(i);
 											if (i < 3)
 											{
 												isEMB = (c >= '0' && c <= '9');									
