@@ -351,7 +351,8 @@ function mainProcess()
           
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
-			
+			if (capIDString == "SITE-00-15154-OPC")
+			{
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
@@ -424,6 +425,7 @@ function mainProcess()
 													//logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
+													logDebugLocal("1. Did I break here? ");
 													break;
 												}	
 												
@@ -455,6 +457,7 @@ function mainProcess()
 														//logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
 														// Quit for that site. No need to check additional tank child
 														finalCheck(totalCapacity, capId, capIDString);
+														logDebugLocal("2. Did I break here? ");
 														break;
 													}																			
 													//logDebugLocal("Four leading 4 digits and also ends with P, HO, UAP, OOS or TOS: " + offUseCode + "," + childCapId.getCustomID());
@@ -467,7 +470,6 @@ function mainProcess()
 									// we update Article 18 site
 									if (match || isFourDigit || isEMB)
 									{
-										
 										// Get SITE custom field
 										var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
 
@@ -494,10 +496,11 @@ function mainProcess()
 												if (tankLoc == "4-Underground-Outdoors" || tankLoc == "3-Underground-Indoors")
 												{
 													//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+													undergroundTotal++;
 													logDebugLocal("Set Site Article 18 Regulated Site to Yes for underground tank child: " + capIDString + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
-													finalCheck(totalCapacity, capId, capIDString);
-													undergroundTotal++;
+													finalCheck(totalCapacity, capId, capIDString);		
+													logDebugLocal("3. Did I break here? ");											
 													break;
 												}
 												else
@@ -511,6 +514,7 @@ function mainProcess()
 														// Quit for that site. No need to check additional tank child
 														finalCheck(totalCapacity, capId, capIDString);
 														abovegroundGreaterThan1100++;
+														logDebugLocal("4. Did I break here? ");						
 														break;
 													}
 													else
@@ -534,6 +538,7 @@ function mainProcess()
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
 													heatingOilGreatherThan1100++;
+													logDebugLocal("5. Did I break here? ");						
 													break;
 												}
 											}
@@ -545,17 +550,23 @@ function mainProcess()
 
 							// Now we are out of the child tanks, final check
 							finalCheck(totalCapacity, capId, capIDString);
+							logDebugLocal("6. I don't break here. Final check. ");			
 						}
 					}
 					
 				}
 			}
+		
+		}
+		logDebugLocal("Should Break now!!!");
+		break;
 		}
 		logDebugLocal("Batch # 4: Total Site-OPC records that has updated PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
+		
     
-    }
+	}
     catch (err) 
     {
         logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
