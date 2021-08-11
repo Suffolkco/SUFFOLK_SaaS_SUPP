@@ -395,19 +395,15 @@ function mainProcess()
 
 									if (length == 6)
 									{
-										for (i = 0; i < 3; i++)
-										{
-											var c = offUseCode.CharAt(i);
-											if (i < 3)
-											{
-												isEMB = (c >= '0' && c <= '9');									
-											}										
-										}
-										if (isEMB)
+										var leadingVal = offUseCode.substring(0,2)
+										logDebugLocal("leadingVal is: " + leadingVal + " for official code " + offUseCode + "," + childCapId.getCustomID());
+										var numeric = isNumeric(leadingVal);
+
+										if (numeric)
 										{
 											isEMB = offUseCode.endsWith('EMB');
-											//logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
-										}
+											logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
+										}										
 
 									}	
 									if (!isEMB)
@@ -417,30 +413,27 @@ function mainProcess()
 										if (length > 4)
 										{
 											logDebugLocal("length is > 4: " + length);
-											// Is first 4 digits?
-											for (i = 0; i < 4; i++)
+											var leadingVal = offUseCode.substring(0,3)
+											var numeric = isNumeric(leadingVal);
+											if (numeric)
 											{
-												var c = offUseCode.charAt(i);			
-												logDebugLocal("Char at : " + i, " is " + c);									
-												isFourDigit = (c >= '0' && c <= '9');
-
-												logDebugLocal("isFourDigit: " + isFourDigit + " since c is: " + c);
-												// Any mistmatch should break the loop since we only for first 4 to be digit
-												if(!isFourDigit) 
-												{
-													logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
-													// Quit for that site. No need to check additional tank child
-													finalCheck(totalCapacity, capId, capIDString);
-													break;
-												}
+												isFourDigit = true;
+											}
+											else
+											{									
+												logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
+												// Quit for that site. No need to check additional tank child
+												finalCheck(totalCapacity, capId, capIDString);
+												break;
 											}	
+											
 
 											
 											// First 4 digits are numbers, check what they are end with
 											// ####P, ####UAP, ####OOS, ####TOS, ####HO
 											if (isFourDigit)
 											{
-												//logDebugLocal("First 4 digit is digits. Now checking the end string." + childCapId.getCustomID());
+												logDebugLocal("First 4 digits are digits. Now checking the end string." + childCapId.getCustomID());
 												if (length == 5) //####P
 												{
 													isFourDigit = offUseCode.endsWith('P');
@@ -577,6 +570,10 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function isNumeric(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+  }
+
 function finalCheck(totalCapacity, capId, capIDString)
 {
 	logDebugLocal("Final Check capcity");
