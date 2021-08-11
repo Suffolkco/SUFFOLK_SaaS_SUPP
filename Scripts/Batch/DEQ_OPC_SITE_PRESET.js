@@ -566,8 +566,12 @@ function mainProcess()
 			}
 		
 		}
+		// TEsting remove this when done
 		logDebugLocal("Should Break now!!!");
-		break;
+		if (totalCapacity == 1500)
+		{
+			break;
+		}
 		}
 		logDebugLocal("Batch # 4: Total Site-OPC records that has updated PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
@@ -596,7 +600,7 @@ function isNumeric(n) {
 
 function finalCheck(totalCapacity, capId, capIDString)
 {
-	//logDebugLocal("Final Check capcity total: " + totalCapacity);
+	logDebugLocal("Final Check capcity total: " + totalCapacity);
 	if (totalCapacity > 1100)
 	{
 		//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
