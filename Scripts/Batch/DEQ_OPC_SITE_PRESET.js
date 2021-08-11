@@ -420,7 +420,8 @@ function mainProcess()
 											// Is first 4 digits?
 											for (i = 0; i < 4; i++)
 											{
-												var c = offUseCode.ChartAt(i);												
+												var c = offUseCode.charAt(i);			
+												logDebugLocal("Char at : " + i, ":" + c);									
 												isFourDigit = (c >= '0' && c <= '9');
 												logDebugLocal("isFourDigit: " + isFourDigit);
 												// Any mistmatch should break the loop since we only for first 4 to be digit
