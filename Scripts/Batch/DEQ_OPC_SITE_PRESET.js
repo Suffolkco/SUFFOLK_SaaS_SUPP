@@ -363,7 +363,7 @@ function mainProcess()
 					{
 						if (childArray.length > 0)
 						{
-							logDebugLocal("********OPC site " + capIDString + " has tank child. ");
+							//logDebugLocal("********OPC site " + capIDString + " has tank child. ");
 
 							for (yy in childArray)
 							{
@@ -467,7 +467,7 @@ function mainProcess()
 									// we update Article 18 site
 									if (match || isFourDigit || isEMB)
 									{
-										logDebugLocal("Official use code matched: " + offUseCode + "," + capIDString);
+										
 										// Get SITE custom field
 										var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
 
@@ -577,11 +577,11 @@ function isNumeric(n) {
 
 function finalCheck(totalCapacity, capId, capIDString)
 {
-	logDebugLocal("Final Check capcity total: " + totalCapacity);
+	//logDebugLocal("Final Check capcity total: " + totalCapacity);
 	if (totalCapacity > 1100)
 	{
 		//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-		logDebugLocal("Final Check capcity > 1100: " + totalCapacity + "," + capIDString);
+		logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
 		
 	}
 	var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
