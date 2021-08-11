@@ -351,7 +351,7 @@ function mainProcess()
           
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
-			if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
+			//if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
 			{
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
@@ -527,7 +527,7 @@ function mainProcess()
 														if (petroFac != "9-Farm" && petroFac != "10-Private Residence")
 														{
 															totalCapacity = totalCapacity + capacity;
-															logDebugLocal("Adding capacity " + capacity + " due to type of petroleum Fac: " + petroFac + ", " + capIDString + ", " + childCapId.getCustomID());
+															logDebugLocal("Adding capacity " + capacity + " due to Type of Petro Facility: " + petroFac + ", " + capIDString + ", " + childCapId.getCustomID());
 														}
 
 													}
@@ -566,12 +566,7 @@ function mainProcess()
 			}
 		
 		}
-		// TEsting remove this when done
-		logDebugLocal("Should Break now!!!");
-		if (totalCapacity == 1500)
-		{
-			break;
-		}
+
 		}
 		logDebugLocal("Batch # 4: Total Site-OPC records that has updated PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
@@ -600,7 +595,7 @@ function isNumeric(n) {
 
 function finalCheck(totalCapacity, capId, capIDString)
 {
-	logDebugLocal("Final Check capcity total: " + totalCapacity);
+	//logDebugLocal("Final Check capcity total: " + totalCapacity);
 	if (totalCapacity > 1100)
 	{
 		//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
