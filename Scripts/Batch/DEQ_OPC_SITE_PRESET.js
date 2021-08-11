@@ -379,6 +379,7 @@ function mainProcess()
 								var match = false;
 								var isFourDigit = false;
 								var isEMB = false;
+								var length = offUseCode.length();
 								// Good match
 								if (offUseCode == 'UAP' ||offUseCode == 'EX' || offUseCode == 'EXP' || offUseCode == '81' || offUseCode == '82' || offUseCode == '85'
 								|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
@@ -389,7 +390,7 @@ function mainProcess()
 								else
 								{
 									//First check to see if it can be ###EMB
-									var length = offUseCode.length();
+									
 									logDebugLocal("Official Use code length is: " + length);
 
 									if (length == 6)
@@ -411,46 +412,54 @@ function mainProcess()
 									}	
 									if (!isEMB)
 									{
-										// Is first 4 digits?
-										for (i = 0; i < 4; i++)
-										{
-											var c = offUseCode.ChartAt(i);
-											isFourDigit = (c >= '0' && c <= '9');
-											logDebugLocal("isFourDigit: " + isFourDigit);
-											// Any mistmatch should break the loop since we only for first 4 to be digit
-											if(!isFourDigit) 
-											{
-												logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
-												break;
-											}
-										}	
+										logDebugLocal("isEMB: " + isEMB);
 
-										// First 4 digits are numbers, check what they are end with
-										// ####P, ####UAP, ####OOS, ####TOS, ####HO
-										if (isFourDigit)
+										if (length > 4)
 										{
-											logDebugLocal("First 4 digit is digits. Now checking the end string." + childCapId.getCustomID());
-											if (length == 5) //####P
+											logDebugLocal("length is > 4: " + length);
+											// Is first 4 digits?
+											for (i = 0; i < 4; i++)
 											{
-												isFourDigit = offUseCode.endsWith('P');
-											}
-											else if (length == 6) // ####HO
-											{
-												isFourDigit = offUseCode.endsWith('HO');												
-											}
-											else if (length == 7) // ####UAP, ####OOS, ####TOS
-											{
-												if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
+												var c = offUseCode.ChartAt(i);												
+												isFourDigit = (c >= '0' && c <= '9');
+												logDebugLocal("isFourDigit: " + isFourDigit);
+												// Any mistmatch should break the loop since we only for first 4 to be digit
+												if(!isFourDigit) 
 												{
-													isFourDigit = true;
-												}										 
+													logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
+													break;
+												}
+											}	
+
+											// First 4 digits are numbers, check what they are end with
+											// ####P, ####UAP, ####OOS, ####TOS, ####HO
+											if (isFourDigit)
+											{
+												logDebugLocal("First 4 digit is digits. Now checking the end string." + childCapId.getCustomID());
+												if (length == 5) //####P
+												{
+													isFourDigit = offUseCode.endsWith('P');
+													
+												}
+												else if (length == 6) // ####HO
+												{
+													isFourDigit = offUseCode.endsWith('HO');												
+												}
+												else if (length == 7) // ####UAP, ####OOS, ####TOS
+												{
+													if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
+													{
+														isFourDigit = true;
+													}										 
+												}
+												else
+												{												
+													logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
+													break;
+												}																			
+												logDebugLocal("4 digit and ends with P, HO, UAP, OOS or TOS: " + offUseCode);
+												
 											}
-											else
-											{												
-												logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
-												break;
-											}																			
-											
 										}
 									}
 								}
