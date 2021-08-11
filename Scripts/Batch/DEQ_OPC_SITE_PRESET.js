@@ -371,9 +371,11 @@ function mainProcess()
 							{
 								var childCapId = childArray[yy];
 								//var childCapStatus = getAppStatus(childCapId);
-								logDebugLocal("We found this child tank: " + childCapId.getCustomID());
+								
 							
 								var offUseCode = getAppSpecific("Official Use Code", childCapId);
+								logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with official code " + offUseCode);
+
 								var match = false;
 								var isFourDigit = false;
 								var isEMB = false;
@@ -382,11 +384,14 @@ function mainProcess()
 								|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
 								{									
 									match = true;
+									logDebugLocal("Match offUsecode." );
 								} 
 								else
 								{
 									//First check to see if it can be ###EMB
 									var length = offUseCode.length;
+									logDebugLocal("Official Use code length is: " + length);
+
 									if (length == 6)
 									{
 										for (i = 0; i < 3; i++)
@@ -411,7 +416,7 @@ function mainProcess()
 										{
 											var c = offUseCode.ChartAt(i);
 											isFourDigit = (c >= '0' && c <= '9');
-											
+											logDebugLocal("isFourDigit: " + isFourDigit);
 											// Any mistmatch should break the loop since we only for first 4 to be digit
 											if(!isFourDigit) 
 											{
@@ -457,10 +462,16 @@ function mainProcess()
 									// Get SITE custom field
 									var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
 
+									logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
+
 									var prodStoredCat = getAppSpecific("Product Stored Category", childCapId);
 									var storageType = getAppSpecific("Storage Type", childCapId);
 									var capacity = getAppSpecific("Capacity", childCapId);
 
+									logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
+									logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
+									logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
+									
 									if (storageType == "0-Tank" || storageType == null)
 									{
 										if (prodStoredCat == "Heating Oil: Resale/Redistribution" ||									
