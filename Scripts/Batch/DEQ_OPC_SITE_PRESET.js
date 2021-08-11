@@ -361,8 +361,6 @@ function mainProcess()
 					var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
 					if (childArray)
 					{
-						logDebugLocal("********OPC site has tank child***** ");
-
 						if (childArray.length > 0)
 						{
 							logDebugLocal("********OPC site " + capIDString + " has tank child. ");
@@ -374,171 +372,174 @@ function mainProcess()
 								
 							
 								var offUseCode = getAppSpecific("Official Use Code", childCapId);
-								logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with official code " + offUseCode);
-
-								var match = false;
-								var isFourDigit = false;
-								var isEMB = false;
-								var length = offUseCode.length();
-								// Good match
-								if (offUseCode == 'UAP' ||offUseCode == 'EX' || offUseCode == 'EXP' || offUseCode == '81' || offUseCode == '82' || offUseCode == '85'
-								|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
-								{									
-									match = true;
-									//logDebugLocal("Match offUsecode." );
-								} 
-								else
+								if (offUseCode != null)
 								{
-									//First check to see if it can be ###EMB
-									
-									//logDebugLocal("Official Use code length is: " + length);
+									logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with official code " + offUseCode);
 
-									if (length == 6)
+									var match = false;
+									var isFourDigit = false;
+									var isEMB = false;
+									var length = offUseCode.length();
+									// Good match
+									if (offUseCode == 'UAP' ||offUseCode == 'EX' || offUseCode == 'EXP' || offUseCode == '81' || offUseCode == '82' || offUseCode == '85'
+									|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
+									{									
+										match = true;
+										//logDebugLocal("Match offUsecode." );
+									} 
+									else
 									{
-										var leadingVal = offUseCode.substring(0,2)
-										logDebugLocal("leadingVal is: " + leadingVal + " for official code " + offUseCode + "," + childCapId.getCustomID());
-										var numeric = isNumeric(leadingVal);
+										//First check to see if it can be ###EMB
+										
+										//logDebugLocal("Official Use code length is: " + length);
 
-										if (numeric)
+										if (length == 6)
 										{
-											isEMB = offUseCode.endsWith('EMB');
-											logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
-										}										
-
-									}	
-									if (!isEMB)
-									{
-										//logDebugLocal("isEMB: " + isEMB);
-
-										if (length > 4)
-										{
-											logDebugLocal("length is > 4: " + length);
-											var leadingVal = offUseCode.substring(0,3)
+											var leadingVal = offUseCode.substring(0,2)
+											logDebugLocal("leadingVal is: " + leadingVal + " for official code " + offUseCode + "," + childCapId.getCustomID());
 											var numeric = isNumeric(leadingVal);
+
 											if (numeric)
 											{
-												isFourDigit = true;
-											}
-											else
-											{									
-												logDebugLocal("Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
-												// Quit for that site. No need to check additional tank child
-												finalCheck(totalCapacity, capId, capIDString);
-												break;
-											}	
-											
+												isEMB = offUseCode.endsWith('EMB');
+												logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
+											}										
 
-											
-											// First 4 digits are numbers, check what they are end with
-											// ####P, ####UAP, ####OOS, ####TOS, ####HO
-											if (isFourDigit)
+										}	
+										if (!isEMB)
+										{
+											//logDebugLocal("isEMB: " + isEMB);
+
+											if (length > 4)
 											{
-												logDebugLocal("First 4 digits are digits. Now checking the end string." + childCapId.getCustomID());
-												if (length == 5) //####P
+												logDebugLocal("Length is > 4: " + length);
+												var leadingVal = offUseCode.substring(0,3)
+												var numeric = isNumeric(leadingVal);
+												if (numeric)
 												{
-													isFourDigit = offUseCode.endsWith('P');
-													
-												}
-												else if (length == 6) // ####HO
-												{
-													isFourDigit = offUseCode.endsWith('HO');												
-												}
-												else if (length == 7) // ####UAP, ####OOS, ####TOS
-												{
-													if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
-													{
-														isFourDigit = true;
-													}										 
+													isFourDigit = true;
 												}
 												else
-												{												
-													logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
+												{									
+													logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
 													break;
-												}																			
-												logDebugLocal("4 digit and ends with P, HO, UAP, OOS or TOS: " + offUseCode);
+												}	
 												
+
+												
+												// First 4 digits are numbers, check what they are end with
+												// ####P, ####UAP, ####OOS, ####TOS, ####HO
+												if (isFourDigit)
+												{
+													logDebugLocal(".First 4 digits are digits. Now checking the end string." + offUseCode + " for " + childCapId.getCustomID());
+													if (length == 5) //####P
+													{
+														isFourDigit = offUseCode.endsWith('P');
+														
+													}
+													else if (length == 6) // ####HO
+													{
+														isFourDigit = offUseCode.endsWith('HO');												
+													}
+													else if (length == 7) // ####UAP, ####OOS, ####TOS
+													{
+														if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
+														{
+															isFourDigit = true;
+														}										 
+													}
+													else
+													{												
+														logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
+														// Quit for that site. No need to check additional tank child
+														finalCheck(totalCapacity, capId, capIDString);
+														break;
+													}																			
+													logDebugLocal("Four leading 4 digits and also ends with P, HO, UAP, OOS or TOS: " + offUseCode + "," + childCapId.getCustomID());
+													
+												}
 											}
 										}
 									}
-								}
-								// If the official use code matches the criterias
-								// we update Article 18 site
-								if (match || isFourDigit || isEMB)
-								{
-									//logDebugLocal("Official use code matched: " + offUseCode + "," + capIDString);
-									// Get SITE custom field
-									var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
-
-									//logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
-
-									var prodStoredCat = getAppSpecific("Product Stored", childCapId);
-									var storageType = getAppSpecific("Storage Type", childCapId);
-									var capacity = getAppSpecific("Capacity", childCapId);
-
-									//logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
-									//logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
-									//logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
-
-									if (storageType == "0-Tank" || storageType == null)
+									// If the official use code matches the criterias
+									// we update Article 18 site
+									if (match || isFourDigit || isEMB)
 									{
-										if (prodStoredCat == "Heating Oil: Resale/Redistribution" ||									
-										prodStoredCat == "Emergency Generator Fuels" ||
-										prodStoredCat == "Motor Fuels" ||
-										prodStoredCat == "Other Petroleum Products" ||
-										prodStoredCat == "Waste/Used/Other Oils") 										
-										{
-											var tankLoc = getAppSpecific("Tank Location", childCapId);
+										logDebugLocal("Official use code matched: " + offUseCode + "," + capIDString);
+										// Get SITE custom field
+										var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
 
-											if (tankLoc == "4-Underground-Outdoors" || tankLoc == "3-Underground-Indoors")
+										//logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
+
+										var prodStoredCat = getAppSpecific("Product Stored", childCapId);
+										var storageType = getAppSpecific("Storage Type", childCapId);
+										var capacity = getAppSpecific("Capacity", childCapId);
+
+										//logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
+										//logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
+										//logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
+
+										if (storageType == "0-Tank" || storageType == null)
+										{
+											if (prodStoredCat == "Heating Oil: Resale/Redistribution" ||									
+											prodStoredCat == "Emergency Generator Fuels" ||
+											prodStoredCat == "Motor Fuels" ||
+											prodStoredCat == "Other Petroleum Products" ||
+											prodStoredCat == "Waste/Used/Other Oils") 										
 											{
-												//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-												logDebugLocal("Set Site Article 18 Regulated Site to Yes for underground tank child: " + capIDString + "," + childCapId.getCustomID());
-												// Quit for that site. No need to check additional tank child
-												finalCheck(totalCapacity, capId, capIDString);
-												undergroundTotal++;
-												break;
-											}
-											else
-											{
-												var petroFac = getAppSpecific("Type of Petroleum Facility", capId);
-												if (capacity > 1100)
-												{ 
-													// Set Site Article 18 to No																							
+												var tankLoc = getAppSpecific("Tank Location", childCapId);
+
+												if (tankLoc == "4-Underground-Outdoors" || tankLoc == "3-Underground-Indoors")
+												{
 													//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-													logDebugLocal("Set Site Article 18 Regulated Site to Yes for capacity > 1100: " + capIDString + "," + childCapId.getCustomID());
+													logDebugLocal("Set Site Article 18 Regulated Site to Yes for underground tank child: " + capIDString + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
-													abovegroundGreaterThan1100++;
+													undergroundTotal++;
 													break;
 												}
 												else
 												{
-													if (petroFac != "9-Farm" && petroFac != "10-Private Residence")
+													var petroFac = getAppSpecific("Type of Petroleum Facility", capId);
+													if (capacity > 1100)
+													{ 
+														// Set Site Article 18 to No																							
+														//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+														logDebugLocal("Set Site Article 18 Regulated Site to Yes for capacity > 1100: " + capIDString + "," + childCapId.getCustomID());
+														// Quit for that site. No need to check additional tank child
+														finalCheck(totalCapacity, capId, capIDString);
+														abovegroundGreaterThan1100++;
+														break;
+													}
+													else
 													{
-														totalCapacity = totalCapacity + capacity;
-														logDebugLocal("Adding capacity due to type of petroleum Fac: " + petroFac + "," + capIDString + "," + childCapId.getCustomID());
+														if (petroFac != "9-Farm" && petroFac != "10-Private Residence")
+														{
+															totalCapacity = totalCapacity + capacity;
+															logDebugLocal("Adding capacity due to type of petroleum Fac: " + petroFac + "," + capIDString + "," + childCapId.getCustomID());
+														}
+
 													}
 
 												}
-
 											}
-										}
-										else if (prodStoredCat == "Heating Oil:On-Site Consumption")
-										{
-											if (capacity > 1100)
+											else if (prodStoredCat == "Heating Oil:On-Site Consumption")
 											{
-												//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-												logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100:: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
-												// Quit for that site. No need to check additional tank child
-												finalCheck(totalCapacity, capId, capIDString);
-												heatingOilGreatherThan1100++;
-												break;
+												if (capacity > 1100)
+												{
+													//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+													logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100:: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
+													// Quit for that site. No need to check additional tank child
+													finalCheck(totalCapacity, capId, capIDString);
+													heatingOilGreatherThan1100++;
+													break;
+												}
 											}
 										}
-									}
 
+									}
 								}
 							}
 
