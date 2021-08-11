@@ -374,7 +374,7 @@ function mainProcess()
 								var offUseCode = getAppSpecific("Official Use Code", childCapId);
 								if (offUseCode != null)
 								{
-									logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with official code " + offUseCode);
+									//logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with official code " + offUseCode);
 
 									var match = false;
 									var isFourDigit = false;
@@ -396,13 +396,13 @@ function mainProcess()
 										if (length == 6)
 										{
 											var leadingVal = offUseCode.substring(0,2)
-											logDebugLocal("leadingVal is: " + leadingVal + " for official code " + offUseCode + "," + childCapId.getCustomID());
+											//logDebugLocal("leadingVal is: " + leadingVal + " for official code " + offUseCode + "," + childCapId.getCustomID());
 											var numeric = isNumeric(leadingVal);
 
 											if (numeric)
 											{
 												isEMB = offUseCode.endsWith('EMB');
-												logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
+												//logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
 											}										
 
 										}	
@@ -412,7 +412,7 @@ function mainProcess()
 
 											if (length > 4)
 											{
-												logDebugLocal("Length is > 4: " + length);
+												//logDebugLocal("Length is > 4: " + length);
 												var leadingVal = offUseCode.substring(0,3)
 												var numeric = isNumeric(leadingVal);
 												if (numeric)
@@ -421,7 +421,7 @@ function mainProcess()
 												}
 												else
 												{									
-													logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
+													//logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
 													break;
@@ -433,7 +433,7 @@ function mainProcess()
 												// ####P, ####UAP, ####OOS, ####TOS, ####HO
 												if (isFourDigit)
 												{
-													logDebugLocal(".First 4 digits are digits. Now checking the end string." + offUseCode + " for " + childCapId.getCustomID());
+													//logDebugLocal(".First 4 digits are digits. Now checking the end string." + offUseCode + " for " + childCapId.getCustomID());
 													if (length == 5) //####P
 													{
 														isFourDigit = offUseCode.endsWith('P');
@@ -452,12 +452,12 @@ function mainProcess()
 													}
 													else
 													{												
-														logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
+														//logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
 														// Quit for that site. No need to check additional tank child
 														finalCheck(totalCapacity, capId, capIDString);
 														break;
 													}																			
-													logDebugLocal("Four leading 4 digits and also ends with P, HO, UAP, OOS or TOS: " + offUseCode + "," + childCapId.getCustomID());
+													//logDebugLocal("Four leading 4 digits and also ends with P, HO, UAP, OOS or TOS: " + offUseCode + "," + childCapId.getCustomID());
 													
 												}
 											}
