@@ -464,14 +464,14 @@ function mainProcess()
 
 									logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
 
-									var prodStoredCat = getAppSpecific("Product Stored Category", childCapId);
+									var prodStoredCat = getAppSpecific("Product Stored", childCapId);
 									var storageType = getAppSpecific("Storage Type", childCapId);
 									var capacity = getAppSpecific("Capacity", childCapId);
 
 									logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
 									logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
 									logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
-									
+
 									if (storageType == "0-Tank" || storageType == null)
 									{
 										if (prodStoredCat == "Heating Oil: Resale/Redistribution" ||									
