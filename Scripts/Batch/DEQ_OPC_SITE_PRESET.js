@@ -351,7 +351,7 @@ function mainProcess()
           
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
-			if (capIDString == "SITE-00-15154-OPC")
+			if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
 			{
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
@@ -369,6 +369,7 @@ function mainProcess()
 							for (yy in childArray)
 							{
 								var childCapId = childArray[yy];
+								var exit = false;
 								//var childCapStatus = getAppStatus(childCapId);
 								
 							
@@ -425,6 +426,7 @@ function mainProcess()
 													//logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
+													exit = true;
 													logDebugLocal("1. Did I break here? ");
 													break;
 												}	
@@ -457,6 +459,7 @@ function mainProcess()
 														//logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
 														// Quit for that site. No need to check additional tank child
 														finalCheck(totalCapacity, capId, capIDString);
+														exit = true;
 														logDebugLocal("2. Did I break here? ");
 														break;
 													}																			
@@ -499,7 +502,8 @@ function mainProcess()
 													undergroundTotal++;
 													logDebugLocal("Set Site Article 18 Regulated Site to Yes for underground tank child: " + capIDString + "," + childCapId.getCustomID());
 													// Quit for that site. No need to check additional tank child
-													finalCheck(totalCapacity, capId, capIDString);		
+													finalCheck(totalCapacity, capId, capIDString);	
+													exit = true;	
 													logDebugLocal("3. Did I break here? ");											
 													break;
 												}
@@ -514,6 +518,7 @@ function mainProcess()
 														// Quit for that site. No need to check additional tank child
 														finalCheck(totalCapacity, capId, capIDString);
 														abovegroundGreaterThan1100++;
+														exit = true;
 														logDebugLocal("4. Did I break here? ");						
 														break;
 													}
@@ -549,8 +554,11 @@ function mainProcess()
 							}
 
 							// Now we are out of the child tanks, final check
-							finalCheck(totalCapacity, capId, capIDString);
-							logDebugLocal("6. I don't break here. Final check. ");			
+							if (!exit) // I get here because there is no break condition for all the child tanks. 
+							{
+								finalCheck(totalCapacity, capId, capIDString);
+								logDebugLocal("6. I don't break here. Final check. ");			
+							}
 						}
 					}
 					
