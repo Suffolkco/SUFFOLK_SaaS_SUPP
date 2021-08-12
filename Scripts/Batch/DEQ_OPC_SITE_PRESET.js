@@ -547,10 +547,11 @@ function mainProcess()
 													if (art18 != 'Yes')
 													{
 														//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-														logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100:: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
+														logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
 														// Quit for that tank. No need to check additional childs
 														finalCheck(totalCapacity, capId, capIDString);
-														heatingOilGreatherThan1100++;																	
+														heatingOilGreatherThan1100++;	
+														exit = true;																
 														break;
 													}
 												}
@@ -574,12 +575,13 @@ function mainProcess()
 			}
 		
 		}
-
-		}
+	}
+	
 		logDebugLocal("Batch # 4: Total Site-OPC records that has to update PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has to update Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
 		logDebugLocal("Batch # 4: Total Site-OPC records has to updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
 		logDebugLocal("Batch # 4: Total capacity: " + totalCapacity); 
+	
 		
 
 		/* GOAL # 5 **********************************************************************
