@@ -144,14 +144,12 @@ var paramsOK = true;
 
 if (paramsOK) 
 {
-    logDebugLocal("Start Date: " + startDate + br);
-	logDebugLocal("Start Time: " + startTime + br);
+    logDebugLocal("Start Date: " + startDate + br);	
     if (!timeExpired) 
     {
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-        logDebugLocal("End Date: " + startDate + br);
-		logDebugLocal("End Time: " + startDate.getTime());
+        logDebugLocal("End Date: " + startDate + br);		
         aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
     }
 }
@@ -549,11 +547,9 @@ function mainProcess()
 														//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
 														logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
 														// Quit for that tank. No need to check additional childs
-														finalCheck(totalCapacity, capId, capIDString);
-														logDebugLocal("here?");
-														heatingOilGreatherThan1100++;	
-														exit = true;		
-														logDebugLocal("exit true?");														
+														finalCheck(totalCapacity, capId, capIDString);														
+														heatingOilGreaterThan1100++;	
+														exit = true;																							
 														break;
 													}
 												}
