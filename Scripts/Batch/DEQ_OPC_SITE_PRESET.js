@@ -427,7 +427,7 @@ function mainProcess()
 													// Quit for that site. No need to check additional tank child
 													finalCheck(totalCapacity, capId, capIDString);
 													exit = true;
-													logDebugLocal("1. Did I break here? ");
+													//logDebugLocal("First four digits are not numeric. Break." + offUseCode + ", " + capIDString);
 													break;
 												}	
 												
@@ -497,54 +497,62 @@ function mainProcess()
 												var tankLoc = getAppSpecific("Tank Location", childCapId);
 
 												if (tankLoc == "4-Underground-Outdoors" || tankLoc == "3-Underground-Indoors")
-												{
-													//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-													undergroundTotal++;
-													logDebugLocal("Set Site Article 18 Regulated Site to Yes for underground tank child: " + capIDString + "," + childCapId.getCustomID());
-													// Quit for that site. No need to check additional tank child
-													finalCheck(totalCapacity, capId, capIDString);	
-													exit = true;	
-													logDebugLocal("3. Did I break here? ");											
-													break;
+												{													
+													if (art18 != 'Yes')
+													{														
+														undergroundTotal++;
+														//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+														logDebugLocal("Set Site Article 18 Regulated Site to Yes for underground tank child: " + capIDString + "," + childCapId.getCustomID());
+														// Quit for that site. No need to check additional tank child
+														finalCheck(totalCapacity, capId, capIDString);	
+														exit = true;	
+														logDebugLocal("Underground Tank Matched. Break. " + capIDString);											
+														break;
+													}
 												}
 												else
 												{
 													var petroFac = getAppSpecific("Type of Petro Facility", capId);
 													if (capacity > 1100)
 													{ 
-														// Set Site Article 18 to No																							
-														//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-														logDebugLocal("Set Site Article 18 Regulated Site to Yes for capacity > 1100: " + capIDString + "," + childCapId.getCustomID());
-														// Quit for that site. No need to check additional tank child
-														finalCheck(totalCapacity, capId, capIDString);
-														abovegroundGreaterThan1100++;
-														exit = true;
-														logDebugLocal("4. Did I break here? ");						
-														break;
+														if (art18 != 'Yes')
+														{
+															// Set Site Article 18 to Yes																							
+															//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+															logDebugLocal("Set Site Article 18 Regulated Site to Yes for capacity > 1100: " + capIDString + "," + childCapId.getCustomID());
+															// Quit for that site. No need to check additional tank child
+															finalCheck(totalCapacity, capId, capIDString);
+															abovegroundGreaterThan1100++;
+															exit = true;
+															logDebugLocal("4. Did I break here? ");						
+															break;															
+														}
 													}
 													else
 													{
 														if (petroFac != "9-Farm" && petroFac != "10-Private Residence")
 														{
 															totalCapacity = totalCapacity + capacity;
-															logDebugLocal("Adding capacity " + capacity + " due to Type of Petro Facility: " + petroFac + ", " + capIDString + ", " + childCapId.getCustomID());
+															logDebugLocal("Calculating capacity. Add " + capacity + " due to Type of Petro Facility: " + petroFac + ", " + capIDString + ", " + childCapId.getCustomID());
 														}
 
 													}
 
 												}
 											}
-											else if (prodStoredCat == "Heating Oil:On-Site Consumption")
+											else if (prodStoredCat == "Heating Oils: On-Site Consumption")
 											{
 												if (capacity > 1100)
 												{
-													//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
-													logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100:: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
-													// Quit for that site. No need to check additional tank child
-													finalCheck(totalCapacity, capId, capIDString);
-													heatingOilGreatherThan1100++;
-													logDebugLocal("5. Did I break here? ");						
-													break;
+													if (art18 != 'Yes')
+													{
+														//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+														logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100:: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
+														// Quit for that tank. No need to check additional childs
+														finalCheck(totalCapacity, capId, capIDString);
+														heatingOilGreatherThan1100++;																	
+														break;
+													}
 												}
 											}
 										}
@@ -557,7 +565,196 @@ function mainProcess()
 							if (!exit) // I get here because there is no break condition for all the child tanks. 
 							{
 								finalCheck(totalCapacity, capId, capIDString);
-								logDebugLocal("6. I don't break here. Final check. ");			
+								logDebugLocal("No match. Perform final check." + capIDString);			
+							}
+						}
+					}
+					
+				}
+			}
+		
+		}
+
+		}
+		logDebugLocal("Batch # 4: Total Site-OPC records that has to update PBS Regulated Site to YES: " + undergroundTotal);
+		logDebugLocal("Batch # 4: Total Site-OPC records has to update Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
+		logDebugLocal("Batch # 4: Total Site-OPC records has to updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
+		logDebugLocal("Batch # 4: Total capacity: " + totalCapacity); 
+		
+
+		/* GOAL # 5 **********************************************************************
+		Go through all the child records of OPC site records. Child record can only be DEQ/OPC/Hazardous Tank/Permit.
+		Also only look at tank records with the following: # = Number. 4 digital numbers.Official Use Code = ####P or 
+		####UAP OR UAP or ####OOS or ####TOS or EX or EXP or 81 or 82 or 85 or ####HO or 66HO or UR or ####EMB or RNP	
+		Goal is to set TANK Article 18 and PBS based on SITE Article 18 and SITE PBS
+		***********************************************************************/
+		// SQL to pull active OPC site records that  HAS child Tank records
+		/*var vTankArt18SQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
+        var vTankArt18SQLResult = doSQLSelect_local(vTankArt18SQL);
+       	
+		logDebugLocal("********OPC site records that HAS child tank: " + vTankArt18SQLResult.length + "*********\n");
+		for (r in vTankArt18SQLResult)
+        {					
+            recordID = vTankArt18SQLResult[r]["recordNumber"];      
+          
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+			//if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
+			{
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
+            {
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
+                {
+					var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
+					if (childArray)
+					{
+						if (childArray.length > 0)
+						{
+							//logDebugLocal("********OPC site " + capIDString + " has tank child. ");
+
+							for (yy in childArray)
+							{
+								var childCapId = childArray[yy];
+								var exit = false;
+								//var childCapStatus = getAppStatus(childCapId);
+								
+							
+								var offUseCode = getAppSpecific("Official Use Code", childCapId);
+								if (offUseCode != null)
+								{
+									//logDebugLocal("We found this child tank: " + childCapId.getCustomID() + " with official code " + offUseCode);
+
+									var match = false;
+									var isFourDigit = false;
+									var isEMB = false;
+									var length = offUseCode.length();
+									// Good match
+									if (offUseCode == 'UAP' ||offUseCode == 'EX' || offUseCode == 'EXP' || offUseCode == '81' || offUseCode == '82' || offUseCode == '85'
+									|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
+									{									
+										match = true;
+										//logDebugLocal("Match offUsecode." );
+									} 
+									else
+									{
+										//First check to see if it can be ###EMB
+										
+										//logDebugLocal("Official Use code length is: " + length);
+
+										if (length == 6)
+										{
+											var leadingVal = offUseCode.substring(0,2)
+											//logDebugLocal("leadingVal is: " + leadingVal + " for official code " + offUseCode + "," + childCapId.getCustomID());
+											var numeric = isNumeric(leadingVal);
+
+											if (numeric)
+											{
+												isEMB = offUseCode.endsWith('EMB');
+												//logDebugLocal("Checking official code: " + offUseCode + "," + childCapId.getCustomID());
+											}										
+
+										}	
+										if (!isEMB)
+										{
+											//logDebugLocal("isEMB: " + isEMB);
+
+											if (length > 4)
+											{
+												//logDebugLocal("Length is > 4: " + length);
+												var leadingVal = offUseCode.substring(0,3)
+												var numeric = isNumeric(leadingVal);
+												if (numeric)
+												{
+													isFourDigit = true;
+												}
+												else
+												{									
+													//logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
+													// Quit for that site. No need to check additional tank child
+													finalCheck(totalCapacity, capId, capIDString);
+													exit = true;
+													//logDebugLocal("First four digits are not numeric. Break." + offUseCode + ", " + capIDString);
+													break;
+												}	
+												
+
+												
+												// First 4 digits are numbers, check what they are end with
+												// ####P, ####UAP, ####OOS, ####TOS, ####HO
+												if (isFourDigit)
+												{
+													//logDebugLocal(".First 4 digits are digits. Now checking the end string." + offUseCode + " for " + childCapId.getCustomID());
+													if (length == 5) //####P
+													{
+														isFourDigit = offUseCode.endsWith('P');
+														
+													}
+													else if (length == 6) // ####HO
+													{
+														isFourDigit = offUseCode.endsWith('HO');												
+													}
+													else if (length == 7) // ####UAP, ####OOS, ####TOS
+													{
+														if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
+														{
+															isFourDigit = true;
+														}										 
+													}
+													else
+													{												
+														//logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
+														// Quit for that site. No need to check additional tank child
+														finalCheck(totalCapacity, capId, capIDString);
+														exit = true;
+														logDebugLocal("2. Did I break here? ");
+														break;
+													}																			
+													//logDebugLocal("Four leading 4 digits and also ends with P, HO, UAP, OOS or TOS: " + offUseCode + "," + childCapId.getCustomID());
+													
+												}
+											}
+										}
+									}
+									// If the official use code matches the criterias
+									// we update Article 18 site
+									if (match || isFourDigit || isEMB)
+									{
+										
+										var prodStoredCat = getAppSpecific("Product Stored", childCapId);
+										var storageType = getAppSpecific("Storage Type", childCapId);
+										//logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
+										//logDebugLocal("storageType for Tank: " + storageType + "," + childCapId);
+										//logDebugLocal("capacity for Tank: " + capacity + "," + childCapId);
+
+										if ((storageType == "0-Tank" || storageType == null) && (prodStoredCat != "Non-Petroleum Products" &&								
+											prodStoredCat != "Miscellaneous/Combinations"))
+										{											
+											// Get SITE custom field
+											var siteArt18 = getAppSpecific("Article 18 Regulated Site", capId);   	
+											var sitePBSSite = getAppSpecific("PBS Regulated Site", capId);
+											//logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
+											//editAppSpecific("Article 18 Regulated Site", siteArt18, childCapId);
+											//editAppSpecific("PBS Regulated Site", sitePBSSite, childCapId);											
+											
+										}
+										else
+										{
+											//editAppSpecific("Article 18 Regulated Site", "No", childCapId);
+											//editAppSpecific("PBS Regulated Site", "No", childCapId);					
+										}
+											
+
+									}
+								}
+							}
+
+							// Now we are out of the child tanks, final check
+							if (!exit) // I get here because there is no break condition for all the child tanks. 
+							{
+								finalCheck(totalCapacity, capId, capIDString);
+								logDebugLocal("No match. Perform final check." + capIDString);			
 							}
 						}
 					}
@@ -571,7 +768,8 @@ function mainProcess()
 		logDebugLocal("Batch # 4: Total Site-OPC records that has updated PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
-		
+		logDebugLocal("Batch # 4: Total capacity: " + totalCapacity); 
+		*/
     
 	}
     catch (err) 
