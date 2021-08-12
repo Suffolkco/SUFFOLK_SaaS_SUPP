@@ -352,7 +352,7 @@ function mainProcess()
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
 			//if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
-			{
+			//{
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
@@ -550,8 +550,10 @@ function mainProcess()
 														logDebugLocal("Set Site Article 18 Regulated Site to Yes for product stored and capcity > 1100: " + prodStoredCat + "," + capIDString + "," + childCapId.getCustomID());
 														// Quit for that tank. No need to check additional childs
 														finalCheck(totalCapacity, capId, capIDString);
+														logDebugLocal("here?");
 														heatingOilGreatherThan1100++;	
-														exit = true;																
+														exit = true;		
+														logDebugLocal("exit true?");														
 														break;
 													}
 												}
@@ -575,7 +577,7 @@ function mainProcess()
 			}
 		
 		}
-	}
+	
 	
 		logDebugLocal("Batch # 4: Total Site-OPC records that has to update PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has to update Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
