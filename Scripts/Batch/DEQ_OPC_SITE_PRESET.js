@@ -200,7 +200,7 @@ function mainProcess()
 		PBS Regulated Site = No;
 		***********************************************************************/
 		// SQL to pull active OPC site records that has NO child Tank records
-		/*var  vNoChildSQL= "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID NOT IN ( SELECT B1.B1_ALT_ID FROM B1PERMIT B1  JOIN XAPP2REF XAPP ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1 AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2 AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3  JOIN B1PERMIT B2 ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3 WHERE B1.B1_APPL_STATUS = 'Active'  AND B1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP = 'DEQ' AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";               
+		var  vNoChildSQL= "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID NOT IN ( SELECT B1.B1_ALT_ID FROM B1PERMIT B1  JOIN XAPP2REF XAPP ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1 AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2 AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3  JOIN B1PERMIT B2 ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3 WHERE B1.B1_APPL_STATUS = 'Active'  AND B1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP = 'DEQ' AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site'     AND B1.B1_PER_CATEGORY = 'NA'     AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";               
 		var vNoChildResult = doSQLSelect_local(vNoChildSQL);  	     
 		logDebugLocal("********OPC site records that has NO child tank: " + vNoChildResult.length + "*********\n");
 		for (r in vNoChildResult)
@@ -217,16 +217,16 @@ function mainProcess()
                 {
                     var art18 = getAppSpecific("Article 18 Regulated Site", capId);   
 					var pbsSite = getAppSpecific("PBS Regulated Site", capId);
-					//editAppSpecific("Article 18 Regulated Site", "No", capId);
-					//editAppSpecific("PBS Regulated Site", "No", capId);
-
+									
 					if (art18 != "No")
 					{
+						//editAppSpecific("Article 18 Regulated Site", "No", capId);
 						logDebugLocal("Article 18 for " + capIDString + " has a value of " + art18);
 						childTankCnt18++;
 					}
 					if (pbsSite != "No")
 					{
+						//editAppSpecific("PBS Regulated Site", "No", capId);
 						logDebugLocal("PBS Regulated Site " + capIDString + " has  a value of " + pbsSite);
 						childTankCntPBS++;
 					}
@@ -259,16 +259,17 @@ function mainProcess()
                 {
                     var art18 = getAppSpecific("Article 18 Regulated Site", capId);   
 					var pbsSite = getAppSpecific("PBS Regulated Site", capId);
-					//editAppSpecific("Article 18 Regulated Site", "No", capId);
-					//editAppSpecific("PBS Regulated Site", "No", capId);
 
+				
 					if (art18 != "No")
 					{
+						//editAppSpecific("Article 18 Regulated Site", "No", capId);
 						logDebugLocal("Article 18 for " + capIDString + " has a value of " + art18);
 						noChildTankCnt18++;
 					}
 					if (pbsSite != "No")
 					{
+						//editAppSpecific("PBS Regulated Site", "No", capId);
 						logDebugLocal("PBS Regulated Site " + capIDString + " has  a value of " + pbsSite);
 						noChildTankCntPBS++;
 					}
@@ -304,20 +305,26 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
                     var art18 = getAppSpecific("Article 18 Regulated Site", capId);   								
-
+					var pbs = getAppSpecific("PBS Regulated Site", capId);				
 					if (art18 == "Yes")
 					{
-						//editAppSpecific("PBS Regulated Site", "Yes", capId);
-						logDebugLocal("Update PBS Regulated Site to Yes: " + capIDString);
-						sitePBSSiteSetCnt++;
+						if (pbs != "Yes")
+						{
+							//editAppSpecific("PBS Regulated Site", "Yes", capId);
+							logDebugLocal("Update PBS Regulated Site to Yes: " + capIDString);
+							sitePBSSiteSetCnt++;
+						}
 						var ownerType = getAppSpecific("Owner Type", capId);   
 						var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
 						if (ownerType == "2-State Government" || regulatedSite == "Yes")
-						{
-							//editAppSpecific("Article 18 Regulated Site", "No", capId);	
-							logDebugLocal("Owner Type: " + ownerType + ", " + "MOSF Regulated Site: " + regulatedSite);					
-							logDebugLocal("Update Article 18 Regulated Site to No: " + capIDString);
-							siteCnt++;
+						{			
+							if (art18 != "No")		
+							{		
+								//editAppSpecific("Article 18 Regulated Site", "No", capId);	
+								logDebugLocal("Owner Type: " + ownerType + ", " + "MOSF Regulated Site: " + regulatedSite);					
+								logDebugLocal("Update Article 18 Regulated Site to No: " + capIDString);
+								siteCnt++;
+							}
 						}	
 					}					
 					
@@ -335,7 +342,7 @@ function mainProcess()
 		Goal is to set Article 18 and PBS
 		***********************************************************************/
 		// SQL to pull active OPC site records that  HAS child Tank records
-		var vTankSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
+		/*var vTankSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
         var vTankSQLResult = doSQLSelect_local(vTankSQL);
        	var undergroundTotal = 0;
 		var abovegroundGreaterThan1100 = 0;
@@ -573,13 +580,11 @@ function mainProcess()
 			}
 		
 		}
-	
-	
+		
 		logDebugLocal("Batch # 4: Total Site-OPC records that has to update PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has to update Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
-		logDebugLocal("Batch # 4: Total Site-OPC records has to updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
-		logDebugLocal("Batch # 4: Total capacity: " + totalCapacity); 
-	
+		logDebugLocal("Batch # 4: Total Site-OPC records has to updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100); 
+		*/
 		
 
 		/* GOAL # 5 **********************************************************************
@@ -599,8 +604,7 @@ function mainProcess()
           
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
-			//if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
-			{
+
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
@@ -619,8 +623,7 @@ function mainProcess()
 								var childCapId = childArray[yy];
 								var exit = false;
 								//var childCapStatus = getAppStatus(childCapId);
-								
-							
+															
 								var offUseCode = getAppSpecific("Official Use Code", childCapId);
 								if (offUseCode != null)
 								{
@@ -670,11 +673,8 @@ function mainProcess()
 													isFourDigit = true;
 												}
 												else
-												{									
-													//logDebugLocal(".Break the loop since official use code does not begin with 4 digits: " + offUseCode + "," + childCapId.getCustomID());
-													// Quit for that site. No need to check additional tank child
-													finalCheck(totalCapacity, capId, capIDString);
-													exit = true;
+												{						
+
 													//logDebugLocal("First four digits are not numeric. Break." + offUseCode + ", " + capIDString);
 													break;
 												}	
@@ -704,11 +704,7 @@ function mainProcess()
 													}
 													else
 													{												
-														//logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());
-														// Quit for that site. No need to check additional tank child
-														finalCheck(totalCapacity, capId, capIDString);
-														exit = true;
-														logDebugLocal("2. Did I break here? ");
+														logDebugLocal("Break the loop since official use code does not match the criterias: " + offUseCode + "," + childCapId.getCustomID());													
 														break;
 													}																			
 													//logDebugLocal("Four leading 4 digits and also ends with P, HO, UAP, OOS or TOS: " + offUseCode + "," + childCapId.getCustomID());
@@ -720,8 +716,7 @@ function mainProcess()
 									// If the official use code matches the criterias
 									// we update Article 18 site
 									if (match || isFourDigit || isEMB)
-									{
-										
+									{										
 										var prodStoredCat = getAppSpecific("Product Stored", childCapId);
 										var storageType = getAppSpecific("Storage Type", childCapId);
 										//logDebugLocal("prodStoredCat for Tank: " + prodStoredCat + "," + childCapId);
@@ -734,28 +729,41 @@ function mainProcess()
 											// Get SITE custom field
 											var siteArt18 = getAppSpecific("Article 18 Regulated Site", capId);   	
 											var sitePBSSite = getAppSpecific("PBS Regulated Site", capId);
-											//logDebugLocal("Article 18 for Site: " + art18 + "," + capIDString);
+											var tankArt18 = getAppSpecific("Article 18 Regulated Site", childCapId);   	
+											var tankPBSSite = getAppSpecific("PBS Regulated Site", childCapId);
+											if (siteArt18 != tankArt18)
+											{
+											//logDebugLocal("Article 18 Tank set to Art 18 Site: " + siteArt18 + "," + childCapId.getCustomID());
 											//editAppSpecific("Article 18 Regulated Site", siteArt18, childCapId);
-											//editAppSpecific("PBS Regulated Site", sitePBSSite, childCapId);											
+											}
+											if (sitePBSSite != tankPBSSite)
+											{
+												//logDebugLocal("PBS Regulated Tank set to site PBS: " + sitePBSSite + "," + childCapId.getCustomID());
+												//editAppSpecific("PBS Regulated Site", sitePBSSite, childCapId);											
+											}
 											
 										}
 										else
 										{
-											//editAppSpecific("Article 18 Regulated Site", "No", childCapId);
-											//editAppSpecific("PBS Regulated Site", "No", childCapId);					
+											var art18 = getAppSpecific("Article 18 Regulated Site", childCapId);   	
+											var pbs = getAppSpecific("Product Stored", childCapId);
+
+											if (art18 != "No")
+											{
+												//logDebugLocal("Article 18 set to No," + childCapId.getCustomID());
+												//editAppSpecific("Article 18 Regulated Site", "No", childCapId);
+											}
+											if (pbs != "No")
+											{
+												//logDebugLocal("PBS Regulated Tank set to No," + childCapId.getCustomID());
+												//editAppSpecific("PBS Regulated Site", "No", childCapId);					
+											}
 										}
 											
 
 									}
 								}
-							}
-
-							// Now we are out of the child tanks, final check
-							if (!exit) // I get here because there is no break condition for all the child tanks. 
-							{
-								finalCheck(totalCapacity, capId, capIDString);
-								logDebugLocal("No match. Perform final check." + capIDString);			
-							}
+							}							
 						}
 					}
 					
@@ -764,11 +772,10 @@ function mainProcess()
 		
 		}
 
-		}
 		logDebugLocal("Batch # 4: Total Site-OPC records that has updated PBS Regulated Site to YES: " + undergroundTotal);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
 		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
-		logDebugLocal("Batch # 4: Total capacity: " + totalCapacity); 
+
 		*/
     
 	}
