@@ -221,19 +221,21 @@ function mainProcess()
 					if (art18 != "No")
 					{
 						//editAppSpecific("Article 18 Regulated Site", "No", capId);
-						logDebugLocal("Article 18 for " + capIDString + " has a value of " + art18);
-						childTankCnt18++;
+						logDebugLocal("Set Article 18 to No for " + capIDString + ". It had a value of " + art18);
+						noChildTankCnt18++;
 					}
 					if (pbsSite != "No")
 					{
 						//editAppSpecific("PBS Regulated Site", "No", capId);
-						logDebugLocal("PBS Regulated Site " + capIDString + " has  a value of " + pbsSite);
-						childTankCntPBS++;
+						logDebugLocal("Set PBS Regulated Site to NO for " + capIDString + ". It had a value of " + pbsSite);
+						noChildTankCntPBS++;
 					}
 					
 				}
 			}
 		}
+		logDebugLocal("Batch Scipt 1: Total Site-OPC records that has NO child tank with Article 18 that need to update to NO: " + noChildTankCnt18);
+		logDebugLocal("Batch Scipt 1: Total Site-OPC records that has NO child tank with PBS that need to update to NO: " + noChildTankCntPBS);
 
 		/* GOAL # 2 **********************************************************************
 		All OPC SITE records first preset to this if there is child tank
@@ -265,24 +267,22 @@ function mainProcess()
 					{
 						//editAppSpecific("Article 18 Regulated Site", "No", capId);
 						logDebugLocal("Article 18 for " + capIDString + " has a value of " + art18);
-						noChildTankCnt18++;
+						childTankCnt18++;
 					}
 					if (pbsSite != "No")
 					{
 						//editAppSpecific("PBS Regulated Site", "No", capId);
 						logDebugLocal("PBS Regulated Site " + capIDString + " has  a value of " + pbsSite);
-						noChildTankCntPBS++;
+						childTankCntPBS++;
 					}
 					
 				}
 			}
 		}
 
-		logDebugLocal("Total Site-OPC records that has a child tank with Article 18 that need to update to NO: " + childTankCnt18);
-		logDebugLocal("Total Site-OPC records that has a child tank with PBS that need to update to NO: " + childTankCntPBS);
-		
-		logDebugLocal("Total Site-OPC records that has NO child tank with Article 18 that need to update to NO: " + noChildTankCnt18);
-		logDebugLocal("Total Site-OPC records that has NO child tank with PBS that need to update to NO: " + noChildTankCntPBS);
+		logDebugLocal("Batch 2: Total Site-OPC records that has a child tank with Article 18 that need to update to NO: " + childTankCnt18);
+		logDebugLocal("Batch 2: Total Site-OPC records that has a child tank with PBS that need to update to NO: " + childTankCntPBS);
+
         
 		/* GOAL # 3 **********************************************************************
 		At the end, set all OPC Site base on the below on the SITE.
@@ -735,11 +735,13 @@ function mainProcess()
 											{
 											//logDebugLocal("Article 18 Tank set to Art 18 Site: " + siteArt18 + "," + childCapId.getCustomID());
 											//editAppSpecific("Article 18 Regulated Site", siteArt18, childCapId);
+											childTankCnt18++;
 											}
 											if (sitePBSSite != tankPBSSite)
 											{
 												//logDebugLocal("PBS Regulated Tank set to site PBS: " + sitePBSSite + "," + childCapId.getCustomID());
 												//editAppSpecific("PBS Regulated Site", sitePBSSite, childCapId);											
+												childTankCntPBS++;
 											}
 											
 										}
@@ -752,11 +754,13 @@ function mainProcess()
 											{
 												//logDebugLocal("Article 18 set to No," + childCapId.getCustomID());
 												//editAppSpecific("Article 18 Regulated Site", "No", childCapId);
+												childTankCnt18++;
 											}
 											if (pbs != "No")
 											{
 												//logDebugLocal("PBS Regulated Tank set to No," + childCapId.getCustomID());
-												//editAppSpecific("PBS Regulated Site", "No", childCapId);					
+												//editAppSpecific("PBS Regulated Site", "No", childCapId);
+												childTankCntPBS++;					
 											}
 										}
 											
@@ -772,10 +776,8 @@ function mainProcess()
 		
 		}
 
-		logDebugLocal("Batch # 4: Total Site-OPC records that has updated PBS Regulated Site to YES: " + undergroundTotal);
-		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
-		logDebugLocal("Batch # 4: Total Site-OPC records has updated Artcle 18 to Yes with heating oil product stored and capacity > 1100: " + heatingOilGreaterThan1100);
-
+		logDebugLocal("Batch 5: Total Site-OPC records that has a child tank with Article 18 that need to update to NO: " + childTankCnt18);
+		logDebugLocal("Batch 5: Total Site-OPC records that has a child tank with PBS that need to update to NO: " + childTankCntPBS);
 		*/
     
 	}
