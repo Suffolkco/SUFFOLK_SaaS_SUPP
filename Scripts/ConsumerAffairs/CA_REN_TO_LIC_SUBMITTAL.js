@@ -68,6 +68,7 @@ if (publicUser)
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                 updateAppStatus("Active", "", parentCapId);
                 updateTask("Issuance", "Renewed", "", "", "", parentCapId);
+                activateTask("Issuance");
             }
         }
 
