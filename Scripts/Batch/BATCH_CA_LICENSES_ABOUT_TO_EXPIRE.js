@@ -267,9 +267,13 @@ function mainProcess()
                                                 conEmail += capContacts[c].email;
                                                 logDebugLocal("Conemail is: " + conEmail);
 
-                                                //emailWithReportAttachASync(conEmail, "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, "CA Renewal Notifications SSRS V2", vRParams, "N", "");
-                                                generateReport(capId, "CA Renewal Notifications SSRS V2", appTypeArray[0], vRParams)
-                                                sendNotification("", conEmail, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, reportFile);
+                                                var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
+                                                if (caReport)
+                                                {
+                                                    var caReports = new Array();
+                                                    caReports.push(caReport);
+                                                }
+                                                sendNotification("", conEmail, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, caReports);
                                             }
                                             if (appTypeArray[2] == "Polygraph Examiner")
                                             {
