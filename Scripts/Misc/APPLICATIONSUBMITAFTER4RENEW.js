@@ -115,7 +115,7 @@ function getIncompleteCapId()
 function copyKeyInfo(srcCapId, targetCapId)
 {
 	//copy ASI infomation
-	copyAppSpecificInfo(srcCapId, targetCapId);
+	//copyAppSpecificInfo(srcCapId, targetCapId);
 	//copy License infomation
 	copyLicenseProfessional(srcCapId, targetCapId);
 	//copy Address infomation

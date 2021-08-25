@@ -37,13 +37,22 @@ if (!pUser.contains("PUBLICUSER"))
                     updateAppStatus("Active", "", parentCapId);
                     activateTask("Issuance", "", parentCapId);
                     updateTask("Issuance", "Issued", "", "", "", parentCapId);
-                    if (appTypeArray[2] != "Polygraph Examiner")
+                    /*if (appTypeArray[2] != "Polygraph Examiner")
                     {
                         closeTask("Issuance", "Renewed", "Updated by Renewal Script 2", "Updated by Renewal Script 2");
                     }
                     else
                     {
                         closeTask("Renewal Review", "Complete", "Updated by Renewal Script 2", "Updated by Renewal Script 2");
+                    }*/
+
+                     if (appTypeArray[2] != "Polygraph Examiner")
+                    {
+                        activateTask("Issuance");
+                    }
+                    else
+                    {
+                        activateTask("Renewal Review");
                     }
                 }
                 var conArray = getContactByType("Applicant", capId);

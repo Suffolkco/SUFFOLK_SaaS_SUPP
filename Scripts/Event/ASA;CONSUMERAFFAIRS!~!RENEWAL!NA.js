@@ -7,7 +7,7 @@ aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
 var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
-aa.cap.updateAccessByACA(capId, "N");
+aa.cap.updateAccessByACA(capId, "Y");
 if (publicUser)
 {
     //copying the contacts from the parent to the renewal record when beginning the renewal for ACA records only
@@ -23,5 +23,5 @@ if (publicUser)
     }
     copyContacts(parentCapId, capId);
 }
-copyASIFields(parentCapId, capId);
-copyASITables(parentCapId, capId);
+//copyASIFields(parentCapId, capId);
+//copyASITables(parentCapId, capId);
