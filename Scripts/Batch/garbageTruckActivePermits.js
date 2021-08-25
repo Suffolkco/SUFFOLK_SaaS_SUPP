@@ -144,7 +144,7 @@ function mainProcess()
                                  
                                     addParameter(emailParams, "$$name$$", firstName);
                                     reportParams.put("ContactType", conArray[con].contactType);                                 
-                                    localCId = conArray[con].getCapContactModel().getPeople().getContactSeqNumber();			
+                                    localCId = conArray[con].getPeople().getContactSeqNumber();			
                                     reportParams.put("ContactID", localCId);
                                     rFile = generateReport("Go_Live_Letter_Garbage_Permits",reportParams, appTypeArray[0]);
                                                        
