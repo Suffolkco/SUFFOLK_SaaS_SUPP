@@ -165,13 +165,13 @@ function mainProcess()
                                     if (rFile) {
                                         reportFile.push(rFile);
                                     }                                  
-                                    //sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ACTIVE", emailParams, reportFile);
+                                    sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ACTIVE", emailParams, reportFile);
 									logDebug("Email sent to " + firstName + " for " + capIDString);
 									// TO BE REMOVED!!!!!!!!!!!!!!!!!!!!!!!!!!!
-									if (emailSent == 1)
-									{
-										sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_WWM_GARBAGE_ACTIVE", emailParams, reportFile);
-									}
+									//if (emailSent == 1)
+									//{
+									//	sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_WWM_GARBAGE_ACTIVE", emailParams, reportFile);
+									//}
                                     emailSent++;
                                 }
                                 else
