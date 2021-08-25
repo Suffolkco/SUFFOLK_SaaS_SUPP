@@ -142,7 +142,7 @@ function mainProcess()
 										logDebug("First Name retrieved from contact " + capIDString + " to " + firstName);
                                     }
                                  
-                                    addParameter(lpEmailParams, "$$name$$", firstName);
+                                    addParameter(emailParams, "$$name$$", firstName);
                                     reportParams.put("ContactType", conArray[con].contactType);                                 
                                     localCId = conArray[con].getCapContactModel().getPeople().getContactSeqNumber();			
                                     reportParams.put("ContactID", localCId);
