@@ -7,6 +7,7 @@
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
+var currentUserID = "ADMIN";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = true;
