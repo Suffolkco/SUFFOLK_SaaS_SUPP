@@ -224,15 +224,15 @@ function generateReport(aaReportName,parameters,rModule) {
        if(reportResult) {
 	       reportResult = reportResult.getOutput();
 	       var reportFile = aa.reportManager.storeReportToDisk(reportResult);
-			logMessage("Report Result: "+ reportResult);
+		   logDebug("Report Result: "+ reportResult);
 	       reportFile = reportFile.getOutput();
 	       return reportFile
        } else {
-       		logMessage("Unable to run report: "+ reportName + " for Admin" + systemUserObj);
+		logDebug("Unable to run report: "+ reportName + " for Admin" + systemUserObj);
        		return false;
        }
     } else {
-         logMessage("No permission to report: "+ reportName + " for Admin" + systemUserObj);
+		logDebug("No permission to report: "+ reportName + " for Admin" + systemUserObj);
          return false;
     }
 }
