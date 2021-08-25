@@ -209,7 +209,7 @@ function generateReport(aaReportName,parameters,rModule) {
       
     report = aa.reportManager.getReportInfoModelByName(reportName);
 	report = report.getOutput();
-	logDebug("This is the report output: " + report);
+	//logDebug("This is the report output: " + report);
   
     report.setModule(rModule);
     report.setCapId(capId);
@@ -224,7 +224,7 @@ function generateReport(aaReportName,parameters,rModule) {
        if(reportResult) {
 	       reportResult = reportResult.getOutput();
 	       var reportFile = aa.reportManager.storeReportToDisk(reportResult);
-		   logDebug("Report Result: "+ reportResult);
+		   //logDebug("Report Result: "+ reportResult);
 	       reportFile = reportFile.getOutput();
 	       return reportFile
        } else {
