@@ -120,7 +120,7 @@ function mainProcess()
                         var conEmail = "";
                         var reportParams = aa.util.newHashtable();
                         var reportFile = new Array();
-                        reportParams.put("RecordID", alternateID.toString());
+                        reportParams.put("RecordID", capIDString);
                      
                         //addParameter(emailParams, "$$ALTID$$", altId);
                         //addParameter(emailParams, "$$capName$$", appTypeArray[1]);
