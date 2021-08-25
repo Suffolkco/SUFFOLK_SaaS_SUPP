@@ -116,6 +116,13 @@ function mainProcess()
                         var emailParams = aa.util.newHashtable();
                         var conArray = getContactArray();
 
+						var capContResult = aa.people.getCapContactByCapID(capId);
+
+						if (capContResult.getSuccess()) {
+							conArray = capContResult.getOutput();
+						} else {
+							retVal = false;
+						}
                       
                         var conEmail = "";
                         var reportParams = aa.util.newHashtable();
@@ -127,24 +134,30 @@ function mainProcess()
                         for (con in conArray)
                         {
                             var firstName = "Madam or Sir";
+						
+							contactType = conArray[con].getCapContactModel().getPeople().getContactType();
+                            if (contactType == "Company")
+                            {                                
+								cont = conArray[con];				
+								peop = cont.getPeople();
+								conEmail = peop.getEmail();
+								
 
-                            if (conArray[con].contactType == "Company")
-                            {
-                                company = conArray[con];
-                                conEmail = company.email;
                                 if (conEmail != null)
                                 {
                                     logDebug("Email has been sent for " + capIDString + " to " + conEmail);
                                   
-                                    if (company.firstName != null)
+                                    if (conArray[con].getCapContactModel().getPeople().getFirstName() != null)
                                     {
-                                        firstName = company.firstName;
+                                        firstName = conArray[con].getCapContactModel().getPeople().getFirstName();
 										logDebug("First Name retrieved from contact " + capIDString + " to " + firstName);
                                     }
                                  
                                     addParameter(emailParams, "$$name$$", firstName);
-                                    reportParams.put("ContactType", conArray[con].contactType);                                 
-                                    localCId = conArray[con].getPeople().getContactSeqNumber();			
+                                    reportParams.put("ContactType", contactType);                                 
+                                    localCId = conArray[con].getCapContactModel().getPeople().getContactSeqNumber();			
+									
+
                                     reportParams.put("ContactID", localCId);
                                     rFile = generateReport("Go_Live_Letter_Garbage_Permits",reportParams, appTypeArray[0]);
                                                        
