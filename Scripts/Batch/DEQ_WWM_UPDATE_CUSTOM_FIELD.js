@@ -1,33 +1,118 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: garbageTruckActivePermits.js  Trigger: Batch| 
+| Program:DEQ_WWM_UPDATE_CUSTOM_FIELD.js: Batch
+| 
+| This batch script will run one time to update a custom field 
+| in converted record without concerning other required fields in custom fields.
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
+| USER CONFIGURABLE PARAMETERS
+/------------------------------------------------------------------------------------------------------*/
+currentUserID = "ADMIN";
+useAppSpecificGroupName = false;
+/*------------------------------------------------------------------------------------------------------/
+| GLOBAL VARIABLES
+/------------------------------------------------------------------------------------------------------*/
+br = "<br>";
+debug = "";
+systemUserObj = aa.person.getUser(currentUserID).getOutput();
+publicUser = false;
+/*------------------------------------------------------------------------------------------------------/
+| INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
+/------------------------------------------------------------------------------------------------------*/
+SCRIPT_VERSION = 3.0;
+var useSA = false;
+var SA = null;
+var SAScript = null;
+var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
+{
+    useSA = true;
+    SA = bzr.getOutput().getDescription();
+    bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
+    if (bzr.getSuccess())
+    {
+        SAScript = bzr.getOutput().getDescription();
+    }
+}
+
+if (SA)
+{
+    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
+    eval(getMasterScriptText(SAScript, SA));
+} else
+{
+    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+}
+
+eval(getScriptText("INCLUDES_BATCH"));
+eval(getMasterScriptText("INCLUDES_CUSTOM"));
+
+function getMasterScriptText(vScriptName)
+{
+    var servProvCode = aa.getServiceProviderCode();
+    if (arguments.length > 1)
+        servProvCode = arguments[1]; // use different serv prov code
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
+}
+
+function getScriptText(vScriptName)
+{
+    var servProvCode = aa.getServiceProviderCode();
+    if (arguments.length > 1)
+        servProvCode = arguments[1]; // use different serv prov code
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        var emseScript = emseBiz.getScriptByPK(servProvCode, vScriptName, "ADMIN");
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
+}
+/*------------------------------------------------------------------------------------------------------/
 |
-| START: USER CONFIGURABLE PARAMETERS 
+| START: USER CONFIGURABLE PARAMETERS
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
-var currentUserID = "ADMIN";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = true;
-var systemUserObj = aa.person.getUser("ADMIN").getOutput();
-var useAppSpecificGroupName = false;
 var timeExpired = false;
-var br = "<BR>";
-var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+var emailAddress = "ada.chan@suffolkcountyny.gov";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
 batchJobID = 0;
+var pgParms = aa.env.getParamValues();
+var pgParmK = pgParms.keys();
+while (pgParmK.hasNext())
+{
+    k = pgParmK.next();
+    if (k == "Send Batch log to:")
+    {
+        emailAddress = pgParms.get(k);
+    }
+}
 if (batchJobResult.getSuccess()) 
 {
-	batchJobID = batchJobResult.getOutput();
-	logDebug("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
+    batchJobID = batchJobResult.getOutput();
+    logDebugLocal("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
 }
 else
 {
-	logDebug("Batch job ID not found " + batchJobResult.getErrorMessage());
+    logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
 /*------------------------------------------------------------------------------------------------------/
 |
@@ -42,9 +127,9 @@ else
 var message = "";
 var startDate = new Date();
 var startTime = startDate.getTime(); // Start timer
-var todayDate = "" + startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
-// all record types to check
-var rtArray = ["DEQ/WWM/Garbage/Permit"];
+var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+var fromDate = aa.date.parseDate("1/1/1980");
+var toDate = aa.date.parseDate((new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
 /*----------------------------------------------------------------------------------------------------/
 |
 | End: BATCH PARAMETERS//
@@ -58,145 +143,75 @@ var paramsOK = true;
 
 if (paramsOK) 
 {
-	logDebug("Start Date: " + startDate + br);
-	logDebug("Starting the timer for this job.  If it takes longer than 5 minutes an error will be listed at the bottom of the email." + br);
-	if (!timeExpired) 
-	{
-		mainProcess();
-		//logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-		logDebug("End Date: " + startDate);
-		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - GarbageTruckActivePermits", emailText);
-	}
+    logDebugLocal("Start Date: " + startDate + br);	
+    if (!timeExpired) 
+    {
+        mainProcess();
+        //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
+        logDebugLocal("End Date: " + startDate + br);		
+        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_WWM_UPDATE_CUSTOM_FIELD", emailText);
+    }
 }
 /*------------------------------------------------------------------------------------------------------/
 | <===========End Main=Loop================>
 |
 /-----------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------/
+|
+| End: BATCH PARAMETERS//
+|
+/------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------------/
+| <===========End Main=Loop================>
+|
+/-----------------------------------------------------------------------------------------------------*/
+
 function mainProcess() 
 {    
-    var emailSent = 0;
-    var noEmailFound = 0;
     try 
     {
-        for (var i in rtArray) 
+        logDebug("Batch script will run");
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID = 'C03190010-ZEC'";
+        var output = "Record ID\n";  		
+        
+		// SQL to pull active OPC site records that has NO child Tank records		
+		var vResult = doSQLSelect_local(vSQL);  	     
+		
+		for (r in vResult)
         {
-            var thisType = rtArray[i];
-            var capModel = aa.cap.getCapModel().getOutput();
-            var appTypeArray = thisType.split("/");
-            // Specify the record type to query
-            capTypeModel = capModel.getCapType();
-            capTypeModel.setGroup(appTypeArray[0]);
-            capTypeModel.setType(appTypeArray[1]);
-            capTypeModel.setSubType(appTypeArray[2]);
-            capTypeModel.setCategory(appTypeArray[3]);
-            capModel.setCapType(capTypeModel);
-            //capModel.setCapStatus(sArray[i]); if needed
-
-            var recordListResult = aa.cap.getCapIDListByCapModel(capModel);
-            if (!recordListResult.getSuccess()) 
+            recordID = vResult[r]["recordNumber"];      
+            //output += recordID + "\n";
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+            if (cap)
             {
-                logDebug("**ERROR: Failed to get capId List : " + recordListResult.getErrorMessage());
-                continue;
-            }
-            var recArray = recordListResult.getOutput();
-            logDebug("Looping through " + recArray.length + " records of type " + thisType);
-
-            for (var j in recArray) 
-            {
-                capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput();
-                capIDString = capId.getCustomID();
-                aa.print(capIDString);
-                cap = aa.cap.getCap(capId).getOutput();	              
-                var appStatus = getAppStatus(capId);
-
-                if(appStatus == "Complete")
+                var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
                 {
-                    if (cap)
-                    {
-                        logDebug("<b>" + capIDString + "</b>" + " is active to send emails.");
-                        var emailParams = aa.util.newHashtable();
-                        var conArray = getContactArray();
+                    var method = getAppSpecific("Method of Sewage Disposal", capId);   
+					logDebugLocal("Existing Custom field: " + method);
 
-						var capContResult = aa.people.getCapContactByCapID(capId);
+				
 
-						if (capContResult.getSuccess()) {
-							conArray = capContResult.getOutput();
-						} else {
-							retVal = false;
-						}
-                      
-                        var conEmail = "";
-                        var reportParams = aa.util.newHashtable();
-                        var reportFile = new Array();
-                        reportParams.put("RecordID", capIDString);
-                     
-                        //addParameter(emailParams, "$$ALTID$$", altId);
-                        //addParameter(emailParams, "$$capName$$", appTypeArray[1]);
-                        for (con in conArray)
-                        {
-                            var firstName = "Madam or Sir";
-						
-							contactType = conArray[con].getCapContactModel().getPeople().getContactType();
-                            if (contactType == "Company")
-                            {                                
-								cont = conArray[con];				
-								peop = cont.getPeople();
-								conEmail = peop.getEmail();
-								
-
-                                if (conEmail != null)
-                                {
-                                    logDebug("Email has been sent for " + capIDString + " to " + conEmail);
-                                  
-                                    if (conArray[con].getCapContactModel().getPeople().getFirstName() != null)
-                                    {
-                                        firstName = conArray[con].getCapContactModel().getPeople().getFirstName();
-										logDebug("First Name retrieved from contact " + capIDString + " to " + firstName);
-                                    }
-                                 
-                                    addParameter(emailParams, "$$name$$", firstName);
-                                    reportParams.put("ContactType", contactType);                                 
-                                    localCId = conArray[con].getCapContactModel().getPeople().getContactSeqNumber();			
-									
-
-                                    reportParams.put("ContactID", localCId);
-                                    rFile = generateReport("Go_Live_Letter_Garbage_Permits",reportParams, appTypeArray[0]);
-                                                       
-                                    if (rFile) {
-                                        reportFile.push(rFile);
-                                    }                                  
-                                    sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ACTIVE", emailParams, reportFile);
-									logDebug("Email sent to " + firstName + " for " + capIDString);
-									// TO BE REMOVED!!!!!!!!!!!!!!!!!!!!!!!!!!!
-									//if (emailSent == 1)
-									//{
-									//	sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_WWM_GARBAGE_ACTIVE", emailParams, reportFile);
-									//}
-                                    emailSent++;
-                                }
-                                else
-                                {
-                                    logDebug("Email for " + capIDString + " is empty.");
-                                    noEmailFound++;
-                                }
-                            }
-                        }                    
-                    }
-                }
-            }
-        }
-                           
-                               
-    }
+					editAppSpecific("Method of Sewage Disposal", "I/A System", capId);
+					
+					logDebugLocal("Updated Custom field: " + getAppSpecific("Method of Sewage Disposal", capId));   
+				
+					
+				}
+			}
+		}
+	
+	}
     catch (err) 
     {
         logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
-    logDebug("Emails sent to " + emailSent + " contacts.");
-    logDebug("Email is unable to send to " + noEmailFound + " contacts due to missing email address.");
-    logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
-      
+    logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
 }
+
+
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
@@ -204,38 +219,286 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
-function generateReport(aaReportName,parameters,rModule) {
-	var reportName = aaReportName;
-      
-    report = aa.reportManager.getReportInfoModelByName(reportName);
-	report = report.getOutput();
-	//logDebug("This is the report output: " + report);
-  
-    report.setModule(rModule);
-    report.setCapId(capId);
+function isNumeric(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+  }
 
-    report.setReportParameters(parameters);
+function finalCheck(totalCapacity, capId, capIDString)
+{
+	//logDebugLocal("Final Check capcity total: " + totalCapacity);
+	if (totalCapacity > 1100)
+	{
+		//editAppSpecific("Article 18 Regulated Site", "Yes", capId);
+		logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
+		
+	}
+	var art18 = getAppSpecific("Article 18 Regulated Site", capId);   	
+	if (art18 == "Yes")
+	{
+		//editAppSpecific("PBS Regulated Site", "Yes", capId);
+		logDebugLocal("PBS Regulated Site set to Yes since Article 18 is : " + art18 + " for " + capIDString);
 
-    var permit = aa.reportManager.hasPermission(reportName,currentUserID);
+		var ownerType = getAppSpecific("Owner Type", capId);   
+		var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
+		if (ownerType == "2-State Government" || regulatedSite == "Yes")
+		{
+			//editAppSpecific("Article 18 Regulated Site", "No", capId);				
+			logDebugLocal("Final Check set Article 18 Regulated Site to No due to ownertype: " + ownerType + "," + capIDString);
+		}
 
-    if(permit.getOutput().booleanValue()) {
-       var reportResult = aa.reportManager.getReportResult(report);
-     
-       if(reportResult) {
-	       reportResult = reportResult.getOutput();
-	       var reportFile = aa.reportManager.storeReportToDisk(reportResult);
-		   //logDebug("Report Result: "+ reportResult);
-	       reportFile = reportFile.getOutput();
-	       return reportFile
-       } else {
-		logDebug("Unable to run report: "+ reportName + " for Admin" + systemUserObj);
-       		return false;
-       }
-    } else {
-		logDebug("No permission to report: "+ reportName + " for Admin" + systemUserObj);
-         return false;
+	}
+
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
     }
 }
+function doSQLSelect_local(sql)
+{
+    try
+    {
+        //logdebug("iNSIDE FUNCTION");
+        var array = [];
+        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
+        var ds = initialContext.lookup("java:/SUFFOLKCO");
+        var conn = ds.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+        if (sql.toUpperCase().indexOf("SELECT") == 0)
+        {
+            //logdebug("executing " + sql);
+            var rSet = sStmt.executeQuery();
+            while (rSet.next())
+            {
+                var obj = {};
+                var md = rSet.getMetaData();
+                var columns = md.getColumnCount();
+                for (i = 1; i <= columns; i++)
+                {
+                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
+                    //logdebug(rSet.getString(md.getColumnName(i)));
+                }
+                obj.count = rSet.getRow();
+                array.push(obj)
+            }
+            rSet.close();
+            //logdebug("...returned " + array.length + " rows");
+            //logdebug(JSON.stringify(array));
+        }
+        sStmt.close();
+        conn.close();
+        return array
+    } catch (err)
+    {
+        //logdebug("ERROR: "+ err.message);
+        return array
+    }
+}
+
+function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
+{
+  if (capConditionScriptModel1 == null || capConditionScriptModel2 == null)
+  {
+    return false;
+  }
+  var description1 = capConditionScriptModel1.getConditionDescription();
+  var description2 = capConditionScriptModel2.getStreetName();
+  if ((description1 == null && description2 != null) 
+    || (description1 != null && description2 == null))
+  {
+    return false;
+  }
+  if (description1 != null && !description1.equals(description2))
+  {
+    return false;
+  }
+  var conGroup1 = capConditionScriptModel1.getConditionGroup();
+  var conGroup2 = capConditionScriptModel2.getConditionGroup();
+  if ((conGroup1 == null && conGroup2 != null) 
+    || (conGroup1 != null && conGroup2 == null))
+  {
+    return false;
+  }
+  if (conGroup1 != null && !conGroup1.equals(conGroup2))
+  {
+    return false;
+  }
+  return true;
+}
+
+function getChildren(pCapType, pParentCapId) 
+	{
+	// Returns an array of children capId objects whose cap type matches pCapType parameter
+	// Wildcard * may be used in pCapType, e.g. "Building/Commercial/*/*"
+	// Optional 3rd parameter pChildCapIdSkip: capId of child to skip
+
+	var retArray = new Array();
+	if (pParentCapId!=null) //use cap in parameter 
+		var vCapId = pParentCapId;
+	else // use current cap
+		var vCapId = capId;
+		
+	if (arguments.length>2)
+		var childCapIdSkip = arguments[2];
+	else
+		var childCapIdSkip = null;
+		
+	var typeArray = pCapType.split("/");
+	if (typeArray.length != 4)
+		logDebug("**ERROR in childGetByCapType function parameter.  The following cap type parameter is incorrectly formatted: " + pCapType);
+		
+	var getCapResult = aa.cap.getChildByMasterID(vCapId);
+	if (!getCapResult.getSuccess())
+		{ logDebug("**WARNING: getChildren returned an error: " + getCapResult.getErrorMessage()); return null }
+		
+	var childArray = getCapResult.getOutput();
+	if (!childArray.length)
+		{ logDebug( "**WARNING: getChildren function found no children"); return null ; }
+
+	var childCapId;
+	var capTypeStr = "";
+	var childTypeArray;
+	var isMatch;
+	for (xx in childArray)
+		{
+		childCapId = childArray[xx].getCapID();
+		if (childCapIdSkip!=null && childCapIdSkip.getCustomID().equals(childCapId.getCustomID())) //skip over this child
+			continue;
+
+		capTypeStr = aa.cap.getCap(childCapId).getOutput().getCapType().toString();	// Convert cap type to string ("Building/A/B/C")
+		childTypeArray = capTypeStr.split("/");
+		isMatch = true;
+		for (yy in childTypeArray) //looking for matching cap type
+			{
+			if (!typeArray[yy].equals(childTypeArray[yy]) && !typeArray[yy].equals("*"))
+				{
+				isMatch = false;
+				continue;
+				}
+			}
+		if (isMatch)
+			retArray.push(childCapId);
+		}
+		
+	logDebug("getChildren returned " + retArray.length + " capIds");
+	return retArray;
+
+    }
+
+function getCapConditionByCapID(capId) {
+    capConditionScriptModels = null;
+  
+    var s_result = aa.capCondition.getCapConditions(capId);
+    if (s_result.getSuccess()) {
+      capConditionScriptModels = s_result.getOutput();
+      if (
+        capConditionScriptModels == null ||
+        capConditionScriptModels.length == 0
+      ) {
+        aa.print("WARNING: no cap condition on this CAP:" + capId);
+        capConditionScriptModels = null;
+      }
+    } else {
+      aa.print(
+        "ERROR: Failed to get cap condition: " + s_result.getErrorMessage()
+      );
+      capConditionScriptModels = null;
+    }
+    return capConditionScriptModels;
+  }
+
+function addStdCondition(cType,cDesc)
+{
+    if (!aa.capCondition.getStandardConditions)
+    {
+        aa.print("addStdCondition function is not available in this version of Accela Automation.");
+    }
+    else
+    {
+        standardConditions = aa.capCondition.getStandardConditions(cType,cDesc).getOutput();
+        for(i = 0; i<standardConditions.length;i++)
+        {
+        standardCondition = standardConditions[i]
+        aa.capCondition.createCapConditionFromStdCondition(capId, standardCondition.getConditionNbr())
+        }        
+    }
+}
+
+function getShortNotes() // option CapId
+{
+	var itemCap = capId
+	if (arguments.length > 0)
+		itemCap = arguments[0]; // use cap ID specified in args
+
+	var cdScriptObjResult = aa.cap.getCapDetail(itemCap);
+	if (!cdScriptObjResult.getSuccess())
+		{ logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; return false; }
+
+	var cdScriptObj = cdScriptObjResult.getOutput();
+
+	if (!cdScriptObj)
+		{ logDebug("**ERROR: No cap detail script object") ; return false; }
+
+	cd = cdScriptObj.getCapDetailModel();
+
+	var sReturn = cd.getShortNotes();
+
+	if(sReturn != null)
+		return sReturn;
+	else
+		return "";
+}
+
+function workDescGet(pCapId)
+	{
+	//Gets work description
+	//07SSP-00037/SP5017
+	//
+	var workDescResult = aa.cap.getCapWorkDesByPK(pCapId);
+	
+	if (!workDescResult.getSuccess())
+		{
+		logDebug("**ERROR: Failed to get work description: " + workDescResult.getErrorMessage()); 
+		return false;
+		}
+		
+	var workDescObj = workDescResult.getOutput();
+	var workDesc = workDescObj.getDescription();
+	
+	return workDesc;
+	}
+
+
+function debugObject(object) {
+    var output = '';
+    for (property in object) {
+        output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
+    }
+    logDebug(output);
+}
+
+function getAppStatus() {
+    var itemCap = capId;
+    if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
+
+    var appStatus = null;
+   var capResult = aa.cap.getCap(itemCap);
+   if (capResult.getSuccess()) {
+      licCap = capResult.getOutput();
+      if (licCap != null) {
+         appStatus = "" + licCap.getCapStatus();
+      }
+   } else {
+        logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
+    }
+    return appStatus;
+}
+
 function addFee(fcode, fsched, fperiod, fqty, finvoice)
 {
 	var feeCap = capId;
@@ -299,23 +562,38 @@ function updateFeeItemInvoiceFlag(feeSeq, finvoice)
 	}
 }
 
-function getAppStatus() {
+
+function getAppSpecific(itemName) { // optional: itemCap
+	var updated = false;
+	var i=0;
 	var itemCap = capId;
-	if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
-
-	var appStatus = null;
-   var capResult = aa.cap.getCap(itemCap);
-   if (capResult.getSuccess()) {
-      licCap = capResult.getOutput();
-      if (licCap != null) {
-         appStatus = "" + licCap.getCapStatus();
-      }
-   } else {
-		logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
+	if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
+	
+	if (useAppSpecificGroupName) {
+		if (itemName.indexOf(".") < 0) {
+			logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true"); 
+			return false 
+		}
+		var itemGroup = itemName.substr(0,itemName.indexOf("."));
+		var itemName = itemName.substr(itemName.indexOf(".")+1);
 	}
-	return appStatus;
+	
+	var appSpecInfoResult = aa.appSpecificInfo.getByCapID(itemCap);
+	if (appSpecInfoResult.getSuccess()) {
+		var appspecObj = appSpecInfoResult.getOutput();
+		if (itemName != "") {
+			for (i in appspecObj) {
+				if( appspecObj[i].getCheckboxDesc() == itemName && (!useAppSpecificGroupName || appspecObj[i].getCheckboxType() == itemGroup) )
+				{
+					return appspecObj[i].getChecklistComment();
+					break;
+				}
+			}
+		}
+	} else { 
+		logDebug( "**ERROR: getting app specific info for Cap : " + appSpecInfoResult.getErrorMessage())
+	}
 }
-
 function copyContacts(pFromCapId, pToCapId) 
 {
 	if (pToCapId == null)
@@ -510,7 +788,20 @@ function addParameter(pamaremeters, key, value)
 		pamaremeters.put(key, value);
 	}
 }
-
+function getDepartmentName(username)
+	{
+	var suo = aa.person.getUser(username).getOutput(); 
+	var dpt = aa.people.getDepartmentList(null).getOutput();
+	for (var thisdpt in dpt)
+	  	{
+	  	var m = dpt[thisdpt]
+	  	var  n = m.getServiceProviderCode() + "/" + m.getAgencyCode() + "/" + m.getBureauCode() + "/" + m.getDivisionCode() + "/" + m.getSectionCode() + "/" + m.getGroupCode() + "/" + m.getOfficeCode() 
+	  
+	  	if (n.equals(suo.deptOfUser)) 
+	  	return(m.getDeptName())
+  		}
+  	}
+  
 function updateAppStatus(stat,cmt) 
 {
 	var thisCap = capId;
@@ -525,6 +816,15 @@ function updateAppStatus(stat,cmt)
 	{
 		logDebug("Application Status updated to " + stat);
 	}
+}
+
+function getOutput(result, object) {
+    if (result.getSuccess()) {
+        return result.getOutput();
+    } else {
+        logDebug("ERROR: Failed to get " + object + ": " + result.getErrorMessage());
+        return null;
+    }
 }
 
 function getContactArray()
@@ -624,6 +924,7 @@ function getAppSpecific(itemName) { // optional: itemCap
 		logDebug( "**ERROR: getting app specific info for Cap : " + appSpecInfoResult.getErrorMessage())
 	}
 }
+
 
 function updateTask(wfstr, wfstat, wfcomment, wfnote) // optional process name, cap id
 {
@@ -765,7 +1066,7 @@ function jsDateToMMDDYYYY(pJavaScriptDate) {
 	}
 }
 
-function dateDiff(date1, date2)
+function dateDifference(date1, date2)
 {
     return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
 }
