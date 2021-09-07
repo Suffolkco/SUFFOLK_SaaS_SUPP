@@ -181,6 +181,7 @@ function mainProcess()
 
                                                         var vEParams = aa.util.newHashtable();
                                                         var vRParams = aa.util.newHashtable();
+                                                        var PIN = AInfo["PIN Number"];
 
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
@@ -188,6 +189,8 @@ function mainProcess()
                                                         addParameter(vRParams, "FromDate", curExpCon);
                                                         addParameter(vRParams, "ToDate", curExpCon);
                                                         addParameter(vRParams, "Email", "Yes");
+                                                        addParameter(vEParams, "$$PINNumber$$", PIN);
+
 
                                                         logDebug("<b>" + capIDString + "</b>" + " About to Expire");
                                                         var contactResult = aa.people.getCapContactByCapID(capId);
