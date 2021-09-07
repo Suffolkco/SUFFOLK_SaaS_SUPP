@@ -166,10 +166,10 @@ function mainProcess()
         var dateCheck = dateAdd(null, 32);
         dateCheckString = String(dateCheck).split("/")
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE LIKE '%LICENSE DATES%' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'ID Cards' and B1_PER_CATEGORY = 'NA' "; 
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE LIKE '%LICENSE DATES%' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'ID Cards' and B1_PER_CATEGORY = 'NA' ";
         //  
         var output = "Record ID | Expiration Date \n";
-        var vResult = doSQLSelect_local(vSQL); 
+        var vResult = doSQLSelect_local(vSQL);
 
         for (r in vResult)
         {
@@ -214,7 +214,9 @@ function mainProcess()
                             var wfObj = workflowResult.getOutput();
                             var vEParams = aa.util.newHashtable();
                             var vRParams = aa.util.newHashtable();
-
+                            var AInfo = new Array();
+                            loadAppSpecific(AInfo);
+                            var PIN = AInfo["PIN Number"];
                             var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
                             acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 
@@ -227,6 +229,7 @@ function mainProcess()
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
                             addACAUrlsVarToEmail(vEParams);
+                            addParameter(vEParams, "$$PINNumber$$", PIN);
                             for (i in wfObj)
                             {
                                 if (wfObj[i].getTaskDescription() == "Issuance")
@@ -488,6 +491,28 @@ function generateReportBatch(itemCap, reportName, module, parameters)
         return false;
     }
 }
+function loadAppSpecific(thisArr) {
+	// 
+	// Returns an associative array of App Specific Info
+	// Optional second parameter, cap ID to load from
+	//
+	
+	var itemCap = capId;
+	if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
 
+    	var appSpecInfoResult = aa.appSpecificInfo.getByCapID(itemCap);
+	if (appSpecInfoResult.getSuccess())
+	 	{
+		var fAppSpecInfoObj = appSpecInfoResult.getOutput();
+
+		for (loopk in fAppSpecInfoObj)
+			{
+			if (useAppSpecificGroupName)
+				thisArr[fAppSpecInfoObj[loopk].getCheckboxType() + "." + fAppSpecInfoObj[loopk].checkboxDesc] = fAppSpecInfoObj[loopk].checklistComment;
+			else
+				thisArr[fAppSpecInfoObj[loopk].checkboxDesc] = fAppSpecInfoObj[loopk].checklistComment;
+			}
+		}
+	}
 
 
