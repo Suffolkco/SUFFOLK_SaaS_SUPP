@@ -185,7 +185,7 @@ function mainProcess()
                                         if (isTaskActive("Inspection"))
                                         {
                                             logDebug("Inspection: Task Active. Update task and app status");         
-                                            updateTask("Inspection", "Permit Expired", "Updated via batch script", "");
+                                            updateTask("Inspection", "Permit Expired", "Permit Expired", "");
                                             updateAppStatus("Permit Expired", "Updated via batch script");
 
                                         }
