@@ -194,7 +194,7 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
-
+													addParameter(emailParams, "$$DAY$$", "0");
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{
@@ -961,6 +961,21 @@ function convertDate(thisDate) {
 	logDebug("**WARNING** convertDate cannot parse date : " + thisDate);
 	return null;
 }
+
+function lookup(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+        //logDebug("lookup(" + stdChoice + "," + stdValue + ") = " + strControl);
+    } else {
+        logDebug("lookup(" + stdChoice + "," + stdValue + ") does not exist");
+    }
+    return strControl;
+}
+
 
 function jsDateToMMDDYYYY(pJavaScriptDate) {
 	//converts javascript date to string in MM/DD/YYYY format
