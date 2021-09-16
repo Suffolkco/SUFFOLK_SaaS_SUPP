@@ -454,6 +454,7 @@ function addFee(fcode, fsched, fperiod, fqty, finvoice)
 	var feeCap = capId;
 	var feeCapMessage = "";
 	var feeSeq_L = new Array(); //invoicing fee for CAP in args
+	var feeSeqList = new Array();
 	var paymentPeriod_L = new Array(); //invoicing pay periods for CAP in args
 	var feeSeq = null;
 	if (arguments.length > 5)
