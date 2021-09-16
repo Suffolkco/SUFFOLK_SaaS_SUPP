@@ -138,11 +138,14 @@ function mainProcess()
                                 var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());                                
                                 logDebug("Application Expiration Date is today: " + todDateCon);
                                 
-                             
+								// 90 days after expiration for condition
+								var ninetyDay = new Date(dateAdd(curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear(), 90));
+								var ninetyDayCon = (ninetyDay.getMonth() + 1) + "/" + ninetyDay.getDate() + "/" + ninetyDay.getFullYear();
+								logDebug("90 days after expiration date is: " + ninetyDayCon);
+
 
                                 if (expDateCon == todDateCon)   // The expiration date is today                                    
-                                {
-                                
+                                {                                
                                     var workflowResult = aa.workflow.getTasks(capId);
                 
                                     if (workflowResult.getSuccess())
@@ -162,6 +165,8 @@ function mainProcess()
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
 											{
+												var emailParams = aa.util.newHashtable();  
+
 												if (expDateCon == todDateCon) // Expire today, update workflow status
 												{                         
 													logDebug("Expire today: " + todDateCon);        
@@ -188,21 +193,18 @@ function mainProcess()
 													addParameter(emailParams, "$$zip$$", zip);	                                                    
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
-
-													//Save Base ACA URL
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{
 														logDebug("Sending email to contact: " + conEmail2); 
-														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONTSRUCT_RENEWAL", emailParams, reportFile);
+														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", emailParams, null);
 													}
 																			
 												}	
 
-												var lpEmail = "";
-												var lpReportFile = new Array();
+												var lpEmail = "";												
 												var lpEmailParams = aa.util.newHashtable();	                                                                                                                                                                  
 												var lpResult = aa.licenseScript.getLicenseProf(capId);
 												if (lpResult.getSuccess())
@@ -221,18 +223,20 @@ function mainProcess()
 													var city = lpArr[lp].city;
 													var state = lpArr[lp].state;
 													var zip = lpArr[lp].zip;											
-													addParameter(emailParams, "$$ALTID$$", altId);
-													addParameter(emailParams, "$$shortnotes$$", shortNotes);
-													addParameter(emailParams, "$$address1$$", address1);
-													addParameter(emailParams, "$$city$$", city);
-													addParameter(emailParams, "$$state$$", state);
-													addParameter(emailParams, "$$zip$$", zip);	                                                    
-													addParameter(emailParams, "$$expireDateD$$", expDateCon);	                                                    
+													addParameter(lpEmailParams, "$$ALTID$$", altId);
+													addParameter(lpEmailParams, "$$shortnotes$$", shortNotes);
+													addParameter(lpEmailParams, "$$address1$$", address1);
+													addParameter(lpEmailParams, "$$city$$", city);
+													addParameter(lpEmailParams, "$$state$$", state);
+													addParameter(lpEmailParams, "$$zip$$", zip);	                                                    
+													addParameter(lpEmailParams, "$$expireDateD$$", expDateCon);	  
+													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
+													addParameter(lpEmailParams, "$$acaURL$$", acaSite);                                  
 											
 													if (lpEmail != null)
 													{
 														logDebug("Sending email to: " + lpEmail); 
-														sendNotification("", lpEmail, "", "DEQ_OPC_HAZARDIOUS_TANK_RENEWAL", lpEmailParams, lpReportFile);
+														sendNotification("", lpEmail, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", lpEmailParams, null);
 													}                                                
 																							
 												}

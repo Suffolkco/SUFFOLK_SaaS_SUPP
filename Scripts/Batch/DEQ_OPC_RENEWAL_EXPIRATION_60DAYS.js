@@ -137,6 +137,11 @@ function mainProcess()
                                 var expDateCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
                                 logDebug("Current expiration date: " + expDateCon);
     
+								// 90 days after expiration for condition
+								var ninetyDay = new Date(dateAdd(curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear(), 90));
+								var ninetyDayCon = (ninetyDay.getMonth() + 1) + "/" + ninetyDay.getDate() + "/" + ninetyDay.getFullYear();
+								logDebug("90 days after expiration date is: " + ninetyDayCon);
+
 
                                 if (expDateCon == sixtyDueDate) // The expiration date matches 60 days                                 
                                 {                                
@@ -153,12 +158,14 @@ function mainProcess()
                                     for (i in wfObj)
                                     {
                                         fTask = wfObj[i];
-                                                                    
+										
                                         //logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
                                         if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
-											{												
+											{						
+												var emailParams = aa.util.newHashtable();  
+
 												// Add renwal fee HM-CON-REN for Tank Install and Global Containment                                        
 												if (thisType == "DEQ/OPC/Hazardous Tank/Application" || thisType == "DEQ/OPC/Global Containment/Application")
 												{
@@ -177,7 +184,7 @@ function mainProcess()
 															
 												var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-					
+						
 												for (con in conArray)
 												{		
 													var address1 = conArray[con].addressLine1;				
@@ -189,24 +196,22 @@ function mainProcess()
 													addParameter(emailParams, "$$address1$$", address1);
 													addParameter(emailParams, "$$city$$", city);
 													addParameter(emailParams, "$$state$$", state);
-													addParameter(emailParams, "$$zip$$", zip);	                                                    
+													addParameter(emailParams, "$$zip$$", zip);	        
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
-
 													//Save Base ACA URL
 													addParameter(emailParams, "$$acaURL$$", acaSite);
-
+	
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{
 														logDebug("Sending email to contact: " + conEmail2); 
-														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONTSRUCT_RENEWAL", emailParams, reportFile);
+														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", emailParams, null);
 													}
 																			
 												}	
 
-												var lpEmail = "";
-												var lpReportFile = new Array();
+												var lpEmail = "";												
 												var lpEmailParams = aa.util.newHashtable();	                                                                                                                                                                  
 												var lpResult = aa.licenseScript.getLicenseProf(capId);
 												if (lpResult.getSuccess())
@@ -225,18 +230,23 @@ function mainProcess()
 													var city = lpArr[lp].city;
 													var state = lpArr[lp].state;
 													var zip = lpArr[lp].zip;											
-													addParameter(emailParams, "$$ALTID$$", altId);
-													addParameter(emailParams, "$$shortnotes$$", shortNotes);
-													addParameter(emailParams, "$$address1$$", address1);
-													addParameter(emailParams, "$$city$$", city);
-													addParameter(emailParams, "$$state$$", state);
-													addParameter(emailParams, "$$zip$$", zip);	                                                    
-													addParameter(emailParams, "$$expireDateD$$", expDateCon);	                                                    
-											
+													addParameter(lpEmailParams, "$$ALTID$$", altId);
+													addParameter(lpEmailParams, "$$shortnotes$$", shortNotes);
+													addParameter(lpEmailParams, "$$address1$$", address1);
+													addParameter(lpEmailParams, "$$city$$", city);
+													addParameter(lpEmailParams, "$$state$$", state);
+													addParameter(lpEmailParams, "$$zip$$", zip);	                                                    
+													addParameter(lpEmailParams, "$$expireDateD$$", expDateCon);	                                                    
+													addParameter(lpEmailParams, "$$expireDate$$", expDateCon);	 
+													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
+													addParameter(emailParams, "$$DAY$$", "60");
+													//Save Base ACA URL
+													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
+
 													if (lpEmail != null)
 													{
 														logDebug("Sending email to: " + lpEmail); 
-														sendNotification("", lpEmail, "", "DEQ_OPC_HAZARDIOUS_TANK_RENEWAL", lpEmailParams, lpReportFile);
+														sendNotification("", lpEmail, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", lpEmailParams, null);
 													}                                                
 																							
 												}
