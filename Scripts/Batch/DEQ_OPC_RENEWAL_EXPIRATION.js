@@ -361,7 +361,9 @@ function mainProcess()
                                             var altId = capId.getCustomID();
                                             var appName = workDescGet(capId);
                                             var shortNotes = getShortNotes(capId);
-
+											var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+											acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+				
                                             for (con in conArray)
                                             {		
                                                 var address1 = conArray[con].addressLine1;				
@@ -374,12 +376,17 @@ function mainProcess()
                                                 addParameter(emailParams, "$$city$$", city);
                                                 addParameter(emailParams, "$$state$$", state);
                                                 addParameter(emailParams, "$$zip$$", zip);	                                                    
-                                                addParameter(emailParams, "$$expireDateD$$", expDateCon);	                                                    
+                                                addParameter(emailParams, "$$expireDate$$", expDateCon);	 
+												addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
+
+												//Save Base ACA URL
+												addParameter(emailParams, "$$acaURL$$", acaSite);
+
                                                 conEmail2 = conArray[con].email;
                                                 if (conEmail2 != null)
                                                 {
                                                     logDebug("Sending email to contact: " + conEmail2); 
-                                                    sendNotification("", conEmail2, "", "DEQ_OPC_HAZARDOUS TANK_RENEWAL", emailParams, reportFile);
+                                                    sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONTSRUCT_RENEWAL", emailParams, reportFile);
                                                 }
                                                                         
                                             }	
