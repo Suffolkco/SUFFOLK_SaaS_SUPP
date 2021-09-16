@@ -191,7 +191,7 @@ function mainProcess()
 													var city = conArray[con].city;
 													var state = conArray[con].state;
 													var zip = conArray[con].zip;											
-													addParameter(emailParams, "$$ALTID$$", altId);
+													addParameter(emailParams, "$$ALTID$$", capIDString);
 													addParameter(emailParams, "$$shortnotes$$", shortNotes);
 													addParameter(emailParams, "$$address1$$", address1);
 													addParameter(emailParams, "$$city$$", city);
@@ -230,7 +230,7 @@ function mainProcess()
 													var city = lpArr[lp].city;
 													var state = lpArr[lp].state;
 													var zip = lpArr[lp].zip;											
-													addParameter(lpEmailParams, "$$ALTID$$", altId);
+													addParameter(lpEmailParams, "$$ALTID$$", capIDString);
 													addParameter(lpEmailParams, "$$shortnotes$$", shortNotes);
 													addParameter(lpEmailParams, "$$address1$$", address1);
 													addParameter(lpEmailParams, "$$city$$", city);
