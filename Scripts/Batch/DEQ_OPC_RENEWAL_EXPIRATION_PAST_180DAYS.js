@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------------------------------/
 | Program: DEQ_OPC_RENEWAL_EXPIRATION.js  Trigger: Batch| 
 | 
-| This batch script will run daily to send email notification to all contacts and :P, 0,  60 days before and 180 days past
+| This batch script will run daily to send email notification to all contacts and :Past 180 days 
 | the expiration 
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
@@ -128,20 +128,11 @@ function mainProcess()
                             var curExp = b1Exp.getExpDate();
 
                             if (curExp != null)
-                            {
-                                // 60 days before the expiration
-                                var dateLookingFor = new Date(dateAdd((startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear(), 60));
-                                var sixtyDueDate = (dateLookingFor.getMonth() + 1) + "/" + dateLookingFor.getDate() + "/" + dateLookingFor.getFullYear();
-                                logDebug("60 days before the expiration date: " + sixtyDueDate);
-
+                            {                                
                                 var expDateCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
                                 logDebug("Current expiration date: " + expDateCon);
-                                        
-                                // 0 days before the expiration
-                                var todaysDate = new Date();																
-                                var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());                                
-                                logDebug("Application Expiration Date is today: " + todDateCon);
-                                
+                                       
+                               
                                 // more than 180 days expired
                                 var longExpDate = new Date(dateAdd((startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear(), 180));                                    
                                 var past180DateCon = (longExpDate.getMonth() + 1) + "/" + longExpDate.getDate() + "/" + longExpDate.getFullYear();
@@ -151,191 +142,9 @@ function mainProcess()
                                 var dateDiff = parseFloat(dateDifference(todDateCon, expDateCon));
                                 logDebug("Day difference is: " + dateDiff);
                                                
-                                // 90 days after expiration for condition
-                                var ninetyDay = new Date(dateAdd(curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear(), 90));
-                                var ninetyDayCon = (ninetyDay.getMonth() + 1) + "/" + ninetyDay.getDate() + "/" + ninetyDay.getFullYear();
-                                logDebug("90 days after expiration date is: " + ninetyDayCon);
 
-                                if (expDateCon == sixtyDueDate || // The expiration date matches 60 days OR
-                                    expDateCon == todDateCon ||   // The expiration date is today OR
-                                    dateDiff >= 180) // The expiration date passed 180 days 
+                                if (dateDiff >= 180) // The expiration date passed 180 days 
                                 {
-                                    // If expire in 60 days, we add fees
-                                    if (expDateCon == sixtyDueDate)
-                                    {
-                                        // Add renwal fee HM-CON-REN for Tank Install and Global Containment                                        
-                                        if (thisType == "DEQ/OPC/Hazardous Tank/Application" || thisType == "DEQ/OPC/Global Containment/Application")
-                                        {
-                                            if (!feeExists("HM-CON-REN"))
-                                            {
-                                                addFee("HM-CON-REN", "DEQ_HAZCON_REN", "FINAL", 1, "Y");
-                                            }
-                                        }                                              
-                                        else if (thisType == "DEQ/OPC/Swimming Pool/Application") // Add SP-CON_REN for swimming pool app
-                                        {
-                                            if (!feeExists("SP-CON-REN"))
-                                            {
-                                                addFee("SP-CON-REN", "DEQ_SWIM_REN", "FINAL", 1, "Y");
-                                            }
-                                        }                                
-                                    }
-                                    else if (expDateCon == todDateCon) // Expire today, update workflow status
-                                    {                         
-                                        logDebug("Expire today: " + todDateCon);               
-                                        if (isTaskActive("Inspection"))
-                                        {
-                                            logDebug("Inspection: Task Active. Update task and app status");         
-                                            updateTask("Inspection", "Permit Expired", "Permit Expired", "");
-                                            updateAppStatus("Permit Expired", "Updated via batch script");
-
-                                        }
-                                    }
-                                    else if (dateDiff >= 180)
-                                    {
-                                        logDebug("Passed 180 days: " + dateDiff);       
-                                        //addStdCondition("DEQ", "Lock", capId);     
-                                        //aa.addCapCondition(capId, "DEQ", "Permit to Construct Expired > 90 days", "Permit to Construct",  ninetyDayCon,ninetyDayCon,null,null,null,null,
-                                        //"Appliced(Applied)", null, null, null )
-										
-										var conditionType = "DEQ";
-										var conditionName = "Permit to Construct Expired > 90 days";
-										var alreadyExisted = false;
-
-										logDebug("Get conditions on :" + capIDString);
-										
-										
-										var s_result = aa.capCondition.getCapConditions(capId);
-										if (s_result.getSuccess()) {
-											logDebug("Success");
-										  capConditionScriptModels = s_result.getOutput();
-										  debugObject(capConditionScriptModels);
-										  logDebug("capConditionScriptModels : " + capConditionScriptModels);
-										logDebug("capConditionScriptModels.length: " + capConditionScriptModels.length);
-										}
-
-										var capConditions = getCapConditionByCapID(capId);
-										if (capConditions != null)
-										{
-											logDebug("Has Condition." + capConditions.length);
-											// First check if there is already "Permit to Construct" condition, if there is, do not add.\
-											for (loopk in capConditions)
-											{
-												sourceCapCondition = capConditions[loopk];
-												if (sourceCapCondition.getConditionDescription() == conditionName)
-												{
-													alreadyExisted = true;
-													logDebug("Already existed:"  + conditionName);
-													break;
-												}
-											}
-										}
-										if (!alreadyExisted)
-										{
-											standardConditions = aa.capCondition.getStandardConditions("DEQ","Lock").getOutput();
-											if (standardConditions.length > 0)
-											{
-												standardCondition = standardConditions[0]													
-												//debugObject(standardCondition);	
-												var conditionNbr = standardCondition.getConditionNbr();
-												// Create lock base on the standard DEQ -> Lock Condition									
-												var newConditionResult = aa.capCondition.createCapConditionFromStdCondition(capId, standardCondition.getConditionNbr())
-												logDebug ("added lock on: " + capIDString);
-
-												if (newConditionResult.getSuccess()) {
-													var newConditionObj = newConditionResult.getOutput();
-													//logDebug ("**********");
-													//debugObject(newConditionObj);	
-													//logDebug ("**********");																									
-													//logDebug(newConditionObj.toString());
-												}
-											
-												logDebug("Find new conditions on :" + capIDString);
-												var capConditions = getCapConditionByCapID(capId);
-												logDebug("Length: " + capConditions.length);
-												for (loopk in capConditions)
-												{
-													sourceCapCondition = capConditions[loopk];
-													var issuedDate = sourceCapCondition.getIssuedDate();	
-													//debugObject(issuedDate);
-													issuedDateDate =  new Date(issuedDate.getMonth() + "/" + issuedDate.getDayOfMonth() + "/" + issuedDate.getYear());	
-													var issuedDataCon = (issuedDateDate.getMonth() + 1) + "/" + issuedDateDate.getDate() + "/" + (issuedDateDate.getFullYear());
-													var statusDate = sourceCapCondition.getStatusDate();											
-													var statusDateDate = new Date(statusDate.getMonth() + "/" + statusDate.getDayOfMonth() + "/" + statusDate.getYear());																	
-													var statusDateCon = (statusDateDate.getMonth() + 1) + "/" + statusDateDate.getDate() + "/" + (statusDateDate.getFullYear());	
-													var todayDateCon = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + (startDate.getFullYear());		
-													//jsExpDate = convertDate(statusDate); 
-													//logDebug("jsExpDate: " + jsExpDate);                   		
-																											
-													logDebug("todayDateCon: " + todayDateCon);
-													logDebug("statusDate: " + statusDateCon);
-													//logDebug("getRefNumber1: " + sourceCapCondition.getRefNumber1());
-													//logDebug("getRefNumber2: " + sourceCapCondition.getRefNumber2());
-													logDebug("getSourceNumber: " + sourceCapCondition.getSourceNumber());
-													logDebug("standard conditionNbr: " + conditionNbr + "cap cond number " + sourceCapCondition.getConditionNumber());
-													logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
-													logDebug("getConditionComment: " + sourceCapCondition.getConditionComment());
-
-													if (statusDateCon == todayDateCon &&
-														sourceCapCondition.getConditionDescription() == "Lock" &&
-														sourceCapCondition.getConditionComment() == "Lock")														
-													{
-														logDebug("same date????: " );
-														//logDebug("name: " + sourceCapCondition.getIncludeInConditionName());
-														//logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
-														//logDebug("getConditionNumber: " + sourceCapCondition.getConditionNumber());
-														//logDebug("getConditionGroup: " + sourceCapCondition.getConditionGroup());
-														//logDebug("getAppliedDepartmentName: " + sourceCapCondition.getAppliedDepartmentName());
-														
-														//logDebug("getCapConditionModel() : " + sourceCapCondition.getCapConditionModel());
-														//logDebug("getConditionSource() : " + sourceCapCondition.getConditionSource());
-													
-														sourceCapCondition.setConditionDescription(conditionName);
-														sourceCapCondition.setDisplayNoticeOnACA("Y");													
-														sourceCapCondition.setConditionComment("Permit to Construct Expired more than 90 days; this applicaiton record has been CLOSED.");																																		
-														var dateToSet = aa.date.parseDate(ninetyDayCon);
-														sourceCapCondition.setIssuedDate(dateToSet);
-														sourceCapCondition.setStatusDate(null);
-														sourceCapCondition.setEffectDate(dateToSet);
-
-														
-														var user = aa.people.getUsersByUserIdAndName("", "", "", "OPC");
-												
-
-														if (user != null) 
-														{		
-															userOut = user.getOutput();
-															if (userOut != null)
-															{             
-																assUserStr = userOut[0].toString();
-																assUsersplit = assUserStr.split("/");
-																assName = assUsersplit[6];
-																if (assName != undefined)
-																{
-																	logDebug("******");
-																	//debugObject(userOut[0]);
-																	assignEmail = userOut[0].getEmail();
-																	assignTitle = userOut[0].getTitle();
-																	logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
-																	//sourceCapCondition.setIssuedByUser(userOut);
-																	//sourceCapCondition.setStatusByUser(userOut);      
-																}
-															}
-
-															//var dpt = aa.people.getDepartmentList(null).getOutput();
-															//debugObject(dpt);
-															//logDebug("getDepartmentName : " + getDepartmentName(assUserStr));
-															//sourceCapCondition.setAppliedDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
-															//sourceCapCondition.setActionDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
-															//debugObject(sourceCapCondition);
-														}
-														
-														aa.capCondition.editCapCondition(sourceCapCondition);	
-														break;
-													}
-												}
-											}
-										}										
-                                    }
                                 
                                     var workflowResult = aa.workflow.getTasks(capId);
                 
@@ -354,78 +163,221 @@ function mainProcess()
                                         //logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
                                         if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
-                                            var emailParams = aa.util.newHashtable();
-                                            var conArray = getContactArray();
-                                            var reportFile = new Array();
-                                            var conEmail = [];
-                                            var altId = capId.getCustomID();
-                                            var appName = workDescGet(capId);
-                                            var shortNotes = getShortNotes(capId);
-											var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
-											acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-				
-                                            for (con in conArray)
-                                            {		
-                                                var address1 = conArray[con].addressLine1;				
-                                                var city = conArray[con].city;
-                                                var state = conArray[con].state;
-                                                var zip = conArray[con].zip;											
-                                                addParameter(emailParams, "$$ALTID$$", altId);
-                                                addParameter(emailParams, "$$shortnotes$$", shortNotes);
-                                                addParameter(emailParams, "$$address1$$", address1);
-                                                addParameter(emailParams, "$$city$$", city);
-                                                addParameter(emailParams, "$$state$$", state);
-                                                addParameter(emailParams, "$$zip$$", zip);	                                                    
-                                                addParameter(emailParams, "$$expireDate$$", expDateCon);	 
-												addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
+											if (fTask.getActiveFlag().equals("Y")) 
+											{											        
+												 if (dateDiff >= 180)
+												 {
+													 logDebug("Passed 180 days: " + dateDiff);       
+													 //addStdCondition("DEQ", "Lock", capId);     
+													 //aa.addCapCondition(capId, "DEQ", "Permit to Construct Expired > 90 days", "Permit to Construct",  ninetyDayCon,ninetyDayCon,null,null,null,null,
+													 //"Appliced(Applied)", null, null, null )
+													 
+													 var conditionType = "DEQ";
+													 var conditionName = "Permit to Construct Expired > 90 days";
+													 var alreadyExisted = false;
+			 
+													 logDebug("Get conditions on :" + capIDString);
+													 
+													 
+													 var s_result = aa.capCondition.getCapConditions(capId);
+													 if (s_result.getSuccess()) {
+														 logDebug("Success");
+													   capConditionScriptModels = s_result.getOutput();
+													   debugObject(capConditionScriptModels);
+													   logDebug("capConditionScriptModels : " + capConditionScriptModels);
+													 	logDebug("capConditionScriptModels.length: " + capConditionScriptModels.length);
+													 }
+			 
+													 var capConditions = getCapConditionByCapID(capId);
+													 if (capConditions != null)
+													 {
+														 logDebug("Has Condition." + capConditions.length);
+														 // First check if there is already "Permit to Construct" condition, if there is, do not add.\
+														 for (loopk in capConditions)
+														 {
+															 sourceCapCondition = capConditions[loopk];
+															 if (sourceCapCondition.getConditionDescription() == conditionName)
+															 {
+																 alreadyExisted = true;
+																 logDebug("Already existed:"  + conditionName);
+																 break;
+															 }
+														 }
+													 }
+													 if (!alreadyExisted)
+													 {
+														 standardConditions = aa.capCondition.getStandardConditions("DEQ","Lock").getOutput();
+														 if (standardConditions.length > 0)
+														 {
+															 standardCondition = standardConditions[0]													
+															 //debugObject(standardCondition);	
+															 var conditionNbr = standardCondition.getConditionNbr();
+															 // Create lock base on the standard DEQ -> Lock Condition									
+															 var newConditionResult = aa.capCondition.createCapConditionFromStdCondition(capId, standardCondition.getConditionNbr())
+															 logDebug ("added lock on: " + capIDString);
+			 
+															 if (newConditionResult.getSuccess()) {
+																 var newConditionObj = newConditionResult.getOutput();
+																 //logDebug ("**********");
+																 //debugObject(newConditionObj);	
+																 //logDebug ("**********");																									
+																 //logDebug(newConditionObj.toString());
+															 }
+														 
+															 logDebug("Find new conditions on :" + capIDString);
+															 var capConditions = getCapConditionByCapID(capId);
+															 logDebug("Length: " + capConditions.length);
+															 for (loopk in capConditions)
+															 {
+																 sourceCapCondition = capConditions[loopk];
+																 var issuedDate = sourceCapCondition.getIssuedDate();	
+																 //debugObject(issuedDate);
+																 issuedDateDate =  new Date(issuedDate.getMonth() + "/" + issuedDate.getDayOfMonth() + "/" + issuedDate.getYear());	
+																 var issuedDataCon = (issuedDateDate.getMonth() + 1) + "/" + issuedDateDate.getDate() + "/" + (issuedDateDate.getFullYear());
+																 var statusDate = sourceCapCondition.getStatusDate();											
+																 var statusDateDate = new Date(statusDate.getMonth() + "/" + statusDate.getDayOfMonth() + "/" + statusDate.getYear());																	
+																 var statusDateCon = (statusDateDate.getMonth() + 1) + "/" + statusDateDate.getDate() + "/" + (statusDateDate.getFullYear());	
+																 var todayDateCon = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + (startDate.getFullYear());		
+																 //jsExpDate = convertDate(statusDate); 
+																 //logDebug("jsExpDate: " + jsExpDate);                   		
+																														 
+																 logDebug("todayDateCon: " + todayDateCon);
+																 logDebug("statusDate: " + statusDateCon);
+																 //logDebug("getRefNumber1: " + sourceCapCondition.getRefNumber1());
+																 //logDebug("getRefNumber2: " + sourceCapCondition.getRefNumber2());
+																 logDebug("getSourceNumber: " + sourceCapCondition.getSourceNumber());
+																 logDebug("standard conditionNbr: " + conditionNbr + "cap cond number " + sourceCapCondition.getConditionNumber());
+																 logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
+																 logDebug("getConditionComment: " + sourceCapCondition.getConditionComment());
+			 
+																 if (statusDateCon == todayDateCon &&
+																	 sourceCapCondition.getConditionDescription() == "Lock" &&
+																	 sourceCapCondition.getConditionComment() == "Lock")														
+																 {
+																	 logDebug("same date????: " );
+																	 //logDebug("name: " + sourceCapCondition.getIncludeInConditionName());
+																	 //logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
+																	 //logDebug("getConditionNumber: " + sourceCapCondition.getConditionNumber());
+																	 //logDebug("getConditionGroup: " + sourceCapCondition.getConditionGroup());
+																	 //logDebug("getAppliedDepartmentName: " + sourceCapCondition.getAppliedDepartmentName());
+																	 
+																	 //logDebug("getCapConditionModel() : " + sourceCapCondition.getCapConditionModel());
+																	 //logDebug("getConditionSource() : " + sourceCapCondition.getConditionSource());
+																 
+																	 sourceCapCondition.setConditionDescription(conditionName);
+																	 sourceCapCondition.setDisplayNoticeOnACA("Y");													
+																	 sourceCapCondition.setConditionComment("Permit to Construct Expired more than 90 days; this applicaiton record has been CLOSED.");																																		
+																	 var dateToSet = aa.date.parseDate(ninetyDayCon);
+																	 sourceCapCondition.setIssuedDate(dateToSet);
+																	 sourceCapCondition.setStatusDate(null);
+																	 sourceCapCondition.setEffectDate(dateToSet);
+			 
+																	 
+																	 var user = aa.people.getUsersByUserIdAndName("", "", "", "OPC");
+															 
+			 
+																	 if (user != null) 
+																	 {		
+																		 userOut = user.getOutput();
+																		 if (userOut != null)
+																		 {             
+																			 assUserStr = userOut[0].toString();
+																			 assUsersplit = assUserStr.split("/");
+																			 assName = assUsersplit[6];
+																			 if (assName != undefined)
+																			 {
+																				 logDebug("******");
+																				 //debugObject(userOut[0]);
+																				 assignEmail = userOut[0].getEmail();
+																				 assignTitle = userOut[0].getTitle();
+																				 logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
+																				 //sourceCapCondition.setIssuedByUser(userOut);
+																				 //sourceCapCondition.setStatusByUser(userOut);      
+																			 }
+																		 }
+			 
+																		 //var dpt = aa.people.getDepartmentList(null).getOutput();
+																		 //debugObject(dpt);
+																		 //logDebug("getDepartmentName : " + getDepartmentName(assUserStr));
+																		 //sourceCapCondition.setAppliedDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
+																		 //sourceCapCondition.setActionDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
+																		 //debugObject(sourceCapCondition);
+																	 }
+																	 
+																	 aa.capCondition.editCapCondition(sourceCapCondition);	
+																	 break;
+																 }
+															 }
+														 }
+													 }										
+												 }
+												
+												var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+					
+												for (con in conArray)
+												{		
+													var address1 = conArray[con].addressLine1;				
+													var city = conArray[con].city;
+													var state = conArray[con].state;
+													var zip = conArray[con].zip;											
+													addParameter(emailParams, "$$ALTID$$", altId);
+													addParameter(emailParams, "$$shortnotes$$", shortNotes);
+													addParameter(emailParams, "$$address1$$", address1);
+													addParameter(emailParams, "$$city$$", city);
+													addParameter(emailParams, "$$state$$", state);
+													addParameter(emailParams, "$$zip$$", zip);	                                                    
+													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
+													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 
-												//Save Base ACA URL
-												addParameter(emailParams, "$$acaURL$$", acaSite);
+													//Save Base ACA URL
+													addParameter(emailParams, "$$acaURL$$", acaSite);
 
-                                                conEmail2 = conArray[con].email;
-                                                if (conEmail2 != null)
-                                                {
-                                                    logDebug("Sending email to contact: " + conEmail2); 
-                                                    sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONTSRUCT_RENEWAL", emailParams, reportFile);
-                                                }
-                                                                        
-                                            }	
+													conEmail2 = conArray[con].email;
+													if (conEmail2 != null)
+													{
+														logDebug("Sending email to contact: " + conEmail2); 
+														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONTSRUCT_RENEWAL", emailParams, reportFile);
+													}
+																			
+												}	
 
-                                            var lpEmail = "";
-											var lpReportFile = new Array();
-                                            var lpEmailParams = aa.util.newHashtable();	                                                                                                                                                                  
-                                            var lpResult = aa.licenseScript.getLicenseProf(capId);
-                                            if (lpResult.getSuccess())
-                                            { 
-                                                var lpArr = lpResult.getOutput();  
-                                            } 
-                                            else 
-                                            { 
-                                                logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
-                                            }
-                                            
-                                            for (var lp in lpArr)
-                                            {                                                
-                                                lpEmail = lpArr[lp].getEmail();                                                 
-                                                var address1 = lpArr[lp].addressLine1;				
-                                                var city = lpArr[lp].city;
-                                                var state = lpArr[lp].state;
-                                                var zip = lpArr[lp].zip;											
-                                                addParameter(emailParams, "$$ALTID$$", altId);
-                                                addParameter(emailParams, "$$shortnotes$$", shortNotes);
-                                                addParameter(emailParams, "$$address1$$", address1);
-                                                addParameter(emailParams, "$$city$$", city);
-                                                addParameter(emailParams, "$$state$$", state);
-                                                addParameter(emailParams, "$$zip$$", zip);	                                                    
-                                                addParameter(emailParams, "$$expireDateD$$", expDateCon);	                                                    
-                                          
-                                                if (lpEmail != null)
-                                                {
-                                                    logDebug("Sending email to: " + lpEmail); 
-                                                    sendNotification("", lpEmail, "", "DEQ_OPC_HAZARDIOUS_TANK_RENEWAL", lpEmailParams, lpReportFile);
-                                                }                                                
-                                                                                           
-                                            }
+												var lpEmail = "";
+												var lpReportFile = new Array();
+												var lpEmailParams = aa.util.newHashtable();	                                                                                                                                                                  
+												var lpResult = aa.licenseScript.getLicenseProf(capId);
+												if (lpResult.getSuccess())
+												{ 
+													var lpArr = lpResult.getOutput();  
+												} 
+												else 
+												{ 
+													logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+												}
+												
+												for (var lp in lpArr)
+												{                                                
+													lpEmail = lpArr[lp].getEmail();                                                 
+													var address1 = lpArr[lp].addressLine1;				
+													var city = lpArr[lp].city;
+													var state = lpArr[lp].state;
+													var zip = lpArr[lp].zip;											
+													addParameter(emailParams, "$$ALTID$$", altId);
+													addParameter(emailParams, "$$shortnotes$$", shortNotes);
+													addParameter(emailParams, "$$address1$$", address1);
+													addParameter(emailParams, "$$city$$", city);
+													addParameter(emailParams, "$$state$$", state);
+													addParameter(emailParams, "$$zip$$", zip);	                                                    
+													addParameter(emailParams, "$$expireDateD$$", expDateCon);	                                                    
+											
+													if (lpEmail != null)
+													{
+														logDebug("Sending email to: " + lpEmail); 
+														sendNotification("", lpEmail, "", "DEQ_OPC_HAZARDIOUS_TANK_RENEWAL", lpEmailParams, lpReportFile);
+													}                                                
+																							
+												}
+											}
 
                                         }
                                     }                                                                                                                    
