@@ -148,7 +148,7 @@ function mainProcess()
                                 logDebug("Day difference is: " + dateDiff);
                                                
 
-                                if (dateDiff >= 180) // The expiration date passed 180 days 
+                                if (dateDiff == 180) // The expiration date passed exactly 180 days 
                                 {
                                 
                                     var workflowResult = aa.workflow.getTasks(capId);
@@ -164,158 +164,129 @@ function mainProcess()
                                     for (i in wfObj)
                                     {
                                         fTask = wfObj[i];
-                                                                    
-                                        //logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
                                         if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
-											{											        
-												 if (dateDiff >= 180)
-												 {
-													 logDebug("Passed 180 days: " + dateDiff);       
-													 //addStdCondition("DEQ", "Lock", capId);     
-													 //aa.addCapCondition(capId, "DEQ", "Permit to Construct Expired > 90 days", "Permit to Construct",  ninetyDayCon,ninetyDayCon,null,null,null,null,
-													 //"Appliced(Applied)", null, null, null )
-													 
-													 var conditionType = "DEQ";
-													 var conditionName = "Permit to Construct Expired > 90 days";
-													 var alreadyExisted = false;
-			 
-													 logDebug("Get conditions on :" + capIDString);
-													 
-													 
-													 var s_result = aa.capCondition.getCapConditions(capId);
-													 if (s_result.getSuccess()) {
-														 logDebug("Success");
-													   capConditionScriptModels = s_result.getOutput();
-													   debugObject(capConditionScriptModels);
-													   logDebug("capConditionScriptModels : " + capConditionScriptModels);
-													 	logDebug("capConditionScriptModels.length: " + capConditionScriptModels.length);
-													 }
-			 
-													 var capConditions = getCapConditionByCapID(capId);
-													 if (capConditions != null)
-													 {
-														 logDebug("Has Condition." + capConditions.length);
-														 // First check if there is already "Permit to Construct" condition, if there is, do not add.\
-														 for (loopk in capConditions)
-														 {
-															 sourceCapCondition = capConditions[loopk];
-															 if (sourceCapCondition.getConditionDescription() == conditionName)
-															 {
-																 alreadyExisted = true;
-																 logDebug("Already existed:"  + conditionName);
-																 break;
-															 }
-														 }
-													 }
-													 if (!alreadyExisted)
-													 {
-														 standardConditions = aa.capCondition.getStandardConditions("DEQ","Lock").getOutput();
-														 if (standardConditions.length > 0)
-														 {
-															 standardCondition = standardConditions[0]													
-															 //debugObject(standardCondition);	
-															 var conditionNbr = standardCondition.getConditionNbr();
-															 // Create lock base on the standard DEQ -> Lock Condition									
-															 var newConditionResult = aa.capCondition.createCapConditionFromStdCondition(capId, standardCondition.getConditionNbr())
-															 logDebug ("added lock on: " + capIDString);
-			 
-															 if (newConditionResult.getSuccess()) {
-																 var newConditionObj = newConditionResult.getOutput();
-																 //logDebug ("**********");
-																 //debugObject(newConditionObj);	
-																 //logDebug ("**********");																									
-																 //logDebug(newConditionObj.toString());
-															 }
-														 
-															 logDebug("Find new conditions on :" + capIDString);
-															 var capConditions = getCapConditionByCapID(capId);
-															 logDebug("Length: " + capConditions.length);
-															 for (loopk in capConditions)
-															 {
-																 sourceCapCondition = capConditions[loopk];
-																 var issuedDate = sourceCapCondition.getIssuedDate();	
-																 //debugObject(issuedDate);
-																 issuedDateDate =  new Date(issuedDate.getMonth() + "/" + issuedDate.getDayOfMonth() + "/" + issuedDate.getYear());	
-																 var issuedDataCon = (issuedDateDate.getMonth() + 1) + "/" + issuedDateDate.getDate() + "/" + (issuedDateDate.getFullYear());
-																 var statusDate = sourceCapCondition.getStatusDate();											
-																 var statusDateDate = new Date(statusDate.getMonth() + "/" + statusDate.getDayOfMonth() + "/" + statusDate.getYear());																	
-																 var statusDateCon = (statusDateDate.getMonth() + 1) + "/" + statusDateDate.getDate() + "/" + (statusDateDate.getFullYear());	
-																 var todayDateCon = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + (startDate.getFullYear());		
-																 //jsExpDate = convertDate(statusDate); 
-																 //logDebug("jsExpDate: " + jsExpDate);                   		
-																														 
-																 logDebug("todayDateCon: " + todayDateCon);
-																 logDebug("statusDate: " + statusDateCon);
-																 //logDebug("getRefNumber1: " + sourceCapCondition.getRefNumber1());
-																 //logDebug("getRefNumber2: " + sourceCapCondition.getRefNumber2());
-																 logDebug("getSourceNumber: " + sourceCapCondition.getSourceNumber());
-																 logDebug("standard conditionNbr: " + conditionNbr + "cap cond number " + sourceCapCondition.getConditionNumber());
-																 logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
-																 logDebug("getConditionComment: " + sourceCapCondition.getConditionComment());
-			 
-																 if (statusDateCon == todayDateCon &&
-																	 sourceCapCondition.getConditionDescription() == "Lock" &&
-																	 sourceCapCondition.getConditionComment() == "Lock")														
-																 {
-																	 logDebug("same date????: " );
-																	 //logDebug("name: " + sourceCapCondition.getIncludeInConditionName());
-																	 //logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
-																	 //logDebug("getConditionNumber: " + sourceCapCondition.getConditionNumber());
-																	 //logDebug("getConditionGroup: " + sourceCapCondition.getConditionGroup());
-																	 //logDebug("getAppliedDepartmentName: " + sourceCapCondition.getAppliedDepartmentName());
-																	 
-																	 //logDebug("getCapConditionModel() : " + sourceCapCondition.getCapConditionModel());
-																	 //logDebug("getConditionSource() : " + sourceCapCondition.getConditionSource());
-																 
-																	 sourceCapCondition.setConditionDescription(conditionName);
-																	 sourceCapCondition.setDisplayNoticeOnACA("Y");													
-																	 sourceCapCondition.setConditionComment("Permit to Construct Expired more than 90 days; this applicaiton record has been CLOSED.");																																		
-																	 var dateToSet = aa.date.parseDate(ninetyDayCon);
-																	 sourceCapCondition.setIssuedDate(dateToSet);
-																	 sourceCapCondition.setStatusDate(null);
-																	 sourceCapCondition.setEffectDate(dateToSet);
-			 
-																	 
-																	 var user = aa.people.getUsersByUserIdAndName("", "", "", "OPC");
-															 
-			 
-																	 if (user != null) 
-																	 {		
-																		 userOut = user.getOutput();
-																		 if (userOut != null)
-																		 {             
-																			 assUserStr = userOut[0].toString();
-																			 assUsersplit = assUserStr.split("/");
-																			 assName = assUsersplit[6];
-																			 if (assName != undefined)
-																			 {
-																				 logDebug("******");
-																				 //debugObject(userOut[0]);
-																				 assignEmail = userOut[0].getEmail();
-																				 assignTitle = userOut[0].getTitle();
-																				 logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
-																				 //sourceCapCondition.setIssuedByUser(userOut);
-																				 //sourceCapCondition.setStatusByUser(userOut);      
-																			 }
-																		 }
-			 
-																		 //var dpt = aa.people.getDepartmentList(null).getOutput();
-																		 //debugObject(dpt);
-																		 //logDebug("getDepartmentName : " + getDepartmentName(assUserStr));
-																		 //sourceCapCondition.setAppliedDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
-																		 //sourceCapCondition.setActionDepartmentName("SUFFOLKCO/DEQ/OPC/NA/NA/NA/NA");
-																		 //debugObject(sourceCapCondition);
-																	 }
-																	 
-																	 aa.capCondition.editCapCondition(sourceCapCondition);	
-																	 break;
-																 }
-															 }
-														 }
-													 }										
-												 }
+											{										        
+										
+												logDebug("Past 180 days: " + dateDiff);    
+												logDebug("Get conditions on :" + capIDString);
+												
+												
+											
+												//addStdCondition("DEQ", "Lock", capId);     
+												//aa.addCapCondition(capId, "DEQ", "Permit to Construct Expired > 90 days", "Permit to Construct",  ninetyDayCon,ninetyDayCon,null,null,null,null,
+												//"Appliced(Applied)", null, null, null )		
+												//capConditionScriptModels = s_result.getOutput();
+												//debugObject(capConditionScriptModels);
+												//logDebug("capConditionScriptModels : " + capConditionScriptModels);
+												//logDebug("capConditionScriptModels.length: " + capConditionScriptModels.length);
+												
+												var conditionType = "DEQ";
+												var conditionName = "Permit to Construct Expired > 90 days";
+												var alreadyExisted = false;
+		
+
+												var capConditions = getCapConditionByCapID(capId);
+												if (capConditions != null)
+												{
+													logDebug("Found Condition." + capConditions.length);
+													// First check if there is already "Permit to Construct" condition, if there is, do not add.\
+													for (loopk in capConditions)
+													{
+														sourceCapCondition = capConditions[loopk];
+														if (sourceCapCondition.getConditionDescription() == conditionName)
+														{
+															alreadyExisted = true;
+															logDebug("Already existed:"  + conditionName);
+															break;
+														}
+													}
+												}
+												// No Permit to Construct Condition is found
+												if (!alreadyExisted)
+												{
+													standardConditions = aa.capCondition.getStandardConditions("DEQ","Lock").getOutput();
+													if (standardConditions.length > 0)
+													{
+														standardCondition = standardConditions[0]																											
+														var conditionNbr = standardCondition.getConditionNbr();
+														// Create lock base on the standard DEQ -> Lock Condition									
+														var newConditionResult = aa.capCondition.createCapConditionFromStdCondition(capId, standardCondition.getConditionNbr())
+														logDebug ("Added lock on: " + capIDString);
+		
+														if (newConditionResult.getSuccess()) {
+															var newConditionObj = newConditionResult.getOutput();
+															logDebug ("**********");
+															debugObject(newConditionObj);	
+															logDebug ("**********");																									
+															logDebug(newConditionObj.toString());
+														}
+													
+														logDebug("Find the newly created condition for :" + capIDString);
+														var capConditions = getCapConditionByCapID(capId);
+														logDebug("Length: " + capConditions.length);
+														for (loopk in capConditions)
+														{
+															sourceCapCondition = capConditions[loopk];
+															var issuedDate = sourceCapCondition.getIssuedDate();																
+															issuedDateDate =  new Date(issuedDate.getMonth() + "/" + issuedDate.getDayOfMonth() + "/" + issuedDate.getYear());	
+															var issuedDataCon = (issuedDateDate.getMonth() + 1) + "/" + issuedDateDate.getDate() + "/" + (issuedDateDate.getFullYear());
+															var statusDate = sourceCapCondition.getStatusDate();											
+															var statusDateDate = new Date(statusDate.getMonth() + "/" + statusDate.getDayOfMonth() + "/" + statusDate.getYear());																	
+															var statusDateCon = (statusDateDate.getMonth() + 1) + "/" + statusDateDate.getDate() + "/" + (statusDateDate.getFullYear());	
+															var todayDateCon = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + (startDate.getFullYear());		
+														
+														
+															if (statusDateCon == todayDateCon &&
+																sourceCapCondition.getConditionDescription() == "Lock" &&
+																sourceCapCondition.getConditionComment() == "Lock")														
+															{
+																logDebug("Found this conition with status date: " + statusDateCon);
+															
+																logDebug("getConditionDescription: " + sourceCapCondition.getConditionDescription());
+																logDebug("getConditionNumber: " + sourceCapCondition.getConditionNumber());
+																logDebug("getConditionGroup: " + sourceCapCondition.getConditionGroup());
+																logDebug("getAppliedDepartmentName: " + sourceCapCondition.getAppliedDepartmentName());
+																
+																//logDebug("getCapConditionModel() : " + sourceCapCondition.getCapConditionModel());
+																//logDebug("getConditionSource() : " + sourceCapCondition.getConditionSource());
+															
+																sourceCapCondition.setConditionDescription(conditionName);
+																sourceCapCondition.setDisplayNoticeOnACA("Y");													
+																sourceCapCondition.setConditionComment("Permit to Construct Expired more than 90 days; this applicaiton record has been CLOSED.");																																		
+																var dateToSet = aa.date.parseDate(ninetyDayCon);
+																sourceCapCondition.setIssuedDate(dateToSet);
+																sourceCapCondition.setStatusDate(null);
+																sourceCapCondition.setEffectDate(dateToSet);
+																		
+																var user = aa.people.getUsersByUserIdAndName("", "", "", "OPC");
+		
+																if (user != null) 
+																{		
+																	userOut = user.getOutput();
+																	if (userOut != null)
+																	{             
+																		assUserStr = userOut[0].toString();
+																		assUsersplit = assUserStr.split("/");
+																		assName = assUsersplit[6];
+																		if (assName != undefined)
+																		{
+																			assignEmail = userOut[0].getEmail();
+																			assignTitle = userOut[0].getTitle();
+																			logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
+
+																		}
+																	}
+																}
+																
+																aa.capCondition.editCapCondition(sourceCapCondition);	
+																break;
+															}
+														}
+													}
+												}										
+												
 												
 												var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
