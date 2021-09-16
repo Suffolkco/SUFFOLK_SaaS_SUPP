@@ -184,7 +184,7 @@ function mainProcess()
 															
 												var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-						
+												var conArray = getContactArray();
 												for (con in conArray)
 												{		
 													var address1 = conArray[con].addressLine1;				
