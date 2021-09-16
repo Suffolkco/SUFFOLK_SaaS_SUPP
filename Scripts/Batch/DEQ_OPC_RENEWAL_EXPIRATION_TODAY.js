@@ -196,7 +196,7 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
-													addParameter(emailParams, "$$DAY$$", "0");
+													addParameter(emailParams, "$$DAY$$", "EXPIRING TODAY");
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{
@@ -234,7 +234,7 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$expireDateD$$", expDateCon);	  
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);                                  
-											
+													addParameter(lpEmailParams, "$$DAY$$", "EXPIRING TODAY");
 													if (lpEmail != null)
 													{
 														logDebug("Sending email to: " + lpEmail); 

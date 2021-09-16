@@ -201,6 +201,7 @@ function mainProcess()
 													addParameter(emailParams, "$$zip$$", zip);	        
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
+													addParameter(emailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
 													//Save Base ACA URL
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 	
@@ -241,7 +242,7 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$expireDateD$$", expDateCon);	                                                    
 													addParameter(lpEmailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
-													addParameter(emailParams, "$$DAY$$", "60");
+													addParameter(lpEmailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
 													//Save Base ACA URL
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
 
