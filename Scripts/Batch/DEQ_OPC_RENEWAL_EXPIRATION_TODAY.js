@@ -170,8 +170,8 @@ function mainProcess()
 												if (expDateCon == todDateCon) // Expire today, update workflow status
 												{                         
 													logDebug("Expire today: " + todDateCon);        
-													logDebug("Inspection: Task Active. Update task and app status");         
-													updateTask("Inspection", "Permit Expired", "Permit Expired", "");
+													logDebug("Inspections: Task Active. Update task and app status");         
+													updateTask("Inspections", "Permit Expired", "Permit Expired", "");
 													updateAppStatus("Permit Expired", "Updated via batch script");												
 												
 												}                     
