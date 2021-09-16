@@ -184,6 +184,8 @@ function mainProcess()
 															
 												var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+												var projectName = workDescGet(capId);
+
 												var conArray = getContactArray();
 												for (con in conArray)
 												{		
@@ -192,7 +194,7 @@ function mainProcess()
 													var state = conArray[con].state;
 													var zip = conArray[con].zip;											
 													addParameter(emailParams, "$$ALTID$$", capIDString);
-													addParameter(emailParams, "$$shortnotes$$", shortNotes);
+													addParameter(emailParams, "$$shortnotes$$", projectName);
 													addParameter(emailParams, "$$address1$$", address1);
 													addParameter(emailParams, "$$city$$", city);
 													addParameter(emailParams, "$$state$$", state);
@@ -231,7 +233,7 @@ function mainProcess()
 													var state = lpArr[lp].state;
 													var zip = lpArr[lp].zip;											
 													addParameter(lpEmailParams, "$$ALTID$$", capIDString);
-													addParameter(lpEmailParams, "$$shortnotes$$", shortNotes);
+													addParameter(lpEmailParams, "$$shortnotes$$", projectName);
 													addParameter(lpEmailParams, "$$address1$$", address1);
 													addParameter(lpEmailParams, "$$city$$", city);
 													addParameter(lpEmailParams, "$$state$$", state);
