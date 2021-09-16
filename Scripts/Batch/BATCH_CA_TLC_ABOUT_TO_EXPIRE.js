@@ -181,6 +181,9 @@ function mainProcess()
 
                                                         var vEParams = aa.util.newHashtable();
                                                         var vRParams = aa.util.newHashtable();
+                                                        var AInfo = new Array();
+                                                        loadAppSpecific(AInfo);
+                                                        var PIN = AInfo["PIN Number"];
 
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
@@ -188,6 +191,8 @@ function mainProcess()
                                                         addParameter(vRParams, "FromDate", curExpCon);
                                                         addParameter(vRParams, "ToDate", curExpCon);
                                                         addParameter(vRParams, "Email", "Yes");
+                                                        addParameter(vEParams, "$$PINNumber$$", PIN);
+
 
                                                         logDebug("<b>" + capIDString + "</b>" + " About to Expire");
                                                         var contactResult = aa.people.getCapContactByCapID(capId);
@@ -206,7 +211,7 @@ function mainProcess()
                                                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                                                         {
                                                                             conEmail += capContacts[c].email;
-                                                                            
+
 
                                                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", appTypeArray[0], vRParams);
                                                                             if (caReport)
@@ -232,7 +237,7 @@ function mainProcess()
                                                                             if (caReport)
                                                                             {
                                                                                 var caReports = new Array();
-                                                                                caReports.push(caReport); 
+                                                                                caReports.push(caReport);
                                                                             }
 
                                                                             sendNotification("", conEmail, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, caReports);
@@ -468,7 +473,7 @@ function generateReportBatch(itemCap, reportName, module, parameters)
         }
     } else
     {
-        logDebug("You have no permission."); 
-        return false; 
+        logDebug("You have no permission.");
+        return false;
     }
 }
