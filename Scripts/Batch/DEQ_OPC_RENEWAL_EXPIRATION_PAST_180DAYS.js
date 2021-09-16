@@ -143,8 +143,10 @@ function mainProcess()
                                 var past180DateCon = (longExpDate.getMonth() + 1) + "/" + longExpDate.getDate() + "/" + longExpDate.getFullYear();
                                 logDebug("past180DateCon: " + past180DateCon);
                                 
+								var todayDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+
                                 // Past 180 days or more
-                                var dateDiff = parseFloat(dateDifference(todDateCon, expDateCon));
+                                var dateDiff = parseFloat(dateDifference(todayDateCon, expDateCon));
                                 logDebug("Day difference is: " + dateDiff);
                                                
 
@@ -235,9 +237,7 @@ function mainProcess()
 															var statusDate = sourceCapCondition.getStatusDate();											
 															var statusDateDate = new Date(statusDate.getMonth() + "/" + statusDate.getDayOfMonth() + "/" + statusDate.getYear());																	
 															var statusDateCon = (statusDateDate.getMonth() + 1) + "/" + statusDateDate.getDate() + "/" + (statusDateDate.getFullYear());	
-															var todayDateCon = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + (startDate.getFullYear());		
-														
-														
+																												
 															if (statusDateCon == todayDateCon &&
 																sourceCapCondition.getConditionDescription() == "Lock" &&
 																sourceCapCondition.getConditionComment() == "Lock")														
