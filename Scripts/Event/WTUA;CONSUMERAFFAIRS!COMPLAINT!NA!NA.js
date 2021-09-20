@@ -141,10 +141,51 @@ if (matches(appTypeArray[1], "Complaint")) {
         amountDisputed = getAppSpecific("Amount Disputed", capId);
         logDebug("Total Dollar Amount of the Contract: " + amtContract);
         logDebug("Amount Disputed: " + amountDisputed);
-        
+
         // Set to TSI
-        editTaskSpecific(wfTask,"Complaint Dispute Value", amtContract, capId);
-        editTaskSpecific(wfTask,"Total Job Cost", amountDisputed, capId);  
+        //“Total Dollar Amount of the Contract” -> "Total Job Cost" (Text)
+        //“Amount Disputed” -> "Complaint Dispute Value" (Dropdown list)
+        editTaskSpecific(wfTask,"Total Job Cost", amtContract, capId);  
+        editTaskSpecific(wfTask,"Complaint Dispute Value", amountDisputed, capId);
+
+        var workflowResult = aa.workflow.getTasks(capId);
+
+        if (workflowResult.getSuccess())
+        {
+            wfObj = workflowResult.getOutput();
+        }
+    
+        thisArr = new Array();
+        for (i in wfObj)
+        {
+            var fTask = wfObj[i];
+            var stepnumber = fTask.getStepNumber();
+            var processID = fTask.getProcessID();
+            var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber)
+
+            if (TSIResult.getSuccess())
+            {
+                var TSI = TSIResult.getOutput();
+                for (a1 in TSI)
+                {
+                    logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+                    logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());
+                    logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());
+                    logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+
+                    if (useTaskSpecificGroupName)     
+                    {                   
+                        thisArr[fTask.getProcessCode() + "." + fTask.getTaskDescription() + "." + TSI[a1].getCheckboxDesc()] = TSI[a1].getChecklistComment();                        
+                    }
+                    else
+                    thisArr[TSI[a1].getCheckboxDesc()] = TSI[a1].getChecklistComment();
+
+                    logDebug("thisArr: " + thisArr);
+                }
+            }
+        }
+     
+     
     }
 
 
