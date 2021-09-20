@@ -1,5 +1,7 @@
 // WTUA:CONSUMERAFFAIRS/COMPLAINT/NA/NA
 // WTUA;CONSUMERAFFAIRS!COMPLAINT!NA!NA.js
+showMessage=true;
+showDebug=true;
 
 if (matches(appTypeArray[1], "Complaint")) {
 	//if ( wfTask == "Case Disposition-Notification" && wfStatus == "Complete" ){
@@ -132,6 +134,18 @@ if (matches(appTypeArray[1], "Complaint")) {
             logDebug("ERROR: " + ex.message);
         }
 	}
+    else if (wfTask == "Assignment" && wfStatus == "Assigned")
+    {
+        // Retrieve values from custom fields        
+        amtContract = getAppSpecific("Total Dollar Amount of the Contract", capId);
+        amountDisputed = getAppSpecific("Amount Disputed", capId);
+        logDebug("Total Dollar Amount of the Contract: " + amtContract);
+        logDebug("Amount Disputed: " + amountDisputed);
+        
+        // Set to TSI
+        editTaskSpecific(wfTask,"Complaint Dispute Value", amtContract, capId);
+        editTaskSpecific(wfTask,"Total Job Cost", amountDisputed, capId);  
+    }
 
 
 } 
