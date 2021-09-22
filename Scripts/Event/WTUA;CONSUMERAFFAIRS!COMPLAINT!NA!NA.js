@@ -189,8 +189,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                    
                 }
             }
-        }
-     
+        }     
      
     }
 
