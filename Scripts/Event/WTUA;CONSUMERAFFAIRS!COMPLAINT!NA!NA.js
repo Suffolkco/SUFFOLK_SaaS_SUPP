@@ -181,7 +181,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                         if (TSI != null)
                         {
                             debugObject("*** TSI ***:" + TSI);
-                            
+
                             for (a1 in TSI)
                             {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
@@ -222,4 +222,12 @@ if (matches(appTypeArray[1], "Complaint")) {
     }
 
 
+} 
+
+function debugObject(object) {
+    var output = ''; 
+    for (property in object) { 
+      output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+    } 
+    logDebug(output);
 } 
