@@ -153,10 +153,18 @@ if (matches(appTypeArray[1], "Complaint")) {
         logDebug("AI2: " + AInfo["Total Job Cost"]);
         logDebug("AI3: " + AInfo["Complaint Dispute Value"]);
 
+            
+        result = aa.taskSpecificInfo.editTaskSpecInfos(AInfo);
+        if (result.getSuccess())
+        {
+            logDebug("Success Edit!");
+        }
+    }        
+
         // Set to TSI
         //“Total Dollar Amount of the Contract” -> "Total Job Cost" (Text)
         //“Amount Disputed” -> "Complaint Dispute Value" (Dropdown list)
-      
+      /*
         var workflowResult = aa.workflow.getTasks(capId);
 
         if (workflowResult.getSuccess())
@@ -237,7 +245,7 @@ if (matches(appTypeArray[1], "Complaint")) {
           
         }     
      
-    }
+    } */
 
 
 } 
