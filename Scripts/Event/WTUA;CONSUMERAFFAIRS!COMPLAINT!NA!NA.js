@@ -189,13 +189,18 @@ if (matches(appTypeArray[1], "Complaint")) {
                             {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
                                 {                  
-                                    debugObject("*** TSI 1 ***:" + TSI[a1]);
+                                    //debugObject("*** TSI 1 ***:" + TSI[a1]);
                                                 
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());       
                                     var TSIArray = new Array();                     
-                                    TSI[a1].setChecklistComment(amtContract)                                    
-                                    TSIArray.push(TSI[a1]);
+                                    //TSI[a1].setChecklistComment(amtContract)                                    
+                                    //TSIArray.push(TSI[a1]);
+
+                                    TSInfoModel = TSI.getTaskSpecificInfoModel();
+                                    TSInfoModel.setChecklistComment(amtContract);
+                                    TSIArray.push(TSInfoModel);
+
                                     result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
                                     if (result.getSuccess())
                                     {
@@ -206,12 +211,16 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
                                 {
                                 
-                                    debugObject("*** TSI 2 ***:" + TSI[a1]);
+                                    //debugObject("*** TSI 2 ***:" + TSI[a1]);
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());     
-                                    var TSIArray = new Array();            
-                                    TSI[a1].setChecklistComment(amountDisputed);
-                                    TSIArray.push(TSI[a1]);
+                                    var TSIArray = new Array();                                        
+                                    //TSI[a1].setChecklistComment(amountDisputed);
+                                    TSInfoModel = TSI.getTaskSpecificInfoModel();
+                                    TSInfoModel.setChecklistComment(amountDisputed);
+                                    TSIArray.push(TSInfoModel);
+
+                                    //TSIArray.push(TSI[a1]);
                                     result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
                                     if (result.getSuccess())
                                     {
