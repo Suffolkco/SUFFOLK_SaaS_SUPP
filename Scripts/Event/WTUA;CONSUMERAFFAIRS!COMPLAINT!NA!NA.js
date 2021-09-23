@@ -155,41 +155,51 @@ if (matches(appTypeArray[1], "Complaint")) {
         {
             wfObj = workflowResult.getOutput();
         }
-    
-        thisArr = new Array();
+         
+        // Find TSI in the next task at Complaint Review
         for (i in wfObj)
         {
-            var fTask = wfObj[i];
-            var stepnumber = fTask.getStepNumber();
-            var processID = fTask.getProcessID();
-            var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber)
+            var fTask = wfObj[i];             
+            var taskDescription = fTask.getTaskDescription();
+            var taskStatus = fTask.getDisposition();
 
-            if (TSIResult.getSuccess())
+            if (taskDescription == "Compliant Review")
             {
-                var TSI = TSIResult.getOutput();
-                for (a1 in TSI)
+                if (fTask.getActiveFlag().equals("Y"))
                 {
-                    if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
+                    var stepnumber = fTask.getStepNumber();
+                    var processID = fTask.getProcessID();
+                    var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber)
+        
+                    if (TSIResult.getSuccess())
                     {
-                        logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                        logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                        editTaskSpecific(fTask,"Total Job Cost", amtContract);
-                        logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+                        var TSI = TSIResult.getOutput();
+                        for (a1 in TSI)
+                        {
+                            if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
+                            {
+                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+                                logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
+                                editTaskSpecific(fTask,"Total Job Cost", amtContract);
+                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+                            }
+                            else if (TSI[a1].getCheckboxDesc() == "Total Job Cost")
+                            {
+                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+                                logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
+                                editTaskSpecific(fTask,"Complaint Dispute Value", amountDisputed);
+                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
+                            }
+                         
+                            logDebug("fTask.getProcessCode(): " + fTask.getProcessCode());
+                            logDebug("fTask.getTaskDescription() " + fTask.getTaskDescription());
+                            logDebug("fTask.getProcessCode(): " + fTask.getProcessCode());
+                           
+                        }
                     }
-                    else if (TSI[a1].getCheckboxDesc() == "Total Job Cost")
-                    {
-                        logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                        logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                        editTaskSpecific(fTask,"Complaint Dispute Value", amountDisputed);
-                        logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                    }
-                 
-                    logDebug("fTask.getProcessCode(): " + fTask.getProcessCode());
-                    logDebug("fTask.getTaskDescription() " + fTask.getTaskDescription());
-                    logDebug("fTask.getProcessCode(): " + fTask.getProcessCode());
-                   
-                }
+                }      
             }
+          
         }     
      
     }
