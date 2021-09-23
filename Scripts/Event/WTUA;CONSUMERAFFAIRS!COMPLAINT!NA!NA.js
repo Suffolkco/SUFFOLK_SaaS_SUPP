@@ -175,17 +175,21 @@ if (matches(appTypeArray[1], "Complaint")) {
                     var processID = fTask.getProcessID();
                     var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
         
+                    debugObject("*** TSIResult *** :" + TSIResult);
+
                     if (TSIResult.getSuccess())
                     {
                         var TSI = TSIResult.getOutput();
                         if (TSI != null)
                         {
-                            debugObject("*** TSI ***:" + TSI);
+                           
 
                             for (a1 in TSI)
                             {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
-                                {                              
+                                {                  
+                                    debugObject("*** TSI 1 ***:" + TSI[a1]);
+                                                
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());                            
                                     TSI[a1].setChecklistComment(amtContract)
@@ -200,6 +204,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
                                 {
                                 
+                                    debugObject("*** TSI 2 ***:" + TSI[a1]);
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());     
                                     TSI[a1].setChecklistComment(amountDisputed);
