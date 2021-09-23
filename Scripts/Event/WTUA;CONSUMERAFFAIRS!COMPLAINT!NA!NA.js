@@ -186,8 +186,8 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 {                              
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());                            
-                                   
-                                    editTaskSpecific(taskDescription, "Total Job Cost", amtContract)
+                                    TSI[a1].setChecklistComment(amtContract)
+                                   //editTaskSpecific(taskDescription, "Total Job Cost", amtContract)
 
                                     //TSI[a1].setChecklistComment(amtContract);
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());  
@@ -200,7 +200,8 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
                                     logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());     
-                                    editTaskSpecific(taskDescription, "Total Job CostComplaint Dispute Value", amountDisputed)
+                                    TSI[a1].setChecklistComment(amountDisputed);
+                                    //editTaskSpecific(taskDescription, "Total Job CostComplaint Dispute Value", amountDisputed)
 
                                     
                                     //TSI[a1].setChecklistComment(amountDisputed);
