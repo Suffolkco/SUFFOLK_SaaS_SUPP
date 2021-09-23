@@ -176,7 +176,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                     var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
 
                     // Is this the model? 
-                    var taskSpecInfoResult = aa.taskSpecificInfo.getTaskSpecificInfoModel();
+                    var taskSpecInfoResult = aa.taskSpecificInfo.getTaskSpecificInfoScriptModel();
                     if (taskSpecInfoResult.getSuccess())
                      {
                         logDebug("Get Model Success Here!");
