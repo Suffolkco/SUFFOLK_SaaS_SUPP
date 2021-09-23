@@ -185,88 +185,34 @@ if (matches(appTypeArray[1], "Complaint")) {
                    
                         for (i in taskSpecObj)
                         {
-                            if( taskSpecObj[i].getCheckboxDesc() == "Complaint Dispute Value")                            
-                            {
-                                //return appspecObj[i].getChecklistComment();
-                                //break;
-                                var TSIArray = new Array();                                                                                   
-                                taskSpecObj.setChecklistComment(amountDisputed);
-                                TSIArray.push(TSInfoModel);
+                            var TSIArray = new Array();
 
-                                result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+                            if( taskSpecObj[i].getCheckboxDesc() == "Complaint Dispute Value")                            
+                            {                                                                                                                   
+                                taskSpecObj[i].setChecklistComment(amountDisputed);
+                                TSIArray.push(taskSpecObj);
+                               
                                 if (result.getSuccess())
                                 {
                                     logDebug("Success Here!");
                                 }
-
-                            }
-                        }                            
-                            
-                        
-                    }
-                  
-
-                    if (TSIResult.getSuccess())
-                    {
-                        var TSI = TSIResult.getOutput();
-                        if (TSI != null)
-                        {
-                           
-
-                            for (a1 in TSI)
-                            {
-                                if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
-                                {                  
-                                    //debugObject("*** TSI 1 ***:" + TSI[a1]);
-                                                
-                                    logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());       
-                                    var TSIArray = new Array();                     
-                                    //TSI[a1].setChecklistComment(amtContract)                                    
-                                    //TSIArray.push(TSI[a1]);
-
-                                    TSInfoModel = TSI.getTaskSpecificInfoModel();
-                                    TSInfoModel.setChecklistComment(amtContract);
-                                    TSIArray.push(TSInfoModel);
-
-                                    result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
-                                    if (result.getSuccess())
-                                    {
-                                        logDebug("Success!");
-                                    }
-                                                        
-                                }
-                                else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
-                                {
                                 
-                                    //debugObject("*** TSI 2 ***:" + TSI[a1]);
-                                    logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());     
-                                    var TSIArray = new Array();                                        
-                                    //TSI[a1].setChecklistComment(amountDisputed);
-                                    TSInfoModel = TSI.getTaskSpecificInfoModel();
-                                    TSInfoModel.setChecklistComment(amountDisputed);
-                                    TSIArray.push(TSInfoModel);
-
-                                    //TSIArray.push(TSI[a1]);
-                                    result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
-                                    if (result.getSuccess())
-                                    {
-                                        logDebug("Success 2!");
-                                    }
-
-                                    //editTaskSpecific(taskDescription, "Total Job CostComplaint Dispute Value", amountDisputed)
-
-                                    
-                                    //TSI[a1].setChecklistComment(amountDisputed);
-                                    //logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());   
-                                    //aa.taskSpecificInfo.editTaskSpecInfos(TSI[a1]);
-                                }
-                                                   
                             }
-
-                        }
-                    }
+                            else if (taskSpecObj[i].getCheckboxDesc() == "Total Job Cost")  
+                            {                                                    
+                                taskSpecObj[i].setChecklistComment(amtContract);
+                                TSIArray.push(taskSpecObj);
+                                
+                                if (result.getSuccess())
+                                {
+                                    logDebug("Success Here!");
+                                }
+                            }
+                            result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+                        }             
+                        
+                    }                 
+                 
                 }      
             }
           
