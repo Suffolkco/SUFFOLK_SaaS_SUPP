@@ -153,6 +153,8 @@ if (matches(appTypeArray[1], "Complaint")) {
             wfObj = workflowResult.getOutput();
         }
          
+     
+
         // Find TSI in the next task at Complaint Review
         for (i in wfObj)
         {
@@ -163,8 +165,10 @@ if (matches(appTypeArray[1], "Complaint")) {
             taskDescription = fTask.getTaskDescription();
             taskStatus = fTask.getDisposition();
 
+
             if (taskDescription == "Complaint Review")
             {
+               
                 logDebug("fTask.getTaskDescription(): " + taskDescription);
                 logDebug("fTask.getDisposition() " + taskStatus);
                 logDebug("fTask.getActiveFlag() " + fTask.getActiveFlag());
@@ -187,7 +191,8 @@ if (matches(appTypeArray[1], "Complaint")) {
                         if (taskSpecObj != null)
                         {
                             var TSIArray = new Array();
-
+                            loadTaskSpecific(TSIArray);
+                            TSInfoModel = TSI.getTaskSpecificInfoModel();
                             for (a1 in TSI)
                             {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
