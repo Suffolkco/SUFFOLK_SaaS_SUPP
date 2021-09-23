@@ -191,8 +191,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                         if (taskSpecObj != null)
                         {
                             var TSIArray = new Array();
-                            loadTaskSpecific(TSIArray);
-                            TSInfoModel = TSI.getTaskSpecificInfoModel();
+                                                      
                             for (a1 in TSI)
                             {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
@@ -213,7 +212,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                             }
 
                             
-                            result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+                            result = aa.taskSpecificInfo.editTaskSpecInfos(TSI);
                             if (result.getSuccess())
                             {
                                 logDebug("Success Edit!");
