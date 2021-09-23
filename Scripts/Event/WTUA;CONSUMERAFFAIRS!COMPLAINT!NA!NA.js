@@ -180,6 +180,8 @@ if (matches(appTypeArray[1], "Complaint")) {
                         var TSI = TSIResult.getOutput();
                         if (TSI != null)
                         {
+                            debugObject("*** TSI ***:" + TSI);
+                            
                             for (a1 in TSI)
                             {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
