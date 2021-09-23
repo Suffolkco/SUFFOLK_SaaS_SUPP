@@ -163,8 +163,12 @@ if (matches(appTypeArray[1], "Complaint")) {
             var taskDescription = fTask.getTaskDescription();
             var taskStatus = fTask.getDisposition();
 
-            if (taskDescription == "Compliant Review")
+            if (taskDescription == "Complaint Review")
             {
+                logDebug("fTask.getTaskDescription: " + taskDescription);
+                logDebug("fTask.getDisposition() " + taskStatus);
+                logDebug("fTask.getActiveFlag() " + fTask.getActiveFlag());
+
                 if (fTask.getActiveFlag().equals("Y"))
                 {
                     var stepnumber = fTask.getStepNumber();
