@@ -175,7 +175,35 @@ if (matches(appTypeArray[1], "Complaint")) {
                     var processID = fTask.getProcessID();
                     var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
 
+                    // Is this the model? 
+                    var taskSpecInfoResult = aa.taskSpecificInfo.getTaskSpecificInfoModel();
+                    if (taskSpecInfoResult.getSuccess())
+                     {
+                        logDebug("Get Model Success Here!");
+
+                        var taskSpecObj = taskSpecInfoResult.getOutput();                        
                    
+                        for (i in taskSpecObj)
+                        {
+                            if( taskSpecObj[i].getCheckboxDesc() == "Complaint Dispute Value")                            
+                            {
+                                //return appspecObj[i].getChecklistComment();
+                                //break;
+                                var TSIArray = new Array();                                                                                   
+                                taskSpecObj.setChecklistComment(amountDisputed);
+                                TSIArray.push(TSInfoModel);
+
+                                result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+                                if (result.getSuccess())
+                                {
+                                    logDebug("Success Here!");
+                                }
+
+                            }
+                        }                            
+                            
+                        
+                    }
                   
 
                     if (TSIResult.getSuccess())
@@ -248,6 +276,7 @@ if (matches(appTypeArray[1], "Complaint")) {
 
 
 } 
+
 
 function debugObject(object) {
     var output = ''; 
