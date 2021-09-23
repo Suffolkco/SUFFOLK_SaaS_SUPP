@@ -148,8 +148,7 @@ if (matches(appTypeArray[1], "Complaint")) {
         editTaskSpecific(wfTask,"Total Job Cost", amtContract, capId);  
         editTaskSpecific(wfTask,"Complaint Dispute Value", amountDisputed, capId);
 
-        wfTask.getStepNumber();
-
+        
         var workflowResult = aa.workflow.getTasks(capId);
 
         if (workflowResult.getSuccess())
