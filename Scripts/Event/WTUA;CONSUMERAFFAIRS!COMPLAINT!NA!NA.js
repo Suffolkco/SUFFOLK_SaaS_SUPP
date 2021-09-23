@@ -193,20 +193,17 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
                                 {                 
                                     TSI[a1].setChecklistComment(amountDisputed) 
-                                    result = TSIArray.push(TSI[a1]);
-                                    if (result.getSuccess())
-                                    {
-                                        logDebug("Success Push1!");
-                                    }
+                                    TSIArray.push(TSI[a1]);
+                                   logDebug("Success Push1!");
+                                    
                                 }
                                 else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
                                 {
                                     TSI[a1].setChecklistComment(amountDisputed) 
-                                    result = TSIArray.push(TSI[a1]);
-                                    if (result.getSuccess())
-                                    {
-                                        logDebug("Success Push2!");
-                                    }
+                                    TSIArray.push(TSI[a1]);
+                                   
+                                    logDebug("Success Push2!");
+                                    
                                 }
                             }
 
