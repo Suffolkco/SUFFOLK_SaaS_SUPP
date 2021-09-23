@@ -165,7 +165,7 @@ if (matches(appTypeArray[1], "Complaint")) {
 
             if (taskDescription == "Complaint Review")
             {
-                logDebug("fTask.getTaskDescription: " + taskDescription);
+                logDebug("fTask.getTaskDescription(): " + taskDescription);
                 logDebug("fTask.getDisposition() " + taskStatus);
                 logDebug("fTask.getActiveFlag() " + fTask.getActiveFlag());
 
@@ -194,10 +194,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 editTaskSpecific(fTask,"Complaint Dispute Value", amountDisputed);
                                 logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
                             }
-                         
-                            logDebug("fTask.getProcessCode(): " + fTask.getProcessCode());
-                            logDebug("fTask.getTaskDescription() " + fTask.getTaskDescription());
-                            logDebug("fTask.getProcessCode(): " + fTask.getProcessCode());
+                                                   
                            
                         }
                     }
