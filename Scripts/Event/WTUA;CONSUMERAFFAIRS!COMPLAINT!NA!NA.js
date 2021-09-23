@@ -159,7 +159,8 @@ if (matches(appTypeArray[1], "Complaint")) {
         // Find TSI in the next task at Complaint Review
         for (i in wfObj)
         {
-            var fTask = wfObj[i];             
+            var fTask = wfObj[i];            
+            
             var taskDescription = fTask.getTaskDescription();
             var taskStatus = fTask.getDisposition();
 
