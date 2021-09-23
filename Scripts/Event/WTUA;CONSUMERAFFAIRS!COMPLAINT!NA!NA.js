@@ -185,21 +185,22 @@ if (matches(appTypeArray[1], "Complaint")) {
                                 if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
                                 {                              
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].ChecklistComment());                            
+                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());                            
                                    
                                     TSI[a1].setChecklistComment(amtContract);
-                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].ChecklistComment());    
+                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());  
+                                    aa.taskSpecificInfo.editTaskSpecInfos(TSI[a1]);
+
                                                         
                                 }
                                 else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
                                 {
                                 
                                     logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].ChecklistComment());                                                                
+                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());                                                                
                                     TSI[a1].setChecklistComment(amountDisputed);
-                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].ChecklistComment());   
-                                   
-
+                                    logDebug("TSI[a1].ChecklistComment() : " + TSI[a1].getChecklistComment());   
+                                    aa.taskSpecificInfo.editTaskSpecInfos(TSI[a1]);
                                 }
                                                    
                             }
