@@ -139,122 +139,12 @@ if (matches(appTypeArray[1], "Complaint")) {
         // Retrieve values from custom fields        
         amtContract = getAppSpecific("Total Dollar Amount of the Contract", capId);
         amountDisputed = getAppSpecific("Amount Disputed", capId);
-        logDebug("Total Dollar Amount of the Contract: " + amtContract);
-        logDebug("Amount Disputed: " + amountDisputed);
-        
+
+        // Set TSI in Complaint Review to the same values as custom fields.
         editTaskSpecific("Complaint Review","Complaint Dispute Value",amountDisputed)
         editTaskSpecific("Complaint Review","Total Job Cost",amtContract)
-     
-
-        /*
-
-        result = aa.taskSpecificInfo.editTaskSpecInfos(AInfo);
-        if (result.getSuccess())
-        {
-            logDebug("Success Edit!");
-        }
-        
-     
-        // Set to TSI
-        //“Total Dollar Amount of the Contract” -> "Total Job Cost" (Text)
-        //“Amount Disputed” -> "Complaint Dispute Value" (Dropdown list)
-     
-        var workflowResult = aa.workflow.getTasks(capId);
-
-        if (workflowResult.getSuccess())
-        {
-            wfObj = workflowResult.getOutput();
-        }
-         
-        // Find TSI in the next task at Complaint Review
-        for (i in wfObj)
-        {
-            fTask = wfObj[i];
-            logDebug("Task Description: " + fTask.getTaskDescription());
-            logDebug("Task Disposition: " + fTask.getDisposition());        
-
-            taskDescription = fTask.getTaskDescription();
-            taskStatus = fTask.getDisposition();
-
-            if (taskDescription == "Complaint Review")
-            {
-              
-                if (fTask.getActiveFlag().equals("Y"))
-                {
-                    AInfo = new Array();
-                    loadTaskSpecific(AInfo);
-                    logDebug("AI: " + AInfo["Total Job Cost"]);
-                    logDebug("AI1: " + AInfo["Complaint Dispute Value"]);
-            
-                    AInfo["Total Job Cost"] = amtContract;
-                    AInfo["Complaint Dispute Value"] = amountDisputed;
-            
-                    logDebug("AI2: " + AInfo["Total Job Cost"]);
-                    logDebug("AI3: " + AInfo["Complaint Dispute Value"]);
-                       
-                    logDebug("fTask.getTaskDescription(): " + taskDescription);
-                    logDebug("fTask.getDisposition() " + taskStatus);
-                    logDebug("fTask.getActiveFlag() " + fTask.getActiveFlag());
-
-                    /*
-                    var stepnumber = fTask.getStepNumber();
-                    var processID = fTask.getProcessID();
-                    var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
-                    var TSI = TSIResult.getOutput();
-
-                    // Is this the model? 
-                    var taskSpecInfoResult = aa.taskSpecificInfo.getTaskSpecificInfoScriptModel();
-                    if (taskSpecInfoResult.getSuccess())
-                     {
-                        logDebug("Get Model Success Here!");
-
-                        var taskSpecObj = taskSpecInfoResult.getOutput();                        
-
-                        if (taskSpecObj != null)
-                        {
-                            var TSIArray = new Array();
-                                                      
-                            for (a1 in TSI)
-                            {
-                                if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
-                                {                 
-                                    TSI[a1].setChecklistComment(amountDisputed) 
-                                    TSIArray.push(TSI[a1]);
-                                   logDebug("Success Push1!");
-                                    
-                                }
-                                else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
-                                {
-                                    TSI[a1].setChecklistComment(amountDisputed) 
-                                    TSIArray.push(TSI[a1]);
-                                   
-                                    logDebug("Success Push2!");
-                                    
-                                }
-                            }
-
-                            
-                            result = aa.taskSpecificInfo.editTaskSpecInfos(TSI);
-                            if (result.getSuccess())
-                            {
-                                logDebug("Success Edit!");
-                            }
-                        }            
-                        
-                    }                 
-                 
-                }      
-            }*/
-          
-        }     
+    }     
     
 } 
 
 
-function debugObject(object) {
-    var output = ''; 
-    for (property in object) { 
-      output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
-    } 
-    logDebug(output);
-} 
