@@ -148,6 +148,8 @@ if (matches(appTypeArray[1], "Complaint")) {
         editTaskSpecific(wfTask,"Total Job Cost", amtContract, capId);  
         editTaskSpecific(wfTask,"Complaint Dispute Value", amountDisputed, capId);
 
+        wfTask.getStepNumber();
+
         var workflowResult = aa.workflow.getTasks(capId);
 
         if (workflowResult.getSuccess())
@@ -172,14 +174,14 @@ if (matches(appTypeArray[1], "Complaint")) {
                     {
                         logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
                         logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                        editTaskSpecific(wfTask,"Total Job Cost", amtContract);
+                        editTaskSpecific(fTask,"Total Job Cost", amtContract);
                         logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
                     }
                     else if (TSI[a1].getCheckboxDesc() == "Total Job Cost")
                     {
                         logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
                         logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                        editTaskSpecific(wfTask,"Complaint Dispute Value", amountDisputed);
+                        editTaskSpecific(fTask,"Complaint Dispute Value", amountDisputed);
                         logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
                     }
                  
