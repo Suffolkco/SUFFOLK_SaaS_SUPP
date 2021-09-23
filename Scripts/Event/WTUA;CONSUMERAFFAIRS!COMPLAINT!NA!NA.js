@@ -174,6 +174,7 @@ if (matches(appTypeArray[1], "Complaint")) {
                     var stepnumber = fTask.getStepNumber();
                     var processID = fTask.getProcessID();
                     var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
+                    var TSI = TSIResult.getOutput();
 
                     // Is this the model? 
                     var taskSpecInfoResult = aa.taskSpecificInfo.getTaskSpecificInfoScriptModel();
@@ -185,35 +186,36 @@ if (matches(appTypeArray[1], "Complaint")) {
 
                         if (taskSpecObj != null)
                         {
-                            for (i in taskSpecObj)
-                            {
-                                var TSIArray = new Array();
+                            var TSIArray = new Array();
 
-                                debugObject(taskSpecObj[i]);
-                                
-                                if( taskSpecObj[i].getCheckboxDesc() == "Complaint Dispute Value")                            
-                                {                                                                                                                   
-                                    taskSpecObj[i].setChecklistComment(amountDisputed);
-                                    TSIArray.push(taskSpecObj);
-                                
+                            for (a1 in TSI)
+                            {
+                                if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
+                                {                 
+                                    TSI[a1].setChecklistComment(amountDisputed) 
+                                    result = TSIArray.push(TSI[a1]);
                                     if (result.getSuccess())
                                     {
-                                        logDebug("Success Here!");
+                                        logDebug("Success Push1!");
                                     }
-                                    
                                 }
-                                else if (taskSpecObj[i].getCheckboxDesc() == "Total Job Cost")  
-                                {                                                    
-                                    taskSpecObj[i].setChecklistComment(amtContract);
-                                    TSIArray.push(taskSpecObj);
-                                    
+                                else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
+                                {
+                                    TSI[a1].setChecklistComment(amountDisputed) 
+                                    result = TSIArray.push(TSI[a1]);
                                     if (result.getSuccess())
                                     {
-                                        logDebug("Success Here!");
+                                        logDebug("Success Push2!");
                                     }
                                 }
-                                result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
-                            } 
+                            }
+
+                            
+                            result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+                            if (result.getSuccess())
+                            {
+                                logDebug("Success Edit!");
+                            }
                         }            
                         
                     }                 
