@@ -142,29 +142,23 @@ if (matches(appTypeArray[1], "Complaint")) {
         logDebug("Total Dollar Amount of the Contract: " + amtContract);
         logDebug("Amount Disputed: " + amountDisputed);
         
-        AInfo = new Array();
-        loadTaskSpecific(AInfo);
-        logDebug("AI: " + AInfo["Total Job Cost"]);
-        logDebug("AI1: " + AInfo["Complaint Dispute Value"]);
+        editTaskSpecific("Complaint Review","Complaint Dispute Value",amountDisputed)
+        editTaskSpecific("Complaint Review","Total Job Cost",amtContract)
+     
 
-        AInfo["Total Job Cost"] = amtContract;
-        AInfo["Complaint Dispute Value"] = amountDisputed;
+        /*
 
-        logDebug("AI2: " + AInfo["Total Job Cost"]);
-        logDebug("AI3: " + AInfo["Complaint Dispute Value"]);
-
-            
         result = aa.taskSpecificInfo.editTaskSpecInfos(AInfo);
         if (result.getSuccess())
         {
             logDebug("Success Edit!");
         }
-    }        
-
+        
+     
         // Set to TSI
         //“Total Dollar Amount of the Contract” -> "Total Job Cost" (Text)
         //“Amount Disputed” -> "Complaint Dispute Value" (Dropdown list)
-      /*
+     
         var workflowResult = aa.workflow.getTasks(capId);
 
         if (workflowResult.getSuccess())
@@ -172,8 +166,6 @@ if (matches(appTypeArray[1], "Complaint")) {
             wfObj = workflowResult.getOutput();
         }
          
-     
-
         // Find TSI in the next task at Complaint Review
         for (i in wfObj)
         {
@@ -184,16 +176,27 @@ if (matches(appTypeArray[1], "Complaint")) {
             taskDescription = fTask.getTaskDescription();
             taskStatus = fTask.getDisposition();
 
-
             if (taskDescription == "Complaint Review")
             {
-               
-                logDebug("fTask.getTaskDescription(): " + taskDescription);
-                logDebug("fTask.getDisposition() " + taskStatus);
-                logDebug("fTask.getActiveFlag() " + fTask.getActiveFlag());
-
+              
                 if (fTask.getActiveFlag().equals("Y"))
                 {
+                    AInfo = new Array();
+                    loadTaskSpecific(AInfo);
+                    logDebug("AI: " + AInfo["Total Job Cost"]);
+                    logDebug("AI1: " + AInfo["Complaint Dispute Value"]);
+            
+                    AInfo["Total Job Cost"] = amtContract;
+                    AInfo["Complaint Dispute Value"] = amountDisputed;
+            
+                    logDebug("AI2: " + AInfo["Total Job Cost"]);
+                    logDebug("AI3: " + AInfo["Complaint Dispute Value"]);
+                       
+                    logDebug("fTask.getTaskDescription(): " + taskDescription);
+                    logDebug("fTask.getDisposition() " + taskStatus);
+                    logDebug("fTask.getActiveFlag() " + fTask.getActiveFlag());
+
+                    /*
                     var stepnumber = fTask.getStepNumber();
                     var processID = fTask.getProcessID();
                     var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
@@ -241,13 +244,10 @@ if (matches(appTypeArray[1], "Complaint")) {
                     }                 
                  
                 }      
-            }
+            }*/
           
         }     
-     
-    } */
-
-
+    
 } 
 
 
