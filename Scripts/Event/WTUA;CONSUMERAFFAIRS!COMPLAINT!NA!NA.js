@@ -182,34 +182,39 @@ if (matches(appTypeArray[1], "Complaint")) {
                         logDebug("Get Model Success Here!");
 
                         var taskSpecObj = taskSpecInfoResult.getOutput();                        
-                   
-                        for (i in taskSpecObj)
-                        {
-                            var TSIArray = new Array();
 
-                            if( taskSpecObj[i].getCheckboxDesc() == "Complaint Dispute Value")                            
-                            {                                                                                                                   
-                                taskSpecObj[i].setChecklistComment(amountDisputed);
-                                TSIArray.push(taskSpecObj);
-                               
-                                if (result.getSuccess())
-                                {
-                                    logDebug("Success Here!");
-                                }
+                        if (taskSpecObj != null)
+                        {
+                            for (i in taskSpecObj)
+                            {
+                                var TSIArray = new Array();
+
+                                debugObject(taskSpecObj[i]);
                                 
-                            }
-                            else if (taskSpecObj[i].getCheckboxDesc() == "Total Job Cost")  
-                            {                                                    
-                                taskSpecObj[i].setChecklistComment(amtContract);
-                                TSIArray.push(taskSpecObj);
+                                if( taskSpecObj[i].getCheckboxDesc() == "Complaint Dispute Value")                            
+                                {                                                                                                                   
+                                    taskSpecObj[i].setChecklistComment(amountDisputed);
+                                    TSIArray.push(taskSpecObj);
                                 
-                                if (result.getSuccess())
-                                {
-                                    logDebug("Success Here!");
+                                    if (result.getSuccess())
+                                    {
+                                        logDebug("Success Here!");
+                                    }
+                                    
                                 }
-                            }
-                            result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
-                        }             
+                                else if (taskSpecObj[i].getCheckboxDesc() == "Total Job Cost")  
+                                {                                                    
+                                    taskSpecObj[i].setChecklistComment(amtContract);
+                                    TSIArray.push(taskSpecObj);
+                                    
+                                    if (result.getSuccess())
+                                    {
+                                        logDebug("Success Here!");
+                                    }
+                                }
+                                result = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+                            } 
+                        }            
                         
                     }                 
                  
