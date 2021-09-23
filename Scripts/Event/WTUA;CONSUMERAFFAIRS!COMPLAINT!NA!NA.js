@@ -145,10 +145,7 @@ if (matches(appTypeArray[1], "Complaint")) {
         // Set to TSI
         //“Total Dollar Amount of the Contract” -> "Total Job Cost" (Text)
         //“Amount Disputed” -> "Complaint Dispute Value" (Dropdown list)
-        editTaskSpecific(wfTask,"Total Job Cost", amtContract, capId);  
-        editTaskSpecific(wfTask,"Complaint Dispute Value", amountDisputed, capId);
-
-        
+      
         var workflowResult = aa.workflow.getTasks(capId);
 
         if (workflowResult.getSuccess())
@@ -176,29 +173,60 @@ if (matches(appTypeArray[1], "Complaint")) {
                 {
                     var stepnumber = fTask.getStepNumber();
                     var processID = fTask.getProcessID();
-                    var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber)
+                    var TSIResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, processID, stepnumber);
         
                     if (TSIResult.getSuccess())
                     {
                         var TSI = TSIResult.getOutput();
-                        for (a1 in TSI)
+                        if (TSI != null)
                         {
-                            if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
+                            for (a1 in TSI)
                             {
-                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                                logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                                editTaskSpecific(fTask,"Total Job Cost", amtContract);
-                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                            }
-                            else if (TSI[a1].getCheckboxDesc() == "Total Job Cost")
-                            {
-                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                                logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
-                                editTaskSpecific(fTask,"Complaint Dispute Value", amountDisputed);
-                                logDebug("getChecklistComment: " + TSI[a1].getChecklistComment());
-                            }
+                                if (TSI[a1].getCheckboxDesc() == "Total Job Cost")                    
+                                {                              
+                                    logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
+                                                                
+                                    var TSIArray = new Array();
+                                    TSInfoModel = TSI.getTaskSpecificInfoModel();
+                                    TSInfoModel.setChecklistComment(amtContract);
+                                    TSIArray.push(TSInfoModel);
+                                    TSIUResult = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+
+                                    if (TSIUResult.getSuccess())
+                                    {
+                                        logDebug("Successfully updated TSI Task=" + wfName + " Item=" + itemName + " Value=" + itemValue);
+                                        AInfo[itemName] = itemValue;  // Update array used by this script
+                                    }
+                                    else
+                                    { 
+                                        logDebug("**ERROR: Failed to Update Task Specific Info : " + TSIUResult.getErrorMessage());
+                                    }
+                                                        
+                                }
+                                else if (TSI[a1].getCheckboxDesc() == "Complaint Dispute Value")
+                                {
+                                
+                                    logDebug("TSI[a1].getCheckboxDesc() : " + TSI[a1].getCheckboxDesc());    
+                                
+                                    var TSIArray = new Array();
+                                    TSInfoModel = TSI.getTaskSpecificInfoModel();
+                                    TSInfoModel.setChecklistComment(amountDisputed);
+                                    TSIArray.push(TSInfoModel);
+                                    TSIUResult = aa.taskSpecificInfo.editTaskSpecInfos(TSIArray);
+
+                                    if (TSIUResult.getSuccess())
+                                    {
+                                        logDebug("Successfully updated TSI Task=" + wfName + " Item=" + itemName + " Value=" + itemValue);
+                                        AInfo[itemName] = itemValue;  // Update array used by this script
+                                    }
+                                    else
+                                    { 
+                                        logDebug("**ERROR: Failed to Update Task Specific Info : " + TSIUResult.getErrorMessage());
+                                    }
+
+                                }
                                                    
-                           
+                            }
                         }
                     }
                 }      
