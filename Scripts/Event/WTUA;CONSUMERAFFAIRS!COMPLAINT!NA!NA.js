@@ -141,6 +141,17 @@ if (matches(appTypeArray[1], "Complaint")) {
         amountDisputed = getAppSpecific("Amount Disputed", capId);
         logDebug("Total Dollar Amount of the Contract: " + amtContract);
         logDebug("Amount Disputed: " + amountDisputed);
+        
+        AInfo = new Array();
+        loadTaskSpecific(AInfo);
+        logDebug("AI: " + AInfo["Total Job Cost"]);
+        logDebug("AI1: " + AInfo["Complaint Dispute Value"]);
+
+        AInfo["Total Job Cost"] = amtContract;
+        AInfo["Complaint Dispute Value"] = amountDisputed;
+
+        logDebug("AI2: " + AInfo["Total Job Cost"]);
+        logDebug("AI3: " + AInfo["Complaint Dispute Value"]);
 
         // Set to TSI
         //“Total Dollar Amount of the Contract” -> "Total Job Cost" (Text)
