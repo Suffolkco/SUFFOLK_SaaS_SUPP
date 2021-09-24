@@ -83,7 +83,7 @@ if (publicUser)
             closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
         }*/
         //copying back from the renewal to the parent for records where the condition has been met
-        copyContacts(capId, parentCapId);
+        /*copyContacts(capId, parentCapId);
         AInfo = new Array();
         loadAppSpecific(AInfo, capId);
         for (asi in AInfo)
@@ -104,7 +104,7 @@ if (publicUser)
             conEmail += conArray.email + "; ";
             logDebug("Email addresses: " + conEmail);
             sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
-        }
+        }*/
     }
 } 
 
