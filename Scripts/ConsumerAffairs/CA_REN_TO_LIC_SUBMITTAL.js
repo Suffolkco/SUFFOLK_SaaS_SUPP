@@ -92,7 +92,7 @@ if (publicUser)
             logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
             editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
         }        
-        copyASITables(capId, parentCapId);
+        //copyASITables(capId, parentCapId);
 
         var conArray = getContactByType("Applicant", capId);
         var conEmail = "";
