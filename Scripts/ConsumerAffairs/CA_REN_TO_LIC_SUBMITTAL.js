@@ -83,16 +83,16 @@ if (publicUser)
             closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
         }*/
         //copying back from the renewal to the parent for records where the condition has been met
-        /*copyContacts(capId, parentCapId);
+        //copyContacts(capId, parentCapId);
         AInfo = new Array();
-        loadAppSpecific(AInfo, capId);
+        loadAppSpecific(AInfo, parentCapId);
         for (asi in AInfo)
         {
             //Check list
             logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
-            editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
+            editAppSpecificLOCAL(asi, AInfo[asi], capId);
         }        
-        //copyASITables(capId, parentCapId);
+        /*copyASITables(capId, parentCapId);
 
         var conArray = getContactByType("Applicant", capId);
         var conEmail = "";
