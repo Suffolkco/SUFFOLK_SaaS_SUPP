@@ -67,7 +67,7 @@ if (publicUser)
                 b1Exp.setExpDate(aa.date.parseDate(newExpDate));
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                 updateAppStatus("Active", "", parentCapId);
-                updateTask("Issuance", "Renewed", "", "", "", parentCapId);
+                updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
                 activateTask("Issuance");
             }
         }
