@@ -170,7 +170,7 @@ function mainProcess()
 {    
     try 
     {
-        logDebug("Batch script will run");  
+        logDlogDebugLocal("Batch script will run");  
 		var output = "Record ID\n";  		
   
 		/* GOAL # 3 **********************************************************************
@@ -326,9 +326,9 @@ function mainProcess()
 	}
     catch (err) 
     {
-        logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
+        logDebugLocal("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
-    logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
+    logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
 }
 
 
