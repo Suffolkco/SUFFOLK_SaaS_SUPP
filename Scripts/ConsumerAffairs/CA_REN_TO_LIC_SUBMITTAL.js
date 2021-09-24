@@ -67,7 +67,7 @@ if (publicUser)
                 b1Exp.setExpDate(aa.date.parseDate(newExpDate));
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
                 updateAppStatus("Active", "", parentCapId);
-                updateTask("Issuance", "Renewed", "", "", "", parentCapId);
+                updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
                 activateTask("Issuance");
             }
         }
@@ -83,7 +83,7 @@ if (publicUser)
             closeTask("Renewal Review", "Complete", "Updated by Renewal Script", "Updated by Renewal Script");
         }*/
         //copying back from the renewal to the parent for records where the condition has been met
-        copyContacts(capId, parentCapId);
+        /*copyContacts(capId, parentCapId);
         AInfo = new Array();
         loadAppSpecific(AInfo, capId);
         for (asi in AInfo)
@@ -92,7 +92,7 @@ if (publicUser)
             logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
             editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
         }        
-        copyASITables(capId, parentCapId);
+        /copyASITables(capId, parentCapId);
 
         var conArray = getContactByType("Applicant", capId);
         var conEmail = "";
@@ -104,7 +104,7 @@ if (publicUser)
             conEmail += conArray.email + "; ";
             logDebug("Email addresses: " + conEmail);
             sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
-        }
+        }*/
     }
 } 
 
