@@ -170,9 +170,8 @@ function mainProcess()
 {    
     try 
     {
-        logDebug("Batch script will run");
-  
-        var output = "Record ID\n";  		
+        logDebug("Batch script will run");  
+		var output = "Record ID\n";  		
   
 		/* GOAL # 3 **********************************************************************
 		At the end, set all OPC Site base on the below on the SITE.		
