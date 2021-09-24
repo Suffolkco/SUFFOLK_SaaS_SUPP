@@ -179,6 +179,7 @@ function mainProcess()
 		var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
 		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
 		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
+		var setFoilable = false;
 		var regulatedSiteCnt = 0;
 		var facTypeSiteCnt = 0;
 		var cbsSiteCnt = 0;
@@ -213,29 +214,34 @@ function mainProcess()
 
 					if (regulatedSite == 'Yes')
 					{
+						logDebugLocal("regulatedSite Yes");
 						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
 						setFoilable = true;
 						regulatedSiteCnt++;
 					}	
 					if (facilityType == "Major Oil Storage Facility (MOSF)")
 					{
+						logDebugLocal("MOSF");
 						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
 						setFoilable = true;
 						facTypeSiteCnt++;					
 					}					
 					if (cbsRegSite == 'Yes')
 					{
+						logDebugLocal("Chemical Bulk St");
 						//copyCustomField("Chemical Bulk Storage (CBS) Facilities", capId);	
 						cbsSiteCnt++;										
 					}
 					if (petro == "Storage Terminal/Petroleum Distributor")
 					{
+						logDebugLocal("Storage Terminal");
 						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
 						petroStorageCnt++;
 					}
 					if (petro == "Utility")
 					{
+						logDebugLocal("PBS - Utility");
 						//copyCustomField("PBS - Utility", capId);
 						setFoilable = true;
 						petroUtilityCnt++;
@@ -243,6 +249,7 @@ function mainProcess()
 					}
 					if (petro == "Airport/Airline/Air Taxi")
 					{
+						logDebugLocal("Airline");
 						//copyCustomField("PBS - Airport/Airline/Air Taxi", capId);
 						setFoilable = true;
 						petroAirlineCnt++;						
@@ -250,6 +257,7 @@ function mainProcess()
 					}
 					if (petro == "Chemical Distributor")
 					{
+						logDebugLocal("Chemical Distribu");
 						//copyCustomField("PBS - Chemical Distributor", capId);
 						setFoilable = true;
 						petroChemicalCnt++;
@@ -257,6 +265,7 @@ function mainProcess()
 					}
 					if (petro == "Refinery")
 					{
+						logDebugLocal("Refinery");
 						//copyCustomField("PBS - Refinery", capId);
 						setFoilable = true;
 						petroRefineryCnt++;
@@ -264,6 +273,7 @@ function mainProcess()
 					}
 					if (petro == "Railroad")
 					{
+						logDebugLocal("Railroad");
 						//copyCustomField("PBS - Railroad", capId);
 						setFoilable = true;
 						petroRailroadCnt++;
@@ -272,6 +282,7 @@ function mainProcess()
 					}
 					if (petro == "Authority")
 					{
+						logDebugLocal("Authority");
 						//copyCustomField("Authority", capId);
 						setFoilable = true;
 						petroAuthorityCnt++;
@@ -279,6 +290,7 @@ function mainProcess()
 					}
 					if (petro == "NY State Government")
 					{
+						logDebugLocal("NY State Governm");
 						//copyCustomField("NY State Government", capId);
 						setFoilable = true;
 						petroNyStateCnt++;	
