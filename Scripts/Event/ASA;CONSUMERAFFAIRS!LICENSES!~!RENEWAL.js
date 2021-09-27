@@ -40,7 +40,7 @@ for (asi in AInfo)
     editAppSpecificLOCAL(asi, AInfo[asi], capId);
 }
 
-copyASITables(parentCapId, capId);
+copyASITablesWithRemove(parentCapId, capId);
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
