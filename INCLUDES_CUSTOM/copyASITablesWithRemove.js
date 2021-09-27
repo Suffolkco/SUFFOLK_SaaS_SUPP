@@ -10,7 +10,7 @@ function copyASITablesWithRemove(pFromCapId, pToCapId) {
 	var ignoreArr = new Array();
 	var limitCopy = false;
 	if (arguments.length > 2) {
-		ignoreArr = arguments[2];
+		ignoreArr = arguments[2]; 
 		limitCopy = true;
 	}
 	while (tai.hasNext()) {
