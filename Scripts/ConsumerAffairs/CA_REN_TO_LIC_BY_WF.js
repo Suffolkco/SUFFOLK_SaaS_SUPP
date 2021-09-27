@@ -34,6 +34,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
         }
     }
+    copyDocuments(capId, parentCapId);
     copyContacts(capId, parentCapId);
     AInfo = new Array();
     loadAppSpecific(AInfo, capId);
@@ -43,7 +44,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
         editAppSpecificLOCAL(asi, AInfo[asi], parentCapId);
     }
-    copyASITables(capId, parentCapId);
+    copyASITablesWithRemove(capId, parentCapId);
 
     var conArray = getContactByType("Applicant", capId);
     var conEmail = "";
