@@ -180,6 +180,7 @@ function mainProcess()
 		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
 		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
 		var setFoilable = false;
+		var siteCnt = 0;
 		var regulatedSiteCnt = 0;
 		var facTypeSiteCnt = 0;
 		var cbsSiteCnt = 0;
