@@ -34,6 +34,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
         }
     }
+    copyDocuments(capId, parentCapId);
     copyContacts(capId, parentCapId);
     AInfo = new Array();
     loadAppSpecific(AInfo, capId);
