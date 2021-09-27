@@ -47,10 +47,10 @@ if (publicUser)
     }
 
     if (isTaskActive("Final Review") && isTaskStatus("Final Review","Awaiting Client Reply"))
-        {
-            updateTask("Final Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-            updateAppStatus("Resubmitted");
-        }
+    {
+        updateTask("Final Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
+        updateAppStatus("Resubmitted");
+    }
     if (isTaskActive("Inspections") && isTaskStatus("Inspections","Awaiting Client Reply"))
     {
         updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
