@@ -6,6 +6,9 @@ if (!publicUser &&
     (itemCapType == "DEQ/WWM/Residence/Application" || 
     itemCapType == "DEQ/WWM/Subdivision/Application" ||        
     itemCapType == "DEQ/WWM/Commercial/Application" ||
+    itemCapType == "DEQ/WWM/Garbage/Permit" ||
+    itemCapType == "DEQ/WWM/Garbage/Amendment" ||
+    itemCapType == "DEQ/WWM/Garbage/Renewal"    ||
     itemCapType == "DEQ/OPC/Global Containment/Application" ||
     itemCapType == "DEQ/OPC/Hazardous Tank/Application" ||
     itemCapType == "DEQ/OPC/Swimming Pool/Application" ||
@@ -35,6 +38,12 @@ if (publicUser)
             updateAppStatus("Resubmitted");
             updateTask("Application Review", "Resubmitted", "Additional documents submitted by Applicant.", "Additional documents submitted by Applicant.");
         }
+        if (itemCapType == "DEQ/WWM/Garbage/Permit")
+        {               
+            updateAppStatus("Resubmitted");
+            
+        }
+    
     }
 
     if (isTaskActive("Final Review") && isTaskStatus("Final Review","Awaiting Client Reply"))
@@ -47,4 +56,13 @@ if (publicUser)
         updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
         updateAppStatus("Resubmitted");
     }
+
+    if (itemCapType == "DEQ/WWM/Garbage/Amendment" || itemCapType == "DEQ/WWM/Garbage/Renewal")
+    {
+        if (isTaskActive("Renewal Review"))
+        {
+            updateAppStatus("Resubmitted");
+        }
+    }
+    
 }
