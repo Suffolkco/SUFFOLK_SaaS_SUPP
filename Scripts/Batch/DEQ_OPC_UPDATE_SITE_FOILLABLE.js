@@ -170,7 +170,7 @@ function mainProcess()
 {    
     try 
     {
-        logDlogDebugLocal("Batch script will run");  
+        logDebugLocal("Batch script will run");  
 		var output = "Record ID\n";  		
   
 		/* GOAL # 3 **********************************************************************
@@ -211,6 +211,8 @@ function mainProcess()
 									
 					setFoilable = false;
 					
+					logDebugLocal("Record ID: " + capIDString + "," + regulatedSite + "," + facilityType + "," + cbsRegSite
+					+ "," + petro);
 
 					if (regulatedSite == 'Yes')
 					{
