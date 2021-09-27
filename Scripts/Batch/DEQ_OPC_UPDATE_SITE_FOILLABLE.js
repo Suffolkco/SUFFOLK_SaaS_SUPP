@@ -170,7 +170,7 @@ function mainProcess()
 {    
     try 
     {
-        logDlogDebugLocal("Batch script will run");  
+        logDebugLocal("Batch script will run");  
 		var output = "Record ID\n";  		
   
 		/* GOAL # 3 **********************************************************************
@@ -180,6 +180,7 @@ function mainProcess()
 		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
 		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
 		var setFoilable = false;
+		var siteCnt = 0;
 		var regulatedSiteCnt = 0;
 		var facTypeSiteCnt = 0;
 		var cbsSiteCnt = 0;
@@ -211,6 +212,8 @@ function mainProcess()
 									
 					setFoilable = false;
 					
+					logDebugLocal("Record ID: " + capIDString + "," + regulatedSite + "," + facilityType + "," + cbsRegSite
+					+ "," + petro);
 
 					if (regulatedSite == 'Yes')
 					{
