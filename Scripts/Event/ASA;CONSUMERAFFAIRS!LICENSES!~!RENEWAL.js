@@ -40,7 +40,20 @@ for (asi in AInfo)
     editAppSpecificLOCAL(asi, AInfo[asi], capId);
 }
 
-copyASITables(parentCapId, capId); 
+copyASITables(parentCapId, capId);
+
+loadASITables(); 
+
+var rowsInTable = 0;
+if (typeof (RESTRICTIONS) == "object")
+{
+    for (var rows = 0; rows < Restrictions.length; rows++)
+    {
+        rowsInTable += 1;
+    }
+}
+logDebug("Number of Rows in Table is: " + rowsInTable);
+updateFee("CA_SALES", "SLS_22", "FINAL", rowsInTable - 1, "Y");
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
