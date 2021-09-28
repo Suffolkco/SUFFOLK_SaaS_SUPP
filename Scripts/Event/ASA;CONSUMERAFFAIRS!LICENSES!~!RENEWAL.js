@@ -42,7 +42,7 @@ for (asi in AInfo)
 
 copyASITables(parentCapId, capId);
 
-
+ 
 
 var rowsInTable = 0;
 if (typeof (RESTRICTIONS) == "object")
