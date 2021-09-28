@@ -49,7 +49,7 @@ if (typeof (RESTRICTIONS) == "object")
 {
     for (var rows = 0; rows < RESTRICTIONS.length; rows++)
     {
-        rowsInTable += 1;
+        rowsInTable += 1; 
     }
 }
 logDebug("Number of Rows in Table is: " + rowsInTable);
