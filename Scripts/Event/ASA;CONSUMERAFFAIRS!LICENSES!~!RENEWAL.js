@@ -2,6 +2,11 @@
 
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
+var currentUserID = aa.env.getValue("CurrentUserID");
+if (currentUserID == "rlittlefield")
+{
+    showDebug = true;
+}
 
 aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
 aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
