@@ -172,10 +172,8 @@ function mainProcess()
     {
         logDebugLocal("Batch script will run");  
 		var output = "Record ID\n";  		
-  
-		/* GOAL # 3 **********************************************************************
-		At the end, set all OPC Site base on the below on the SITE.		
-		***********************************************************************/
+
+
 		var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
 		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
 		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
@@ -206,9 +204,9 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
                     var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
-                    var facilityType = getAppSpecific("Facility Code", capId);   								
+                    var facilityType = getAppSpecific("Facility Type Label", capId);   								
 					var cbsRegSite = getAppSpecific("CBS Regulated Site", capId);			
-					var petro = getAppSpecific("Type of Petro Facility", capId);		
+					var petro = getAppSpecific("Type of Petroleum Facility Label", capId);		
 									
 					setFoilable = false;
 					
@@ -308,10 +306,8 @@ function mainProcess()
 				}
 			}
 		}
-		logDebugLocal("Total Site Count updates: " + siteCnt);
-		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);
-		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
-		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);
+		logDebugLocal("Total foilable Count updates: " + siteCnt);
+		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);		
 		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
 		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt);
 		logDebugLocal("Total Petro Storage Count: " + petroStorageCnt);
