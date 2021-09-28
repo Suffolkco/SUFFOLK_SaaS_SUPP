@@ -44,7 +44,7 @@ copyASITables(parentCapId, capId);
 
  
 
-var rowsInTable = 0;
+/*var rowsInTable = 0;
 if (typeof (RESTRICTIONS) == "object")
 {
     for (var rows = 0; rows < RESTRICTIONS.length; rows++)
@@ -53,7 +53,7 @@ if (typeof (RESTRICTIONS) == "object")
     }
 }
 logDebug("Number of Rows in Table is: " + rowsInTable);
-updateFee("CA_SALES", "SLS_22", "FINAL", 1, "Y");
+updateFee("CA_SALES", "SLS_22", "FINAL", 1, "Y");*/
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
