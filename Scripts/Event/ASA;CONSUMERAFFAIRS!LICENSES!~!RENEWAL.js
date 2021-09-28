@@ -24,12 +24,12 @@ if (publicUser)
         }
     }
 
-        
+
 }
 
 
 
-copyContacts(parentCapId, capId); 
+copyContacts(parentCapId, capId);
 
 AInfo = new Array();
 loadAppSpecific(AInfo, parentCapId);
@@ -40,9 +40,13 @@ for (asi in AInfo)
     editAppSpecificLOCAL(asi, AInfo[asi], capId);
 }
 
-//copyASITables(parentCapId, capId);
+var tableCopy = 0;
+if (tableCopy == 0)
+{
+    copyASITables(parentCapId, capId);
+    tableCopy = tableCopy + 1;
+}
 
- 
 
 /*var rowsInTable = 0;
 if (typeof (RESTRICTIONS) == "object")
@@ -53,7 +57,7 @@ if (typeof (RESTRICTIONS) == "object")
     }
 }
 logDebug("Number of Rows in Table is: " + rowsInTable);
-updateFee("CA_SALES", "SLS_22", "FINAL", 1, "Y");*/ 
+updateFee("CA_SALES", "SLS_22", "FINAL", 1, "Y");*/
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
