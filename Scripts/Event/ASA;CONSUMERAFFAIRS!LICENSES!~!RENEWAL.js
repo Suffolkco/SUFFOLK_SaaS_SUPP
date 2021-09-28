@@ -47,7 +47,7 @@ loadASITables();
 var rowsInTable = 0;
 if (typeof (RESTRICTIONS) == "object")
 {
-    for (var rows = 0; rows < Restrictions.length; rows++)
+    for (var rows = 0; rows < RESTRICTIONS.length; rows++)
     {
         rowsInTable += 1;
     }
