@@ -279,7 +279,6 @@ function mainProcess()
 						setFoilable = true;
 						petroRailroadCnt++;
 						
-
 					}
 					if (facilityType == "Authority")
 					{
