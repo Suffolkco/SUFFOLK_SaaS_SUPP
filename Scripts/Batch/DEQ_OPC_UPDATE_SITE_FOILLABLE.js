@@ -277,8 +277,7 @@ function mainProcess()
 						logDebugLocal("Railroad");
 						//copyCustomField("PBS - Railroad", capId);
 						setFoilable = true;
-						petroRailroadCnt++;
-						
+						petroRailroadCnt++;						
 					}
 					if (facilityType == "Authority")
 					{
