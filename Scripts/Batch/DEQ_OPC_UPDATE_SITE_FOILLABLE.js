@@ -204,9 +204,9 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
                     var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
-                    var facilityType = getAppSpecific("Facility Type Label", capId);   								
+                    var facilityType = getAppSpecific("Facility Code", capId);   								
 					var cbsRegSite = getAppSpecific("CBS Regulated Site", capId);			
-					var petro = getAppSpecific("Type of Petroleum Facility", capId);		
+					var petro = getAppSpecific("Type of Petro Facility", capId);		
 									
 					setFoilable = false;
 					
@@ -220,7 +220,7 @@ function mainProcess()
 						setFoilable = true;
 						regulatedSiteCnt++;
 					}	
-					if (facilityType == "Major Oil Storage Facility (MOSF)")
+					if (facilityType == "16-Major Oil Storage Facility (MOSF)")
 					{
 						logDebugLocal("MOSF");
 						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
@@ -279,7 +279,7 @@ function mainProcess()
 						setFoilable = true;
 						petroRailroadCnt++;						
 					}
-					if (facilityType == "Authority")
+					if (facilityType == "1-Authority")
 					{
 						logDebugLocal("Authority");
 						//copyCustomField("Authority", capId);
@@ -287,7 +287,7 @@ function mainProcess()
 						petroAuthorityCnt++;
 						
 					}
-					if (facilityType == "NY State Government")
+					if (facilityType == "17-NY State Government")
 					{
 						logDebugLocal("NY State Governm");
 						//copyCustomField("NY State Government", capId);
@@ -314,8 +314,8 @@ function mainProcess()
 		logDebugLocal("Total Petro Chemical Count: " + petroChemicalCnt);
 		logDebugLocal("Total Petro Refinery Count: " + petroRefineryCnt);
 		logDebugLocal("Total Petro Railroad Count: " + petroRailroadCnt);
-		logDebugLocal("Total Petro Authority Count: " + petroAuthorityCnt);
-		logDebugLocal("Total Petro NYState Count: " + petroNyStateCnt);
+		logDebugLocal("Total Fac Authority Count: " + petroAuthorityCnt);
+		logDebugLocal("Total Fac NYState Count: " + petroNyStateCnt);
 		
 		
 	
