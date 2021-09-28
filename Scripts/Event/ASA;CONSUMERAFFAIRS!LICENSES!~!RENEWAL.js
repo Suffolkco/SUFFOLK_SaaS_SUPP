@@ -57,10 +57,9 @@ if (typeof (RESTRICTIONS) == "object")
 }
 logDebug("Number of Rows in Table is: " + rowsInTable);
 var feesToAssess = rowsInTable - 1;
-if (feesToAssess != 0 && !publicUser)
+if (feesToAssess != 0 && publicUser)
 {
-    //addFee("CA_SALES", "SLS_22", "FINAL", feesToAssess, "Y");
-    logDebug("hi");
+    updateFee("CA_SALES", "SLS_22", "FINAL", feesToAssess, "Y");
 }
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
