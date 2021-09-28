@@ -206,9 +206,9 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
                     var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
-                    var facilityType = getAppSpecific("Facility Code", capId);   								
+                    var facilityType = getAppSpecific("Facility Type Label", capId);   								
 					var cbsRegSite = getAppSpecific("CBS Regulated Site", capId);			
-					var petro = getAppSpecific("Type of Petro Facility", capId);		
+					var petro = getAppSpecific("Type of Petroleum Facility Label", capId);		
 									
 					setFoilable = false;
 					
@@ -308,10 +308,8 @@ function mainProcess()
 				}
 			}
 		}
-		logDebugLocal("Total Site Count updates: " + siteCnt);
-		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);
-		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
-		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);
+		logDebugLocal("Total foilable Count updates: " + siteCnt);
+		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);		
 		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
 		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt);
 		logDebugLocal("Total Petro Storage Count: " + petroStorageCnt);
