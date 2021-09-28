@@ -2,11 +2,6 @@
 
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
-var currentUserID = aa.env.getValue("CurrentUserID");
-if (currentUserID == "rlittlefield")
-{
-    showDebug = true;
-}
 
 aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
 aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
@@ -32,8 +27,6 @@ if (publicUser)
 
 }
 
-
-
 copyContacts(parentCapId, capId);
 
 AInfo = new Array();
@@ -53,16 +46,21 @@ if (tableCopy == 0)
 }
 
 
-/*var rowsInTable = 0;
+var rowsInTable = 0;
 if (typeof (RESTRICTIONS) == "object")
 {
+    logDebug("RESTRICTIONS is an object")
     for (var rows = 0; rows < RESTRICTIONS.length; rows++)
     {
         rowsInTable += 1; 
     }
 }
 logDebug("Number of Rows in Table is: " + rowsInTable);
-updateFee("CA_SALES", "SLS_22", "FINAL", 1, "Y");*/
+var feesToAssess = rowsInTable - 1;
+if (feesToAssess != 0)
+{
+    updateFee("CA_SALES", "SLS_22", "FINAL", feesToAssess, "Y");
+}
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
