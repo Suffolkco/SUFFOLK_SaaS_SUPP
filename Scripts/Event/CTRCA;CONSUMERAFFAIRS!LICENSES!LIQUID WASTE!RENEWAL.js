@@ -15,9 +15,12 @@ if (typeof (RESTRICTIONS) == "object")
         if (!matches(categoryNeeded, "LW - Wastewater Demo Project", "LW12 - All Endorsements"))
         {
             rowsToPay = rowsToPay + 1;
+            logDebug("Found a row that is: " + categoryNeeded + ". We will bill for this row.")
         }
         else
-        {logDebug("Found a row that is: " + categoryNeeded + ". Will not bill for this row.")}
+        { 
+            logDebug("Found a row that is: " + categoryNeeded + ". Will not bill for this row.") 
+        }
     }
     logDebug("Number of Billable Rows in Table is: " + rowsToPay);
     var feesToAssess = rowsToPay - 1;
