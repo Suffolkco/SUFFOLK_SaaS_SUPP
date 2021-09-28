@@ -59,7 +59,8 @@ logDebug("Number of Rows in Table is: " + rowsInTable);
 var feesToAssess = rowsInTable - 1;
 if (feesToAssess != 0 && !publicUser)
 {
-    updateFee("CA_SALES", "SLS_22", "FINAL", feesToAssess, "Y");
+    //addFee("CA_SALES", "SLS_22", "FINAL", feesToAssess, "Y");
+    logDebug("hi");
 }
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
