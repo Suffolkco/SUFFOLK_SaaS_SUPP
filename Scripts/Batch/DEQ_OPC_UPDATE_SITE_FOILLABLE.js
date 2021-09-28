@@ -206,7 +206,7 @@ function mainProcess()
                     var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);     
                     var facilityType = getAppSpecific("Facility Type Label", capId);   								
 					var cbsRegSite = getAppSpecific("CBS Regulated Site", capId);			
-					var petro = getAppSpecific("Type of Petroleum Facility Label", capId);		
+					var petro = getAppSpecific("Type of Petroleum Facility", capId);		
 									
 					setFoilable = false;
 					
@@ -233,14 +233,14 @@ function mainProcess()
 						//copyCustomField("Chemical Bulk Storage (CBS) Facilities", capId);	
 						cbsSiteCnt++;										
 					}
-					if (petro == "Storage Terminal/Petroleum Distributor")
+					if (petro == "1-Storage Terminal / /Petroleum Distributor")
 					{
 						logDebugLocal("Storage Terminal");
 						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
 						petroStorageCnt++;
 					}
-					if (petro == "Utility")
+					if (petro == "5-Utility")
 					{
 						logDebugLocal("PBS - Utility");
 						//copyCustomField("PBS - Utility", capId);
@@ -248,7 +248,7 @@ function mainProcess()
 						petroUtilityCnt++;
 						
 					}
-					if (petro == "Airport/Airline/Air Taxi")
+					if (petro == "11-Airline/Air Taxi/Airport")
 					{
 						logDebugLocal("Airline");
 						//copyCustomField("PBS - Airport/Airline/Air Taxi", capId);
@@ -256,7 +256,7 @@ function mainProcess()
 						petroAirlineCnt++;						
 
 					}
-					if (petro == "Chemical Distributor")
+					if (petro == "12-Chemical Distributor")
 					{
 						logDebugLocal("Chemical Distribu");
 						//copyCustomField("PBS - Chemical Distributor", capId);
@@ -272,16 +272,14 @@ function mainProcess()
 						petroRefineryCnt++;
 						
 					}
-					if (petro == "Railroad")
+					if (petro == "15-Railroad")
 					{
 						logDebugLocal("Railroad");
 						//copyCustomField("PBS - Railroad", capId);
 						setFoilable = true;
-						petroRailroadCnt++;
-						
-
+						petroRailroadCnt++;						
 					}
-					if (petro == "Authority")
+					if (facilityType == "Authority")
 					{
 						logDebugLocal("Authority");
 						//copyCustomField("Authority", capId);
@@ -289,7 +287,7 @@ function mainProcess()
 						petroAuthorityCnt++;
 						
 					}
-					if (petro == "NY State Government")
+					if (facilityType == "NY State Government")
 					{
 						logDebugLocal("NY State Governm");
 						//copyCustomField("NY State Government", capId);
