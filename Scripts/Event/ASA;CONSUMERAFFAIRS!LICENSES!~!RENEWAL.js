@@ -57,7 +57,7 @@ if (typeof (RESTRICTIONS) == "object")
 }
 logDebug("Number of Rows in Table is: " + rowsInTable);
 var feesToAssess = rowsInTable - 1;
-if (feesToAssess != 0)
+if (feesToAssess != 0 && capId)
 {
     updateFee("CA_SALES", "SLS_22", "FINAL", feesToAssess, "Y");
 }
