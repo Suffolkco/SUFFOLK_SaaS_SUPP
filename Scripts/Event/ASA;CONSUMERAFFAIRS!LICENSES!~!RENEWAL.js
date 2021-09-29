@@ -3,8 +3,8 @@
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
 
-aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
-aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
+//aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
+//aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
 
 var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
