@@ -7,7 +7,7 @@
 aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
 
-var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
+//var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
 aa.cap.updateAccessByACA(capId, "Y");
 if (publicUser)
