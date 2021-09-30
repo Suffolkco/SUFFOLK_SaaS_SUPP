@@ -29,10 +29,8 @@ if (conArray.length < 1)
             }
         }
 
-
+        copyContacts(parentCapId, capId);
     }
-
-    copyContacts(parentCapId, capId);
 
     AInfo = new Array();
     loadAppSpecific(AInfo, parentCapId);
@@ -49,6 +47,9 @@ if (conArray.length < 1)
         copyASITables(parentCapId, capId);
         tableCopy = tableCopy + 1;
     }
+    copyAddresses(parentCapId, capId);
+    copyParcels(parentCapId, capId);
+    copyParcelGisObjects();
 }
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
