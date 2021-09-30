@@ -18,7 +18,7 @@ if (isRenewProcess(parentCapId, partialCapId))
 	aa.print("CAPID(" + parentCapId + ") is ready for renew. PartialCap (" + partialCapId + ")");
 	//2. Associate partial cap with parent CAP.
 	var result = aa.cap.createRenewalCap(parentCapId, partialCapId, true);
-	if (result.getSuccess())
+	/*if (result.getSuccess())
 	{
 		//3. Copy key information from parent license to partial cap
 		copyKeyInfo(parentCapId, partialCapId);
@@ -28,7 +28,7 @@ if (isRenewProcess(parentCapId, partialCapId))
 	else
 	{
 		aa.print("ERROR: Associate partial cap with parent CAP. " + result.getErrorMessage());
-	}
+	}*/
 }
 aa.env.setValue("ScriptReturnCode","0");
 aa.env.setValue("ScriptReturnMessage", "ApplicationSubmitAfter4Renew perform renewal process.");

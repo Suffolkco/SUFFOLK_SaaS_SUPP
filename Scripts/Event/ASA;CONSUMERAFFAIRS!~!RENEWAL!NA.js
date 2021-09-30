@@ -1,7 +1,7 @@
 // ASA;CONSUMERAFFAIRS!~!RENEWAL!NA
 showDebug = true;
 
-aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
+//aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
 aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
 
@@ -24,4 +24,4 @@ if (publicUser)
     copyContacts(parentCapId, capId);
 }
 copyASIFields(parentCapId, capId);
-copyASITables(parentCapId, capId);
+//copyASITables(parentCapId, capId);

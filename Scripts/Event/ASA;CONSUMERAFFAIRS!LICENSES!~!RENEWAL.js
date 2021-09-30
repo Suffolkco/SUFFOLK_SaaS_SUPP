@@ -38,12 +38,12 @@ for (asi in AInfo)
     editAppSpecificLOCAL(asi, AInfo[asi], capId);
 }
 
-/*var tableCopy = 0;
+var tableCopy = 0;
 if (tableCopy == 0)
 {
-    copyASITables(parentCapId, capId);
+    copyAppSpecificTable (parentCapId, capId);
     tableCopy = tableCopy + 1;
-}*/
+}
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
@@ -94,4 +94,69 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     {
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
+}
+function copyAppSpecificTable(srcCapId, targetCapId)
+{
+	var tableNameArray = getTableName(srcCapId);
+	if (tableNameArray == null)
+	{
+		return;
+	}
+	for (loopk in tableNameArray)
+	{
+		var tableName = tableNameArray[loopk];
+		//1. Get appSpecificTableModel with source CAPID
+		var targetAppSpecificTable = getAppSpecificTable(srcCapId,tableName);
+		
+		//2. Edit AppSpecificTableInfos with target CAPID
+		var aSTableModel = null;
+		if(targetAppSpecificTable == null)
+		{
+			return;
+		}
+		else
+		{
+		    aSTableModel = targetAppSpecificTable.getAppSpecificTableModel();
+		}
+		aa.appSpecificTableScript.editAppSpecificTableInfos(aSTableModel,
+								targetCapId,
+								null);
+	}
+	
+}
+
+function getTableName(capId)
+{
+	var tableName = null;
+	var result = aa.appSpecificTableScript.getAppSpecificGroupTableNames(capId);
+	if(result.getSuccess())
+	{
+		tableName = result.getOutput();
+		if(tableName!=null)
+		{
+			return tableName;
+		}
+	}
+	return tableName;
+}
+
+function getAppSpecificTable(capId,tableName)
+{
+	appSpecificTable = null;
+	var s_result = aa.appSpecificTableScript.getAppSpecificTableModel(capId,tableName);
+	if(s_result.getSuccess())
+	{
+		appSpecificTable = s_result.getOutput();
+		if (appSpecificTable == null || appSpecificTable.length == 0)
+		{
+			aa.print("WARNING: no appSpecificTable on this CAP:" + capId);
+			appSpecificTable = null;
+		}
+	}
+	else
+	{
+		aa.print("ERROR: Failed to appSpecificTable: " + s_result.getErrorMessage());
+		appSpecificTable = null;	
+	}
+	return appSpecificTable;
 }
