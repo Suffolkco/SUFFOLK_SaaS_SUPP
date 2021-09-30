@@ -4,7 +4,7 @@
 //logDebug("Entering Renew ASA");
 
 var rowsToPay = 0;
-if (typeof (RESTRICTIONS) == "object")
+if (typeof (RESTRICTIONS) == "object") 
 {
     logDebug("RESTRICTIONS is an object")
     for (var rows = 0; rows < RESTRICTIONS.length; rows++)
