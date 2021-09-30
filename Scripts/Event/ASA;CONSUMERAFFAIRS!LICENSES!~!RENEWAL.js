@@ -38,12 +38,12 @@ for (asi in AInfo)
     editAppSpecificLOCAL(asi, AInfo[asi], capId);
 }
 
-var tableCopy = 0;
+/*var tableCopy = 0;
 if (tableCopy == 0)
 {
     copyASITables(parentCapId, capId);
     tableCopy = tableCopy + 1;
-}
+}*/
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {

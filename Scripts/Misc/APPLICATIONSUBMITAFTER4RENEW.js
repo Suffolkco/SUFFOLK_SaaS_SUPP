@@ -121,7 +121,7 @@ function copyKeyInfo(srcCapId, targetCapId)
 	//copy Address infomation
 	copyAddress(srcCapId, targetCapId);
 	//copy AST infomation
-	//copyAppSpecificTable(srcCapId, targetCapId);
+	copyAppSpecificTable(srcCapId, targetCapId);
 	//copy Parcel infomation
 	copyParcel(srcCapId, targetCapId);
 	//copy People infomation
