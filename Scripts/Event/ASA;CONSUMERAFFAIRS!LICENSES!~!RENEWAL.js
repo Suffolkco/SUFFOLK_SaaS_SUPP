@@ -41,7 +41,7 @@ for (asi in AInfo)
 var tableCopy = 0;
 if (tableCopy == 0)
 {
-    copyAppSpecificTable (parentCapId, capId);
+    copyASITables(parentCapId, capId)
     tableCopy = tableCopy + 1;
 }
 
