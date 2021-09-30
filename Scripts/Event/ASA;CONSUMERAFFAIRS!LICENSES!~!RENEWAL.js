@@ -11,7 +11,7 @@
 
 var conArray = getContactArray(capId);
 
-if (conArray.length < 1)
+if (conArray.length < 1) 
 {
     var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
     aa.cap.updateAccessByACA(capId, "Y");
