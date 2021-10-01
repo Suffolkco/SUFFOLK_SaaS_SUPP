@@ -322,7 +322,7 @@ function mainProcess()
 		logDebugLocal("Total MOSF Regulated Site Update Count: " + regulatedSiteCnt);		
 		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
 		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt);
-		ogDebugLocal("Total Petro Historical Storage Count: " + petroHistoricalStorageCnt);
+		logDebugLocal("Total Petro Historical Storage Count: " + petroHistoricalStorageCnt);
 		logDebugLocal("Total Petro New Storage Count: " + petroNewStorageCnt);
 		logDebugLocal("Total Petro Utility Count: " + petroUtilityCnt);
 		logDebugLocal("Total Petro Airline Count: " + petroAirlineCnt);
