@@ -24,8 +24,9 @@ if (typeof (RESTRICTIONS) == "object")
     }
     logDebug("Number of Billable Rows in Table is: " + rowsToPay);
     var feesToAssess = rowsToPay - 1;
-    if (feesToAssess != 0 && !publicUser)
+    if (feesToAssess > 0 && !publicUser)
     {
-        updateFee("SLS_22", "CA_SALES", "FINAL", feesToAssess, "Y");
+        removeAllFees(capId);
+        addFee("SLS_22", "CA_SALES", "FINAL", feesToAssess, "Y");
     }
 }

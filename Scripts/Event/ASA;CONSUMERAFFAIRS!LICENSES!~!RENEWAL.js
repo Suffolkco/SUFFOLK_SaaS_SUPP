@@ -48,7 +48,7 @@ if (conArray.length < 1)
         copyASITables(parentCapId, capId);
         tableCopy = tableCopy + 1;
     }
-    copyAddresses(parentCapId, capId);
+    //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
 }
