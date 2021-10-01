@@ -317,7 +317,7 @@ function mainProcess()
 			}
 		}
 		logDebugLocal("File Reference Number Empty Count: " + refNumCnt);
-		logDebugLocal("Total foilable Count updates: " + siteCnt);
+		logDebugLocal("Total FOILABLE site set to NO Count: " + siteCnt);
 		logDebugLocal("Total MOSF Regulated Site Update Count: " + regulatedSiteCnt);		
 		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
 		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt);
