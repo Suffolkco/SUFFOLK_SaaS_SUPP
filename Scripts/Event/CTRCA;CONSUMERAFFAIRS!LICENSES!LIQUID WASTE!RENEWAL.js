@@ -2,7 +2,8 @@
 
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
-
+if(!publicuser)
+{
 removeAllFees(capId); //If user updates table after assessment 
 if (typeof (RESTRICTIONS) == "object") {
     var rowsToPay = 0;
@@ -23,4 +24,5 @@ if (typeof (RESTRICTIONS) == "object") {
     if (rowsToPay) {
         addFee("SLS_22", "CA_SALES", "FINAL", rowsToPay, "Y");
     }
+}
 }
