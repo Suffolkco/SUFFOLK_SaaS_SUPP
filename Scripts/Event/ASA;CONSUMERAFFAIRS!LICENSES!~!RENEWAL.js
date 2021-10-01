@@ -15,7 +15,7 @@ if (conArray.length < 1)
 {
     var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
     aa.cap.updateAccessByACA(capId, "Y");
-    if (publicUser)
+    /*if (publicUser)
     {
         //copying the contacts from the parent to the renewal record when beginning the renewal for ACA records only
         var capContacts = aa.people.getCapContactByCapID(parentCapId);
@@ -29,8 +29,9 @@ if (conArray.length < 1)
             }
         }
 
-        copyContacts(parentCapId, capId);
-    }
+        
+    }*/
+    copyContacts(parentCapId, capId);
 
     AInfo = new Array();
     loadAppSpecific(AInfo, parentCapId);
