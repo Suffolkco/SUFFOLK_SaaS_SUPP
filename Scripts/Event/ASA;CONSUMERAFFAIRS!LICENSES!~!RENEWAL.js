@@ -3,58 +3,55 @@
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
 
-aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
-aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
+//aa.runScriptInNewTransaction("APPLICATIONSUBMITAFTER4RENEW");
+//aa.runScript("APPLICATIONSUBMITAFTER4RENEW");
 
 
-var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
 
-aa.cap.updateAccessByACA(capId, "Y");
-if (publicUser)
+
+var conArray = getContactArray(capId);
+
+if (conArray.length < 1) 
 {
-    //copying the contacts from the parent to the renewal record when beginning the renewal for ACA records only
-    var capContacts = aa.people.getCapContactByCapID(parentCapId);
-    if (capContacts.getSuccess())
+    var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
+    aa.cap.updateAccessByACA(capId, "Y");
+    /*if (publicUser)
     {
-        capContacts = capContacts.getOutput();
-        logDebug("capContacts: " + capContacts);
-        for (var yy in capContacts)
+        //copying the contacts from the parent to the renewal record when beginning the renewal for ACA records only
+        var capContacts = aa.people.getCapContactByCapID(parentCapId);
+        if (capContacts.getSuccess())
         {
-            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+            capContacts = capContacts.getOutput();
+            logDebug("capContacts: " + capContacts);
+            for (var yy in capContacts)
+            {
+                aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+            }
         }
-    }
 
         
-}
+    }*/
+    copyContacts(parentCapId, capId);
 
-
-
-copyContacts(parentCapId, capId); 
-
-AInfo = new Array();
-loadAppSpecific(AInfo, parentCapId);
-for (asi in AInfo)
-{
-    //Check list
-    logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
-    editAppSpecificLOCAL(asi, AInfo[asi], capId);
-}
-
-copyASITables(parentCapId, capId);
-
- 
-
-/*var rowsInTable = 0;
-if (typeof (RESTRICTIONS) == "object")
-{
-    for (var rows = 0; rows < RESTRICTIONS.length; rows++)
+    AInfo = new Array();
+    loadAppSpecific(AInfo, parentCapId);
+    for (asi in AInfo)
     {
-        rowsInTable += 1;
+        //Check list
+        logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
+        editAppSpecificLOCAL(asi, AInfo[asi], capId);
     }
-}
-logDebug("Number of Rows in Table is: " + rowsInTable);
-updateFee("CA_SALES", "SLS_22", "FINAL", 1, "Y");*/ 
 
+    var tableCopy = 0;
+    if (tableCopy == 0)
+    {
+        copyASITables(parentCapId, capId);
+        tableCopy = tableCopy + 1;
+    }
+    copyAddresses(parentCapId, capId);
+    copyParcels(parentCapId, capId);
+    copyParcelGisObjects();
+}
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
     var itemCap = capId;
