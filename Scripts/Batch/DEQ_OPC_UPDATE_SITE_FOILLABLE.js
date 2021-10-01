@@ -172,7 +172,6 @@ function mainProcess()
     {
         logDebugLocal("Batch script will run");  
 		var output = "Record ID\n";  		
-
 		var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
 		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
 		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
