@@ -26,6 +26,7 @@ if (typeof (RESTRICTIONS) == "object")
     var feesToAssess = rowsToPay - 1;
     if (feesToAssess != 0 && !publicUser)
     {
-        updateFee("SLS_22", "CA_SALES", "FINAL", feesToAssess, "Y");
+        removeAllFees(capId);
+        addFee("SLS_22", "CA_SALES", "FINAL", feesToAssess, "Y");
     }
 }
