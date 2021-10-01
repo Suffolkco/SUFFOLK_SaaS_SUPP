@@ -332,8 +332,7 @@ function mainProcess()
 		logDebugLocal("Total Fac Authority Count: " + petroAuthorityCnt);
 		logDebugLocal("Total Fac NYState Count: " + petroNyStateCnt);
 		
-		
-	
+			
 	
 	}
     catch (err) 
