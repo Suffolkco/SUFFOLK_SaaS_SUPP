@@ -181,7 +181,8 @@ function mainProcess()
 		var regulatedSiteCnt = 0;
 		var facTypeSiteCnt = 0;
 		var cbsSiteCnt = 0;
-		var petroStorageCnt = 0;
+		var petroHistoricalStorageCnt = 0;
+		var petroNewStorageCnt = 0;
 		var petroUtilityCnt = 0;
 		var petroAirlineCnt = 0;
 		var petroChemicalCnt = 0;
@@ -243,7 +244,14 @@ function mainProcess()
 						logDebugLocal("Storage Terminal");
 						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
-						petroStorageCnt++;
+						petroHistoricalStorageCnt++;
+					}
+					if (petro == "1-Storage Terminal //Petroleum Distributor")
+					{
+						logDebugLocal("Storage Terminal");
+						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
+						setFoilable = true;
+						petroNewStorageCnt++;
 					}
 					if (petro == "5-Utility")
 					{
@@ -311,10 +319,11 @@ function mainProcess()
 		}
 		logDebugLocal("File Reference Number Empty Count: " + refNumCnt);
 		logDebugLocal("Total foilable Count updates: " + siteCnt);
-		logDebugLocal("Total MOSF Update Count: " + regulatedSiteCnt);		
+		logDebugLocal("Total MOSF Regulated Site Update Count: " + regulatedSiteCnt);		
 		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
 		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt);
-		logDebugLocal("Total Petro Storage Count: " + petroStorageCnt);
+		ogDebugLocal("Total Petro Historical Storage Count: " + petroHistoricalStorageCnt);
+		logDebugLocal("Total Petro New Storage Count: " + petroNewStorageCnt);
 		logDebugLocal("Total Petro Utility Count: " + petroUtilityCnt);
 		logDebugLocal("Total Petro Airline Count: " + petroAirlineCnt);
 		logDebugLocal("Total Petro Chemical Count: " + petroChemicalCnt);
@@ -323,8 +332,7 @@ function mainProcess()
 		logDebugLocal("Total Fac Authority Count: " + petroAuthorityCnt);
 		logDebugLocal("Total Fac NYState Count: " + petroNyStateCnt);
 		
-		
-	
+			
 	
 	}
     catch (err) 
