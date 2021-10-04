@@ -10,14 +10,14 @@
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
-var showDebug = false;// Set to true to see debug messages in email confirmation
+var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
-var showMessage = false;
+var showMessage = true;
 var systemUserObj = aa.person.getUser("ADMIN").getOutput();
 var useAppSpecificGroupName = false;
 var timeExpired = false;
 var br = "<BR>";
-var emailAddress = "ryan.littlefield@scubeenterprise.com";//email to send report
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
@@ -76,6 +76,7 @@ if (paramsOK)
 /-----------------------------------------------------------------------------------------------------*/
 function mainProcess() 
 {
+	var count = 0;
     if (isOdd(startDate.getYear()))	
     {
         logDebug("We are in an odd year, batch script will run");
@@ -174,7 +175,9 @@ function mainProcess()
 													}
 													if (conEmail != null)
 													{
-														sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_90", emailParams, null);
+														//sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_90", emailParams, null);
+														count++;
+														logDebug("Record Number: " + capIDString + " contact sent.");
 													} 
 												}
 											}
@@ -185,7 +188,8 @@ function mainProcess()
 						}
 					}
 				}
-        	}                       
+        	}   
+			logDebug("Total of emails sent: " + count);                    
 		}
         catch (err) 
         {
