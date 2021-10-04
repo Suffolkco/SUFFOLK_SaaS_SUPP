@@ -160,7 +160,7 @@ function mainProcess()
 												{
 													//logDebug("We are checking if " + curExpCon + " is equal to " + "12/31" + "/" + startDate.getFullYear())
 													//b1Exp.setExpStatus("About to Expire");
-													aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+													//aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
 													logDebug("<b>" + capIDString + "</b>" + " renewal info has been set to About to Expire");
 													var emailParams = aa.util.newHashtable();
 													var conArray = getContactArray();

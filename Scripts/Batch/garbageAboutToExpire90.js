@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: garbageAboutToExpire60.js  Trigger: Batch
+| Program: garbageAboutToExpire90.js  Trigger: Batch
 | Client: JCCAL
 | Version 1.0 Casey Gray 10/23/2018
 | This batch script will run 90 days before 12/31 every year.
