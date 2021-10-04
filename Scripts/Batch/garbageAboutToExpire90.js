@@ -2,7 +2,7 @@
 | Program: garbageAboutToExpire60.js  Trigger: Batch
 | Client: JCCAL
 | Version 1.0 Casey Gray 10/23/2018
-| This batch script will run on 12/31 every year.
+| This batch script will run 90 days before 12/31 every year.
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
 |
@@ -67,7 +67,7 @@ if (paramsOK)
 		mainProcess();
 		//logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
 		logDebug("End Date: " + startDate);
-		aa.sendMail("noreplyehims@suffolkcountyny.gov", emailAddress, "", "Batch Job - GarbageTruckExpiration", emailText);
+		aa.sendMail("noreplyehims@suffolkcountyny.gov", emailAddress, "", "Batch Job - garbageAboutToExpire90", emailText);
 	}
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -152,14 +152,14 @@ function mainProcess()
 										var curSt = b1Exp.getExpStatus();
 										if (curSt != null)
 										{
-											if (curSt == "About to Expire")
+											if (curSt == "Pending")
 											{ 
 												var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
 												aa.print(curExpCon);
 												if (curExpCon == "12/31" + "/" + startDate.getFullYear())
 												{
 													//logDebug("We are checking if " + curExpCon + " is equal to " + "12/31" + "/" + startDate.getFullYear())
-													//b1Exp.setExpStatus("About to Expire");
+													b1Exp.setExpStatus("About to Expire");
 													aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
 													logDebug("<b>" + capIDString + "</b>" + " renewal info has been set to About to Expire");
 													var emailParams = aa.util.newHashtable();
@@ -174,7 +174,7 @@ function mainProcess()
 													}
 													if (conEmail != null)
 													{
-														sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_60", emailParams, null);
+														sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_90", emailParams, null);
 													} 
 												}
 											}
