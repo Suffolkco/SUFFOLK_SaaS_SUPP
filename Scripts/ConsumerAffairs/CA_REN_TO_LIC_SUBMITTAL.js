@@ -40,7 +40,7 @@ if (publicUser)
                 addParameter(vEParams, '$$parentCapID$$', parentAltID)
 
 
-                sendNotification('', 'ryan.littlefield@scubeenterprise.com', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
+                sendNotification('', 'matthew.cereola@suffolkcountyny.gov', '', 'CA_RENEWAL_WITH_CONDITIONS_SUBMITTED', vEParams, null);
 
             }
         }
