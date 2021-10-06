@@ -1,4 +1,4 @@
-if (wfTask == "Issuance" && wfStatus == "Renewed")
+/*if (wfTask == "Issuance" && wfStatus == "Renewed")
 {
     var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();
@@ -108,4 +108,6 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     {
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
-} 
+} */
+
+include("CA_REN_TO_LIC_BY_WF");
