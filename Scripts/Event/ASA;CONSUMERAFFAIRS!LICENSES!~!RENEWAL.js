@@ -52,6 +52,8 @@ if (conArray.length < 1)
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
 }
+
+
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
     var itemCap = capId;
