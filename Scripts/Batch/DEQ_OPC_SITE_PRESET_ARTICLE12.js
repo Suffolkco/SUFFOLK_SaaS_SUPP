@@ -216,7 +216,7 @@ function mainProcess()
 		// SQL to pull active OPC site records that  HAS child Tank records
 		var vTankSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
         var vTankSQLResult = doSQLSelect_local(vTankSQL);
-      
+		var totalSiteMatchedOwnerType = 0;
 
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
 
@@ -245,6 +245,8 @@ function mainProcess()
 
 					if (ownerType != "2-State Government" && regulatedSite != "Yes")					
 					{				
+						totalSiteMatchedOwnerType++;
+
 						var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
 					
 						if (childArray)
@@ -275,14 +277,14 @@ function mainProcess()
 												{
 													//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 													// Quit for that site. No need to check additional tank child																									
-													logDebugLocal("Prod Stored matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+													//logDebugLocal("Prod Stored matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 													art12Total++;
 													break; // exit and go to next site
 												}
 												else if (prodStoredCat == "Heating Oils: On-Site Consumption" || prodStoredCat == "Emergency Generator Fuels" )
 												{
 													totalCapacity = totalCapacity + capacity;
-													logDebugLocal("Add capacity " + capacity + " due to Type of Stored Categorgy: " + prodStoredCat + ", " + capIDString + ", " + childCapId.getCustomID());
+													//logDebugLocal("Add capacity " + capacity + " due to Type of Stored Categorgy: " + prodStoredCat + ", " + capIDString + ", " + childCapId.getCustomID());
 												}
 												else
 												{
@@ -291,7 +293,7 @@ function mainProcess()
 													{
 														//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 														// Quit for that site. No need to check additional tank child																									
-														logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+														//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 														art12Total++;
 														break; // exit and go to next site														
 													}
@@ -318,7 +320,7 @@ function mainProcess()
 															{
 																//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 																// Quit for that site. No need to check additional tank child																									
-																logDebugLocal("Official Code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+																//logDebugLocal("Official Code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 																art12Total++; // exit and go to next site
 																break;				
 															}															
@@ -336,7 +338,7 @@ function mainProcess()
 								if (totalCapacity > 1100)
 								{
 									//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
-									logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
+									//logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
 									abovegroundGreaterThan1100++;									
 								}
 
@@ -348,7 +350,7 @@ function mainProcess()
 			}			
 		
 		}
-		
+		logDebugLocal("Batch # 2: Total SITE records that has owner type: " +totalSiteMatchedOwnerType);
 		logDebugLocal("Batch # 2: Total tank records that has to Artcle 12 to Yes: " + art12Total);
 		logDebugLocal("Batch # 2: Total tank records has to update Site Artcle 12 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
 		
