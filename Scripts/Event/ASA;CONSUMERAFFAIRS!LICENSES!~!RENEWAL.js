@@ -54,16 +54,16 @@ if (conArray.length < 1)
 
     if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
-        addFee("LIC_REN_01", "CA_LIC_REN", "Final", 1, "Y")
+        addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
     }
     if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
         var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
 
 
-        if (!dryCleanerExempt)
+        if (!dryCleanerExempt) 
         {
-            addFee("LIC_REN_01", "CA_LIC_REN", "Final", 1, "Y")
+            addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
         }
     }
 }
