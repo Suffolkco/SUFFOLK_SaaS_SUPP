@@ -49,7 +49,7 @@ if (conArray.length < 1)
         tableCopy = tableCopy + 1;
     }
     //copyAddresses(parentCapId, capId); 
-    copyParcels(parentCapId, capId);
+    copyParcels(parentCapId, capId); 
     copyParcelGisObjects();
 
     var dryCleanerExempt = checkForFee(parentCapID, "LIC_25")
