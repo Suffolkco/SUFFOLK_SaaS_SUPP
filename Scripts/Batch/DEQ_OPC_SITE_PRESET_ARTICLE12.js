@@ -233,8 +233,7 @@ function mainProcess()
 			//if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
 			//{
             cap = aa.cap.getCap(capId).getOutput();
-			logDebugLocal("capIDString : " + capIDString);
-
+		
             if (cap)
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
@@ -244,11 +243,7 @@ function mainProcess()
 					var ownerType = getAppSpecific("Owner Type", capId);   					
 					var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);   				
 
-					if (ownerType == "2-State Government" || regulatedSite == "Yes")
-					{
-						logDebugLocal("****Suppose to quit SITE here. Fields are: " + ownerType + "," + regulatedSite);
-					}
-					else
+					if (ownerType != "2-State Government" && regulatedSite != "Yes")					
 					{				
 						var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
 					
@@ -280,14 +275,14 @@ function mainProcess()
 												{
 													//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 													// Quit for that site. No need to check additional tank child																									
-													logDebugLocal("This is not Art 18, PBS, CBS Tank for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+													logDebugLocal("Prod Stored matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 													art12Total++;
-													break;
+													break; // exit and go to next site
 												}
 												else if (prodStoredCat == "Heating Oils: On-Site Consumption" || prodStoredCat == "Emergency Generator Fuels" )
 												{
 													totalCapacity = totalCapacity + capacity;
-													logDebugLocal("Calculating capacity. Add " + capacity + " due to Type of Stored Categorgy: " + prodStoredCat + ", " + capIDString + ", " + childCapId.getCustomID());
+													logDebugLocal("Add capacity " + capacity + " due to Type of Stored Categorgy: " + prodStoredCat + ", " + capIDString + ", " + childCapId.getCustomID());
 												}
 												else
 												{
@@ -296,9 +291,9 @@ function mainProcess()
 													{
 														//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 														// Quit for that site. No need to check additional tank child																									
-														logDebugLocal("Official code matched. This is not Art 18, PBS, CBS Tank for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+														logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 														art12Total++;
-														break;														
+														break; // exit and go to next site														
 													}
 													else if (length > 4)// now check for ####P or ####OOS nad ####UAP
 													{									
@@ -323,8 +318,8 @@ function mainProcess()
 															{
 																//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 																// Quit for that site. No need to check additional tank child																									
-																logDebugLocal("Official Code matched. This is not Art 18, PBS, CBS Tank for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
-																art12Total++;
+																logDebugLocal("Official Code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+																art12Total++; // exit and go to next site
 																break;				
 															}
 															
@@ -343,8 +338,7 @@ function mainProcess()
 								{
 									//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 									logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
-									abovegroundGreaterThan1100++;
-									art12Total++;
+									abovegroundGreaterThan1100++;									
 								}
 
 							}
