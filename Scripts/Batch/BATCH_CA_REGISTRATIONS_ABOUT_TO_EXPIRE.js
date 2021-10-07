@@ -237,6 +237,7 @@ function mainProcess()
                                     if (wfObj[i].getDisposition() != "Pending Renewal")
                                     {
                                         aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Pending Renewal", aa.date.getCurrentDate(), "Updated via BATCH_CA_REGISTRATIONS_ABOUT_TO_EXPIRE", "Updated via BATCH_CA_REGISTRATIONS_ABOUT_TO_EXPIRE", systemUserObj, "Y");
+                                        activateTask("Issuance") 
                                     }
                                 }
                             }
