@@ -241,11 +241,8 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
 					// SITE custom fields check
-					var ownerType = getAppSpecific("Owner Type", capId);   
-					logDebugLocal("ownerType: " + ownerType);
-					var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);   
-					logDebugLocal("MOSF Regulated Site: " + ownerType);
-
+					var ownerType = getAppSpecific("Owner Type", capId);   					
+					var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);   				
 
 					if (ownerType == "2-State Government" || regulatedSite == "Yes")
 					{
@@ -258,12 +255,11 @@ function mainProcess()
 						if (childArray)
 						{
 							if (childArray.length > 0)
-							{							
-								// childCapId = childArray[yy];																	
-								var childCapId  = childArray[xx].getCapID();
-								logDebugLocal("childCapId: " + childCapId);
+							{					
 								for (yy in childArray)
-								{																						
+								{
+									childCapId = childArray[yy];																								
+								
 									var offUseCode = getAppSpecific("Official Use Code", childCapId);
 									var art18Tank = getAppSpecific("Article 18 Reg", childCapId);
 									var pbsTank = getAppSpecific("PBS Tank", childCapId)
