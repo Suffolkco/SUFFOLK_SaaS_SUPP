@@ -219,6 +219,7 @@ function mainProcess()
       
 
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
+
 		for (r in vTankSQLResult)
         {		
 			var totalCapacity = 0;
@@ -232,6 +233,7 @@ function mainProcess()
 			//if (capIDString == "SITE-00-15154-OPC" || capIDString == "SITE-00-15787-OPC")
 			//{
             cap = aa.cap.getCap(capId).getOutput();
+			logDebugLocal("capIDString : " + capIDString);
 
             if (cap)
             {
@@ -240,15 +242,16 @@ function mainProcess()
                 {
 					// SITE custom fields check
 					var ownerType = getAppSpecific("Owner Type", capId);   
+					logDebugLocal("ownerType: " + ownerType);
 					var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);   
-					
+					logDebugLocal("MOSF Regulated Site: " + ownerType);
+
+
 					if (ownerType == "2-State Government" || regulatedSite == "Yes")
 					{
 						logDebugLocal("****Suppose to quit SITE here. Fields are: " + ownerType + "," + regulatedSite);
 					}
-
-					// Exit that site and move on to the next site
-					if (ownerType !="2-State Government" && regulatedSite != "Yes")
+					else
 					{				
 						var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
 					
