@@ -8,7 +8,11 @@
 
 
  
-
+var currentUserID = aa.env.getValue("CurrentUserID");
+if (currentUserID == "jgreene")
+{
+    showDebug = true;
+}
 var conArray = getContactArray(capId);
 
 if (conArray.length < 1) 
@@ -242,3 +246,4 @@ function voidRemoveFees(vFeeCode)
         } // each matching fee
     }  // each  fee
 }  // function
+
