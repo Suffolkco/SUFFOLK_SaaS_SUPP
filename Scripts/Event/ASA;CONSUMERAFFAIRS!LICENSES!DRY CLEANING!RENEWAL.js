@@ -54,9 +54,9 @@ if (conArray.length < 1)
 
     var dryCleanerExempt = checkForFee(parentCapID, "LIC_25")
 
-    if (dryCleanerExempt)
+    if (!dryCleanerExempt)
     {
-        voidRemoveFees("LIC_REN_01")
+        addfee("DC_REN_01", "CA_LIC_REN_DC", "FINAL", 1, "Y")
     }
 
 
