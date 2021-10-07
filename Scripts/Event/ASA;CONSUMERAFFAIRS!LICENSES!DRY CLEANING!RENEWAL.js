@@ -63,7 +63,7 @@ if (conArray.length < 1)
         addfee("DC_REN_01", "CA_LIC_REN_DC", "FINAL", 1, "Y")
     } 
 
-
+jakevariable = 12345
 }
 
 
