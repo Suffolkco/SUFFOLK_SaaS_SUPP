@@ -321,8 +321,7 @@ function mainProcess()
 																logDebugLocal("Official Code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 																art12Total++; // exit and go to next site
 																break;				
-															}
-															
+															}															
 														}
 														
 													}
