@@ -54,7 +54,7 @@ if (conArray.length < 1)
 
     var dryCleanerExempt = checkForFee(parentCapID, "LIC_25")
 
-    if (dryCleanerExempt.getSuccess())
+    if (dryCleanerExempt)
     {
         voidRemoveFees("LIC_REN_01")
     }
