@@ -207,7 +207,6 @@ function mainProcess()
 		}
 		logDebugLocal("Batch Scipt 1: Total Site-OPC records that has active child tank with Article 12 that need to update to NO: " + art12Cnt);
 		
-
 		/* GOAL # 2 **********************************************************************
 		Go through all the child records of OPC site records. Child record can only be DEQ/OPC/Hazardous Tank/Permit.
 		Also only look at tank records with the following: # = Number. 4 digital numbers.Official Use Code = ####P or 
