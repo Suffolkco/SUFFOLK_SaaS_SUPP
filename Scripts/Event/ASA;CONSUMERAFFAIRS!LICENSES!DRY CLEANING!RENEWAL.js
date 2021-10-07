@@ -57,7 +57,7 @@ if (conArray.length < 1)
     if (!dryCleanerExempt)
     {
         addfee("DC_REN_01", "CA_LIC_REN_DC", "FINAL", 1, "Y")
-    }
+    } 
 
 
 }
