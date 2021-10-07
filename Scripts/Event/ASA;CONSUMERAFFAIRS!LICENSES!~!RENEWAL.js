@@ -50,13 +50,13 @@ if (conArray.length < 1)
     }
     //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
-    copyParcelGisObjects();
+    copyParcelGisObjects(); 
 
     if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
         addFee("LIC_REN_01", "CA_LIC_REN", "Final", 1, "Y")
     }
-    if (appMatch("ConsumerAffairs/Licenses/Dry CLeaning/Renewal"))
+    if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
         var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
 
