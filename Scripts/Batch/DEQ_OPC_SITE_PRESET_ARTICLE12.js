@@ -241,6 +241,11 @@ function mainProcess()
 					// SITE custom fields check
 					var ownerType = getAppSpecific("Owner Type", capId);   
 					var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);   
+					
+					if (ownerType == "2-State Government" || regulatedSite == "Yes")
+					{
+						logDebugLocal("****Suppose to quit SITE here. Fields are: " + ownerType + "," + regulatedSite);
+					}
 
 					// Exit that site and move on to the next site
 					if (ownerType !="2-State Government" && regulatedSite != "Yes")
