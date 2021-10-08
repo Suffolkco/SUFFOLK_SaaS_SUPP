@@ -55,7 +55,7 @@ if (conArray.length < 1)
     
 }
 else
-{
+{ 
     removeAllFees(capId); //If user updates table after assessment 
     if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
