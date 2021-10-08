@@ -50,8 +50,13 @@ if (conArray.length < 1)
     }
     //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
-    copyParcelGisObjects(); 
+    copyParcelGisObjects();
 
+    
+}
+else
+{
+    removeAllFees(capId); //If user updates table after assessment 
     if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
         addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
@@ -69,53 +74,53 @@ if (conArray.length < 1)
 }
 
 
-function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
-{
-    var itemCap = capId;
-    var itemGroup = null;
-    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
-
-    if (useAppSpecificGroupName)
+    function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     {
-        if (itemName.indexOf(".") < 0)
-        { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
+        var itemCap = capId;
+        var itemGroup = null;
+        if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
 
-
-        itemGroup = itemName.substr(0, itemName.indexOf("."));
-        itemName = itemName.substr(itemName.indexOf(".") + 1);
-    }
-    // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
-    // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
-    // and replacing with the field name
-
-    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
-    if (asiFieldResult.getSuccess())
-    {
-        var asiFieldArray = asiFieldResult.getOutput();
-        if (asiFieldArray.length > 0)
+        if (useAppSpecificGroupName)
         {
-            var asiField = asiFieldArray[0];
-            if (asiField)
-            {
-                var origAsiValue = asiField.getChecklistComment();
-                asiField.setChecklistComment(itemValue);
+            if (itemName.indexOf(".") < 0)
+            { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
 
-                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
-                if (updateFieldResult.getSuccess())
+
+            itemGroup = itemName.substr(0, itemName.indexOf("."));
+            itemName = itemName.substr(itemName.indexOf(".") + 1);
+        }
+        // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
+        // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
+        // and replacing with the field name
+
+        var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+        if (asiFieldResult.getSuccess())
+        {
+            var asiFieldArray = asiFieldResult.getOutput();
+            if (asiFieldArray.length > 0)
+            {
+                var asiField = asiFieldArray[0];
+                if (asiField)
                 {
-                    logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
-                    if (arguments.length < 3) //If no capId passed update the ASI Array
-                        AInfo[itemName] = itemValue;
+                    var origAsiValue = asiField.getChecklistComment();
+                    asiField.setChecklistComment(itemValue);
+
+                    var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                    if (updateFieldResult.getSuccess())
+                    {
+                        logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
+                        if (arguments.length < 3) //If no capId passed update the ASI Array
+                            AInfo[itemName] = itemValue;
+                    }
+                    else
+                    { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
                 }
                 else
                 { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
             }
-            else
-            { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+        }
+        else
+        {
+            logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
         }
     }
-    else
-    {
-        logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
-    }
-}
