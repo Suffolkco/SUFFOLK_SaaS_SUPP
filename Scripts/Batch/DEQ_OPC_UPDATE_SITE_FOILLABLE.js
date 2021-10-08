@@ -172,23 +172,39 @@ function mainProcess()
     {
         logDebugLocal("Batch script will run");  
 		var output = "Record ID\n";  		
-		var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
+		// Only Active Site
+		//var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
+		var vOpcSiteSql = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED'";
+
 		var vOpcSite = doSQLSelect_local(vOpcSiteSql);
 		logDebugLocal("********OPC site records settings: " + vOpcSite.length + "*********\n");
 		var setFoilable = false;
 		var siteCnt = 0;
+		var siteSiteIds = "";
 		var regulatedSiteCnt = 0;
+		var regulatedSiteIds = "";
 		var facTypeSiteCnt = 0;
+		var facTypeSiteIds = "";
 		var cbsSiteCnt = 0;
+		var cbsSiteIds = "";
 		var petroHistoricalStorageCnt = 0;
+		var petroHistoricalSiteIds = "";
 		var petroNewStorageCnt = 0;
+		var petroNewSiteIds = "";
 		var petroUtilityCnt = 0;
+		var petroUtilitySiteIds = "";
 		var petroAirlineCnt = 0;
+		var petroAirlineSiteIds = "";
 		var petroChemicalCnt = 0;
+		var petroChemicalSiteIds = "";
 		var petroRefineryCnt = 0;
+		var petroRefinerySiteIds = "";
 		var petroRailroadCnt = 0;
+		var petroRailroadSiteIds = "";
 		var petroAuthorityCnt = 0;
+		var petroAuthoritySiteIds = "";
 		var petroNyStateCnt = 0;
+		var petroNyStateSiteIds = "";
 		var refNumCnt = 0;
 
 		for (r in vOpcSite)
@@ -215,14 +231,15 @@ function mainProcess()
 					}
 					setFoilable = false;
 					
-					logDebugLocal("Record ID: " + capIDString + "," + regulatedSite + "," + facilityType + "," + cbsRegSite
-					+ "," + petro);
+					//logDebugLocal("Record ID: " + capIDString + "," + regulatedSite + "," + facilityType + "," + cbsRegSite
+					//+ "," + petro);
 
 					if (regulatedSite == 'Yes')
 					{
 						logDebugLocal("regulatedSite Yes");
 						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
-						setFoilable = true;
+						setFoilable = true;						
+						regulatedSiteIds = regulatedSiteIds + "," + capIDString;
 						regulatedSiteCnt++;
 					}	
 					if (facilityType == "16-Major Oil Storage Facility (MOSF)")
@@ -230,12 +247,14 @@ function mainProcess()
 						logDebugLocal("MOSF");
 						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
 						setFoilable = true;
+						facTypeSiteIds  = facTypeSiteIds + "," + capIDString;
 						facTypeSiteCnt++;					
 					}					
 					if (cbsRegSite == 'Yes')
 					{
 						logDebugLocal("Chemical Bulk St");
-						//copyCustomField("Chemical Bulk Storage (CBS) Facilities", capId);	
+						//copyCustomField("Chemical Bulk Storage (CBS) Facilities", capId);							
+						cbsSiteIds = cbsSiteIds + "," + capIDString;
 						cbsSiteCnt++;										
 					}
 					if (petro == "1-Storage Terminal / /Petroleum Distributor")
@@ -243,6 +262,7 @@ function mainProcess()
 						logDebugLocal("Storage Terminal");
 						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
+						petroHistoricalSiteIds = petroHistoricalSiteIds + "," + capIDString;
 						petroHistoricalStorageCnt++;
 					}
 					if (petro == "1-Storage Terminal //Petroleum Distributor")
@@ -250,6 +270,7 @@ function mainProcess()
 						logDebugLocal("Storage Terminal");
 						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
+						petroNewSiteIds = petroNewSiteIds + "," + capIDString;
 						petroNewStorageCnt++;
 					}
 					if (petro == "5-Utility")
@@ -257,6 +278,7 @@ function mainProcess()
 						logDebugLocal("PBS - Utility");
 						//copyCustomField("PBS - Utility", capId);
 						setFoilable = true;
+						petroUtilitySiteIds = petroUtilitySiteIds + "," +capIDString;
 						petroUtilityCnt++;
 						
 					}
@@ -265,6 +287,7 @@ function mainProcess()
 						logDebugLocal("Airline");
 						//copyCustomField("PBS - Airport/Airline/Air Taxi", capId);
 						setFoilable = true;
+						petroAirlineSiteIds = petroAirlineSiteIds + "," + capIDString;
 						petroAirlineCnt++;						
 
 					}
@@ -273,6 +296,7 @@ function mainProcess()
 						logDebugLocal("Chemical Distribu");
 						//copyCustomField("PBS - Chemical Distributor", capId);
 						setFoilable = true;
+						petroChemicalSiteIds = petroChemicalSiteIds+ "," + capIDString;
 						petroChemicalCnt++;
 						
 					}
@@ -281,6 +305,7 @@ function mainProcess()
 						logDebugLocal("Refinery");
 						//copyCustomField("PBS - Refinery", capId);
 						setFoilable = true;
+						petroRefinerySiteIds = petroRefinerySiteIds + "," + capIDString;
 						petroRefineryCnt++;
 						
 					}
@@ -289,6 +314,7 @@ function mainProcess()
 						logDebugLocal("Railroad");
 						//copyCustomField("PBS - Railroad", capId);
 						setFoilable = true;
+						petroRailroadSiteIds = petroRailroadSiteIds + "," + capIDString;
 						petroRailroadCnt++;						
 					}
 					if (facilityType == "1-Authority")
@@ -296,6 +322,7 @@ function mainProcess()
 						logDebugLocal("Authority");
 						//copyCustomField("Authority", capId);
 						setFoilable = true;
+						petroAuthoritySiteIds = petroAuthoritySiteIds + "," + capIDString;
 						petroAuthorityCnt++;
 						
 					}
@@ -304,12 +331,15 @@ function mainProcess()
 						logDebugLocal("NY State Governm");
 						//copyCustomField("NY State Government", capId);
 						setFoilable = true;
+						petroNyStateSiteIds = petroNyStateSiteIds + "," + capIDString;
 						petroNyStateCnt++;	
 					}
 
 					if (setFoilable == true)
 					{
 						//editAppSpecific("FOILABLE SITE", "No", capId);
+						
+						siteSiteIds = siteSiteIds + "," + capIDString;
 						siteCnt++;
 					}
 					
@@ -317,19 +347,19 @@ function mainProcess()
 			}
 		}
 		logDebugLocal("File Reference Number Empty Count: " + refNumCnt);
-		logDebugLocal("Total FOILABLE site set to NO Count: " + siteCnt);
-		logDebugLocal("Total MOSF Regulated Site Update Count: " + regulatedSiteCnt);		
-		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt);
-		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt);
-		logDebugLocal("Total Petro Historical Storage Count: " + petroHistoricalStorageCnt);
-		logDebugLocal("Total Petro New Storage Count: " + petroNewStorageCnt);
-		logDebugLocal("Total Petro Utility Count: " + petroUtilityCnt);
-		logDebugLocal("Total Petro Airline Count: " + petroAirlineCnt);
-		logDebugLocal("Total Petro Chemical Count: " + petroChemicalCnt);
-		logDebugLocal("Total Petro Refinery Count: " + petroRefineryCnt);
-		logDebugLocal("Total Petro Railroad Count: " + petroRailroadCnt);
-		logDebugLocal("Total Fac Authority Count: " + petroAuthorityCnt);
-		logDebugLocal("Total Fac NYState Count: " + petroNyStateCnt);
+		logDebugLocal("Total FOILABLE site set to NO Count: " + siteCnt + "|" + siteSiteIds);
+		logDebugLocal("Total MOSF Regulated Site Update Count: " + regulatedSiteCnt + "|" + regulatedSiteIds);		
+		logDebugLocal("Total Facility Type Count: " + facTypeSiteCnt + "|" + facTypeSiteIds);
+		logDebugLocal("Total CBS Regulated Count: " + cbsSiteCnt + "|" + cbsSiteIds);
+		logDebugLocal("Total Petro Historical Storage Count: " + petroHistoricalStorageCnt + "|" + petroHistoricalSiteIds);
+		logDebugLocal("Total Petro New Storage Count: " + petroNewStorageCnt + "|" + petroNewSiteIds);
+		logDebugLocal("Total Petro Utility Count: " + petroUtilityCnt + "|" + petroUtilitySiteIds);
+		logDebugLocal("Total Petro Airline Count: " + petroAirlineCnt + "|" + petroAirlineSiteIds);
+		logDebugLocal("Total Petro Chemical Count: " + petroChemicalCnt + "|" + petroChemicalSiteIds);
+		logDebugLocal("Total Petro Refinery Count: " + petroRefineryCnt + "|" + petroRefinerySiteIds);
+		logDebugLocal("Total Petro Railroad Count: " + petroRailroadCnt + "|" + petroRailroadSiteIds);
+		logDebugLocal("Total Fac Authority Count: " + petroAuthorityCnt + "|" + petroAuthoritySiteIds);
+		logDebugLocal("Total Fac NYState Count: " + petroNyStateCnt + "|" + petroNyStateSiteIds);
 		
 			
 	
