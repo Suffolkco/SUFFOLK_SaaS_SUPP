@@ -26,3 +26,70 @@ if (!publicUser)
         }
     }
 }
+
+function checkForFee(pCapId, pFeeCode)
+
+    {
+    
+        logDebug("pCapId: " + pCapId.getCustomID());
+    
+        var checkStatus = false;
+    
+        var statusArray = ["NEW", "INVOICED"];
+    
+        var feeResult = aa.fee.getFeeItems(pCapId);
+    
+        var feeObjArr;
+    
+        var x = 0;
+    
+        if (feeResult.getSuccess())
+    
+        {
+    
+            feeObjArr = feeResult.getOutput();
+    
+        } else
+    
+        {
+    
+            logDebug("**ERROR: getting fee items: " + capContResult.getErrorMessage());
+    
+            return false
+    
+        }
+    
+        for (x in feeObjArr)
+    
+        {
+    
+            var vFee = feeObjArr[x];
+    
+            var y = 0;
+    
+            logDebug("feeObjArr[x].getFeeCod(): " + feeObjArr[x].getFeeCod());
+    
+            logDebug("feeObjArr[x].getF4FeeItemModel().feeNotes: " + feeObjArr[x].getF4FeeItemModel().feeNotes);
+    
+            logDebug("feeObjArr[x].getFeeitemStatus(): " + feeObjArr[x].getFeeitemStatus());
+    
+            if (pFeeCode == feeObjArr[x].getFeeCod() && exists(feeObjArr[x].getFeeitemStatus(), statusArray))
+    
+            {
+    
+                return true;
+    
+            }
+    
+            /*if (pFeeCode == feeObjArr[x].getFeeCod() && pFeeComment == feeObjArr[x].getF4FeeItemModel().feeNotes && exists(feeObjArr[x].getFeeitemStatus(), statusArray))
+    
+            {
+    
+                return true;
+    
+            }*/
+    
+        }
+    
+        return false;
+    }
