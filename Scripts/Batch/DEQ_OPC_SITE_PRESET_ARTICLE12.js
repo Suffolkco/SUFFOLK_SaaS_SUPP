@@ -216,14 +216,13 @@ function mainProcess()
 		// SQL to pull active OPC site records that  HAS child Tank records
 		var vTankSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
         var vTankSQLResult = doSQLSelect_local(vTankSQL);
-		var totalSiteMatchedOwnerType = 0;
+		var totalTanks = 0;
 
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
 
 		for (r in vTankSQLResult)
         {		
-			var totalCapacity = 0;
-			var isFourDigit = false;
+			var totalCapacity = 0;		
             recordID = vTankSQLResult[r]["recordNumber"];      
 			var abovegroundGreaterThan1100 = 0;
 			var art12Total = 0;
@@ -243,10 +242,12 @@ function mainProcess()
 					var ownerType = getAppSpecific("Owner Type", capId);   					
 					var regulatedSite = getAppSpecific("MOSF Regulated Site", capId);   				
 
-					if (ownerType != "2-State Government" && regulatedSite != "Yes")					
-					{				
+					if (ownerType == "2-State Government" || regulatedSite == "Yes")			
+					{
 						totalSiteMatchedOwnerType++;
-
+					}
+					else
+					{			
 						var childArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
 					
 						if (childArray)
@@ -263,14 +264,53 @@ function mainProcess()
 									var cbsTank = getAppSpecific("CBS Reg", childCapId)
 									var prodStoredCat = getAppSpecific("Product Stored", childCapId);
 									var capacity = getAppSpecific("Capacity", childCapId);
+									var match = false;
+									var isFourDigit = false;
 
-									if (offUseCode != null)	
+									if (art18Tank != "Yes" && pbsTank != "Yes" && cbsTank != "Yes")
 									{
-										if (offUseCode == 'UAP' ||offUseCode == 'EX' || offUseCode == 'EXP' || offUseCode == '81' || offUseCode == '82' || offUseCode == '85'
-										|| offUseCode == '66HO' || offUseCode == 'UR' || offUseCode == 'RNP')
-										{									
-											if (art18Tank != "Yes" && pbsTank != "Yes" && cbsTank != "Yes")
+										if (offUseCode != null)	
+										{
+											if (offUseCode == 'UAP' ||offUseCode == 'EX' || offUseCode == 'EXP' || offUseCode == '81' || offUseCode == '82' || offUseCode == '85'
+											|| offUseCode == '66HO' || offUseCode == 'RUR'|| offUseCode == 'RNP')
+											{			
+												match = true;	
+											}
+											else
 											{
+												var length = offUseCode.length();
+												if (length > 4)// now check for ####P or ####OOS nad ####UAP
+												{									
+													var leadingVal = offUseCode.substring(0,3)
+													var numeric = isNumeric(leadingVal);
+													if (numeric)
+													{																
+														if (length == 5) //####P
+														{															
+															isFourDigit = offUseCode.endsWith('P');
+															
+														}		
+														else if (length == 6) // ####HO
+														{
+															isFourDigit = offUseCode.endsWith('HO');												
+														}													
+														else if (length == 7) // ####UAP, ####OOS, ####TOS
+														{
+															if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
+															{																
+																isFourDigit = true;
+															}										 
+														}
+																											
+													}
+													
+												}
+											}
+
+											if (match || isFourDigit)
+											{
+												totalTanks++;					
+													
 												if (prodStoredCat == "Heating Oil: Resale/Redistribution" || 					
 												prodStoredCat == "Motor Fuels" ||
 												prodStoredCat == "Other Petroleum Products" || prodStoredCat == "Waste/Used/Other Oils") 				
@@ -286,52 +326,20 @@ function mainProcess()
 													totalCapacity = totalCapacity + capacity;
 													//logDebugLocal("Add capacity " + capacity + " due to Type of Stored Categorgy: " + prodStoredCat + ", " + capIDString + ", " + childCapId.getCustomID());
 												}
-												else
-												{
-													var length = offUseCode.length();
-													if (offUseCode == '82' || offUseCode == '85' || offUseCode == 'UR' || offUseCode == 'RNP')
-													{
-														//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
-														// Quit for that site. No need to check additional tank child																									
-														//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
-														art12Total++;
-														break; // exit and go to next site														
-													}
-													else if (length > 4)// now check for ####P or ####OOS nad ####UAP
-													{									
-														var leadingVal = offUseCode.substring(0,3)
-														var numeric = isNumeric(leadingVal);
-														if (numeric)
-														{																
-															if (length == 5) //####P
-															{
-																isFourDigit = offUseCode.endsWith('P');
-																
-															}															
-															else if (length == 7) // ####UAP, ####OOS, ####TOS
-															{
-																if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))		
-																{
-																	isFourDigit = true;
-																}										 
-															}
-															
-															if (isFourDigit)
-															{
-																//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
-																// Quit for that site. No need to check additional tank child																									
-																//logDebugLocal("Official Code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
-																art12Total++; // exit and go to next site
-																break;				
-															}															
-														}
-														
-													}
-												}
-												
-											}	
-										}									
-										 								
+												else 
+												{												
+													
+													//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
+													// Quit for that site. No need to check additional tank child																									
+													//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
+													art12Total++;
+													break; // exit and go to next site														
+													
+												}									
+																				
+											}
+										}
+									
 									}
 								}
 								// Check the capacity is > 1100
