@@ -51,15 +51,7 @@ if (conArray.length < 1)
     //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
-}
-
-else
-{ 
-    
-    
-  addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
-    
-}
+} 
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
