@@ -1,6 +1,6 @@
 //ASA:DEQ/OPC/HAZARDOUS TANK/APPLICATION
  
-var showDebug = false;
+var showDebug = true;
 
 var parentId = getParent();
 var tankInfo = loadASITable("TANK INFORMATION");

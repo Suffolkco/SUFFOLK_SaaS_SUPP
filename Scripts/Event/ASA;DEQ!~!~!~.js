@@ -1,6 +1,6 @@
 //ASA:DEQ/*/*/*/
 
-showDebug = false; 
+showDebug = true; 
 if(!publicUser)
 {
 //A comment is added
