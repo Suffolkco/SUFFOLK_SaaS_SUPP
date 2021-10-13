@@ -218,6 +218,8 @@ function mainProcess()
         var vTankSQLResult = doSQLSelect_local(vTankSQL);
 		var totalTanks = 0;
 		var totalSiteMatchedOwnerType = 0;
+		var abovegroundGreaterThan1100 = 0;
+		var art12Total = 0;
 		
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
 
@@ -225,8 +227,7 @@ function mainProcess()
         {		
 			var totalCapacity = 0;		
             recordID = vTankSQLResult[r]["recordNumber"];      
-			var abovegroundGreaterThan1100 = 0;
-			var art12Total = 0;
+
 
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
