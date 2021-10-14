@@ -379,8 +379,7 @@ function mainProcess()
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
 
 		for (r in vTankSQLResult)
-        {		
-			var totalCapacity = 0;		
+        {	
             recordID = vTankSQLResult[r]["recordNumber"];      
 
             capId = getApplication(recordID);
@@ -462,19 +461,46 @@ function mainProcess()
 												art12SiteTotal++;										
 											}
 											else
-											{												
-												if (match || isFourDigit)
-												{												
+											{	
+												if (offUseCode == 'UAP' || offUseCode == '81' ||offUseCode == '82' || offUseCode == '85' || offUseCode == 'UR')
+												{	
 													//editAppSpecific("Article 12 Regulated Site", "Yes", childCapId);												
-													art12TankYesTotal++;	
+													art12TankYesTotal++;										
+													
+												}	
+												else if (!match && isFourDigit)
+												{
+													var length = offUseCode.length();
+													var leadingVal = offUseCode.substring(0,3)
+													var numeric = isNumeric(leadingVal);
+													if (numeric)
+													{
+														if (length == 5 && offUseCode.endsWith('P')) //####P
+														{															
+																//editAppSpecific("Article 12 Regulated Site", "Yes", childCapId);												
+																art12TankYesTotal++;			
+														}
+														else if (length == 7) 
+														{
+															if (offUseCode.endsWith('UAP') || offUseCode.endsWith('OOS') || offUseCode.endsWith('TOS'))
+															{
+																//editAppSpecific("Article 12 Regulated Site", "Yes", childCapId);												
+																art12TankYesTotal++;	
+															}
+														}
+														else
+														{
+															//editAppSpecific("Article 12 Regulated Site", "No", childCapId);												
+															art12TankNoTotal++;			
+														}
+													}
 												}
 												else
 												{
 													//editAppSpecific("Article 12 Regulated Site", "No", childCapId);												
 													art12TankNoTotal++;							
-												}	
-											}
-										
+												}
+											}										
 										}
 										else
 										{
