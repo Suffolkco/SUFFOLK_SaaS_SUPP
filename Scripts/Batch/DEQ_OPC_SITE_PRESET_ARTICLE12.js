@@ -281,9 +281,7 @@ function mainProcess()
 										if (match || isFourDigit)
 										{
 											if (art18Tank != "Yes" && pbsTank != "Yes" && cbsTank != "Yes")
-											{
-												totalTanks++;					
-													
+											{												
 												if (prodStoredCat == "Heating Oil: Resale/Redistribution" || 					
 												prodStoredCat == "Motor Fuels" ||
 												prodStoredCat == "Other Petroleum Products" || prodStoredCat == "Waste/Used/Other Oils") 				
