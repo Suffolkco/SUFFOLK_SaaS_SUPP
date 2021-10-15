@@ -33,7 +33,7 @@ if (conArray.length < 1)
     }*/
     copyContacts(parentCapId, capId);
 
-    AInfo = new Array();
+    /*AInfo = new Array();
     loadAppSpecific(AInfo, parentCapId);
     for (asi in AInfo)
     {
@@ -47,7 +47,7 @@ if (conArray.length < 1)
     {
         copyASITables(parentCapId, capId);
         tableCopy = tableCopy + 1;
-    }
+    }*/
     //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();

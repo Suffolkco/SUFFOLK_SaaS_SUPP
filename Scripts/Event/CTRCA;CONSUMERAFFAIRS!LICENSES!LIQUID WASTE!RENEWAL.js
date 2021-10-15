@@ -3,6 +3,8 @@
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
 
+include("CA_REN_TO_LIC_SUBMITTAL");
+
 if (!publicUser)
 {
     if (typeof (RESTRICTIONS) == "object")

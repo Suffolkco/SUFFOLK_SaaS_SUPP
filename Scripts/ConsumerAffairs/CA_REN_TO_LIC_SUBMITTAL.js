@@ -24,7 +24,7 @@ if (publicUser)
         for (cc in capConds) 
         {
             logDebug("Condition name is: " + capConds[cc].getConditionDescription());
-            if (capConds[cc].getConditionDescription() == "Child Support" && capConds[cc].getConditionStatus() != "Met(Not Applied)") 
+            if (capConds[cc].getConditionStatus() != "Met(Not Applied)") 
             {
                 foundCondition = true;
                 var cDesc = capConds[cc].getConditionDescription();
