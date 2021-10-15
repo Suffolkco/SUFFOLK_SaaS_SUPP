@@ -268,7 +268,6 @@ function mainProcess()
 		logDebugLocal("Batch # 1: Number of REMUR Tank records that needs to update Status to Unregistered Closed-Removed: " + REMUROtherStatusUpdate);
 		logDebugLocal("Batch # 1: Number of UR Tank records that needs to update Status to 99-Other: " + URStatusUpdate);
 		logDebugLocal("Batch # 1: Number of UR Tank records that needs to update Status to Unregistered: " + UROtherStatusUpdate);
-
 	
 	}
     catch (err) 
