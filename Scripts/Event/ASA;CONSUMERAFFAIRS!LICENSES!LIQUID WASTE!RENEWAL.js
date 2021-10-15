@@ -33,7 +33,7 @@ if (conArray.length < 1)
     }*/
     copyContacts(parentCapId, capId);
 
-    AInfo = new Array();
+    /*AInfo = new Array();
     loadAppSpecific(AInfo, parentCapId);
     for (asi in AInfo)
     {
@@ -41,7 +41,7 @@ if (conArray.length < 1)
         logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
         editAppSpecificLOCAL(asi, AInfo[asi], capId);
     }
-
+*/
     var tableCopy = 0;
     if (tableCopy == 0)
     {
