@@ -204,10 +204,9 @@ function mainProcess()
 						if (childArray.length > 0)
 						{							
 							for (yy in childArray)
-							{
-								//var childCapId = childArray[yy];
-								var childCapId  = childArray[yy].getCapID();
-													
+							{							
+								childCapId = childArray[yy];																								
+								
 								var offUseCode = getAppSpecific("Official Use Code", childCapId);
 								if (offUseCode != null)
 								{			
