@@ -201,7 +201,7 @@ function mainProcess()
 						for (loopk in tableNameArray)
 						{
 							var tableName = tableNameArray[loopk];
-							logDebug("tableName: " + tableName);						
+							logDebugLocal("tableName: " + tableName);						
 						}
 					}
 					
