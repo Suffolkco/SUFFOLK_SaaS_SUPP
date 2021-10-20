@@ -193,14 +193,13 @@ function mainProcess()
                 {
 
 					var tableNameArray = getTableName(capId);
-					if (tableNameArray == null)
+					if (tableNameArray != null)
 					{
-						return;
-					}
-					for (loopk in tableNameArray)
-					{
-						var tableName = tableNameArray[loopk];
-						logDebug("tableName: " + tableName);						
+						for (loopk in tableNameArray)
+						{
+							var tableName = tableNameArray[loopk];
+							logDebug("tableName: " + tableName);						
+						}
 					}
 					
 					var historialTable = loadASITable("OPC HISTORICAL TANK TABLE");    
