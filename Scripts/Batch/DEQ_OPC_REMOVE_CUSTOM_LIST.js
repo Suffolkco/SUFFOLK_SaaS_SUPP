@@ -201,7 +201,13 @@ function mainProcess()
 						for (loopk in tableNameArray)
 						{
 							var tableName = tableNameArray[loopk];
-							logDebugLocal("tableName: " + tableName);						
+							logDebugLocal("tableName: " + tableName);	
+							
+							if (tableName == "OPC HISTORICAL TANK TABLE")
+							{
+								var anything = loadASITable(tableName);
+								logDebugLocal("anything" + anything);
+							}
 						}
 					}
 					
@@ -253,7 +259,7 @@ function loadASITable(tname)
 
 	  if (tsm.rowIndex.isEmpty())
 	  	{
-			aa.print("Couldn't load ASI Table " + tname + " it is empty");
+			logDebugLocal("Couldn't load ASI Table " + tname + " it is empty");
 			return false;
 		}
 
