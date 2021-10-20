@@ -196,8 +196,7 @@ function mainProcess()
 						logDebugLocal("OPC Historical Tank Table found:" + capIDString + ". Number of rows: " + historicalTable.length());  
 						count++; 				
 						//removeASITable("OPC HISTORICAL TANK TABLE");
-					}
-					
+					}					
 				
 				}
 
