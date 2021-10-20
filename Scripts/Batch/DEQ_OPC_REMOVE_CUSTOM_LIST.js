@@ -177,7 +177,8 @@ function mainProcess()
         
 		// SQL to pull active OPC site records that has NO child Tank records		
 		var vResult = doSQLSelect_local(vSQL);  	     
-		
+		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
+
 		for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
@@ -185,12 +186,25 @@ function mainProcess()
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
-            if (cap)
+            if (cap && capIDString == "SITE-03087-OPC")
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
+
+					var tableNameArray = getTableName(capId);
+					if (tableNameArray == null)
+					{
+						return;
+					}
+					for (loopk in tableNameArray)
+					{
+						var tableName = tableNameArray[loopk];
+						logDebug("tableName: " + tableName);						
+					}
+					
 					var historialTable = loadASITable("OPC HISTORICAL TANK TABLE");    
+					
 					if (historialTable)
 					{
 						logDebugLocal("OPC Historical Tank Table found:" + capIDString + ". Number of rows: " + historicalTable.length());  
@@ -318,6 +332,42 @@ function doSQLSelect_local(sql)
         //logdebug("ERROR: "+ err.message);
         return array
     }
+}
+
+function copyAppSpecificTable(srcCapId, targetCapId)
+{
+  var tableNameArray = getTableName(srcCapId);
+  if (tableNameArray == null)
+  {
+    return;
+  }
+  for (loopk in tableNameArray)
+  {
+    var tableName = tableNameArray[loopk];
+	logDebug("tableName: " + tableName);
+
+	// UIC Data Alias
+    if (matches(tableName,"CONTAMINANTS"))
+    {
+    	var targetAppSpecificTable = module(tableName,srcCapId);
+		addASITable(tableName, targetAppSpecificTable,targetCapId);
+	}
+  }
+}
+
+function getTableName(capId)
+{
+  var tableName = null;
+  var result = aa.appSpecificTableScript.getAppSpecificGroupTableNames(capId);
+  if(result.getSuccess())
+  {
+    tableName = result.getOutput();
+    if(tableName!=null)
+    {
+      return tableName;
+    }
+  }
+  return tableName;
 }
 
 function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
