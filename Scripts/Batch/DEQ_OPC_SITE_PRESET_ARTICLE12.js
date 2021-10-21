@@ -184,9 +184,13 @@ function mainProcess()
 		var vTankSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' AND B.B1_PER_TYPE = 'General' AND B.B1_PER_SUB_TYPE = 'Site' AND B.B1_PER_CATEGORY = 'NA' AND C.B1_CHECKBOX_DESC = 'OPC' AND C.B1_CHECKLIST_COMMENT = 'CHECKED' AND B.B1_ALT_ID IN ( SELECT B1.B1_ALT_ID     FROM B1PERMIT B1     JOIN XAPP2REF XAPP     ON B1.SERV_PROV_CODE = XAPP.SERV_PROV_CODE     AND B1.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE     AND B1.B1_PER_ID1 = XAPP.B1_MASTER_ID1     AND B1.B1_PER_ID2 = XAPP.B1_MASTER_ID2     AND B1.B1_PER_ID3 = XAPP.B1_MASTER_ID3          JOIN B1PERMIT B2     ON B2.SERV_PROV_CODE = XAPP.SERV_PROV_CODE  AND B2.SERV_PROV_CODE = XAPP.MASTER_SERV_PROV_CODE AND B2.B1_PER_ID1 = XAPP.B1_PER_ID1 AND B2.B1_PER_ID2 = XAPP.B1_PER_ID2 AND B2.B1_PER_ID3 = XAPP.B1_PER_ID3  WHERE B1.B1_APPL_STATUS = 'Active'     AND B1.SERV_PROV_CODE = 'SUFFOLKCO'         AND B1.B1_PER_GROUP = 'DEQ'     AND B1.B1_PER_TYPE = 'General' AND B1.B1_PER_SUB_TYPE = 'Site' AND B1.B1_PER_CATEGORY = 'NA' AND B2.B1_PER_GROUP = 'DEQ' AND B2.B1_PER_TYPE = 'OPC' AND B2.B1_PER_SUB_TYPE = 'Hazardous Tank' AND B2.B1_PER_CATEGORY = 'Permit')";       
         var vTankSQLResult = doSQLSelect_local(vTankSQL);		
 		var totalSiteMatchedOwnerType = 0;
+		var totalSiteMatchedOwnerTypeID = "";
 		var abovegroundGreaterThan1100 = 0;
+		var abovegroundGreaterThan1100ID = "";
 		var art12Total = 0;
+		var art12TotalID = "";
 		var art12SiteDefaultToNoCnt = 0;
+		var art12SiteDefaultToNoID = "";
 		logDebugLocal("********OPC site records that HAS child tank: " + vTankSQLResult.length + "*********\n");
 
 		for (r in vTankSQLResult)
@@ -210,6 +214,7 @@ function mainProcess()
 						//editAppSpecific("Article 12 Regulated Site", "No", capId);
 						logDebugLocal("Set Article 12 to No for " + capIDString + ". It had a value of " + art12);
 						art12SiteDefaultToNoCnt++;	
+						art12SiteDefaultToNoID = art12SiteDefaultToNoID + "," + art12SiteDefaultToNoID;
 					}
 
 					// SITE custom fields check
@@ -219,6 +224,7 @@ function mainProcess()
 					if (ownerType == "2-State Government" || regulatedSite == "Yes")			
 					{
 						totalSiteMatchedOwnerType++;
+						totalSiteMatchedOwnerTypeID = totalSiteMatchedOwnerTypeID + "," + totalSiteMatchedOwnerTypeID;
 					}
 					else
 					{			
@@ -290,6 +296,7 @@ function mainProcess()
 													// Quit for that site. No need to check additional tank child																									
 													//logDebugLocal("Prod Stored matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 													art12Total++;
+													art12TotalID = art12TotalID + "," + art12TotalID;
 													break; // exit and go to next site
 												}
 												else if (prodStoredCat == "Heating Oils: On-Site Consumption" || prodStoredCat == "Emergency Generator Fuels" )
@@ -303,6 +310,7 @@ function mainProcess()
 													// Quit for that site. No need to check additional tank child																									
 													//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 													art12Total++;
+													art12TotalID = art12TotalID + "," + art12TotalID;
 													break; // exit and go to next site														
 													
 												}	
@@ -319,6 +327,8 @@ function mainProcess()
 															// Quit for that site. No need to check additional tank child																									
 															//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 															art12Total++;
+															art12TotalID = art12TotalID + "," + art12TotalID;
+
 															break; // exit and go to next site			
 														}
 														else if (length == 7) 
@@ -329,6 +339,8 @@ function mainProcess()
 																// Quit for that site. No need to check additional tank child																									
 																//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 																art12Total++;
+																art12TotalID = art12TotalID + "," + art12TotalID;
+
 																break; // exit and go to next site		
 															}
 														}
@@ -345,7 +357,8 @@ function mainProcess()
 								{
 									//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 									//logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
-									abovegroundGreaterThan1100++;									
+									abovegroundGreaterThan1100++;	
+									abovegroundGreaterThan1100ID = abovegroundGreaterThan1100ID + "," + abovegroundGreaterThan1100ID;								
 								}
 
 							}
@@ -357,9 +370,17 @@ function mainProcess()
 		
 		}
 		logDebugLocal("Batch # 1: Total Site-OPC records that has active child tank with Article 12 that need to default to NO: " + art12SiteDefaultToNoCnt);
+		logDebugLocal("Batch # 1: These are the site records: " + art12SiteDefaultToNoID);
+		logDebugLocal("*****************************************************************");
 		logDebugLocal("Batch # 2: Total SITE records that has owner type: " +totalSiteMatchedOwnerType);
+		logDebugLocal("Batch # 2: These are the site records: " + totalSiteMatchedOwnerTypeID);
+		logDebugLocal("*****************************************************************");
 		logDebugLocal("Batch # 2: Total tank records that set the SITE Article 12 to Yes: " + art12Total);
-		logDebugLocal("Batch # 2: Total tank records has to update Site Article 12 to Yes with capacity > 1100: " + abovegroundGreaterThan1100);
+		logDebugLocal("Batch # 2: These are the site reocrds: " + art12TotalID);
+		logDebugLocal("*****************************************************************");
+		logDebugLocal("Batch # 2: Total sites has to update Article 12 to Yes since tanks have capacity > 1100: " + abovegroundGreaterThan1100);
+		logDebugLocal("Batch # 2: These are the site reocrds: " + abovegroundGreaterThan1100ID);
+		logDebugLocal("*****************************************************************");
 		
 		
 		/* GOAL # 3 **********************************************************************
