@@ -207,6 +207,18 @@ function mainProcess()
 							{
 								var anything = loadASITable(tableName);
 								logDebugLocal("anything" + anything);
+						
+								var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName, capId, currentUserID)
+								if (!tssmResult.getSuccess())
+								{ 
+									logDebugLocal("**WARNING: error removing ASI table " + tableName ); 
+									
+								}
+								else
+								{
+									logDebugLocal("Successfully removed all rows from ASI Table: " + tableName);
+								}
+
 							}
 						}
 					}
