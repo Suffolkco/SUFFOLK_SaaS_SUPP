@@ -27,7 +27,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         }
     }
 
-    if (expDateASI == null)
+    else
     {
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
         if (b1ExpResult.getSuccess())
