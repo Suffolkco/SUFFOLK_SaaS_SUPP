@@ -11,6 +11,8 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
     logDebug("New Exp Date is: " + newExpDate);
     editAppSpecific("Expiration Date", newExpDate, parentCapId);
+    var today = new Date();
+    var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear()+ 2);
     if (expDateASI != null)
     {
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
@@ -24,6 +26,23 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             updateTask("Issuance", "Renewed", "", "", "", parentCapId);
         }
     }
+
+    if (expDateASI == null)
+    {
+        var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
+        if (b1ExpResult.getSuccess())
+        {
+            var b1Exp = b1ExpResult.getOutput();
+            b1Exp.setExpStatus("Active");
+            b1Exp.setExpDate(aa.date.parseDate(nullExpDate));
+            aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+            updateAppStatus("Active", "", parentCapId);
+            updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
+            activateTask("Issuance");
+        } 
+    }
+
+
     var capContacts = aa.people.getCapContactByCapID(parentCapId);
     if (capContacts.getSuccess())
     {

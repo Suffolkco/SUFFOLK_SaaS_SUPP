@@ -54,8 +54,6 @@ if (publicUser)
         var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
         logDebug("New Exp Date is: " + newExpDate);
         editAppSpecificLOCAL("Expiration Date", newExpDate, capId);
-        var today = new Date();
-        var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear()+ 2);
         if (expDateASI != null)
         {
             var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
@@ -71,21 +69,7 @@ if (publicUser)
             }
         }
 
-        if (expDateASI == null)
-        {
-            var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
-            if (b1ExpResult.getSuccess())
-            {
-                var b1Exp = b1ExpResult.getOutput();
-                b1Exp.setExpStatus("Active");
-                b1Exp.setExpDate(aa.date.parseDate(nullExpDate));
-                aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                updateAppStatus("Active", "", parentCapId);
-                updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
-                activateTask("Issuance");
-            } 
-        }
-
+    
 
        /* if (isTaskActive("Issuance"))
         {
