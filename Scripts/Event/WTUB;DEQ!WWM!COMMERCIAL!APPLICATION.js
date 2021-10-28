@@ -11,10 +11,9 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
     var tableName = tableNameArray[0];
     logDebug("table name: " + tableName);
 
-    var systemDetails  = loadASITable(tableName);
-    logDebug("systemDetails: " + systemDetails);    
+    var systemDetails  = loadASITable("SYSTEM DETAILS");
 
-    if (systemDetails != null && systemDetails.length == 0)
+    if (!systemDetails)
     {
         cancel = true;
         showMessage = true;
