@@ -7,6 +7,9 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
 (wfTask == "Final Review" && wfStatus == "Approved"))
 {
     var systemDetails  = loadASITable("SYSTEM DETAILS");
+    logDebug("systemDetails: " + systemDetails);
+    logDebug("systemDetails.length: " + systemDetails.length);
+    
     if (systemDetails.length == 0)
     {
         cancel = true;
