@@ -6,10 +6,10 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
 (wfTask == "Inspections" && wfStatus == "Complete") ||
 (wfTask == "Final Review" && wfStatus == "Approved"))
 {
-    var systemDetails  = loadASITable("SYSTEM DETAILS");
+    var systemDetails  = loadASITable("SYSTEMDETAILS");
     logDebug("systemDetails: " + systemDetails);
     logDebug("systemDetails.length: " + systemDetails.length);
-    
+
     if (systemDetails.length == 0)
     {
         cancel = true;
