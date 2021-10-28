@@ -6,11 +6,6 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
 (wfTask == "Inspections" && wfStatus == "Complete") ||
 (wfTask == "Final Review" && wfStatus == "Approved"))
 {
-
-    var tableNameArray = getTableName(capId);
-    var tableName = tableNameArray[0];
-    logDebug("table name: " + tableName);
-
     var systemDetails  = loadASITable("SYSTEM DETAILS");
 
     if (!systemDetails)
@@ -20,6 +15,7 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
         comment("CUSTOM LIST REQUIRED.");
     }
 }
+
 
 if ((wfTask == "Application Review" && wfStatus == "Accepted") ||
 (wfTask == "Final Review" && wfStatus == "Create STP Monitoring Record"))

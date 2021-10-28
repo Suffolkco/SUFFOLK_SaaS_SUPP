@@ -9,11 +9,9 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
 (wfTask == "Inspections" && wfStatus == "Complete") ||
 (wfTask == "Final Review" && wfStatus == "Approved"))
 {
-    var systemDetails  = loadASITable("SYSTEMDETAILS");
-    logDebug("systemDetails: " + systemDetails);
-    logDebug("systemDetails.length: " + systemDetails.length);
+    var systemDetails  = loadASITable("SYSTEM DETAILS");
 
-    if (systemDetails.length == 0)
+    if (!systemDetails)
     {
         cancel = true;
         showMessage = true;
