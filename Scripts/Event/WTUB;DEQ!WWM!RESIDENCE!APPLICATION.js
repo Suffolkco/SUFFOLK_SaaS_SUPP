@@ -4,6 +4,19 @@ var altId = capId.getCustomID();
 showDebug = false;
 logDebug("Here's the result of altID to string: " + altId.toString());
 
+// EHIMS-4747
+if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
+(wfTask == "Inspections" && wfStatus == "Complete") ||
+(wfTask == "Final Review" && wfStatus == "Approved"))
+{
+    var systemDetails  = loadASITable("System Details");
+    if (systemDetails.length == 0)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("CUSTOM LIST REQUIRED.");
+    }
+}
 
 if ((wfTask == "Application Review" && wfStatus == "Accepted") || 
 (wfTask == "Final Review" && wfStatus == "Create STP Monitoring Record"))
