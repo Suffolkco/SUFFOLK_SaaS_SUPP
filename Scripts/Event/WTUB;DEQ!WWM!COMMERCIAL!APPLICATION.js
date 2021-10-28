@@ -8,7 +8,8 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
 {
 
     var tableNameArray = getTableName(capId);
-    logDebug("table name: " + tableNameArray);
+    var tableName = tableNameArray[0];
+    logDebug("table name: " + tableName);
 
     var systemDetails  = loadASITable(tableName);
     logDebug("systemDetails: " + systemDetails);    
