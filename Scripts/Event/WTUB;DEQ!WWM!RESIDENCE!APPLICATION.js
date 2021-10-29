@@ -7,15 +7,21 @@ logDebug("Here's the result of altID to string: " + altId.toString());
 // EHIMS-4747
 if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
 (wfTask == "Inspections" && wfStatus == "Complete") ||
-(wfTask == "Final Review" && wfStatus == "Approved"))
+(wfTask == "Final Review" && wfStatus == "Approved") ||
+(wfTask == "Inspections" && wfStatus == "Partial Final Approval"))
 {
-    var systemDetails  = loadASITable("SYSTEM DETAILS");
+    var methSew = AInfo["Method of Sewage Disposal"];
 
-    if (!systemDetails)
+    if (methSew.equals("Conventional Septic System") || methSew.equals("I/A System"))
     {
-        cancel = true;
-        showMessage = true;
-        comment("CUSTOM LIST REQUIRED.");
+        var systemDetails  = loadASITable("SYSTEM DETAILS");
+
+        if (!systemDetails)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("CUSTOM LIST REQUIRED.");
+        }
     }
 }
 
