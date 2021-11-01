@@ -118,7 +118,7 @@ showMessage = true;			// Set to true to see debug messages in email confirmation
 currentUserID = aa.env.getValue("CurrentUserID");
 
 var emailText = "";
-var maxSeconds = 4.9 * 60;		// number of seconds allowed for batch processing, usually < 5*60
+var maxSeconds = 10 * 60;		// number of seconds allowed for batch processing, usually < 5*60
 var timeExpired = false;
 var sysDate = aa.date.getCurrentDate();
 var currDate = new Date();
@@ -297,6 +297,9 @@ function mainProcess()
 			if (altId == 'ME-3815')
 			{
 			var b1Status = b1Exp.getCapStatus();
+
+			logDebug(altId + " status is: " + b1Status);
+			logDebug(processAppStatusArray + " are the app status array.");
 			// Filter by CAP Status
 			if (!exists(b1Status,processAppStatusArray))
 			{
@@ -348,7 +351,12 @@ function mainProcess()
 			aa.sendEmail(emailSender, conEmail, "", emailSubject , emailContent , null);			
 			//logDebug("email sent to " + conEmail + "\n" + emailSubject + "\n" + emailContent);				
 			capCount++;
-		}
+
+			// For testing ME-3815
+			break;
+
+			}
+			
 		}
 		logDebug("-------------------------------------------------------------------------------");			
 	}
