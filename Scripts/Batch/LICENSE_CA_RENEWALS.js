@@ -307,14 +307,15 @@ function mainProcess()
 			
 			capId = aa.cap.getCapID(b1Exp.getCapID().getID1(),b1Exp.getCapID().getID2(),b1Exp.getCapID().getID3()).getOutput();
 			altId = capId.getCustomID();
-			
-			
+			// As a test
+			if (altId == 'ME-3815')
+			{
 			var b1Status = b1Exp.getCapStatus();
 			// Filter by CAP Status
 			if (!exists(b1Status,processAppStatusArray))
 			{
 				capFilterStatus++;
-				//logDebug(altId + ": skipping due to application status of " + capStatus);
+				logDebug(altId + ": skipping due to application status of " + capStatus);
 				continue;
 			}						
 			
@@ -325,22 +326,22 @@ function mainProcess()
 			if (expDateTemp === '' || expDateTemp === null || typeof(expDateTemp) === 'undefined')
 			{
 				capFilterExpNull++;
-				//logDebug(altId + ": skipping due to expiration date null or empty.");
+				logDebug(altId + ": skipping due to expiration date null or empty.");
 				continue;
 			}			
 			
 			//Validate the expiration date 30 dyas before expiring
 			var difDays = daysBetween(expDateTemp,fromDate)
 			
-			//logDebug(altId + ": expDateTemp " + expDateTemp);
-			//logDebug(altId + ": fromDate " + fromDate);
-			//logDebug(altId + ": difDays " + difDays);
+			logDebug(altId + ": expDateTemp " + expDateTemp);
+			logDebug(altId + ": fromDate " + fromDate);
+			logDebug(altId + ": difDays " + difDays);
 			
 			
 			if (difDays != 0)
 			{
 				capFilterExpDays++;
-				//logDebug(altId + ": skipping due to expiration date not meet (" + lookAheadDays + " days rule).");
+				logDebug(altId + ": skipping due to expiration date not meet (" + lookAheadDays + " days rule).");
 				continue;				
 			}
 
@@ -361,6 +362,7 @@ function mainProcess()
 			aa.sendEmail(emailSender, conEmail, "", emailSubject , emailContent , null);			
 			//logDebug("email sent to " + conEmail + "\n" + emailSubject + "\n" + emailContent);				
 			capCount++;
+		}
 		}
 		logDebug("-------------------------------------------------------------------------------");			
 	}
