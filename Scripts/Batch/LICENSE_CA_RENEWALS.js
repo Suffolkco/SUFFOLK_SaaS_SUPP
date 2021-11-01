@@ -1,17 +1,3 @@
-aa.env.setValue("BatchJobName","LICENSE_CA_RENEWALS")
-aa.env.setValue("appGroup","ConsumerAffairs")
-aa.env.setValue("appTypeType","ID Cards,Licenses,Registrations")
-aa.env.setValue("appSubtype","*")
-aa.env.setValue("appCategory","*")
-aa.env.setValue("fromDate","")
-aa.env.setValue("toDate","")
-aa.env.setValue("lookAheadDays",-30)
-aa.env.setValue("daySpan",0)
-aa.env.setValue("newApplicationStatus","Pending Renewal")	//Main record
-aa.env.setValue("processAppStatus","License Active,Active,Pending Issuance")
-aa.env.setValue("emailSender","Matthew Cereola <matthew.cereola@suffolkcountyny.gov>") //noreply@suffolkcountyny.gov
-aa.env.setValue("emailAddress","Matthew Cereola <matthew.cereola@suffolkcountyny.gov>")
-
 /*
 --Renewal = LICENSE_CA_RENEWALS
 Insert into BATCH_JOB_PARAMETER (SERV_PROV_CODE,BATCH_JOB_NAME,R1_PARAMETER_NAME,R1_PARAMETER_DESC,R1_PARAMETER_VALUE,R1_PARAMETER_VALUE_TYPE,R1_REQUIRE_FLAG,R1_DISPLAY_ORDER,REC_DATE,REC_FUL_NAM,REC_STATUS) values ('SUFFOLKCO','LICENSE_CA_RENEWALS','BatchJobName',null,'LICENSE_CA_RENEWALS','Text','Y',10,to_timestamp('25-SEP-18','DD-MON-RR HH.MI.SSXFF AM'),'ADMIN','A');
