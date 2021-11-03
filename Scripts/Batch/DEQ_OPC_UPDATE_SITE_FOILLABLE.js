@@ -236,7 +236,7 @@ function mainProcess()
 					if (regulatedSite == 'Yes')
 					{
 						logDebugLocal("regulatedSite Yes");
-						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
+						copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
 						setFoilable = true;						
 						regulatedSiteIds = regulatedSiteIds + "," + capIDString;
 						regulatedSiteCnt++;
@@ -244,7 +244,7 @@ function mainProcess()
 					if (facilityType == "16-Major Oil Storage Facility (MOSF)")
 					{
 						logDebugLocal("MOSF");
-						//copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
+						copyCustomField("Major Oil Storage Facilities (MOSF)", capId);
 						setFoilable = true;
 						facTypeSiteIds  = facTypeSiteIds + "," + capIDString;
 						facTypeSiteCnt++;					
@@ -252,14 +252,14 @@ function mainProcess()
 					if (cbsRegSite == 'Yes')
 					{
 						logDebugLocal("Chemical Bulk St");
-						//copyCustomField("Chemical Bulk Storage (CBS) Facilities", capId);							
+						copyCustomField("Chemical Bulk Storage (CBS) Facilities", capId);							
 						cbsSiteIds = cbsSiteIds + "," + capIDString;
 						cbsSiteCnt++;										
 					}
 					if (petro == "1-Storage Terminal / /Petroleum Distributor")
 					{
 						logDebugLocal("Storage Terminal");
-						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
+						copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
 						petroHistoricalSiteIds = petroHistoricalSiteIds + "," + capIDString;
 						petroHistoricalStorageCnt++;
@@ -267,7 +267,7 @@ function mainProcess()
 					if (petro == "1-Storage Terminal //Petroleum Distributor")
 					{
 						logDebugLocal("Storage Terminal");
-						//copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
+						copyCustomField("PBS - Storage Terminal/Petroleum Distributor", capId);
 						setFoilable = true;
 						petroNewSiteIds = petroNewSiteIds + "," + capIDString;
 						petroNewStorageCnt++;
@@ -275,7 +275,7 @@ function mainProcess()
 					if (petro == "5-Utility")
 					{
 						logDebugLocal("PBS - Utility");
-						//copyCustomField("PBS - Utility", capId);
+						copyCustomField("PBS - Utility", capId);
 						setFoilable = true;
 						petroUtilitySiteIds = petroUtilitySiteIds + "," +capIDString;
 						petroUtilityCnt++;
@@ -284,7 +284,7 @@ function mainProcess()
 					if (petro == "11-Airline/Air Taxi/Airport")
 					{
 						logDebugLocal("Airline");
-						//copyCustomField("PBS - Airport/Airline/Air Taxi", capId);
+						copyCustomField("PBS - Airport/Airline/Air Taxi", capId);
 						setFoilable = true;
 						petroAirlineSiteIds = petroAirlineSiteIds + "," + capIDString;
 						petroAirlineCnt++;						
@@ -293,7 +293,7 @@ function mainProcess()
 					if (petro == "12-Chemical Distributor")
 					{
 						logDebugLocal("Chemical Distribu");
-						//copyCustomField("PBS - Chemical Distributor", capId);
+						copyCustomField("PBS - Chemical Distributor", capId);
 						setFoilable = true;
 						petroChemicalSiteIds = petroChemicalSiteIds+ "," + capIDString;
 						petroChemicalCnt++;
@@ -302,7 +302,7 @@ function mainProcess()
 					if (petro == "Refinery")
 					{
 						logDebugLocal("Refinery");
-						//copyCustomField("PBS - Refinery", capId);
+						copyCustomField("PBS - Refinery", capId);
 						setFoilable = true;
 						petroRefinerySiteIds = petroRefinerySiteIds + "," + capIDString;
 						petroRefineryCnt++;
@@ -311,7 +311,7 @@ function mainProcess()
 					if (petro == "15-Railroad")
 					{
 						logDebugLocal("Railroad");
-						//copyCustomField("PBS - Railroad", capId);
+						copyCustomField("PBS - Railroad", capId);
 						setFoilable = true;
 						petroRailroadSiteIds = petroRailroadSiteIds + "," + capIDString;
 						petroRailroadCnt++;						
@@ -319,7 +319,7 @@ function mainProcess()
 					if (facilityType == "1-Authority")
 					{
 						logDebugLocal("Authority");
-						//copyCustomField("Authority", capId);
+						copyCustomField("Authority", capId);
 						setFoilable = true;
 						petroAuthoritySiteIds = petroAuthoritySiteIds + "," + capIDString;
 						petroAuthorityCnt++;
@@ -328,7 +328,7 @@ function mainProcess()
 					if (facilityType == "17-NY State Government")
 					{
 						logDebugLocal("NY State Governm");
-						//copyCustomField("NY State Government", capId);
+						copyCustomField("NY State Government", capId);
 						setFoilable = true;
 						petroNyStateSiteIds = petroNyStateSiteIds + "," + capIDString;
 						petroNyStateCnt++;	
@@ -336,8 +336,7 @@ function mainProcess()
 
 					if (setFoilable == true)
 					{
-						//editAppSpecific("FOILABLE SITE", "No", capId);
-						
+						editAppSpecific("FOILABLE SITE", "No", capId);						
 						siteSiteIds = siteSiteIds + "," + capIDString;
 						siteCnt++;
 					}
