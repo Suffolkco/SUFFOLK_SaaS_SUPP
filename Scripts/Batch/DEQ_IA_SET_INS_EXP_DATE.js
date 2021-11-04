@@ -177,7 +177,7 @@ function mainProcess()
 		
 		// select LIC_NBR, LIC_TYPE, INS_EXP_DT from RSTATE_LIC where LIC_TYPE in ('IA Installer', 'IA Service Provider') AND INS_EXP_DT is NOT null
 
-		var vSQL = "SELECT R.LIC_NBR as recordNumber, R.LIC_TYPE as rlpType, R.INS_EXP_DT as insExpDate from RSTATE_LIC R where R.LIC_TYPE in ('IA Installer', 'IA Service Provider') AND R.INS_EXP_DT is NOT null";
+		var vSQL = "SELECT R.LIC_NBR as recordNumber, R.LIC_TYPE as rlpType, R.INS_EXP_DT as insExpDate from RSTATE_LIC R where R.LIC_TYPE in ('IA Installer', 'IA Service Provider') AND R.INS_EXP_DT is not null";
                
 		// SQL to pull active OPC site records that has NO child Tank records		
 		var vResult = doSQLSelect_local(vSQL);  	     
@@ -332,7 +332,7 @@ function doSQLSelect_local(sql)
 {
     try
     {
-        //logdebug("iNSIDE FUNCTION");
+        logDebugLocal("iNSIDE FUNCTION");
         var array = [];
         var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
         var ds = initialContext.lookup("java:/SUFFOLKCO");
@@ -340,7 +340,7 @@ function doSQLSelect_local(sql)
         var sStmt = conn.prepareStatement(sql);
         if (sql.toUpperCase().indexOf("SELECT") == 0)
         {
-            //logdebug("executing " + sql);
+            logDebugLocal("executing " + sql);
             var rSet = sStmt.executeQuery();
             while (rSet.next())
             {
@@ -350,21 +350,21 @@ function doSQLSelect_local(sql)
                 for (i = 1; i <= columns; i++)
                 {
                     obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
-                    //logdebug(rSet.getString(md.getColumnName(i)));
+                    logDebugLocal(rSet.getString(md.getColumnName(i)));
                 }
                 obj.count = rSet.getRow();
                 array.push(obj)
             }
             rSet.close();
-            //logdebug("...returned " + array.length + " rows");
-            //logdebug(JSON.stringify(array));
+            logDebugLocal("...returned " + array.length + " rows");
+            logDebugLocal(JSON.stringify(array));
         }
         sStmt.close();
         conn.close();
         return array
     } catch (err)
     {
-        //logdebug("ERROR: "+ err.message);
+        logDebugLocal("ERROR: "+ err.message);
         return array
     }
 }
