@@ -105,7 +105,6 @@ namespace Elavon_Adaptor.Connectivity {
 
             return res;
         }
-    }
-    }
+    }    
 
 }
