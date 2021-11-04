@@ -177,7 +177,7 @@ function mainProcess()
 		
 		// select LIC_NBR, LIC_TYPE, INS_EXP_DT from RSTATE_LIC where LIC_TYPE in ('IA Installer', 'IA Service Provider') AND INS_EXP_DT is NOT null
 
-		var vSQL = "SELECT LIC_NBR as recordNumber, LIC_TYPE as rlpType, INS_EXP_DT as insExpDate from RSTATE_LIC where LIC_TYPE in ('IA Installer', 'IA Service Provider') AND INS_EXP_DT is NOT null";
+		var vSQL = "SELECT R.LIC_NBR as recordNumber, R.LIC_TYPE as rlpType, R.INS_EXP_DT as insExpDate from RSTATE_LIC R where R.LIC_TYPE in ('IA Installer', 'IA Service Provider') AND R.INS_EXP_DT is NOT null";
                
 		// SQL to pull active OPC site records that has NO child Tank records		
 		var vResult = doSQLSelect_local(vSQL);  	     
