@@ -132,6 +132,35 @@ namespace suffolk.lims {
             }
             return res;
         }
+
+        public static RestResponse<T> SendRestRequestJSON<T>(string url, string method, string body = null) {
+            Logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            url = Config.AccelaRequestUrl + "/" + url;
+            var headers = new Dictionary<string, string> {
+                ["Authorization"] = GetAccelaToken(),
+                ["x-accela-appid"] = Config.AccelaClientId,
+                ["x-accela-appsecret"] = Config.AccelaClientSecret
+            };
+            var responseString = WebRequestHandler.SendJSON(url, body, method, headers);
+            if (string.IsNullOrEmpty(responseString)) {
+                throw new Exception($"{method} request to {url} with data {body ?? ""} didn't return a response");
+
+            }
+            RestResponse<T> res = null;
+            try {
+                res = Utility.DeserializeJson<RestResponse<T>>(responseString);
+
+                if (res.Status != 200) {
+                    throw new Exception($"{method} request to {url} with data {body ?? ""} returned status {res.Status} and message {res.Message}");
+                }
+            }
+            catch (Exception e) {
+                Logger.Error("Exception processing response string");
+                Logger.Info(responseString);
+                Logger.Info(e.Message);
+            }
+            return res;
+        }
     }
 
     [DataContract]
