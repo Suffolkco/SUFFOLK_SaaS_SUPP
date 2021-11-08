@@ -293,9 +293,7 @@ function mainProcess()
 			
 			capId = aa.cap.getCapID(b1Exp.getCapID().getID1(),b1Exp.getCapID().getID2(),b1Exp.getCapID().getID3()).getOutput();
 			altId = capId.getCustomID();
-			// As a test
-			if (altId == 'ME-3815')
-			{
+		
 			var b1Status = b1Exp.getCapStatus();
 
 			logDebug(altId + " status is: " + b1Status);
@@ -304,7 +302,7 @@ function mainProcess()
 			if (!exists(b1Status,processAppStatusArray))
 			{
 				capFilterStatus++;
-				logDebug(altId + ": skipping due to application status of " + capStatus);
+				logDebug(altId + ": skipping due to application status of " + b1Status);
 				continue;
 			}						
 			
@@ -341,7 +339,7 @@ function mainProcess()
 			if (newAppStatus.length > 0)
 			{
 				updateAppStatus(capId, newAppStatus ,"");
-				updateTask("Issuance", newAppStatus, "Updated by batch name " + batchJobName, "Updated by batch name " + batchJobName);
+				updateTask("Issuance", newAppStatus, "", "");
 				logDebug("            " + altId + ": Updated Application Status to " + newAppStatus);			
 			}
 	
@@ -350,12 +348,7 @@ function mainProcess()
 			emailContent = altId + " - was changed to " + newAppStatus + " status";
 			aa.sendEmail(emailSender, conEmail, "", emailSubject , emailContent , null);			
 			//logDebug("email sent to " + conEmail + "\n" + emailSubject + "\n" + emailContent);				
-			capCount++;
-
-			// For testing ME-3815
-			break;
-
-			}
+			capCount++;		
 			
 		}
 		logDebug("-------------------------------------------------------------------------------");			
