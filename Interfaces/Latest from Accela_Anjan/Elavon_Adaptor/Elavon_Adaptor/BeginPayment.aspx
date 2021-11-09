@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="BeginPayment.aspx.cs" Inherits="Elavon_Adaptor.BeginPayment" %>

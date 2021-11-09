@@ -138,8 +138,13 @@ try {
 
                                                     var emailParams = aa.util.newHashtable();
                                                     addParameter(emailParams, "$$ALTID$$", altID);
-                                                    var acaURL = "aca.suffolkcountyny.gov/CitizenAccess/";
-                                                    acaURL+= getACAUrl(capId);
+                                                    //var acaURL = "aca.suffolkcountyny.gov/CitizenAccess/";
+                                                    //acaURL+= getACAUrl(capId);
+
+                                                    var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+                                                    acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+                                                    acaURL = acaSite + getACAUrl();
+                                                    
                                                     //logDebug("ACA URL: " + acaURL);
                                                     addParameter(emailParams, "$$ACAURL", acaURL);
                                                     addParameter(emailParams, "$$shortNotes$$", shortNotes);

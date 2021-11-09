@@ -783,8 +783,9 @@ function createUpdateRefLicProfIAServiceProvider(capId, relate, rlpType) {
     if (insCo && insCo != "") newLic.setInsuranceCo(insCo);
     insPolicy = getAppSpecific("Insurance Policy", capId);
     if (insPolicy && insPolicy != "") newLic.setPolicy(insPolicy);
-    insExpDate = getAppSpecific("Policy Expiration Date", capId);
-    if (insExpDate && insExpDate != "") newLic.setInsuranceExpDate(aa.date.parseDate(insExpDate));
+    // EHIMS-4750: Leave it empty so it doesn't use this date to see if the LP has expired.
+    //insExpDate = getAppSpecific("Policy Expiration Date", capId);
+    //if (insExpDate && insExpDate != "") newLic.setInsuranceExpDate(aa.date.parseDate(insExpDate));
     wcInsPolicy = getAppSpecific("Workers Comp #", capId);
     if (wcInsPolicy && wcInsPolicy != "") newLic.setWcPolicyNo(wcInsPolicy);
     wcExpDate = getAppSpecific("Workers Comp Expiration Date", capId);

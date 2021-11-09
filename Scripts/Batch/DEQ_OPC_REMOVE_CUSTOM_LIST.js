@@ -201,7 +201,7 @@ function mainProcess()
 						for (loopk in tableNameArray)
 						{
 							var tableName = tableNameArray[loopk];
-							logDebugLocal("tableName: " + tableName);	
+							//logDebugLocal("tableName: " + tableName);	
 							
 							if (tableName == "OPC HISTORICAL TANK TABLE")
 							{			

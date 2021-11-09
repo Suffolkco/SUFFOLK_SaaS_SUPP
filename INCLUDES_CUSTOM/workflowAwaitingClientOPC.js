@@ -38,7 +38,12 @@ function workflowAwaitingClientOPC(wfComments, capAddresses)
     addParameter(emailParams, "$$shortNotes$$", shortNotes); 
 	addParameter(emailParams, "$$wfComments$$", wfComments);	
 	// As a test
-	addParameter(emailParams, "$$ACAURL$$", getACARecordURL()); 
+
+	var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+	acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+	//Save Record Direct URL
+	addParameter(emailParams, "$$ACAURL$$", acaSite + getACAUrl());
+	//addParameter(emailParams, "$$ACAURL$$", getACARecordURL()); 
 
 	if (capAddresses != null)
     {

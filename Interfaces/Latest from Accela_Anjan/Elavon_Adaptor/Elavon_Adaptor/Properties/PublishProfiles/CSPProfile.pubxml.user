@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\inetpub\wwwroot\Elavon_Adaptor</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="Adapter.config">
+      <publishTime>04/20/2021 10:36:02</publishTime>
+    </File>
+    <File Include="BeginPayment.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.Service.dll">
+      <publishTime>04/20/2021 14:36:57</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.Service.dll.config">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.Service.pdb">
+      <publishTime>04/20/2021 14:36:57</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.WebService.dll">
+      <publishTime>04/20/2021 14:36:55</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.WebService.dll.config">
+      <publishTime>03/24/2021 23:35:29</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.WebService.pdb">
+      <publishTime>04/20/2021 14:36:55</publishTime>
+    </File>
+    <File Include="bin/Accela.ACA.PaymentAdapter.WebService.XmlSerializers.dll">
+      <publishTime>04/20/2021 14:36:56</publishTime>
+    </File>
+    <File Include="bin/Elavon_Adaptor.dll">
+      <publishTime>04/20/2021 14:36:58</publishTime>
+    </File>
+    <File Include="bin/Elavon_Adaptor.pdb">
+      <publishTime>04/20/2021 14:36:58</publishTime>
+    </File>
+    <File Include="bin/log4net.dll">
+      <publishTime>03/08/2017 19:26:22</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>11/09/2019 00:56:44</publishTime>
+    </File>
+    <File Include="bin/PaymentCancel.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="bin/PaymentCancel.aspx.cs">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="bin/PaymentResponse.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="bin/PaymentResponse.aspx.cs">
+      <publishTime>04/14/2021 11:01:06</publishTime>
+    </File>
+    <File Include="EVA/MerchantMapping.xml">
+      <publishTime>04/20/2021 08:24:38</publishTime>
+    </File>
+    <File Include="EVA/ParameterMapping.xml">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="PaymentCancel.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="PaymentResponse.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="TestGetMerchantDetails.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="TestPage.aspx">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>12/03/2019 08:31:38</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

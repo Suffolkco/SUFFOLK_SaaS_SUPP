@@ -372,7 +372,9 @@ function mainProcess()
 
 							for (yy in childArray)
 							{
-								var childCapId = childArray[yy];
+								//var childCapId = childArray[yy];
+								var childCapId  = childArray[xx].getCapID();
+
 								var exit = false;
 								//var childCapStatus = getAppStatus(childCapId);
 								

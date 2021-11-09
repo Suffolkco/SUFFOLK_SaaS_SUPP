@@ -193,7 +193,7 @@ function mainProcess()
 
 			if (lp) {      
 				logDebug ("Found existing lic: " + licNum + "," + rlpType + "," + insExpDate);
-				//lp.setInsuranceExpDate("");		
+				lp.setInsuranceExpDate("");		
 				count++;	
 			}
 			else {

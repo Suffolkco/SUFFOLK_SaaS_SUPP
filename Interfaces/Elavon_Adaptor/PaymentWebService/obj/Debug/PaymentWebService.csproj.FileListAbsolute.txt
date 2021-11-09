@@ -33,7 +33,6 @@ C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\bin\log4n
 C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\bin\Newtonsoft.Json.dll
 C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\bin\log4net.xml
 C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\bin\Newtonsoft.Json.xml
-C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\obj\Debug\PaymentWebService.csprojAssemblyReference.cache
 C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\obj\Debug\PaymentWebService.csproj.CoreCompileInputs.cache
 C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\obj\Debug\PaymentWebService.csproj.CopyComplete
 C:\GIT\SUFFOLKCO_SaaS_SUPP\Interfaces\Elavon_Adaptor\PaymentWebService\obj\Debug\Accela.ACA.PaymentAdapter.WebService.dll

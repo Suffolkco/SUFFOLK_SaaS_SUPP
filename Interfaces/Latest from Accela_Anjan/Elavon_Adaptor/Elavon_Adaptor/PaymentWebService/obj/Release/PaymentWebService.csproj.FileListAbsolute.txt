@@ -1,0 +1,14 @@
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\Accela.ACA.PaymentAdapter.WebService.dll.config
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\Accela.ACA.PaymentAdapter.WebService.dll
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\Accela.ACA.PaymentAdapter.WebService.XmlSerializers.dll
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\Accela.ACA.PaymentAdapter.WebService.pdb
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\log4net.dll
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\Newtonsoft.Json.dll
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\log4net.xml
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\bin\Newtonsoft.Json.xml
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\obj\Release\PaymentWebService.csprojAssemblyReference.cache
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\obj\Release\PaymentWebService.csproj.CoreCompileInputs.cache
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\obj\Release\PaymentWebService.csproj.CopyComplete
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\obj\Release\Accela.ACA.PaymentAdapter.WebService.dll
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\obj\Release\Accela.ACA.PaymentAdapter.WebService.pdb
+C:\Data\Delivery\SAAS\ONPREM\SUFFOLKCO\Interfaces\Elavon_Adaptor\Elavon_Adaptor\Elavon_Adaptor\PaymentWebService\obj\Release\Accela.ACA.PaymentAdapter.WebService.XmlSerializers.dll

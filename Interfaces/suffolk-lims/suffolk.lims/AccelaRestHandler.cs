@@ -48,7 +48,7 @@ namespace suffolk.lims {
 
 
         public static EmseResultObject<T> InvokeLIMSScript<T>(string body) {
-            var result = SendRestRequest<EmseResultObject<T>>($"v4/scripts/LIMS_INTERFACE", "POST", body);
+            var result = SendRestRequestJSON<EmseResultObject<T>>($"v4/scripts/LIMS_INTERFACE", "POST", body);
             return result.Result;
         }
 

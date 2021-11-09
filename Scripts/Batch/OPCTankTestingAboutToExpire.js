@@ -183,7 +183,13 @@ function processLicenses()
 							{
 								applicant = conArray[con];
                                 conEmail = applicant.email;
-                                var acaURL = "https://aca.suffolkcountyny.gov/CitizenAccess/Cap";
+                                //var acaURL = "https://aca.suffolkcountyny.gov/CitizenAccess/Cap";
+								
+								var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+								acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+								//Save Record Direct URL
+								acaURL = acaSite + getACAUrl();
+
                                 acaURL+= getACAUrl(capId);
                                 logDebug("ACA URL: " + acaURL);
                                 addParameter(params, "$$ALTID$$", altId);

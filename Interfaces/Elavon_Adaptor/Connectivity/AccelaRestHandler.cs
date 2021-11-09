@@ -5,16 +5,19 @@ using Elavon_Adaptor.Utilities;
 
 namespace Elavon_Adaptor.Connectivity {
     public class AccelaRestHandler {
-        public static EmseResultObject<string> GetMerchantDetails(string merchantId) {
-            return CallEmseScript<string>(new Dictionary<string, object> {
-                ["action"] = "getMerchantDetails",
-                ["merchantId"] = merchantId
+        public static EmseResultObject<string> GetMerchantDetails(string transactionId)
+        {
+            return CallEmseScript<string>(new Dictionary<string, object>
+            {
+                ["action"] = "getCapModuleFromETransaction",
+                ["transId"] = transactionId
             });
         }
 
+
         public static EmseResultObject<T> CallEmseScript<T>(Dictionary<string, object> dictionary) {
             var body = Utility.SerializeToJson(dictionary);
-            var result = SendRestRequest<EmseResultObject<T>>($"v4/scripts/PAYMENT_ADAPTER_MERCHANT", "POST", body);
+            var result = SendRestRequestJSON<EmseResultObject<T>>($"v4/scripts/GET_PAYMENT_MODULE", "POST", body);
             return result.Result;
         }
 
@@ -42,7 +45,8 @@ namespace Elavon_Adaptor.Connectivity {
                     output = Utility.Serializer.Deserialize<object>(responseString);
                 }
                 catch (Exception e) {
-                    throw new Exception($"Accela REST API authentication returned invalid JSON. Exception: {e.Message}\nFull Response: {responseString}");
+                    throw new Exception($"Accela REST API authentication returned invalid JSON. Exception: {e.Message}\nFull Response: {responseString}" + "TokenURL:" +
+                        Config.AccelaAccessTokenUrl);
                 }
 
                 error = Utility.GetKeyValue(output, "error", string.Empty);
