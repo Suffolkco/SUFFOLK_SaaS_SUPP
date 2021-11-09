@@ -88,29 +88,48 @@ namespace Elavon_Adaptor
             catch (Exception ec) { };
             
             string totalAmount = String.Empty;
+            string convFeeMultiplier = ConfigurationManager.AppSettings["ConvFeeMultiplier"];
 
-            if (IsValidCurrency(amount)) {
+            if (IsValidCurrency(amount))
+            {
                 if (ConfigurationManager.AppSettings["AddConvFee"].ToString() == "false")
-                    totalAmount = String.Format("{0:0.00}", Double.Parse(amount) - Double.Parse(conFee));
-                else
+                    // totalAmount = String.Format("{0:0.00}", Double.Parse(amount) - Double.Parse(conFee));
+                    //else
                     totalAmount = String.Format("{0:0.00}", Double.Parse(amount));
+                else
+                {
+                    if (String.IsNullOrEmpty(conFee) || conFee == "0.00" || Double.Parse(conFee) == 0)
+                    {
+                        Double calculatedConvFee = (Double.Parse(amount) * 0.0154) + 0.11;
+                        totalAmount = String.Format("{0:0.00}", Double.Parse(amount) + calculatedConvFee);
+                    }
+                    else
+                    {
+                        totalAmount = String.Format("{0:0.00}", Double.Parse(amount) + Double.Parse(conFee));
+                    }
+                }
             }
-            else {
+            else
+            {
                 PaymentHelper.HandleErrorRedirect("The format of pay amount is wrong", PaymentConstant.FAILURE_CODE);
                 return;
             }
             _logger.Debug("Total Amount = " + totalAmount);
 
             var merchantResult = new EmseResultObject<string>();
-            merchantResult.Result = "agency";
-            //var merchantResult = AccelaRestHandler.GetMerchantDetails(merchantAccountId);
-            //if (!merchantResult.Success) {
-            //    _logger.Debug($"Provided merchant ID {merchantAccountId} return error {merchantResult.Message} from the specified Accela environment.");
-            //    return;
-            //}
-            Accela.ACA.PaymentAdapter.Service.Common.MerchantNode merchantObj = MerchantHelper.GetMerchantByAccountName(merchantResult.Result);
-            if (merchantObj == null) {
-                _logger.Debug($"Provided merchant account name {merchantResult.Result} with ID {merchantAccountId} has no configuration in MerchantMapping.xml.");
+            //merchantResult.Result = "agency";
+
+            merchantResult = AccelaRestHandler.GetMerchantDetails(transactionID);
+            if (!merchantResult.Success)
+            {
+                _logger.Debug($"Provided Transaction ID {transactionID} return error {merchantResult.Message} from the specified Accela environment.");
+                return;
+            }
+
+            Accela.ACA.PaymentAdapter.Service.Common.MerchantNode merchantObj = MerchantHelper.GetMerchantByAccountName(merchantResult.Message.ToUpper());
+            if (merchantObj == null)
+            {
+                _logger.Debug($"Provided merchant account name {merchantResult.Message} has no configuration in MerchantMapping.xml.");
                 return;
             }
             _logger.Debug($"Merchant account ID {merchantObj.MerchantID}, user ID {merchantObj.UserID}, PIN {merchantObj.PIN}");
