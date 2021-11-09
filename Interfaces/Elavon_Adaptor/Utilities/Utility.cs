@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -49,21 +50,37 @@ namespace Elavon_Adaptor.Utilities {
         }
     }
 
-    public class Config {
+    public class Config
+    {
         public static string AccelaAccessTokenUrl => GetConfig("AccelaAccessTokenUrl");
         public static string AccelaRequestUrl => GetConfig("AccelaRequestUrl");
-        public static string AccelaAgency => GetConfig("AccelaAgency");
-        public static string AccelaUserName => GetConfig("AccelaUsername");
-        public static string AccelaPassword => GetConfig("AccelaPassword");
-        public static string AccelaClientId => GetConfig("AccelaClientId");
-        public static string AccelaClientSecret => GetConfig("AccelaClientSecret");
-        public static string AccelaEnvironment => GetConfig("AccelaEnvironment");
-        public static string AccelaScope => GetConfig("AccelaScope");
-        public static string AccelaGrantType => GetConfig("AccelaGrantType");
+        //public static string AccelaAgency => GetConfig("AccelaAgency");
+        //public static string AccelaUserName => GetConfig("AccelaUsername");
+        //public static string AccelaPassword => GetConfig("AccelaPassword");
+        //public static string AccelaClientId => GetConfig("AccelaClientId");
+        //public static string AccelaClientSecret => GetConfig("AccelaClientSecret");
+        //public static string AccelaEnvironment => GetConfig("AccelaEnvironment");
+        //public static string AccelaScope => GetConfig("AccelaScope");
+        //public static string AccelaGrantType => GetConfig("AccelaGrantType");
+        public static string AccelaAgency => GetConfig("av.agency");
+        public static string AccelaUserName => GetConfig("av.username");
+        public static string AccelaPassword => GetConfig("av.password");
+        public static string AccelaClientId => GetConfig("clientId");
+        public static string AccelaClientSecret => GetConfig("clientSecret");
+        public static string AccelaEnvironment => GetConfig("environment");
+        public static string AccelaScope => GetConfig("scope");
+        public static string AccelaGrantType => GetConfig("grant");
+        //public static string GetConfig(string configName) {
+        //    return ConfigurationManager.AppSettings[configName];
+        //}
 
-        public static string GetConfig(string configName) {
-            return ConfigurationManager.AppSettings[configName];
+        public static string GetConfig(string configName)
+        {
+
+            NameValueCollection avConfig = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            return avConfig[configName];
         }
+
     }
 
     public static class DictionaryExtension {
