@@ -135,11 +135,13 @@ namespace Elavon_Adaptor  {
                 }
                 StringBuilder responseData = new StringBuilder();
                 responseData.AppendFormat("{0}={1}", PaymentConstant.TRANSACTION_ID, transactionID);
-                responseData.AppendFormat("&{0}={1}", PaymentConstant.PAYMENT_AMOUNT, amtPaid);
-              //  if (ConfigurationManager.AppSettings["AddConvFee"].ToString() == "false")
-               //     responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE,"0.00");
-              //  else
-                    responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE, convFee);
+                Double origAmt = (Double.Parse(amtPaid) - 0.11) / 1.0154;
+                responseData.AppendFormat("&{0}={1}", PaymentConstant.PAYMENT_AMOUNT, String.Format("{0:0.00}", origAmt));
+                //  if (ConfigurationManager.AppSettings["AddConvFee"].ToString() == "false")
+                //     responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE,"0.00");
+                //  else
+                Double calculatedConvFee = Double.Parse(amtPaid) - origAmt;
+                responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE, String.Format("{0:0.00}", calculatedConvFee));
 
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.CC_TYPE, cardType.Substring(0, Math.Min(cardType.Length, 30)));
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_ID, security_id);

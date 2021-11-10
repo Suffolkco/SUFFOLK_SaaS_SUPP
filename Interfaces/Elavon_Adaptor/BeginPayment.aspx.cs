@@ -117,6 +117,7 @@ namespace Elavon_Adaptor
             _logger.Debug("Total Amount = " + totalAmount);
 
             var merchantResult = new EmseResultObject<string>();
+            /* Accela - Commented to implement new Merchant Account Functionality */
             //merchantResult.Result = "agency";
 
             merchantResult = AccelaRestHandler.GetMerchantDetails(transactionID);
