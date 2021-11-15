@@ -1,7 +1,7 @@
 //WTUA:DEQ/WWM/COMMERCIAL/APPLICATION
 var showDebug = true; 
 var maxSeconds = 1;   // 1 seconds	
-
+var emailText = "";
 //If workflow is approved, add 3 years to the Expiration date//
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {

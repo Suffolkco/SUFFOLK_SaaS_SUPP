@@ -1,6 +1,6 @@
 //WTUA:DEQ/WWM/SUBDIVISION/APPLICATION
 var showDebug = false; 
-
+var emailText = "";
 if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 {
     var submissionNoticeTxt = AInfo["Submission Rejection Text"];
