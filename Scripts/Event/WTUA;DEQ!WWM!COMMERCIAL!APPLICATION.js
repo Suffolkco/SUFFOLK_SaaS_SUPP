@@ -282,13 +282,12 @@ function convertDate(thisDate)
     }
 }
 
-
 function latestInspectionResultWithComments()
 {
 	var insps;
 	var inspResultComments = false;
 	var inspections = aa.inspection.getInspections(capId);
-	var latestInspDate = null;
+	var shortestdays = null;
 	var inspIdToUse;
 	var inspStatus;
 
@@ -316,25 +315,29 @@ function latestInspectionResultWithComments()
 				var hr = insps[i].getInspectionDate().getHourOfDay();
 				var min = insps[i].getInspectionDate().getMinute();
 				var sec = insps[i].getInspectionDate().getSecond();
-				logDebugLocal("year, month, day, hr, min, sec:" + year + "," + month + "," + day + "," + hr + "," + min + "," + sec);
-				var newDate = new Date(year, month, day, hr, min, sec);
-				logDebugLocal("newDate:" + newDate);
 
-				if (latestInspDate == null || (latestInspDate > newDate))
+				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+				
+				var inspectionDateCon = month + "/" + day + "/" + year;
+				
+				logDebug("Today Date is: " + todDateCon + ". Inspection Date is: " + inspectionDateCon);					
+				var dateDiff = parseFloat(dateDifference(inspectionDateCon, todDateCon));
+				logDebug("Day difference is: " + dateDiff);
+				
+
+				if (shortestdays == null || (dateDiff < shortestdays))
 				{
 					inspIdToUse = insps[i].getIdNumber();
-					inspStatus = insps[i].getInspectionStatus();
-					logDebugLocal("getIDNumber: " + inspIdToUse);
-					logDebugLocal("latestInspDate: " + latestInspDate);
-					logDebugLocal("newDate: " + newDate);
-					latestInspDate = newDate;
-					logDebugLocal("latestInspDate is greater than newDate");						
-				}	
+					logDebug("getIDNumber: " + inspIdToUse);
+					logDebug("Date difference is: " + dateDiff + " which is shorter than: " + shortestdays);					
+					shortestdays = dateDiff;	
+				}				
+				
 							
 			}	
-			if (latestInspDate != null)
+			if (shortestdays != null)
 			{
-				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + latestInspDate + " with status: " + inspStatus);								
+				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + inspStatus);								
 			}
 		}	
 
