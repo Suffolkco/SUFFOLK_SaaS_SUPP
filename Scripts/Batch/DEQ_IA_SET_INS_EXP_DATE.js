@@ -203,11 +203,11 @@ function mainProcess()
 				for (var thisLic in newLicArray)
 				{
 					logDebugLocal("getLicenceType: " + newLicArray[thisLic].getLicenseType().toUpperCase());
-
+					logDebugLocal("licenseType: " + licenseType);
 					if (refstlic.toUpperCase().equals(newLicArray[thisLic].getStateLicense().toUpperCase()) && 
 						licenseType.toUpperCase().equals(newLicArray[thisLic].getLicenseType().toUpperCase()))
 					{
-						logDebugLocal("Record number: " + refstlic + ", state license:" + newLicArray[thisLic].getStateLicense());
+						logDebugLocal("Record number: " + refstlic + ", state license:" + newLicArray[thisLic].getStateLicense() + ", License Type:" + licenseType);
 						refLicObj = newLicArray[thisLic];
 						//var date = new Date(refLicObj.getInsuranceExpDate().getMonth() + "/" + refLicObj.getInsuranceExpDate().getDayOfMonth() + "/" + refLicObj.getInsuranceExpDate().getYear());
 						//logDebugLocal("Date:" + jsDateToMMDDYYYY(date));					
