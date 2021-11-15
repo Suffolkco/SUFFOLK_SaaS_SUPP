@@ -2,7 +2,7 @@
 | Program:DEQ_IA_SET_INS_EXP_DATE.js: Batch
 | 
 | This batch script will run ONE TIME to update all the IA installer and IA Service Prover
-| with empty insurance expiration date.
+| with empty insurance expiration date. We use Script Test to run this successfully.
 |
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
@@ -178,30 +178,105 @@ function mainProcess()
 		// select LIC_NBR, LIC_TYPE, INS_EXP_DT from RSTATE_LIC where LIC_TYPE in ('IA Installer', 'IA Service Provider') AND INS_EXP_DT is NOT null
 
 		var vSQL = "SELECT R.LIC_NBR as recordNumber, R.LIC_TYPE as rlpType, R.INS_EXP_DT as insExpDate from RSTATE_LIC R where R.LIC_TYPE in ('IA Installer', 'IA Service Provider') AND R.INS_EXP_DT is not null";
-               
+			
 		// SQL to pull active OPC site records that has NO child Tank records		
 		var vResult = doSQLSelect_local(vSQL);  	     
 		logDebugLocal("******** IA LPs with insurance expiration date: " + vResult.length + "*********\n");
-		
+				
+		for (r in vResult)
+        {
+            refstlic = vResult[r]["recordNumber"];         		
+            licenseType = vResult[r]["rlpType"];
+			insExpDate = vResult[r]["insExpDate"];
+
+
+			var refLicObj = null;
+			//var refstlic = "LW-62752";
+			var refLicenseResult = aa.licenseScript.getRefLicensesProfByLicNbr(aa.getServiceProviderCode(), refstlic);
+			//var licenseType = "IA Installer";
+			if (!refLicenseResult.getSuccess())
+				{ logDebugLocal("**ERROR retrieving Ref Lic Profs : " + refLicenseResult.getErrorMessage()); }
+			else
+			{
+				var newLicArray = refLicenseResult.getOutput();	
+				
+				for (var thisLic in newLicArray)
+				{
+					logDebugLocal("getLicenceType: " + newLicArray[thisLic].getLicenseType().toUpperCase());
+
+					if (refstlic.toUpperCase().equals(newLicArray[thisLic].getStateLicense().toUpperCase()) && 
+						licenseType.toUpperCase().equals(newLicArray[thisLic].getLicenseType().toUpperCase()))
+					{
+						logDebugLocal("Record number: " + refstlic + ", state license:" + newLicArray[thisLic].getStateLicense());
+						refLicObj = newLicArray[thisLic];
+						//var date = new Date(refLicObj.getInsuranceExpDate().getMonth() + "/" + refLicObj.getInsuranceExpDate().getDayOfMonth() + "/" + refLicObj.getInsuranceExpDate().getYear());
+						//logDebugLocal("Date:" + jsDateToMMDDYYYY(date));					
+						logDebugLocal("Insurance month:" + refLicObj.getInsuranceExpDate().getMonth());		
+						var date1 = new Date();
+						date1 = null;
+						refLicObj.setInsuranceExpDate(aa.date.parseDate(date1));	
+						var success = aa.licenseScript.editRefLicenseProf(refLicObj);											
+						logDebugLocal("Success? " + success.getSuccess());
+						//logDebugLocal("month:" + refLicObj.getInsuranceExpDate().getMonth());	
+						count++
+					}
+					
+				}
+			}
+			
+		}
+		logDebugLocal("Completed. Total of " + count  + " LPs have been updated.");	
+		/*
+
 		for (r in vResult)
         {
             licNum = vResult[r]["recordNumber"];         		
             rlpType = vResult[r]["rlpType"];
 			insExpDate = vResult[r]["insExpDate"];
 
+			logDebugLocal ("licNum: " + licNum + "," + rlpType + "," + insExpDate);
+
 			var lp = getRefLicenseProf(licNum, rlpType);
 
 			if (lp) {      
-				logDebug ("Found existing lic: " + licNum + "," + rlpType + "," + insExpDate);
-				lp.setInsuranceExpDate("");		
-				count++;	
-			}
-			else {
+
+				logDebugLocal("************* object ***********");
+				debugObject ("aa.licenseScript:" + aa.licenseScript);
+				//debugObject(lp);
 				
-				logDebug ("No LP: " + licNum + "," + rlpType + "," + insExpDate);			
-			}				
+				if (lp.getLicenseExpirationDate())
+				{
+					jsExpDate = convertDate(lp.getLicenseExpirationDate());
+					logDebugLocal(licNum+" License Expiration Date: "+jsDateToMMDDYYYY(jsExpDate));
+				}
+
+				logDebugLocal ("Found existing lic: " + licNum + "," + rlpType + "," + insExpDate);		
+
+				//logDebugLocal ("lp.getInsuranceExpDate(): " + lp.getInsuranceExpDate());		
+				
+				//lp.setInsuranceExpDate(aa.date.parseDate(lp.getLicenseExpirDate()));
+				//lp.setInsuranceExpDate(dateMMDDYYY);				
+				aa.licenseScript.editRefLicenseProf(lp);
+
+				var myResult = aa.licenseScript.editRefLicenseProf(lp);
+				if (myResult.getSuccess()) {					
+					logDebugLocal("Successfully updated LP " + licNum);
+					lp = getRefLicenseProf(licNum, rlpType);
+					logDebugLocal("lp.getInsuranceExpDate(): " + lp.getInsuranceExpDate());
+					count++;	
+				}
+				else {
+					logDebugLocal("**ERROR: can't update ref lic prof: " + myResult.getErrorMessage());				
+				}
+			}
+			else
+			{
+				logDebug("Reference record for license "+ licNum +" has no Insurance Expiration Date");
+						
+			}	
+							
 		}
-		logDebugLocal("Completed. Total of " + count  + " LPs have been updated.");		
+		logDebugLocal("Completed. Total of " + count  + " LPs have been updated.");		*/
 	}
     catch (err) 
     {
@@ -218,6 +293,31 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function getRefLicenseProf(refstlic,licenseType)
+	{
+	var refLicObj = null;
+	var refLicenseResult = aa.licenseScript.getRefLicensesProfByLicNbr(aa.getServiceProviderCode(),refstlic);
+	if (!refLicenseResult.getSuccess())
+		{ logDebug("**ERROR retrieving Ref Lic Profs : " + refLicenseResult.getErrorMessage()); return false; }
+	else
+		{
+		var newLicArray = refLicenseResult.getOutput();
+		debugObject ("newLicArray:" + newLicArray);
+		if (!newLicArray) return null;
+		for (var thisLic in newLicArray)
+			if(!matches(licenseType,null,undefined,"")){
+				if (refstlic.toUpperCase().equals(newLicArray[thisLic].getStateLicense().toUpperCase()) && 
+					licenseType.toUpperCase().equals(newLicArray[thisLic].getLicenseType().toUpperCase()))
+					refLicObj = newLicArray[thisLic];
+			}
+			else if (refstlic && newLicArray[thisLic] && refstlic.toUpperCase().equals(newLicArray[thisLic].getStateLicense().toUpperCase()))
+				refLicObj = newLicArray[thisLic];
+		}
+
+	return refLicObj;
+	}
+
+
 function loadASITable(tname)
 {
 	itemCap = arguments[1]; // use cap ID specified in args
@@ -331,8 +431,7 @@ function logDebugLocal(dstr)
 function doSQLSelect_local(sql)
 {
     try
-    {
-        logDebugLocal("iNSIDE FUNCTION");
+    {       
         var array = [];
         var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
         var ds = initialContext.lookup("java:/SUFFOLKCO");
@@ -340,7 +439,7 @@ function doSQLSelect_local(sql)
         var sStmt = conn.prepareStatement(sql);
         if (sql.toUpperCase().indexOf("SELECT") == 0)
         {
-            logDebugLocal("executing " + sql);
+            //logDebugLocal("executing " + sql);
             var rSet = sStmt.executeQuery();
             while (rSet.next())
             {
@@ -350,14 +449,14 @@ function doSQLSelect_local(sql)
                 for (i = 1; i <= columns; i++)
                 {
                     obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
-                    logDebugLocal(rSet.getString(md.getColumnName(i)));
+                    //logDebugLocal(rSet.getString(md.getColumnName(i)));
                 }
                 obj.count = rSet.getRow();
                 array.push(obj)
             }
             rSet.close();
-            logDebugLocal("...returned " + array.length + " rows");
-            logDebugLocal(JSON.stringify(array));
+           // logDebugLocal("...returned " + array.length + " rows");
+            //logDebugLocal(JSON.stringify(array));
         }
         sStmt.close();
         conn.close();
