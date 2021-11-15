@@ -315,7 +315,7 @@ function latestInspectionResultWithComments()
 				var hr = insps[i].getInspectionDate().getHourOfDay();
 				var min = insps[i].getInspectionDate().getMinute();
 				var sec = insps[i].getInspectionDate().getSecond();
-
+				var todaysDate = new Date();			
 				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
 				
 				var inspectionDateCon = month + "/" + day + "/" + year;
