@@ -2,15 +2,15 @@
 var altId = capId.getCustomID();
 
 // EHIMS-4747
-if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
-(wfTask == "Inspections" && wfStatus == "Complete") ||
-(wfTask == "Final Review" && wfStatus == "Approved") ||
-(wfTask == "Inspections" && wfStatus == "Partial Final Approval"))
-{
-    var methSew = AInfo["Method of Sewage Disposal"];
-
-    if (methSew.equals("Conventional Septic System") || methSew.equals("I/A System"))
-    {
+// EHIMS-4747 IA System
+var methSew = AInfo["Method of Sewage Disposal"];
+if (methSew.equals("I/A System"))
+{ 
+    if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
+    (wfTask == "Inspections" && wfStatus == "Complete") ||
+    (wfTask == "Final Review" && wfStatus == "Approved") ||
+    (wfTask == "Inspections" && wfStatus == "Partial Final Approval"))
+    {       
         var systemDetails  = loadASITable("SYSTEM DETAILS");
 
         if (!systemDetails)
@@ -21,6 +21,24 @@ if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
         }
     }
 }
+else if (methSew.equals("Conventional Septic System"))
+{
+    if (wfTask == "Plans Coordination" && wfStatus == "Approved") 
+    {      
+        if (methSew.equals("Conventional Septic System"))
+        {
+            var systemDetails  = loadASITable("SYSTEM DETAILS");
+    
+            if (!systemDetails)
+            {
+                cancel = true;
+                showMessage = true;
+                comment("CUSTOM LIST REQUIRED.");
+            }
+        }
+    }
+}
+
 
 
 if ((wfTask == "Application Review" && wfStatus == "Accepted") ||
