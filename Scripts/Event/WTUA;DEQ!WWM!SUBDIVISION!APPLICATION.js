@@ -113,7 +113,7 @@ if (wfTask == "Final Review" && wfStatus == "Approved")
 			}	
 			if (shortestdays != null)
 			{
-				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + inspStatus);								
+				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + insps[i].getInspectionStatus());								
 			}
 		}	
 

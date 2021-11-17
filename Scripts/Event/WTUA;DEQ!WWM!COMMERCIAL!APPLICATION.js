@@ -289,7 +289,6 @@ function latestInspectionResultWithComments()
 	var inspections = aa.inspection.getInspections(capId);
 	var shortestdays = null;
 	var inspIdToUse;
-	var inspStatus;
 
 	logDebugLocal("Has Inspections: " + inspections.getSuccess());
 	if (inspections.getSuccess()) 
@@ -336,8 +335,8 @@ function latestInspectionResultWithComments()
 							
 			}	
 			if (shortestdays != null)
-			{
-				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + inspStatus);								
+			{	
+				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + insps[i].getInspectionStatus());								
 			}
 		}	
 
