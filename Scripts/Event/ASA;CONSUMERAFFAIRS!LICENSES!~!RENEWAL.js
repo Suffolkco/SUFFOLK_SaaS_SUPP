@@ -75,7 +75,7 @@ else
     {
         addFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y") 
     }
-    if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/NA")) 
+    if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/NA"))  
     {
         addFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y") 
     }
