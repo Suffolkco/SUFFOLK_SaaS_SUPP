@@ -57,7 +57,7 @@ if (conArray.length < 1)
 else
 { 
     
-    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
+    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/NA") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/NA"))
     {
         addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
     }
@@ -70,6 +70,14 @@ else
         {
             addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
         }
+    }
+    if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/NA"))
+    {
+        addFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y") 
+    }
+    if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/NA"))
+    {
+        addFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y") 
     }
 }
 
