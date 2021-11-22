@@ -176,9 +176,9 @@ function mainProcess()
         var output = "Record ID\n";  		
         //var vSQL = "SELECT DISTINCT B.B1_ALT_ID as recordNumber FROM B1PERMIT B WHERE B.B1_ALT_ID = 'SITE-03087-OPC'"; // SITE-02768-OPC 
 
-		// SQL to pull active OPC site records that has NO child Tank records		
+		
 		var vResult = doSQLSelect_local(vSQL);  	     
-		logDebugLocal("********OPC site records that HAS child tank: " + vResult.length + "*********\n");
+		logDebugLocal("********Scanning OPC site records : " + vResult.length + "*********\n");
 		var sites = "";
 		for (r in vResult)
         {
@@ -208,7 +208,7 @@ function mainProcess()
 								count++;
 								sites = sites + "," + capIDString;
 								// Enable the below when you actually want to remove the ASI table
-								/*										
+																		
 								var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName, capId, currentUserID)
 								if (!tssmResult.getSuccess())
 								{ 
@@ -218,7 +218,7 @@ function mainProcess()
 								else
 								{
 									logDebugLocal("Successfully removed all rows from ASI Table: " + tableName);
-								}*/
+								}
 
 							}
 						}
