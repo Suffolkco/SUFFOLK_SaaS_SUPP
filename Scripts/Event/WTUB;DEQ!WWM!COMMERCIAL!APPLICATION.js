@@ -4,31 +4,17 @@ var altId = capId.getCustomID();
 // EHIMS-4747
 // EHIMS-4747 IA System
 var methSew = AInfo["Method of Sewage Disposal"];
-if (methSew.equals("I/A System"))
-{ 
-    if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
-    (wfTask == "Inspections" && wfStatus == "Complete") ||
-    (wfTask == "Final Review" && wfStatus == "Approved") ||
-    (wfTask == "Inspections" && wfStatus == "Partial Final Approval"))
-    {       
-        var systemDetails  = loadASITable("SYSTEM DETAILS");
-
-        if (!systemDetails)
-        {
-            cancel = true;
-            showMessage = true;
-            comment("CUSTOM LIST REQUIRED.");
-        }
-    }
-}
-else if (methSew.equals("Conventional Septic System"))
+if (methSew != null)
 {
-    if (wfTask == "Plans Coordination" && wfStatus == "Approved") 
-    {      
-        if (methSew.equals("Conventional Septic System"))
-        {
+    if (methSew.equals("I/A System"))
+    { 
+        if ((wfTask == "Plans Coordination" && wfStatus == "Approved") ||
+        (wfTask == "Inspections" && wfStatus == "Complete") ||
+        (wfTask == "Final Review" && wfStatus == "Approved") ||
+        (wfTask == "Inspections" && wfStatus == "Partial Final Approval"))
+        {       
             var systemDetails  = loadASITable("SYSTEM DETAILS");
-    
+
             if (!systemDetails)
             {
                 cancel = true;
@@ -37,6 +23,23 @@ else if (methSew.equals("Conventional Septic System"))
             }
         }
     }
+    else if (methSew.equals("Conventional Septic System"))
+    {
+        if (wfTask == "Plans Coordination" && wfStatus == "Approved") 
+        {      
+            if (methSew.equals("Conventional Septic System"))
+            {
+                var systemDetails  = loadASITable("SYSTEM DETAILS");
+        
+                if (!systemDetails)
+                {
+                    cancel = true;
+                    showMessage = true;
+                    comment("CUSTOM LIST REQUIRED.");
+                }
+            }
+        }
+}
 }
 
 
