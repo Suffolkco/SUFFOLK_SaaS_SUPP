@@ -150,7 +150,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate + br);		
-        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET", emailText);
+        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_SITE_PRESET_ARTICLE12", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -212,7 +212,7 @@ function mainProcess()
 					if (art12 != "No")
 					{
 						//editAppSpecific("Article 12 Regulated Site", "No", capId);
-						logDebugLocal("Set Article 12 to No for " + capIDString + ". It had a value of " + art12);
+						//logDebugLocal("Set Article 12 to No for " + capIDString + ". It had a value of " + art12);
 						art12SiteDefaultToNoCnt++;	
 						art12SiteDefaultToNoID = art12SiteDefaultToNoID + "," + art12SiteDefaultToNoID;
 					}
@@ -552,7 +552,15 @@ function mainProcess()
     logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
 }
 
-
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
+}
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
