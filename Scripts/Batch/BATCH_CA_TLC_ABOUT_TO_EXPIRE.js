@@ -110,7 +110,7 @@ function mainProcess()
         {
             
             
-            var expirationDate = AInfo["Expiration Date"];
+            //var expirationDate = AInfo["Expiration Date"];
             var thisType = recTypeArray[r];
             var appTypeArray = thisType.split("/");
             var capSearchModel = aa.cap.capModel.getOutput();
@@ -194,7 +194,7 @@ function mainProcess()
                                                         addParameter(vRParams, "FromDate", curExpCon);
                                                         addParameter(vRParams, "ToDate", curExpCon);
                                                         addParameter(vRParams, "Email", "Yes");
-                                                        addParameter(vEParams, "$$expirDate$$", expirationDate);
+                                                        addParameter(vEParams, "$$expirDate$$", curExpCon);
                                                         addParameter(vEParams, "$$PINNumber$$", PIN);
 
 
