@@ -108,9 +108,6 @@ function mainProcess()
     {
         for (r in recTypeArray)
         {
-            
-            
-            //var expirationDate = AInfo["Expiration Date"];
             var thisType = recTypeArray[r];
             var appTypeArray = thisType.split("/");
             var capSearchModel = aa.cap.capModel.getOutput();
@@ -146,7 +143,7 @@ function mainProcess()
                                 b1ExpResult = aa.expiration.getLicensesByCapID(capId)
                                 if (b1ExpResult.getSuccess())
                                 {
-                                    var b1Exp = b1ExpResult.getOutput(); 
+                                    var b1Exp = b1ExpResult.getOutput();
                                     var curExp = null;
 
                                     try
@@ -194,7 +191,7 @@ function mainProcess()
                                                         addParameter(vRParams, "FromDate", curExpCon);
                                                         addParameter(vRParams, "ToDate", curExpCon);
                                                         addParameter(vRParams, "Email", "Yes");
-                                                        addParameter(vEParams, "$$expirDate$$", curExpCon);
+                                                        addParameter(vEParams, "$$expirDate$$", curExp);
                                                         addParameter(vEParams, "$$PINNumber$$", PIN);
 
 
