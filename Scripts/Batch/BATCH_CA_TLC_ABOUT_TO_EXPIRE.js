@@ -189,9 +189,9 @@ function mainProcess()
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                                                         addParameter(vRParams, "RecordID", capIDString);
-                                                        addParameter(vRParams, "FromDate", curExpCon);
-                                                        addParameter(vRParams, "ToDate", curExpCon);
-                                                        addParameter(vRParams, "Email", "Yes");
+                                                        //addParameter(vRParams, "FromDate", curExpCon);
+                                                        //addParameter(vRParams, "ToDate", curExpCon);
+                                                        //addParameter(vRParams, "Email", "Yes");
                                                         addParameter(vEParams, "$$expirDate$$", curExpCon);
                                                         addParameter(vEParams, "$$PINNumber$$", PIN); 
 
@@ -215,7 +215,7 @@ function mainProcess()
                                                                             conEmail += capContacts[c].email;
 
 
-                                                                            var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
+                                                                            var caReport = generateReportBatch(capId, "License Renewal - Driver", "ConsumerAffairs", vRParams);
                                                                             if (caReport)
                                                                             {
                                                                                 var caReports = new Array();
@@ -235,7 +235,7 @@ function mainProcess()
                                                                             conEmail += capContacts[c].email;
                                                                             logDebug("Conemail is: " + conEmail);
 
-                                                                            var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
+                                                                            var caReport = generateReportBatch(capId, "License Renewal - Vehicle", "ConsumerAffairs", vRParams);
                                                                             if (caReport)
                                                                             {
                                                                                 var caReports = new Array();
