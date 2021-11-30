@@ -175,9 +175,11 @@ function mainProcess()
                                                         aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_TLC_EXPIRATION", systemUserObj);
 
                                                         var vEParams = aa.util.newHashtable();
+                                                        var PIN = AInfo["PIN Number"];
 
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+                                                        addParameter(vEParams, "$$PINNumber$$", PIN);
 
                                                         logDebug("<b>" + capIDString + "</b>" + " Expired");
                                                         var contactResult = aa.people.getCapContactByCapID(capId);
