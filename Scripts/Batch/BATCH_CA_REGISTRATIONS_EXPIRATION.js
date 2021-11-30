@@ -217,7 +217,7 @@ function mainProcess()
                                 {
                                     if (wfObj[i].getDisposition() != "Expired")
                                     {
-                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Expired", aa.date.getCurrentDate(), "Updated via BATCH_CA_REGISTRATIONS_EXPIRATION", "Updated via BATCH_CA_REGISTRATIONS_EXPIRATION", systemUserObj, "Y");
+                                        aa.workflow.handleDisposition(capId, wfObj[i].getStepNumber(), wfObj[i].getProcessID(), "Expired", aa.date.getCurrentDate(), "", "", systemUserObj, "Y");
                                     }
                                 }
                             }
