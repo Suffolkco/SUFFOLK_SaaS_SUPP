@@ -42,19 +42,17 @@ if (conArray.length < 1)
         editAppSpecificLOCAL(asi, AInfo[asi], capId);
     }
 */
-    var tableCopy = 0;
-    if (tableCopy == 0)
-    {
-        copyASITables(parentCapId, capId);
-        tableCopy = tableCopy + 1;
-    }
-    //copyAddresses(parentCapId, capId); 
+  
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
+    
+    
 }
 else
 {
     removeAllFees(capId); //If user updates table after assessment 
+
+    addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
 if (typeof (RESTRICTIONS) == "object") {
     var rowsToPay = 0;
     logDebug("RESTRICTIONS is an object");

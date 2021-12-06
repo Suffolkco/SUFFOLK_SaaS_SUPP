@@ -146,9 +146,9 @@ local_loadASITables4ACA();
 var validationMessage = "";
 
 
-var msgMissingEdu = "At least one row is required in Education list.<br/>";
+var msgMissingEdu = "At least one row is required in the CONTINUING EDUCATION list.<br/>";
 
-if(typeof EDUCATION == 'undefined' || EDUCATION == null || EDUCATION.length <= 0){
+if(typeof CONTINUINGEDUCATION == 'undefined' || CONTINUINGEDUCATION == null || CONTINUINGEDUCATION.length <= 0){
     validationMessage += msgMissingEdu;
 }
 
