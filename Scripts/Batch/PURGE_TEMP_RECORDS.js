@@ -43,10 +43,7 @@ function runSQL() {
     var sStmt1 = null;
     var rret = null;
     try {
-        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-        var ds = initialContext.lookup("java:/AA");
-        conn = ds.getConnection();
-
+        var conn = aa.db.getConnection();
         var usql = " UPDATE b1permit ";
             usql += " SET rec_status     ='I', ";
             usql += "  REC_FUL_NAM      ='SQL SCRIPT' ";
