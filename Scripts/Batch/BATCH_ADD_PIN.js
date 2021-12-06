@@ -369,8 +369,7 @@
 
 
                 logDebug(selectString);
-                var spc = ""+aa.getServiceProviderCode();
-                conn = ds.getConnection();
+                var conn = aa.db.getConnection();
                 sStmt = aa.db.prepareStatement(conn,selectString); /* NEW WAY */
                 rSet = sStmt.executeQuery();
                 var counter = 0;
