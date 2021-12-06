@@ -369,10 +369,7 @@
 
 
                 logDebug(selectString);
-                var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
                 var spc = ""+aa.getServiceProviderCode();
-                var icLkupVal = "java:/"+spc ;
-                var ds = initialContext.lookup(icLkupVal);
                 conn = ds.getConnection();
                 sStmt = aa.db.prepareStatement(conn,selectString); /* NEW WAY */
                 rSet = sStmt.executeQuery();

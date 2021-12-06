@@ -80,9 +80,7 @@ if (operation == "PROCESSDATA") {
     var jsonIN = String(aa.env.getValue("input"));
     d = JSON.parse(jsonIN);
     resultsRecords = d;
-    initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-    ds = initialContext.lookup("java:/AA");
-    conn = ds.getConnection();
+    var conn = aa.db.getConnection();
     sDrillDownSeriesStmt = conn.prepareStatement(selectDrillDownSeriesString);
     sChildValueStmt = conn.prepareStatement(selectChildValueString);
     sParentValueStmt = conn.prepareStatement(selectParentValueString);
