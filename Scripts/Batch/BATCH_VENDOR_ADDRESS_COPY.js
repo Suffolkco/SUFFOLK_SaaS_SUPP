@@ -456,9 +456,7 @@ function getCaps_Query(recordType,lstRecordStatuses,lstIgnoreRecordStatuses){
 
 function runCapsBy_Query(q,r){
 	try{
-		var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-		var ds = initialContext.lookup("java:/SUFFOLKCO");
-		var conn = ds.getConnection();
+		var conn = aa.db.getConnection();
 		var sStmt = conn.prepareStatement(q);
 		var rSet = sStmt.executeQuery();
 
