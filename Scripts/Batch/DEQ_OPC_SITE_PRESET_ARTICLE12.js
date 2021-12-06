@@ -171,7 +171,7 @@ function mainProcess()
 {    
     try 
     {
-        logDebug("Batch script will run");
+        logDebugLocal("Batch script will run");
         
       	/* GOAL # 1 & 2 **********************************************************************
 		Go through all the child records of OPC site records. Child record can only be DEQ/OPC/Hazardous Tank/Permit.
@@ -206,7 +206,7 @@ function mainProcess()
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
-                {
+                {					
 					// STIE ARTICLE 12 set to NO at the beginning
 					var art12 = getAppSpecific("Article 12 Regulated Site", capId);   
 					if (art12 != "No")
@@ -214,7 +214,7 @@ function mainProcess()
 						//editAppSpecific("Article 12 Regulated Site", "No", capId);
 						//logDebugLocal("Set Article 12 to No for " + capIDString + ". It had a value of " + art12);
 						art12SiteDefaultToNoCnt++;	
-						art12SiteDefaultToNoID = art12SiteDefaultToNoID + "," + art12SiteDefaultToNoID;
+						art12SiteDefaultToNoID = art12SiteDefaultToNoID + "," + capIDString;
 					}
 
 					// SITE custom fields check
@@ -224,7 +224,7 @@ function mainProcess()
 					if (ownerType == "2-State Government" || regulatedSite == "Yes")			
 					{
 						totalSiteMatchedOwnerType++;
-						totalSiteMatchedOwnerTypeID = totalSiteMatchedOwnerTypeID + "," + totalSiteMatchedOwnerTypeID;
+						totalSiteMatchedOwnerTypeID = totalSiteMatchedOwnerTypeID + "," + capIDString;
 					}
 					else
 					{			
@@ -296,7 +296,7 @@ function mainProcess()
 													// Quit for that site. No need to check additional tank child																									
 													//logDebugLocal("Prod Stored matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 													art12Total++;
-													art12TotalID = art12TotalID + "," + art12TotalID;
+													art12TotalID = art12TotalID + "," + capIDString;
 													break; // exit and go to next site
 												}
 												else if (prodStoredCat == "Heating Oils: On-Site Consumption" || prodStoredCat == "Emergency Generator Fuels" )
@@ -310,7 +310,7 @@ function mainProcess()
 													// Quit for that site. No need to check additional tank child																									
 													//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 													art12Total++;
-													art12TotalID = art12TotalID + "," + art12TotalID;
+													art12TotalID = art12TotalID + "," + capIDString;
 													break; // exit and go to next site														
 													
 												}	
@@ -327,7 +327,7 @@ function mainProcess()
 															// Quit for that site. No need to check additional tank child																									
 															//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 															art12Total++;
-															art12TotalID = art12TotalID + "," + art12TotalID;
+															art12TotalID = art12TotalID + "," + capIDString;
 
 															break; // exit and go to next site			
 														}
@@ -339,7 +339,7 @@ function mainProcess()
 																// Quit for that site. No need to check additional tank child																									
 																//logDebugLocal("Official code matched for SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 																art12Total++;
-																art12TotalID = art12TotalID + "," + art12TotalID;
+																art12TotalID = art12TotalID + "," + capIDString;
 
 																break; // exit and go to next site		
 															}
@@ -358,13 +358,13 @@ function mainProcess()
 									//editAppSpecific("Article 12 Regulated Site", "Yes", capId);
 									//logDebugLocal("Final Check capacity > 1100: " + totalCapacity + "," + capIDString);
 									abovegroundGreaterThan1100++;	
-									abovegroundGreaterThan1100ID = abovegroundGreaterThan1100ID + "," + abovegroundGreaterThan1100ID;								
+									abovegroundGreaterThan1100ID = abovegroundGreaterThan1100ID + "," + capIDString;								
 								}
 
 							}
 							
 						}
-					}
+					}					
 				}
 			}			
 		
