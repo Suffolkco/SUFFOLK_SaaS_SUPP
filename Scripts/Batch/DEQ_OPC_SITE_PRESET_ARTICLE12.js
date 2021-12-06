@@ -171,8 +171,7 @@ function mainProcess()
 {    
     try 
     {
-        logDebugLocal("Batch script will run");
-        
+        logDebugLocal("Batch script will run");        
       	/* GOAL # 1 & 2 **********************************************************************
 		Go through all the child records of OPC site records. Child record can only be DEQ/OPC/Hazardous Tank/Permit.
 		Default SITE Article 12 Regulated Site = No;	
