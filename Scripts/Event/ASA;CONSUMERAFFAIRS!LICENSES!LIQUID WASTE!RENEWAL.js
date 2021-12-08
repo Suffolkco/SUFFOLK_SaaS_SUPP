@@ -45,7 +45,7 @@ if (conArray.length < 1)
   
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
-    
+    updateShortNotes(parentCapId);
     
 }
 else
