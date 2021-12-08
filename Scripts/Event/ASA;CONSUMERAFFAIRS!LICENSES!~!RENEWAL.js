@@ -51,7 +51,7 @@ if (conArray.length < 1)
     //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
-    if (appTypeArray[2] = "Liquid Waste")
+    if (appTypeArray[2] == "Liquid Waste")
     {
      copyASITables(parentCapId, capId); 
     }
@@ -61,7 +61,7 @@ if (conArray.length < 1)
 else
 { 
     
-    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
+    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
         logDebug("Not Dry Cleaning, RE or RP")
         addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
@@ -76,14 +76,14 @@ else
             addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
         }
     }
-    if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
+    /*if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
     {
         addFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y") 
     }
     if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
     {
         addFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y") 
-    }
+    }*/
 }
 
 
