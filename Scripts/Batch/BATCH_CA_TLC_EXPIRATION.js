@@ -156,7 +156,7 @@ function mainProcess()
                                         if (curExp != null)
                                         {
                                             var curSt = b1Exp.getExpStatus();
-                                            if (curSt != null)
+                                            if (curSt != null)BS-64856
                                             {
                                                 if (curSt == "About to Expire")
                                                 {
@@ -172,7 +172,7 @@ function mainProcess()
                                                         logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to Expired");
 
                                                         //Setting app status to Expired
-                                                        aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_TLC_EXPIRATION", systemUserObj);
+                                                        aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "", systemUserObj);
 
                                                         var vEParams = aa.util.newHashtable();
                                                         var AInfo = new Array();

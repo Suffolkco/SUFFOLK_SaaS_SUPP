@@ -244,7 +244,7 @@ function mainProcess()
                                     }
                                 }
                             }
-                            aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_ID_CARDS_ABOUT_TO_EXPIRE", systemUserObj);
+                            aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "", systemUserObj);
                             logDebugLocal("<b>" + capIDString + "</b>" + " About to Expire");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())

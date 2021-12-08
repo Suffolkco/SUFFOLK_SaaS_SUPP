@@ -178,7 +178,7 @@ function mainProcess()
                                                         logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
 
                                                         //Setting app status to About to Expire
-                                                        aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "Updated via BATCH_CA_TLC_ABOUT_TO_EXPIRE", systemUserObj);
+                                                        aa.cap.updateAppStatus(capId, "Set to About to Expire from Batch", "About to Expire", sysDate, "", systemUserObj);
 
                                                         var vEParams = aa.util.newHashtable();
                                                         var vRParams = aa.util.newHashtable();

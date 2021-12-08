@@ -225,7 +225,7 @@ function mainProcess()
                                     }
                                 }
                             }
-                            aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "Updated via BATCH_CA_REGISTRATIONS_EXPIRATION", systemUserObj);
+                            aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "", systemUserObj);
                             logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())
