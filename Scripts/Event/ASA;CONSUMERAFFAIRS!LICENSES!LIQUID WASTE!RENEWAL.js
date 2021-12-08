@@ -41,11 +41,11 @@ if (conArray.length < 1)
         logDebug("ASI: " + asi + " value is:" + AInfo[asi]);
         editAppSpecificLOCAL(asi, AInfo[asi], capId);
     }
-*/
+   */
   
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
-    updateShortNotes(parentCapId);
+    
     
 }
 else
