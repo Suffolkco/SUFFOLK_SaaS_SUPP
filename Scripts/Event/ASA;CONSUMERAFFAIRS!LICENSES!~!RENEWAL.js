@@ -51,7 +51,7 @@ if (conArray.length < 1)
     //copyAddresses(parentCapId, capId); 
     copyParcels(parentCapId, capId);
     copyParcelGisObjects();
-    updateShortNotes("Shortnotes are " + parentCapId);
+    
     if (appTypeArray[2] == "Liquid Waste")
     {
      copyASITables(parentCapId, capId); 
