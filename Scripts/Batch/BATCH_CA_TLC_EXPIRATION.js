@@ -69,7 +69,7 @@ if (fList.getSuccess())
 /------------------------------------------------------------------------------------------------------*/
 var message = "";
 var startDate = new Date();
-var startTime = startDate.getTime(); // Start timer
+var startTime = startDate.getTime(); // Start timer 
 var todayDate = (startDate.getMonth() + 1) + "/" + (startDate.getDate() - 1) + "/" + startDate.getFullYear();
 var fromDate = aa.date.parseDate("1/1/1980");
 var toDate = aa.date.parseDate((new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
