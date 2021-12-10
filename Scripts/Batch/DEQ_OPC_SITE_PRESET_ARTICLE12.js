@@ -607,9 +607,7 @@ function doSQLSelect_local(sql)
     {
         //logdebug("iNSIDE FUNCTION");
         var array = [];
-        var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-        var ds = initialContext.lookup("java:/SUFFOLKCO");
-        var conn = ds.getConnection();
+		var conn = aa.db.getConnection();
         var sStmt = conn.prepareStatement(sql);
         if (sql.toUpperCase().indexOf("SELECT") == 0)
         {
