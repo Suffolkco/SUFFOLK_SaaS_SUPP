@@ -352,11 +352,7 @@
                 selectString += "   AND RSTATELIC.LIC_TYPE IN('Appliance Repair ID Card-Sales','Backflow Tester','Board Up-Sales','Home Improvement-Sales','Appliance Repair','Commercial Paint','Dry Cleaning','Electrical Inspector','Home Furnishing','Home Improvement','Liquid Waste','Master Electrician','Master Plumber','Pet Cemetary','Polygraph Examiner','Precious Metal','Restricted Electrical','Restricted Plumbing','Second Hand Dealer','Sign Hanger','Tax Grievance','Board Up','E-Cigarettes','Expeditor','Home Energy Auditor','Pet Grooming','Swimming Pool Maintenance') ";
                 selectString += "   AND ROWNUM < 5000 ";
             
-                logDebug(selectString);
-                var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-                var spc = ""+aa.getServiceProviderCode();
-                var icLkupVal = "java:/"+spc ;
-                var ds = initialContext.lookup(icLkupVal);
+                logDebug(selectString);                
                 var conn = aa.db.getConnection();
                 sStmt = aa.db.prepareStatement(conn,selectString); /* NEW WAY */
                 rSet = sStmt.executeQuery();
