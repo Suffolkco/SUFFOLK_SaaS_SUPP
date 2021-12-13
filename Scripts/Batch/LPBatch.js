@@ -95,7 +95,7 @@ aa.print(emailText);
 function mainProcess() {
 	var capCount = 0;
 	capIdList = new Array();
-	var conn = ds.getConnection();
+	var conn = aa.db.getConnection();
     var selectString = "select b1_per_id1, b1_per_id2, b1_per_id3 from b1permit where serv_prov_code = 'SUFFOLKCO' and b1_per_group = 'ConsumerAffairs' and b1_per_type in ('Licenses', 'ID Cards', 'Registrations') and rec_status = 'A' and b1_appl_class = 'COMPLETE'";
     var sStmt = conn.prepareStatement(selectString);
 

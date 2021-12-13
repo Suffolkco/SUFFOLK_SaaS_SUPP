@@ -340,12 +340,8 @@
                 //selectString += "   AND ROWNUM < 200 ";
 
             
-                logDebug(selectString);
-                var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-                var spc = ""+aa.getServiceProviderCode();
-                var icLkupVal = "java:/"+spc ;
-                var ds = initialContext.lookup(icLkupVal);
-                conn = ds.getConnection();
+                logDebug(selectString);                
+                var conn = aa.db.getConnection();
                 sStmt = aa.db.prepareStatement(conn,selectString); /* NEW WAY */
                 rSet = sStmt.executeQuery();
                 var counter = 0;

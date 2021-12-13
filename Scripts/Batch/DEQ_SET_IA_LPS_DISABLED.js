@@ -181,7 +181,7 @@ function processComResSub()
                                                         logDebug("8. LP Business License: " + businessLicense);
                                                                                                        
                                                         // Add code to check if it's 90 days after expiration. 
-                                                        // Set the LP to disable            
+                                                        // Set the LP to disable                                                                    
                                                         logDebug("9. Start to disable : " + capIDString + ". License Type: " + licenType);                                            
                                                         disableRefLicProf(capId, licenType);
                                                     }                                                

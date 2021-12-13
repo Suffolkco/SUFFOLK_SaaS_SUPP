@@ -2,9 +2,7 @@ function getCapIdByChecklistID(checklistID)
 {
 var returnedCapID;
 var servProvCode=aa.getServiceProviderCode();
-var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-var ds = initialContext.lookup("java:/AA");
-var conn = ds.getConnection();
+var conn = aa.db.getConnection();
 //var selectString = "select DISTINCT B1_PER_ID1, B1_PER_ID2, B1_PER_ID3 from B3CONTACT WHERE SERV_PROV_CODE= ? AND G1_CONTACT_NBR = ? AND B1_CONTACT_TYPE = ?";
 var selectString = "select DISTINCT B1_PER_ID1, B1_PER_ID2, B1_PER_ID3 from GGUIDESHEET where serv_prov_code= ? and GUIDESHEET_ID = ?"
 var sStmt = conn.prepareStatement(selectString);
