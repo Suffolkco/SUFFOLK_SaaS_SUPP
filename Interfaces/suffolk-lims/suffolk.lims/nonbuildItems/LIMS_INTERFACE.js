@@ -81,9 +81,7 @@ if (operation == "PROCESSDATA") {
     var jsonIN = String(aa.env.getValue("input"));
     d = JSON.parse(jsonIN);
     resultsRecords = d;
-    initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-    ds = initialContext.lookup("java:/SUFFOLKCO");
-    conn = ds.getConnection();
+    var conn = aa.db.getConnection();
     sDrillDownSeriesStmt = conn.prepareStatement(selectDrillDownSeriesString);
     sChildValueStmt = conn.prepareStatement(selectChildValueString);
     sParentValueStmt = conn.prepareStatement(selectParentValueString);
@@ -158,9 +156,7 @@ if (operation == "COMPLETEPROCESSING") {
     showDebug = true;
     var aadb = new db();
     var fieldNum = String(aa.env.getValue("fieldNum"));
-    initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-    ds = initialContext.lookup("java:/SUFFOLKCO");
-    conn = ds.getConnection();
+    var conn = aa.db.getConnection();
     uInspStmt = conn.prepareStatement(updateInspString);
     sDrillDownSeriesStmt = conn.prepareStatement(selectDrillDownSeriesString);
     sChildValueStmt = conn.prepareStatement(selectChildValueString);
@@ -1111,9 +1107,7 @@ function db() {
             maxRows = 100;
         }
         try {
-            var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-            var ds = initialContext.lookup("java:/SUFFOLKCO");
-            var conn = ds.getConnection();
+            var conn = aa.db.getConnection();
             var sStmt = conn.prepareStatement(sql);
             sStmt.setMaxRows(maxRows);
             var rSet = sStmt.executeQuery();
@@ -1140,9 +1134,7 @@ function db() {
      */
     this.dbExecute = function (sql) {
         try {
-            var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-            var ds = initialContext.lookup("java:/SUFFOLKCO");
-            var conn = ds.getConnection();
+            var conn = aa.db.getConnection();
             var sStmt = conn.prepareStatement(sql);
             sStmt.setMaxRows(1);
             var rSet = sStmt.executeQuery();
@@ -1162,9 +1154,7 @@ function db() {
     this.dbScalarExecute = function (sql) {
         var out = null;
         try {
-            var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-            var ds = initialContext.lookup("java:/SUFFOLKCO");
-            var conn = ds.getConnection();
+            var conn = aa.db.getConnection();
             var sStmt = conn.prepareStatement(sql);
             sStmt.setMaxRows(1);
             var rSet = sStmt.executeQuery();
