@@ -32,7 +32,6 @@ var selectParentValueString = "SELECT p.BIZDOMAIN_VALUE AS PARENT_VALUE from RBI
     " WHERE p.SERV_PROV_CODE = 'SUFFOLKCO' and map.DRLLD_SERIES_ID = ? and p.REC_STATUS = 'A' and map.REC_STATUS = 'A' and c.REC_STATUS = 'A'";
 var updateInspString = "UPDATE g6ACTION set g6_DESI_DD = convert(datetime, ?) where serv_prov_code = 'SUFFOLKCO' and g6_act_num = ?";
 
-
 var inspRecordId = null;
 var inspSeqNum = -1;
 var siteId = null;
