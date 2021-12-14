@@ -32,7 +32,7 @@ try{
 			if(matches(vPhone, null, " ")){
 				vPhone = " ";
 			}
-			var shortNotesString = fName + " " + lName + ", " + vbusiness + ", " + vPhone + "," + parentCapId.getCustomID();
+			var shortNotesString = fName + " " + lName + ", " + vbusiness + ", " + vPhone + "," + parentCapId;
 			updateShortNotes(shortNotesString); 
 		}
 	}
