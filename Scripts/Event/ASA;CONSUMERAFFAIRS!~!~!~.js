@@ -28,10 +28,11 @@ try{
 			var lName = vendorInfo[5];
 			var vbusiness = vendorInfo[6];
 			var vPhone = vendorInfo[7];
+			var parentCapId = getParentCapID4Renewal()
 			if(matches(vPhone, null, " ")){
 				vPhone = " ";
 			}
-			var shortNotesString = fName + " " + lName + ", " + vbusiness + ", " + vPhone;
+			var shortNotesString = fName + " " + lName + ", " + vbusiness + ", " + vPhone + "," + parentCapId.getCustomID();
 			updateShortNotes(shortNotesString); 
 		}
 	}
