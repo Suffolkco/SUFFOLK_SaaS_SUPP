@@ -58,9 +58,6 @@ if (conArray.length < 1)
     }
 
     
-}
-else
-{ 
     
     if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
     {
