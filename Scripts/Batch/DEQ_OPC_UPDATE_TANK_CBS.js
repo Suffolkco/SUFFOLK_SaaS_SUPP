@@ -193,6 +193,7 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
 					var prodStoredCat = getAppSpecific("Product Stored Label", capId);
+					
 					if (prodStoredCat != null && 
 						(prodStoredCat == "Chlorine" ||
 						prodStoredCat == "Caustic (NaOH)" ||
