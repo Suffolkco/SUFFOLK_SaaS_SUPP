@@ -212,7 +212,6 @@ function mainProcess()
 							count++;
 							tanks = tanks + "," + capIDString;
 						}
-
 									
 					}
 				}
