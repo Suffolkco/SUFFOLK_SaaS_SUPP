@@ -196,6 +196,9 @@ var validationMessage = "";
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
 
+if(parentCapId) 
+{
+var parentAltId = parentCapId.getCustomID();
 var parentCapId = getParent();
 var parentCap = aa.cap.getCap(parentCapId).getOutput();
 var parentAppTypeResult = parentCap.getCapType();
@@ -214,6 +217,7 @@ if (matches(parentAppTypeString, "ConsumerAffairs/Registrations/Pet Grooming/Ind
         cancel = true;
         message = validationMessage;
     }
+}
 }
 
 //////////////////////////////////////////////
