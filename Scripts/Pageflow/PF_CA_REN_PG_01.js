@@ -164,6 +164,14 @@ function getParent()
 		}
 	}
 
+    function getParentCapID4Renewal(itemCap) {
+        parentLic = getParentLicenseCapID(itemCap);
+        pLicArray = String(parentLic).split("-");
+        var parentLicenseCAPID = aa.cap.getCapID(pLicArray[0], pLicArray[1], pLicArray[2]).getOutput();
+    
+        return parentLicenseCAPID;
+    }
+
 ///// SET REQUIRED FIELDS - START
 var cap = aa.env.getValue("CapModel");
 var capId = cap.getCapID();
@@ -195,7 +203,7 @@ var validationMessage = "";
 
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
-var parentCapId = getParent();
+var parentCapId = getParentCapID4Renewal();
 if(parentCapId) 
 {
 var parentAltId = parentCapId.getCustomID();
