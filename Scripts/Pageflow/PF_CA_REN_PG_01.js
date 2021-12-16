@@ -195,11 +195,10 @@ var validationMessage = "";
 
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
-
+var parentCapId = getParent();
 if(parentCapId) 
 {
 var parentAltId = parentCapId.getCustomID();
-var parentCapId = getParent();
 var parentCap = aa.cap.getCap(parentCapId).getOutput();
 var parentAppTypeResult = parentCap.getCapType();
 var parentAppTypeString = parentAppTypeResult.toString();
