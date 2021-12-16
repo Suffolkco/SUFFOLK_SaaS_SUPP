@@ -141,6 +141,29 @@ function local_loadASITables4ACA()
     }
 }
 
+function getParent() 
+	{
+	// returns the capId object of the parent.  Assumes only one parent!
+	//
+	getCapResult = aa.cap.getProjectParents(capId,1);
+	if (getCapResult.getSuccess())
+		{
+		parentArray = getCapResult.getOutput();
+		if (parentArray.length)
+			return parentArray[0].getCapID();
+		else
+			{
+			logDebug( "**WARNING: GetParent found no project parent for this application");
+			return false;
+			}
+		}
+	else
+		{ 
+		logDebug( "**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
+		return false;
+		}
+	}
+
 ///// SET REQUIRED FIELDS - START
 var cap = aa.env.getValue("CapModel");
 var capId = cap.getCapID();
@@ -173,6 +196,8 @@ var validationMessage = "";
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
 
+var parentCapId = getParent();
+var parentCap = aa.cap.getCap(parentCapId).getOutput();
 var parentAppTypeResult = parentCap.getCapType();
 var parentAppTypeString = parentAppTypeResult.toString();
 
