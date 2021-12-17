@@ -211,8 +211,7 @@ function mainProcess()
 							logDebugLocal("Update tank CBS Regulated Site to yes: " + capIDString);
 							count++;
 							tanks = tanks + "," + capIDString;
-						}
-									
+						}									
 					}
 				}
 			}
