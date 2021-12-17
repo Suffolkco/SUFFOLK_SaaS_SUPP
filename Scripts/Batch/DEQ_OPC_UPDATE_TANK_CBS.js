@@ -202,12 +202,16 @@ function mainProcess()
 					{			
 									
 						var cbsRegSite = getAppSpecific("CBS Reg", capId);	
-						
-						if (cbsRegSite != 'Yes')
+						if (cbsRegSite != null)
+						{
+							logDebugLocal("cbsRegSite: " + cbsRegSite);
+						}
+
+						if (cbsRegSite != 'Yes' || cbsRegSite != 'Y')
 						{
 							//editAppSpecific("CBS Reg", "Yes", capId);
 							logDebugLocal("Product Stored Category is: " + prodStoredCat);
-							logDebugLocal("Current DBS Regulated Site value is: " + cbsRegSite);
+							logDebugLocal("Current CBS Regulated Site value is: " + cbsRegSite);
 							logDebugLocal("Update tank CBS Regulated Site to yes: " + capIDString);
 							count++;
 							tanks = tanks + "," + capIDString;
