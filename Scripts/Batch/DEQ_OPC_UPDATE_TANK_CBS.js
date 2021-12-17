@@ -201,11 +201,11 @@ function mainProcess()
 						prodStoredCat == "Methanol"))
 					{			
 									
-						var cbsRegSite = getAppSpecific("CBS Regulated Site", capId);	
+						var cbsRegSite = getAppSpecific("CBS Reg", capId);	
 						
 						if (cbsRegSite != 'Yes')
 						{
-							editAppSpecific("CBS Regulated Site", "Yes", capId);
+							//editAppSpecific("CBS Reg", "Yes", capId);
 							logDebugLocal("Product Stored Category is: " + prodStoredCat);
 							logDebugLocal("Current DBS Regulated Site value is: " + cbsRegSite);
 							logDebugLocal("Update tank CBS Regulated Site to yes: " + capIDString);
