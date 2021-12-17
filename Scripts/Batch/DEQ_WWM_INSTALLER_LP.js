@@ -172,7 +172,7 @@ function createUpdateRefLicProfWWM(capId) {
                     var cat = category.toString();
                     cat = cat.substr(0,4);                              
                     
-                    if (cat == "LW9 " && type == "Liquid Waste Endorsement")
+                    if (cat == "LW9 ")// && type == "Liquid Waste Endorsement")
                     {          
                         var capContResult = aa.people.getCapContactByCapID(capId);
 
