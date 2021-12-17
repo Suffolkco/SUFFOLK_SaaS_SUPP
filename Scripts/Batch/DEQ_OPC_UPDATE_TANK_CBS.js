@@ -205,8 +205,7 @@ function mainProcess()
 						
 						if (cbsRegSite != 'Yes')
 						{
-							//editAppSpecific("CBS Regulated Site", "Yes", capId);
-
+							editAppSpecific("CBS Regulated Site", "Yes", capId);
 							logDebugLocal("Product Stored Category is: " + prodStoredCat);
 							logDebugLocal("Current DBS Regulated Site value is: " + cbsRegSite);
 							logDebugLocal("Update tank CBS Regulated Site to yes: " + capIDString);
@@ -220,7 +219,7 @@ function mainProcess()
 		}
 		
 		logDebugLocal("Number of tank records that has been updated: " + count);
-		logDebugLocal("These are the sites: " + tanks);
+		logDebugLocal("These are the tank IDs: " + tanks);
 		
 	
 	}
