@@ -2,10 +2,10 @@
 | START User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
 var showMessage = false; // Set to true to see results in popup window
-var showDebug = false; // Set to true to see debug messages in popup window
+var showDebug = true; // Set to true to see debug messages in popup window
 var useAppSpecificGroupName = false; // Use Group name when populating App Specific Info Values
 var useTaskSpecificGroupName = false; // Use Group name when populating Task Specific Info Values
-var cancel = false;
+var cancel = true;
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
@@ -204,11 +204,16 @@ var validationMessage = "";
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
 var parentCapId = getParentCapID4Renewal();
+logDebug ("parentCapId is: " + parentCapId);
 
 var parentAltId = parentCapId.getCustomID();
+logDebug ("parentAltId is: " + parentAltId);
 var parentCap = aa.cap.getCap(parentCapId).getOutput();
+logDebug ("parentCap is: " + parentCap);
 var parentAppTypeResult = parentCap.getCapType();
+logDebug ("parentAppTypeResult is: " + parentAppTypeResult);
 var parentAppTypeString = parentAppTypeResult.toString();
+logDebug ("parentAppTypeString is: " + parentAppTypeString);
 
 if (matches(parentAppTypeString, "ConsumerAffairs/Registrations/Pet Grooming/Individual"))
 {
