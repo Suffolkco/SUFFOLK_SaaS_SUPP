@@ -142,35 +142,36 @@ function local_loadASITables4ACA()
 }
 
 function getParent() 
-	{
-	// returns the capId object of the parent.  Assumes only one parent!
-	//
-	getCapResult = aa.cap.getProjectParents(capId,1);
-	if (getCapResult.getSuccess())
-		{
-		parentArray = getCapResult.getOutput();
-		if (parentArray.length)
-			return parentArray[0].getCapID();
-		else
-			{
-			logDebug( "**WARNING: GetParent found no project parent for this application");
-			return false;
-			}
-		}
-	else
-		{ 
-		logDebug( "**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
-		return false;
-		}
-	}
-
-    function getParentCapID4Renewal(itemCap) {
-        parentLic = getParentLicenseCapID(itemCap);
-        pLicArray = String(parentLic).split("-");
-        var parentLicenseCAPID = aa.cap.getCapID(pLicArray[0], pLicArray[1], pLicArray[2]).getOutput();
-    
-        return parentLicenseCAPID;
+{
+    // returns the capId object of the parent.  Assumes only one parent!
+    //
+    getCapResult = aa.cap.getProjectParents(capId, 1);
+    if (getCapResult.getSuccess())
+    {
+        parentArray = getCapResult.getOutput();
+        if (parentArray.length)
+            return parentArray[0].getCapID();
+        else
+        {
+            logDebug("**WARNING: GetParent found no project parent for this application");
+            return false;
+        }
     }
+    else
+    {
+        logDebug("**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
+        return false;
+    }
+}
+
+function getParentCapID4Renewal(itemCap)
+{
+    parentLic = getParentLicenseCapID(itemCap);
+    pLicArray = String(parentLic).split("-");
+    var parentLicenseCAPID = aa.cap.getCapID(pLicArray[0], pLicArray[1], pLicArray[2]).getOutput();
+
+    return parentLicenseCAPID;
+}
 
 ///// SET REQUIRED FIELDS - START
 var cap = aa.env.getValue("CapModel");
@@ -203,18 +204,29 @@ var validationMessage = "";
 
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
-var parentCapId = getParentCapID4Renewal();
-
-var parentAltId = parentCapId.getCustomID();
+var parentCapId = cap.getParentCapID();
+logDebug("parentCapId is: " + parentCapId);
 var parentCap = aa.cap.getCap(parentCapId).getOutput();
+logDebug("parentCap is: " + parentCap);
 var parentAppTypeResult = parentCap.getCapType();
-var parentAppTypeString = parentAppTypeResult.toString();
+logDebug("parentAppTypeResult is: " + parentAppTypeResult);
 
-if (matches(parentAppTypeString, "ConsumerAffairs/Registrations/Pet Grooming/Individual"))
+if (matches(parentAppTypeResult, "ConsumerAffairs/Registrations/Pet Grooming/Individual"))
 {
-    if (typeof EDUCATION == 'undefined' || EDUCATION == null || EDUCATION.length <= 0)
+    if (typeof EDUCATION == "object")
+    {
+        
+        var EduLength = EDUCATION.length
+        
+        if (EduLength <= 0)
+        {
+            validationMessage += msgMissingEdu;
+        }
+    }
+    else 
     {
         validationMessage += msgMissingEdu;
+
     }
 
     if (validationMessage != "")
