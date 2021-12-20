@@ -545,6 +545,7 @@ function mainProcess()
 			}			
 		
 		}
+		
 		logDebugLocal("Batch # 3: Total tank records that has set to SITE Article 12 value: " + art12SiteTotal);
 		logDebugLocal("Batch # 3: These are the site records: " + art12SiteTotalID);
 		logDebugLocal("Batch # 3: Total tank records that has to Article 12 to Yes: " + art12TankYesTotal);
