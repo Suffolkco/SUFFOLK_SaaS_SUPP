@@ -2,10 +2,10 @@
 | START User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
 var showMessage = false; // Set to true to see results in popup window
-var showDebug = true; // Set to true to see debug messages in popup window
+var showDebug = false; // Set to true to see debug messages in popup window
 var useAppSpecificGroupName = false; // Use Group name when populating App Specific Info Values
 var useTaskSpecificGroupName = false; // Use Group name when populating Task Specific Info Values
-var cancel = true;
+var cancel = false;
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
@@ -142,35 +142,36 @@ function local_loadASITables4ACA()
 }
 
 function getParent() 
-	{
-	// returns the capId object of the parent.  Assumes only one parent!
-	//
-	getCapResult = aa.cap.getProjectParents(capId,1);
-	if (getCapResult.getSuccess())
-		{
-		parentArray = getCapResult.getOutput();
-		if (parentArray.length)
-			return parentArray[0].getCapID();
-		else
-			{
-			logDebug( "**WARNING: GetParent found no project parent for this application");
-			return false;
-			}
-		}
-	else
-		{ 
-		logDebug( "**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
-		return false;
-		}
-	}
-
-    function getParentCapID4Renewal(itemCap) {
-        parentLic = getParentLicenseCapID(itemCap);
-        pLicArray = String(parentLic).split("-");
-        var parentLicenseCAPID = aa.cap.getCapID(pLicArray[0], pLicArray[1], pLicArray[2]).getOutput();
-    
-        return parentLicenseCAPID;
+{
+    // returns the capId object of the parent.  Assumes only one parent!
+    //
+    getCapResult = aa.cap.getProjectParents(capId, 1);
+    if (getCapResult.getSuccess())
+    {
+        parentArray = getCapResult.getOutput();
+        if (parentArray.length)
+            return parentArray[0].getCapID();
+        else
+        {
+            logDebug("**WARNING: GetParent found no project parent for this application");
+            return false;
+        }
     }
+    else
+    {
+        logDebug("**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
+        return false;
+    }
+}
+
+function getParentCapID4Renewal(itemCap)
+{
+    parentLic = getParentLicenseCapID(itemCap);
+    pLicArray = String(parentLic).split("-");
+    var parentLicenseCAPID = aa.cap.getCapID(pLicArray[0], pLicArray[1], pLicArray[2]).getOutput();
+
+    return parentLicenseCAPID;
+}
 
 ///// SET REQUIRED FIELDS - START
 var cap = aa.env.getValue("CapModel");
@@ -203,23 +204,29 @@ var validationMessage = "";
 
 
 var msgMissingEdu = "At least one row is required in the EDUCATION list.<br/>";
-var parentCapId = getParentCapID4Renewal();
-logDebug ("parentCapId is: " + parentCapId);
-
-var parentAltId = parentCapId.getCustomID();
-logDebug ("parentAltId is: " + parentAltId);
+var parentCapId = cap.getParentCapID();
+logDebug("parentCapId is: " + parentCapId);
 var parentCap = aa.cap.getCap(parentCapId).getOutput();
-logDebug ("parentCap is: " + parentCap);
+logDebug("parentCap is: " + parentCap);
 var parentAppTypeResult = parentCap.getCapType();
-logDebug ("parentAppTypeResult is: " + parentAppTypeResult);
-var parentAppTypeString = parentAppTypeResult.toString();
-logDebug ("parentAppTypeString is: " + parentAppTypeString);
+logDebug("parentAppTypeResult is: " + parentAppTypeResult);
 
-if (matches(parentAppTypeString, "ConsumerAffairs/Registrations/Pet Grooming/Individual"))
+if (matches(parentAppTypeResult, "ConsumerAffairs/Registrations/Pet Grooming/Individual"))
 {
-    if (typeof EDUCATION == 'undefined' || EDUCATION == null || EDUCATION.length <= 0)
+    if (typeof EDUCATION == "object")
+    {
+        
+        var EduLength = EDUCATION.length
+        
+        if (EduLength <= 0)
+        {
+            validationMessage += msgMissingEdu;
+        }
+    }
+    else 
     {
         validationMessage += msgMissingEdu;
+
     }
 
     if (validationMessage != "")
