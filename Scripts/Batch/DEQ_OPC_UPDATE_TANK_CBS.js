@@ -209,7 +209,7 @@ function mainProcess()
 
 						if (cbsRegSite != 'Yes' || cbsRegSite != 'Y')
 						{
-							//editAppSpecific("CBS Reg", "Yes", capId);
+							editAppSpecific("CBS Reg", "Yes", capId);
 							logDebugLocal("Product Stored Category is: " + prodStoredCat);
 							logDebugLocal("Current CBS Regulated Site value is: " + cbsRegSite);
 							logDebugLocal("Update tank CBS Regulated Site to yes: " + capIDString);

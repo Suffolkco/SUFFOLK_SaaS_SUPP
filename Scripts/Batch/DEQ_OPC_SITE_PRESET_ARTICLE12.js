@@ -479,7 +479,7 @@ function mainProcess()
 												//editAppSpecific("Article 12 Regulated Site", art12Site, childCapId);																							
 												//logDebugLocal("Setting Tank Art 12 value to be the same as SITE: " + capIDString + ", and tank: " + childCapId.getCustomID());
 												art12SiteTotal++;	
-												art12SiteTotalID = art12SiteTotalID + ',' + capId;									
+												art12SiteTotalID = art12SiteTotalID + ',' + capIDString;									
 											}
 											else
 											{	
@@ -487,7 +487,7 @@ function mainProcess()
 												{	
 													//editAppSpecific("Article 12 Regulated Site", "Yes", childCapId);												
 													art12TankYesTotal++;										
-													art12TankYesTotalId = art12TankYesTotal + ',' + capId;		
+													art12TankYesTotalId = art12TankYesTotal + ',' + childCapId.getCustomID();		
 												}	
 												else if (!match && isFourDigit)
 												{
@@ -500,7 +500,7 @@ function mainProcess()
 														{															
 																//editAppSpecific("Article 12 Regulated Site", "Yes", childCapId);												
 																art12TankYesTotal++;
-																art12TankYesTotalID = art12TankYesTotalID + ',' + capId;					
+																art12TankYesTotalID = art12TankYesTotalID + ',' + childCapId.getCustomID();					
 														}
 														else if (length == 7) 
 														{
@@ -508,14 +508,14 @@ function mainProcess()
 															{
 																//editAppSpecific("Article 12 Regulated Site", "Yes", childCapId);												
 																art12TankYesTotal++;	
-																art12TankYesTotalID = art12TankYesTotalID + ',' + capId;
+																art12TankYesTotalID = art12TankYesTotalID + ',' + childCapId.getCustomID();
 															}
 														}
 														else
 														{
 															//editAppSpecific("Article 12 Regulated Site", "No", childCapId);												
 															art12TankNoTotal++;	
-															art12TankNoTotalID = art12TankNoTotalID + "," + capId;		
+															art12TankNoTotalID = art12TankNoTotalID + "," + childCapId.getCustomID();		
 														}
 													}
 												}
@@ -523,7 +523,7 @@ function mainProcess()
 												{
 													//editAppSpecific("Article 12 Regulated Site", "No", childCapId);												
 													art12TankNoTotal++;			
-													art12TankNoTotalID = art12TankNoTotalID + "," + capId;						
+													art12TankNoTotalID = art12TankNoTotalID + "," + childCapId.getCustomID();						
 												}
 											}										
 										}
@@ -531,7 +531,7 @@ function mainProcess()
 										{
 											//editAppSpecific("Article 12 Regulated Site", "No", childCapId);												
 											art12TankNoTotal++;							
-											art12TankNoTotalID = art12TankNoTotalID + "," + capId;		
+											art12TankNoTotalID = art12TankNoTotalID + "," + childCapId.getCustomID();		
 										}
 									}
 								}
@@ -545,6 +545,7 @@ function mainProcess()
 			}			
 		
 		}
+		
 		logDebugLocal("Batch # 3: Total tank records that has set to SITE Article 12 value: " + art12SiteTotal);
 		logDebugLocal("Batch # 3: These are the site records: " + art12SiteTotalID);
 		logDebugLocal("Batch # 3: Total tank records that has to Article 12 to Yes: " + art12TankYesTotal);
