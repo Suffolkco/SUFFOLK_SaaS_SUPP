@@ -60,7 +60,7 @@ try
     }
     if (!determineACADocumentAttached("Copy of Corporate Position Minutes"))
     {
-        docComments += "Copy of Corporate Position Minutes" + "<br>";
+        docComments += "Copy of Corporate Position Minutes" + "<br>"; 
     }
     if (!determineACADocumentAttached("License and Permit Bond"))
     {
