@@ -42,9 +42,9 @@ try
         docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
 
-    if (!determineACADocumentAttached("Banking Information"))
+    if (!determineACADocumentAttached("Background Explanation"))
     {
-        docComments += "Banking Information" + "<br>";
+        docComments += "Background Explanation" + "<br>";
     }
     if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
@@ -54,10 +54,7 @@ try
     {
         docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
-    if (!determineACADocumentAttached("Banking Information"))
-    {
-        docComments += "Banking Information" + "<br>";
-    }
+    
     if (!determineACADocumentAttached("Copy of Corporate Position Minutes"))
     { 
         docComments += "Copy of Corporate Position Minutes" + "<br>"; 
