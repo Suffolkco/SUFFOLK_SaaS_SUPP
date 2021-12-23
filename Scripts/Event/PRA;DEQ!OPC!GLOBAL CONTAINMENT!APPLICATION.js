@@ -3,12 +3,12 @@ var showDebug = true;
 
 if (publicUser)
 {     
-    var appStatus = getAppStatus(capId);
-
     if (balanceDue <= 0)
-    {
+    {       
         if (isTaskActive("Inspection") || isTaskActive("Final Review"))
         {
+            var appStatus = getAppStatus(capId);
+
             if (isTaskActive("Inspection"))
             {
                 updateTask("Inspection", "Permit Renewed", "", "");        
@@ -27,8 +27,10 @@ if (publicUser)
                 b1Exp = b1ExpResult.getOutput();
                 var newDate = new Date();
                 var newExpDate = (newDate.getMonth() + 1) + "/" + newDate.getDate() + "/" + (newDate.getFullYear() + 1);       
-                logDebug("This is the current month: " + newDate.getMonth());
-    
+                logDebugLocal("This is the current month: " + newExpDate);
+                logDebugLocal("This is the current month: " + newDate.getMonth() + 1 );
+                logDebugLocal("This is the current date: " + newDate.getDate() );
+
                 newIndExpDateOne = aa.date.parseDate(newExpDate);
                 b1Exp.setExpDate(newIndExpDateOne);
                 b1Exp.setExpStatus("Active");
@@ -38,15 +40,17 @@ if (publicUser)
     }
 }
 
-function logDebug(dstr) {
-    vLevel = 1
-    if (arguments.length > 1)
-        vLevel = arguments[1];
-    if ((showDebug & vLevel) == vLevel || vLevel == 1)
-        debug += dstr + br;
-    if ((showDebug & vLevel) == vLevel)
-        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr);
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
 }
+
 
 function getAppStatus() {
 	var itemCap = capId;
