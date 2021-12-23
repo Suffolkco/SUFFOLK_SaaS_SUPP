@@ -42,9 +42,9 @@ try
         docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
 
-    if (!determineACADocumentAttached("Banking Information"))
+    if (!determineACADocumentAttached("Background Explanation"))
     {
-        docComments += "Banking Information" + "<br>";
+        docComments += "Background Explanation" + "<br>";
     }
     if (!determineACADocumentAttached("Copy of DBA Certificate or State Filing Receipt"))
     {
@@ -54,6 +54,34 @@ try
     {
         docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
+    
+    if (!determineACADocumentAttached("Copy of Corporate Position Minutes"))
+    { 
+        docComments += "Copy of Corporate Position Minutes" + "<br>"; 
+    }
+    if (!determineACADocumentAttached("License and Permit Bond"))
+    {
+        docComments += "License and Permit Bond" + "<br>";
+    }
+    if (!determineACADocumentAttached("New York State Filing Receipt"))
+    {
+        docComments += "New York State Filing Receipt" + "<br>";
+    }
+    if (!determineACADocumentAttached("Trade Invoices"))
+    {
+        docComments += "Trade Invoices" + "<br>";
+    }
+    if (!determineACADocumentAttached("W2 Forms"))
+    {
+        docComments += "W2 Forms" + "<br>";
+    }
+    if (!determineACADocumentAttached("Worker's Compensation Certificate"))
+    {
+        docComments += "Worker's Compensation Certificate" + "<br>";
+    }
+
+    
+
  
 
     if (docComments != "") 
