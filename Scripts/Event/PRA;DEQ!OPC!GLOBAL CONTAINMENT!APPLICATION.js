@@ -1,35 +1,42 @@
 //PRA:DEQ/OPC/Global Containment/Application
 var showDebug = true;
+var emailText = "";
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+
 
 if (publicUser)
-{     
+{    
+    logDebug("balanceDue: " + balanceDue);
     if (balanceDue <= 0)
     {       
         if (isTaskActive("Inspection") || isTaskActive("Final Review"))
         {
             var appStatus = getAppStatus(capId);
+            logDebug("appStatus:" + appStatus);
 
             if (isTaskActive("Inspection"))
             {
+                logDebug("Inspection task is active");
                 updateTask("Inspection", "Permit Renewed", "", "");        
                 updateAppStatus("Plan Approved");
             }
             else if (isTaskActive("Final Review"))
             {
+                logDebug("Final Review task is active");
                 updateTask("Final Review", "Resubmitted", "", "");       
                 updateAppStatus("Final Review");
             }
 
             var b1ExpResult = aa.expiration.getLicensesByCapID(capId);
-        
+            
             if (b1ExpResult.getSuccess())
             {
                 b1Exp = b1ExpResult.getOutput();
                 var newDate = new Date();
                 var newExpDate = (newDate.getMonth() + 1) + "/" + newDate.getDate() + "/" + (newDate.getFullYear() + 1);       
-                logDebugLocal("This is the current month: " + newExpDate);
-                logDebugLocal("This is the current month: " + newDate.getMonth() + 1 );
-                logDebugLocal("This is the current date: " + newDate.getDate() );
+                logDebug("This is the current month: " + newExpDate);
+                logDebug("This is the current month: " + newDate.getMonth() + 1 );
+                logDebug("This is the current date: " + newDate.getDate() );
 
                 newIndExpDateOne = aa.date.parseDate(newExpDate);
                 b1Exp.setExpDate(newIndExpDateOne);
@@ -38,8 +45,17 @@ if (publicUser)
             }        
         }
     }
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
 }
 
+
+function logDebug(dstr) {
+	if(showDebug) {
+		aa.print(dstr)
+		emailText += dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
 
 function logDebugLocal(dstr)
 {
