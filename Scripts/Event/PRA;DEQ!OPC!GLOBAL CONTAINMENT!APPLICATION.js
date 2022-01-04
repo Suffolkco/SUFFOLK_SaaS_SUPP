@@ -2,8 +2,8 @@
 var emailText = "";
 var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
-// For testing only , to be removed!!!
-//if (publicUser)
+
+if (publicUser)
 {    
     logDebug("balanceDue: " + balanceDue);
     if (balanceDue <= 0)
@@ -42,7 +42,7 @@ var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
                 //logDebug("This is the current month: " + newDate.getMonth() + 1 );
                 //logDebug("This is the current date: " + newDate.getDate() );
                 newIndExpDateOne = aa.date.parseDate(dateMMDDYYY);
-                logDebug("This is the new expiration date: " + newIndExpDateOne);
+                logDebug("This is the new expiration date: " + dateMMDDYYY);
                 b1Exp.setExpDate(newIndExpDateOne);
                 b1Exp.setExpStatus("Active");
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());        

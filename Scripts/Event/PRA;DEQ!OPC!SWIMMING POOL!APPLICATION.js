@@ -2,7 +2,6 @@
 var emailText = "";
 var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
-
 if (publicUser)
 {    
     logDebug("balanceDue: " + balanceDue);
@@ -42,7 +41,7 @@ if (publicUser)
                 //logDebug("This is the current month: " + newDate.getMonth() + 1 );
                 //logDebug("This is the current date: " + newDate.getDate() );
                 newIndExpDateOne = aa.date.parseDate(dateMMDDYYY);
-                logDebug("This is the new expiration date: " + newIndExpDateOne);
+                logDebug("This is the new expiration date: " + dateMMDDYYY);
                 b1Exp.setExpDate(newIndExpDateOne);
                 b1Exp.setExpStatus("Active");
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());        
@@ -51,6 +50,14 @@ if (publicUser)
     }
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
 }
+
+function addDays(date, days) 
+{
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
 
 function jsDateToMMDDYYYY(pJavaScriptDate) {
 	//converts javascript date to string in MM/DD/YYYY format
