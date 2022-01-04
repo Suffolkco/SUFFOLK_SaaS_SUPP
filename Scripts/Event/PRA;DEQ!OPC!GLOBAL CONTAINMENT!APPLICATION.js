@@ -2,8 +2,8 @@
 var emailText = "";
 var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
-
-if (publicUser)
+// For testing only , to be removed!!!
+//if (publicUser)
 {    
     logDebug("balanceDue: " + balanceDue);
     if (balanceDue <= 0)
