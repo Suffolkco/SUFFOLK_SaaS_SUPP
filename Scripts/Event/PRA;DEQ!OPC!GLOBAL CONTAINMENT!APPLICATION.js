@@ -14,10 +14,10 @@ if (publicUser)
             var appStatus = getAppStatus(capId);
             logDebug("appStatus:" + appStatus);
 
-            if (isTaskActive("Inspection"))
+            if (isTaskActive("Inspections"))
             {
                 logDebug("Inspection task is active");
-                updateTask("Inspection", "Permit Renewed", "", "");        
+                updateTask("Inspections", "Permit Renewed", "", "");        
                 updateAppStatus("Plan Approved");
             }
             else if (isTaskActive("Final Review"))
