@@ -2,6 +2,7 @@
 var emailText = "";
 var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
+
 if (publicUser)
 {    
     logDebug("balanceDue: " + balanceDue);
@@ -30,22 +31,41 @@ if (publicUser)
             if (b1ExpResult.getSuccess())
             {
                 b1Exp = b1ExpResult.getOutput();
-                var newDate = new Date();
-                var newExpDate = (newDate.getMonth() + 1) + "/" + newDate.getDate() + "/" + (newDate.getFullYear() + 1);       
-                logDebug("This is the current month: " + newExpDate);
+                var curExp = b1Exp.getExpDate();
+                var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
+                var dateAdd = addDays(curExpCon, 365);
+                var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);               
+
+                //var newDate = new Date();
+                //var newExpDate = (newDate.getMonth() + 1) + "/" + newDate.getDate() + "/" + (newDate.getFullYear() + 1);       
+                logDebug("This is the current expiration date: " + curExpCon);                
                 //logDebug("This is the current month: " + newDate.getMonth() + 1 );
                 //logDebug("This is the current date: " + newDate.getDate() );
-
-                newIndExpDateOne = aa.date.parseDate(newExpDate);
+                newIndExpDateOne = aa.date.parseDate(dateMMDDYYY);
+                logDebug("This is the new expiration date: " + newIndExpDateOne);
                 b1Exp.setExpDate(newIndExpDateOne);
                 b1Exp.setExpStatus("Active");
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());        
             }        
         }
     }
-    //aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
 }
 
+function jsDateToMMDDYYYY(pJavaScriptDate) {
+	//converts javascript date to string in MM/DD/YYYY format
+	if (pJavaScriptDate != null) {
+		if (Date.prototype.isPrototypeOf(pJavaScriptDate)) {
+			return (pJavaScriptDate.getMonth()+1).toString()+"/"+pJavaScriptDate.getDate()+"/"+pJavaScriptDate.getFullYear();
+		} else {
+			logDebug("Parameter is not a javascript date");
+			return ("INVALID JAVASCRIPT DATE");
+		}
+	} else {
+		logDebug("Parameter is null");
+		return ("NULL PARAMETER VALUE");
+	}
+}
 
 function logDebug(dstr) {
 	if(showDebug) {
