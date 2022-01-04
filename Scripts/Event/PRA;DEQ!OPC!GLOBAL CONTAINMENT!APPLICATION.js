@@ -52,6 +52,14 @@ var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
 }
 
+function addDays(date, days) 
+{
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
+
 function jsDateToMMDDYYYY(pJavaScriptDate) {
 	//converts javascript date to string in MM/DD/YYYY format
 	if (pJavaScriptDate != null) {
