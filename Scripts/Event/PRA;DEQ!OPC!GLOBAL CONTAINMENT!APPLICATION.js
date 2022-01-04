@@ -9,7 +9,7 @@ if (publicUser)
     logDebug("balanceDue: " + balanceDue);
     if (balanceDue <= 0)
     {       
-        if (isTaskActive("Inspection") || isTaskActive("Final Review"))
+        if (isTaskActive("Inspections") || isTaskActive("Final Review"))
         {
             var appStatus = getAppStatus(capId);
             logDebug("appStatus:" + appStatus);
