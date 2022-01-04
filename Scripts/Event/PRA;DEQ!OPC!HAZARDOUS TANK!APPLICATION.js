@@ -1,6 +1,7 @@
-//PRA:DEQ/OPC/Swimming Pool/Application
-var emailText = "";
-var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+//PRA;DEQ!OPC!HAZARDOUS TANK!APPLICATION
+//var emailText = "";
+//var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+
 
 if (publicUser)
 {    
@@ -82,6 +83,7 @@ function getAppStatus() {
 	}
 	return appStatus;
 }
+
 
 
 
