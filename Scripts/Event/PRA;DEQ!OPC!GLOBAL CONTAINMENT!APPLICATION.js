@@ -1,6 +1,6 @@
 //PRA:DEQ/OPC/Global Containment/Application
-//var emailText = "";
-//var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+var emailText = "";
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
 
 if (publicUser)
@@ -49,7 +49,7 @@ if (publicUser)
             }        
         }
     }
-    //aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
 }
 
 function jsDateToMMDDYYYY(pJavaScriptDate) {
