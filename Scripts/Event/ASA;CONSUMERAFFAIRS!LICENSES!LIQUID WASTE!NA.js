@@ -4,7 +4,7 @@
     {
         var rowsToPay = 0;
         logDebug("RESTRICTIONS is an object");
-        for (var rows = 1; rows < RESTRICTIONS.length; rows++)
+        for (var rows = 0; rows < RESTRICTIONS.length; rows++)
         {
             var thisRow = RESTRICTIONS[rows];
             var categoryNeeded = thisRow["Category"];
@@ -20,9 +20,9 @@
             }
         }
         logDebug("Number of Billable Rows in Table is: " + rowsToPay);
-        if (rowsToPay)
+        if (rowsToPay -1 > 0)
         {
-            addFee("SLS_22", "CA_SALES", "FINAL", rowsToPay, "Y");
+            addFee("SLS_22", "CA_SALES", "FINAL", rowsToPay -1, "Y"); 
         }
     }
 
