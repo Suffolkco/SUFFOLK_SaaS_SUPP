@@ -10,11 +10,11 @@ var iObjResult = aa.inspection.getInspection(capId,inspId);
 var iObj = iObjResult.getOutput();
 var inspTypeResult = aa.inspection.getInspectionType(iObj.getInspection().getInspectionGroup(), iObj.getInspectionType())
 var inspTypeArr = inspTypeResult.getOutput();
-var inspType = inspTypeArr[0]; // assume first
+//var inspType = inspTypeArr[0]; // assume first
 var inspSeq = inspType.getSequenceNumber();
 logDebug("Inspection Sequence number: " + inspSeq);
-logDebug("inspType: " + inspType.getInspectionType() + "  inspResult: " + inspResult);
-inspType = inspType.getInspectionType();
+logDebug("inspTypeArr: " + inspTypeArr);
+logDebug("inspType: " + inspType + "  inspResult: " + inspResult);
 
 if(sewageDisposal == "I/A System")
 {
