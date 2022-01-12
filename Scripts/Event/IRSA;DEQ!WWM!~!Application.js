@@ -69,7 +69,8 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                              
                 for (o in newResultObj)
                 {
-                    debugObject ("newResultObj:" + o);
+                    
+                    debugObject ("newResultObj[0]:" + newResultObj[0]);
                 }
 
                         
