@@ -53,7 +53,7 @@ if (conArray.length < 1)
     copyParcelGisObjects();
 
     
-  addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
+  //addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
     
 }
 

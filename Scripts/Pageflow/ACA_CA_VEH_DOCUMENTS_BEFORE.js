@@ -45,9 +45,9 @@ try
     {
         docComments += "Copy of Vehicle Inspection" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of two forms of ID"))
+    if (!determineACADocumentAttached("Copy of NYS Driver's License or Vehicle Owner"))
     {
-        docComments += "Copy of two forms of ID " + "<br>"; 
+        docComments += "Copy of NYS Driver's License or Vehicle Owner " + "<br>"; 
     }
   
 
