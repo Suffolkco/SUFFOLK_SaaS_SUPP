@@ -48,7 +48,7 @@ try
     if (!determineACADocumentAttached("Copy of NYS Driver's License of Vehicle Owner"))
     {
         docComments += "Copy of NYS Driver's License of Vehicle Owner " + "<br>"; 
-    }
+    } 
   
 
     if (docComments != "") 
