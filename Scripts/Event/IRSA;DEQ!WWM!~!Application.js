@@ -13,7 +13,8 @@ var inspTypeArr = inspTypeResult.getOutput();
 var inspType = inspTypeArr[0]; // assume first
 var inspSeq = inspType.getSequenceNumber();
 logDebug("Inspection Sequence number: " + inspSeq);
-logDebug("inspType: " + inspType + "  inspResult: " + inspResult);
+logDebug("inspType: " + inspType.getInspectionType() + "  inspResult: " + inspResult);
+inspType = inspType.getInspectionType();
 
 if(sewageDisposal == "I/A System")
 {
