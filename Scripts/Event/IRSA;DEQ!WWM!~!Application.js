@@ -66,7 +66,10 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                 logDebug("Copy successfully.");
 
                 var newResultObj = iResult.getOutput();
-                             
+                logDebug("newResultObj.length." + newResultObj);
+                logDebug("newResultObj.length." + newResultObj.length);
+                debugObject ("newResultObj:" + newResultObj);
+                if (newResultObj == null || newResultObj.length == 0)    
                 for (o in newResultObj)
                 {
                     
