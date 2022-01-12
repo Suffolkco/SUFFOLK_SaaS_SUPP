@@ -14,7 +14,7 @@ var inspType = inspTypeArr[0]; // assume first
 var inspSeq = inspType.getSequenceNumber();
 logDebug("Inspection Sequence number: " + inspSeq);
 logDebug("inspType: " + iObj.getInspectionType() + "  inspResult: " + inspResult);
-
+var inspModel = iObj.getInspection();
 var inspectionType = iObj.getInspectionType();
 
 
@@ -54,15 +54,21 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 {
     if(inspectionType == "WWM_RES_System 1" && inspResult == "Incomplete")
     {    
-        logDebug("inspType: " + inspectionType + "inspResult: " + inspResult);
-        iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, iObjResult);
-    
-        if (iResult.getSuccess())
-            { logDebug("Copy successfully.");
-            debugObject ("aa.licenseScript:" + iResult.getInspection());
-            //logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
+        logDebug("inspType: " + inspectionType + "inspResult: " + inspResult);    
+        if (inspModel != null) 
+        {
         
+            iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
+    
+            if (iResult.getSuccess())
+            {                     
+                logDebug("Copy successfully.");
+                debugObject ("aa.licenseScript:" + iResult.getInspection());
+                //logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
+            
+            }
         }
+    }
         // Find inspSeqNum
     /*
         var inspResultObj = aa.inspection.getInspection(capId, inspSeqNum);
@@ -91,7 +97,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
         */
         aa.sendMail("noreplyehims@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "IRSA - WWM", emailText);
 
-    }
+    
 }
 function debugObject(object) {
     var output = '';
