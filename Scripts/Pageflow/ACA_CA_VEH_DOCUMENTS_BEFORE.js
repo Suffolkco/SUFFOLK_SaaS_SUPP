@@ -45,10 +45,10 @@ try
     {
         docComments += "Copy of Vehicle Inspection" + "<br>";
     }
-    if (!determineACADocumentAttached("Copy of NYS Driver's License or Vehicle Owner"))
+    if (!determineACADocumentAttached("Copy of NYS Driver's License of Vehicle Owner"))
     {
-        docComments += "Copy of NYS Driver's License or Vehicle Owner " + "<br>"; 
-    }
+        docComments += "Copy of NYS Driver's License of Vehicle Owner " + "<br>"; 
+    } 
   
 
     if (docComments != "") 
