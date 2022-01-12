@@ -54,12 +54,13 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 {
     if(inspectionType == "WWM_RES_System 1" && inspResult == "Incomplete")
     {    
-        logDebug("inspType: " + inspType + "inspResult: " + inspResult);
+        logDebug("inspType: " + inspectionType + "inspResult: " + inspResult);
         iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, iObjResult);
     
         if (iResult.getSuccess())
             { logDebug("Copy successfully.");
-            logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
+            debugObject ("aa.licenseScript:" + iResult.getInspection());
+            //logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
         
         }
         // Find inspSeqNum
@@ -92,7 +93,13 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
     }
 }
-
+function debugObject(object) {
+    var output = '';
+    for (property in object) {
+        output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
+    }
+    logDebug(output);
+}
 function logDebug(dstr) {
 	if(showDebug) {
 		aa.print(dstr)
