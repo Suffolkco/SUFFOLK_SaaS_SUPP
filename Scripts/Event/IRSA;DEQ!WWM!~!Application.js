@@ -3,7 +3,7 @@
 showDebug=true;
 logDebug("inspection ID: " + inspId);
 var sewageDisposal = getAppSpecific("Method of Sewage Disposal");
-logDebug("inspType: " + inspType + "  inspResult: " + inspResult);
+
 logDebug("Sewage disposal: " + sewageDisposal);
 var contactType = "Property Owner";
 var iObjResult = aa.inspection.getInspection(capId,inspId);
@@ -13,7 +13,8 @@ var inspTypeArr = inspTypeResult.getOutput();
 var inspType = inspTypeArr[0]; // assume first
 var inspSeq = inspType.getSequenceNumber();
 logDebug("Inspection Sequence number: " + inspSeq);
-logDebug("inspType1: " + inspType + "  inspResult: " + inspResult);
+logDebug("inspType: " + inspType + "  inspResult: " + inspResult);
+
 if(sewageDisposal == "I/A System")
 {
     logDebug("It is an I/A System. We are checking inspection type.");
@@ -41,25 +42,60 @@ if(sewageDisposal == "I/A System")
 }
 
 // EHIMS 4652
-if(inspType == "WWM_RES_System 1" && inspResult == "Marginal")
+var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+logDebug("itemCapType: " + itemCapType);
+
+// If record type is WWM and it's a backoffice user, we do not want to update the status
+if (itemCapType == "DEQ/WWM/Residence/Application" ||         
+    itemCapType == "DEQ/WWM/Commercial/Application")
 {
-    inspector = inspList[xx].getInspector();
-    inspDate = inspList[xx].getScheduledDate();
-    inspTime = inspList[xx].getScheduledTime();
-    inspType = inspList[xx].getInspectionType();
-    inspComment = inspList[xx].getInspectionComments();
-
-    logDebug("inspector: " + inspector);    
-    logDebug("inspDate: " + inspDate);
-
-    schedRes = aa.inspection.scheduleInspection(capId, "", "", "", inspType, "");
-
-    if (schedRes.getSuccess())
-        {
-        logDebug("Copied scheduled inspection from "+capId.getCustomID()+" to "+capId.getCustomID());
-        inspCount++;
+    if(inspType == "WWM_RES_System 1" && inspResult == "Incomplete")
+    {    
+        logDebug("inspType: " + inspType + "inspResult: " + inspResult);
+        iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, iObjResult);
+    
+        if (iResult.getSuccess())
+            { logDebug("Copy successfully.");
+            logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
+        
         }
-    else
-        logDebug( "**ERROR: copying scheduling inspection (" + inspType + "): " + schedRes.getErrorMessage());
+        // Find inspSeqNum
+    /*
+        var inspResultObj = aa.inspection.getInspection(capId, inspSeqNum);
+        if (inspResultObj.getSuccess()) {
+            var inspObj = inspResultObj.getOutput();
+            if (inspObj) {
+                inspModel = inspObj.getInspection();
+                if (inspModel != null) {
+                    actModel = inspModel.getActivity();
+                    actModel.setStatus("Scheduled");
+                    //actModel.setStatusDate(new Date(sysDateMMDDYYYY));
+                
+                
+                }
+            }
+        } */
+        /*
+        if(inspType == "WWM_RES_System 1" && inspResult == "Marginal")
+        {
+            inspector = inspList[xx].getInspector();
+            inspDate = inspList[xx].getScheduledDate();
+            inspTime = inspList[xx].getScheduledTime();
+            inspType = inspList[xx].getInspectionType();
+            inspComment = inspList[xx].getInspectionComments();
+
+        */
+        aa.sendMail("noreplyehims@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "IRSA - WWM", emailText);
+
     }
 }
+
+function logDebug(dstr) {
+	if(showDebug) {
+		aa.print(dstr)
+		emailText += dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
+
