@@ -3,7 +3,7 @@
 showDebug=true;
 logDebug("inspection ID: " + inspId);
 var sewageDisposal = getAppSpecific("Method of Sewage Disposal");
-
+var emailText ="";
 logDebug("Sewage disposal: " + sewageDisposal);
 var contactType = "Property Owner";
 var iObjResult = aa.inspection.getInspection(capId,inspId);
