@@ -58,7 +58,17 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
         logDebug("inspType: " + inspectionType + "inspResult: " + inspResult);    
         if (inspModel != null) 
         {
-        
+            logDebug("capid: " + capId)
+            if (iObj.getRequestDate() != null)
+            {
+                logDebug("Get Existing Requuest Date:" + iObj.getRequestDate());
+                logDebug ("Request Date Year: " + iObj.getRequestDate().getYear());
+                logDebug ("Request Date Month: " + iObj.getRequestDate().getMonth());
+                logDebug ("Request Date Hour: " + iObj.getRequestDate().getHourOfDay());
+                logDebug ("Request Date getMinute: " + iObj.getRequestDate().getMinute());
+                logDebug ("Request Date getSecond: " + iObj.getRequestDate().getSecond());
+            }
+
             iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
     
             if (iResult.getSuccess())
@@ -67,8 +77,27 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
                 var newResultObj = iResult.getOutput();
                 logDebug("newResultObj.length." + newResultObj);
-                logDebug("newResultObj.length." + newResultObj.length);
-                debugObject ("newResultObj:" + newResultObj);
+                logDebug("newResultObj.length." + newResultObj.length());
+               
+                logDebug("capId: " + capId);
+
+                var newInsResult = aa.inspection.getInspection(capId,inspId + 1);              
+                if (newInsResult.getSuccess()) {
+                    var inspObj = inspResultObj.getOutput();
+                    if (inspObj) {
+                        
+                        inspObj.setInspectionStatus("Scheduled");                                                            
+                        //inspObj.setScheduledDate("");
+                        //inspObj.setRequestDate("");                        
+                        //var systemUserObjResult = aa.person.getUser(currentUserID.toUpperCase());
+                       // inspObj.SetInspector(systemUserObjResult)
+                        aa.inspection.editInspection(inspObj);
+                        }
+                    
+                }
+     
+
+
                 if (newResultObj == null || newResultObj.length == 0)    
                 for (o in newResultObj)
                 {
