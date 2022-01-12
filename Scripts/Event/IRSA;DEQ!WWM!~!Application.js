@@ -92,8 +92,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         //var systemUserObjResult = aa.person.getUser(currentUserID.toUpperCase());
                        // inspObj.SetInspector(systemUserObjResult)
                         aa.inspection.editInspection(inspObj);
-                        }
-                    
+                        }                    
                 }
      
 
