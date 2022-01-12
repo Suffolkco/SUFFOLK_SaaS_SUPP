@@ -10,16 +10,18 @@ var iObjResult = aa.inspection.getInspection(capId,inspId);
 var iObj = iObjResult.getOutput();
 var inspTypeResult = aa.inspection.getInspectionType(iObj.getInspection().getInspectionGroup(), iObj.getInspectionType())
 var inspTypeArr = inspTypeResult.getOutput();
-//var inspType = inspTypeArr[0]; // assume first
+var inspType = inspTypeArr[0]; // assume first
 var inspSeq = inspType.getSequenceNumber();
 logDebug("Inspection Sequence number: " + inspSeq);
-logDebug("inspTypeArr: " + inspTypeArr);
-logDebug("inspType: " + inspType + "  inspResult: " + inspResult);
+logDebug("inspType: " + iObj.getInspectionType() + "  inspResult: " + inspResult);
+
+var inspectionType = iObj.getInspectionType();
+
 
 if(sewageDisposal == "I/A System")
 {
     logDebug("It is an I/A System. We are checking inspection type.");
-    if(inspType == "I/A" && inspResult == "Complete")
+    if(inspectionType == "I/A" && inspResult == "Complete")
     {
         var emailAddress = "";
 
@@ -50,7 +52,7 @@ logDebug("itemCapType: " + itemCapType);
 if (itemCapType == "DEQ/WWM/Residence/Application" ||         
     itemCapType == "DEQ/WWM/Commercial/Application")
 {
-    if(inspType == "WWM_RES_System 1" && inspResult == "Incomplete")
+    if(inspectionType == "WWM_RES_System 1" && inspResult == "Incomplete")
     {    
         logDebug("inspType: " + inspType + "inspResult: " + inspResult);
         iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, iObjResult);
