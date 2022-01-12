@@ -6,6 +6,7 @@ var sewageDisposal = getAppSpecific("Method of Sewage Disposal");
 var emailText ="";
 logDebug("Sewage disposal: " + sewageDisposal);
 var contactType = "Property Owner";
+
 var iObjResult = aa.inspection.getInspection(capId,inspId);
 var iObj = iObjResult.getOutput();
 var inspTypeResult = aa.inspection.getInspectionType(iObj.getInspection().getInspectionGroup(), iObj.getInspectionType())
@@ -65,8 +66,13 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                 logDebug("Copy successfully.");
 
                 var newResultObj = iResult.getOutput();
+                             
+                for (o in newResultObj)
+                {
+                    debugObject ("newResultObj:" + o);
+                }
 
-                debugObject ("newResultObj:" + newResultObj);
+                        
                 //logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
             
             }
