@@ -63,7 +63,10 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             if (iResult.getSuccess())
             {                     
                 logDebug("Copy successfully.");
-                debugObject ("aa.licenseScript:" + iResult.getInspection());
+
+                var newResultObj = iResult.getOutput();
+
+                debugObject ("newResultObj:" + newResultObj);
                 //logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
             
             }
