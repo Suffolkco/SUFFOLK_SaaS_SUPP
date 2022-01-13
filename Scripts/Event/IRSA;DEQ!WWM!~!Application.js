@@ -75,9 +75,10 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             {                     
                 logDebug("Copy successfully.");              
                 logDebug("capId: " + capId);
-                logDebug("Retrieve new inspection number: " + inspId + 1);
-
-                var newInsResult = aa.inspection.getInspection(capId,inspId + 1);              
+                
+                var newInspId = findLatestInspection(inspId);
+                logDebug("New inspection number found: " + newInspId);
+                var newInsResult = aa.inspection.getInspection(capId,newInspId);              
                 if (newInsResult.getSuccess()) {
                     var inspObj = inspResultObj.getOutput();
                     if (inspObj) {
@@ -88,18 +89,11 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         //var systemUserObjResult = aa.person.getUser(currentUserID.toUpperCase());
                        // inspObj.SetInspector(systemUserObjResult)
                         aa.inspection.editInspection(inspObj);
+                        //scheduleInspectDate("Progress Invesgiation", nextWorkDay(new Date(), 10, true), "INSPECTORNAME");
+
                         }                    
                 }
      
-
-
-                if (newResultObj == null || newResultObj.length == 0)    
-                for (o in newResultObj)
-                {
-                    
-                    debugObject ("newResultObj[0]:" + newResultObj[0]);
-                }
-
                         
                 //logDebug("Sequence Number: " + iResult.getInspection().getSequenceNumber());
             
@@ -135,6 +129,31 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
         aa.sendMail("noreplyehims@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "IRSA - WWM", emailText);
 
     
+}
+function findLatestInspection(originalInspectionId)
+{
+    var inspResults = aa.inspection.getInspections(capId);
+    var newInspId = originalInspectionId;
+    var inspectionId;
+    
+	if (inspResults.getSuccess())
+		{
+		var inspAll = inspResults.getOutput();
+		
+		for (ii in inspAll)			
+        {
+            inspectionId = inspAll[ii].getIdNumber();		// Inspection identifier	
+            if (inspectionId > originalInspectionId)
+            {
+                newInspId = inspectionId;
+                // Set the bigger number to original so we always get the latest inspection
+                originalInspectionId = inspectionId;
+            }
+				
+		  }
+		}
+        return newInspId;
+
 }
 function debugObject(object) {
     var output = '';
