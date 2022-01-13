@@ -87,7 +87,8 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                     if (inspObj) {
                         
                         inspObj.setInspectionStatus("Scheduled");      
-                        
+                        var sysDate = aa.date.getCurrentDate();
+                        inspObj.setRequestDate(sysDate);	        
                         var fromInspEntityId = capId + "-" + inspId;
                         var newInspEntityId = capId + "-" + newInspId;
                         copyInspectionDocuments(fromInspEntityId, newInspEntityId);
