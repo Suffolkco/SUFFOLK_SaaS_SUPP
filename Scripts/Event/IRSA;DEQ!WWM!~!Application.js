@@ -106,7 +106,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                 var documentObject = capDocResult1.getOutput().get(docInx);        
                               
 
-                                if (documentObject.getDocName() == "*")
+                                //if (documentObject.getDocName() == "*")
                                 {
                                     debugObject("*******documentObject*****" +documentObject);
                                     logDebug("Entity:" +  documentObject.getEntity());
