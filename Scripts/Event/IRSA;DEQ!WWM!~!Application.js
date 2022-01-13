@@ -89,10 +89,26 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         inspObj.setInspectionStatus("Scheduled");       
                         logDebug("Document Description: " + inspObj.getDocumentDescription());
 
-                        var capDocResult = aa.document.getDocumentListByEntity(capId, "INSPECTION");
+                        var capDocResult = aa.document.getCapDocumentList(capId ,currentUserID);
+
+                        //var capDocResult = aa.document.getDocumentListByEntity(capId, "INSPECTION");
                         if (capDocResult.getSuccess())
                         {       
                             logDebug("***inspection doc  count *** " + capDocResult.getOutput().size());
+                            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+                            {
+                                var documentObject = capDocResult.getOutput().get(docInx);        
+                              
+
+                                //if (documentObject.getDocName() == "*")
+                                {
+                                    debugObject("*******documentObject*****" +documentObject);
+                                    logDebug("Entity:" +  documentObject.getEntity());
+                                    logDebug("*** documentNo *****" + documentObject.getDocumentNo());
+                                    logDebug("docName:" + documentObject.getDocName());
+                                    logDebug("fileName:" + documentObject.getFileName());
+                                }
+                            }
                         }
                         //"Insp Scheduled" == inspObj.getDocumentDescription()             
                                                 
