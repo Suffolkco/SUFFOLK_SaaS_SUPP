@@ -89,27 +89,33 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         inspObj.setInspectionStatus("Scheduled");       
                         logDebug("Document Description: " + inspObj.getDocumentDescription());
 
-                        var capDocResult = aa.document.getCapDocumentList(capId ,currentUserID);
+                       
+
+                        
+                        var inspDocResult = aa.document.getDocumentListByEntity(capId, "INSPECTION");
+                        if (inspDocResult.getSuccess())
+                        {
+                            logDebug("***inspection doc  count *** " + inspDocResult.getOutput().size());
+                        }
 
                         //var capDocResult = aa.document.getDocumentListByEntity(capId, "INSPECTION");
-                        if (capDocResult.getSuccess())
-                        {       
-                            logDebug("***inspection doc  count *** " + capDocResult.getOutput().size());
-                            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
-                            {
-                                var documentObject = capDocResult.getOutput().get(docInx);        
-                              
+                        
+                        // Cap document list
+                        var capDocResult = aa.document.getCapDocumentList(capId ,currentUserID);
 
-                                //if (documentObject.getDocName() == "*")
-                                {
-                                    debugObject("*******documentObject*****" +documentObject);
-                                    logDebug("Entity:" +  documentObject.getEntity());
-                                    logDebug("*** documentNo *****" + documentObject.getDocumentNo());
-                                    logDebug("docName:" + documentObject.getDocName());
-                                    logDebug("fileName:" + documentObject.getFileName());
-                                }
-                            }
+                        for(var counter = 0; counter < docsList.length; counter++)
+                        {
+                            //logDebug("Looping through docList.  Iterator = " + counter+ "  this is the type " +  docsList[counter].getDocCategory());
+                            var thisDocument = docsList[counter];
+                            logDebug("Entity:" +  thisDocument.getEntity());
+                            logDebug("*** documentNo *****" + thisDocument.getDocumentNo());
+                            logDebug("docName:" + thisDocument.getDocName());
+                            logDebug("fileName:" + thisDocument.getFileName());
+                            logDebug("getDocCategory:" + thisDocument.getDocCategory());
+                       
                         }
+                        
+                      
                         //"Insp Scheduled" == inspObj.getDocumentDescription()             
                                                 
                         var capDocResult1 = aa.document.getDocumentListByEntity(capId, "CAP");
@@ -165,6 +171,20 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
     
 }
+function getDocumentList() {
+	// Returns an array of documentmodels if any
+	// returns an empty array if no documents
+
+	var docListArray = new Array();
+
+	docListResult = aa.document.getCapDocumentList(capId,currentUserID);
+
+	if (docListResult.getSuccess()) {		
+		docListArray = docListResult.getOutput();
+	}
+	return docListArray;
+} 
+ 
 
 function copyDocuments(pFromCapId, pToCapId)
 {
