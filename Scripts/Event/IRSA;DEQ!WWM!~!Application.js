@@ -100,8 +100,9 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
                         //var capDocResult = aa.document.getDocumentListByEntity(capId, "INSPECTION");
                         
-                        // Cap document list
-                        var capDocResult = aa.document.getCapDocumentList(capId ,currentUserID);
+                        // Cap document list                        
+                        var docsList = new Array();
+                        docsList = getDocumentList();	
 
                         for(var counter = 0; counter < docsList.length; counter++)
                         {
