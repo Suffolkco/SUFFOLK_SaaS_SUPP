@@ -64,6 +64,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                 logDebug("Get Existing Requuest Date:" + iObj.getRequestDate());
                 logDebug ("Request Date Year: " + iObj.getRequestDate().getYear());
                 logDebug ("Request Date Month: " + iObj.getRequestDate().getMonth());
+                logDebug ("Request Date Day: " + iObj.getRequestDate().getday());
                 logDebug ("Request Date Hour: " + iObj.getRequestDate().getHourOfDay());
                 logDebug ("Request Date getMinute: " + iObj.getRequestDate().getMinute());
                 logDebug ("Request Date getSecond: " + iObj.getRequestDate().getSecond());
@@ -88,7 +89,10 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         
                         inspObj.setInspectionStatus("Scheduled");      
                         var sysDate = aa.date.getCurrentDate();
-                        inspObj.setRequestDate(sysDate);	        
+                        var sysDateMMDDYYYY = dateFormatted(sysDate.getMonth(), sysDate.getDayOfMonth(), sysDate.getYear(), "MM/DD/YYYY");
+                        logDebug("Current Date: " + sysDateMMDDYYYY);                       
+                        inspObj.setRequestDate(sysDate);
+                        logDebug("Retrieve request date: "+ inspObj.getRequestDate());     
                         var fromInspEntityId = capId + "-" + inspId;
                         var newInspEntityId = capId + "-" + newInspId;
                         copyInspectionDocuments(fromInspEntityId, newInspEntityId);
