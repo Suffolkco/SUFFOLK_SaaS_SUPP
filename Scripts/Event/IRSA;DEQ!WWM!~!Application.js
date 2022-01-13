@@ -86,13 +86,18 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                     var inspObj = newInsResult.getOutput();
                     if (inspObj) {
                         
-                        inspObj.setInspectionStatus("Scheduled");       
-                        logDebug("Document Description: " + inspObj.getDocumentDescription());
+                        inspObj.setInspectionStatus("Scheduled");      
+                        
+                        var fromInspEntityId = capId + "-" + inspId;
+                        var newInspEntityId = capId + "-" + newInspId;
+                        copyInspectionDocuments(fromInspEntityId, newInspEntityId);
+                        aa.inspection.editInspection(inspObj);
 
-                       
+                       /*
                         //"Insp Scheduled" == inspObj.getDocumentDescription()             
-                                                
-                        var capDocResult1 = aa.document.getDocumentListByEntity(inspId, "INSPECTION");
+                      
+logDebug("Document Description: " + inspObj.getDocumentDescription());
+                        var capDocResult1 = aa.document.getDocumentListByEntity(entityId, "INSPECTION");
 
                         if (capDocResult1.getSuccess())
                         {       
@@ -123,13 +128,13 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                     //emailText = emailText + documentObject.getDocName();
                                 }
                             }
-                        }
+                        } */
 
                         //inspObj.setScheduledDate(aa.date.parseDate("01/01/1900"));	
                         //inspObj.setRequestDate(aa.date.parseDate("01/01/1900"));	                 
                         //var systemUserObjResult = aa.person.getUser(currentUserID.toUpperCase());
                        // inspObj.SetInspector(systemUserObjResult)
-                        aa.inspection.editInspection(inspObj);
+                       
                         //scheduleInspectDate("Progress Invesgiation", nextWorkDay(new Date(), 10, true), "INSPECTORNAME");
 
                         }                    
@@ -161,7 +166,7 @@ function getDocumentList() {
 } 
  
 
-function copyDocuments(pFromCapId, pToCapId)
+function copyInspectionDocuments(pFromCapIdEntityId, pToCapIdEntityId)
 {
     //Copies all attachments (documents) from pFromCapId to pToCapId
     var categoryArray = new Array();
@@ -173,7 +178,7 @@ function copyDocuments(pFromCapId, pToCapId)
         categoryArray = categoryList.split(",");
     }
 
-    var capDocResult = aa.document.getDocumentListByEntity(pFromCapId, "CAP");
+    var capDocResult = aa.document.getDocumentListByEntity(pFromCapIdEntityId, "INSPECTION");
     if (capDocResult.getSuccess())
     {
         if (capDocResult.getOutput().size() > 0)
@@ -195,10 +200,10 @@ function copyDocuments(pFromCapId, pToCapId)
                     {
                         path = downloadResult.getOutput();
                     }
-                    var tmpEntId = pToCapId.getID1() + "-" + pToCapId.getID2() + "-" + pToCapId.getID3();
+                  
                     documentObject.setDocumentNo(null);
-                    documentObject.setCapID(pToCapId)
-                    documentObject.setEntityID(tmpEntId);
+                    documentObject.setCapID(capId)
+                    documentObject.setEntityID(pToCapIdEntityId);
 
                     // Open and process file
                     try
@@ -214,7 +219,7 @@ function copyDocuments(pFromCapId, pToCapId)
                             if (newDocResult.getSuccess())
                             {
                                 newDocResult.getOutput();
-                                logDebug("Successfully copied document: " + documentObject.getFileName() + " From: " + pFromCapId.getCustomID() + " To: " + pToCapId.getCustomID());
+                                logDebug("Successfully copied document: " + documentObject.getFileName() + " From: " + pFromCapIdEntityId + " To: " + pToCapIdEntityId);
                             }
                             else
                             {
