@@ -71,21 +71,65 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
             iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
     
+            
             if (iResult.getSuccess())
             {                     
-                logDebug("Copy successfully.");              
-                logDebug("capId: " + capId);
-                
+                logDebug("Copy successfully.");        
+                //var capId = aa.cap.getCapID("22CAP","00000","0000G").getOutput();
+                // logDebug"Inspection Status: " + inspObj.getInspectionStatus();
+                logDebug("capId: " + capId); //22CAP-00000-0000G
+                // 566073
                 var newInspId = findLatestInspection(inspId);
                 logDebug("New inspection number found: " + newInspId);
                 var newInsResult = aa.inspection.getInspection(capId,newInspId);              
                 if (newInsResult.getSuccess()) {
-                    var inspObj = inspResultObj.getOutput();
+                    var inspObj = newInsResult.getOutput();
                     if (inspObj) {
                         
-                        inspObj.setInspectionStatus("Scheduled");                                                            
-                        //inspObj.setScheduledDate("");
-                        //inspObj.setRequestDate("");                        
+                        inspObj.setInspectionStatus("Scheduled");       
+                        logDebug("Document Description: " + inspObj.getDocumentDescription());
+
+                        var capDocResult = aa.document.getDocumentListByEntity(capId, "INSPECTION");
+                        if (capDocResult.getSuccess())
+                        {       
+                            logDebug("***inspection doc  count *** " + capDocResult.getOutput().size());
+                        }
+                        //"Insp Scheduled" == inspObj.getDocumentDescription()             
+                                                
+                        var capDocResult1 = aa.document.getDocumentListByEntity(capId, "CAP");
+                        if (capDocResult1.getSuccess())
+                        {       
+                            logDebug("*** count *** " + capDocResult1.getOutput().size());
+                                             
+                            for (docInx = 0; docInx < capDocResult1.getOutput().size(); docInx++)
+                            {
+                                var documentObject = capDocResult1.getOutput().get(docInx);        
+                              
+
+                                if (documentObject.getDocName() == "*")
+                                {
+                                    debugObject("*******documentObject*****" +documentObject);
+                                    logDebug("Entity:" +  documentObject.getEntity());
+                                    logDebug("*** documentNo *****" + documentObject.getDocumentNo());
+                                    logDebug("docName:" + documentObject.getDocName());
+                                    logDebug("fileName:" + documentObject.getFileName());
+                                    //docContent = documentObject.getDocumentContent();
+                                    //documentObject.setDocName(documentObject.getFileName());
+                                    
+                                    //documentObject.setDocDescription("Test");
+                                    //documentObject.setDocumentContent(docContent);
+                                    
+                                    //logDebug("Setting docName to filename:" + documentObject.getFileName());
+                                    //documentObject.setCapId(capId);
+                                    //logDebug("Setting docName to filename:" + documentObject.getFileName());
+                                    //logDebug("Getting docName:" + documentObject.getDocumentNo() + ":" + documentObject.getDocName());
+                                    //emailText = emailText + documentObject.getDocName();
+                                }
+                            }
+                        }
+
+                        //inspObj.setScheduledDate(aa.date.parseDate("01/01/1900"));	
+                        //inspObj.setRequestDate(aa.date.parseDate("01/01/1900"));	                 
                         //var systemUserObjResult = aa.person.getUser(currentUserID.toUpperCase());
                        // inspObj.SetInspector(systemUserObjResult)
                         aa.inspection.editInspection(inspObj);
@@ -100,36 +144,85 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             }
         }
     }
-        // Find inspSeqNum
-    /*
-        var inspResultObj = aa.inspection.getInspection(capId, inspSeqNum);
-        if (inspResultObj.getSuccess()) {
-            var inspObj = inspResultObj.getOutput();
-            if (inspObj) {
-                inspModel = inspObj.getInspection();
-                if (inspModel != null) {
-                    actModel = inspModel.getActivity();
-                    actModel.setStatus("Scheduled");
-                    //actModel.setStatusDate(new Date(sysDateMMDDYYYY));
-                
-                
-                }
-            }
-        } */
-        /*
-        if(inspType == "WWM_RES_System 1" && inspResult == "Marginal")
-        {
-            inspector = inspList[xx].getInspector();
-            inspDate = inspList[xx].getScheduledDate();
-            inspTime = inspList[xx].getScheduledTime();
-            inspType = inspList[xx].getInspectionType();
-            inspComment = inspList[xx].getInspectionComments();
-
-        */
+      
         aa.sendMail("noreplyehims@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "IRSA - WWM", emailText);
 
     
 }
+
+function copyDocuments(pFromCapId, pToCapId)
+{
+    //Copies all attachments (documents) from pFromCapId to pToCapId
+    var categoryArray = new Array();
+
+    // third optional parameter is comma delimited list of categories to copy.
+    if (arguments.length > 2)
+    {
+        categoryList = arguments[2];
+        categoryArray = categoryList.split(",");
+    }
+
+    var capDocResult = aa.document.getDocumentListByEntity(pFromCapId, "CAP");
+    if (capDocResult.getSuccess())
+    {
+        if (capDocResult.getOutput().size() > 0)
+        {
+            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+            {
+                var documentObject = capDocResult.getOutput().get(docInx);
+                currDocCat = "" + documentObject.getDocCategory();
+                if (categoryArray.length == 0 || exists(currDocCat, categoryArray))
+                {
+                    // download the document content
+                    var useDefaultUserPassword = true;
+                    //If useDefaultUserPassword = true, there is no need to set user name & password, but if useDefaultUserPassword = false, we need define EDMS user name & password.
+                    var EMDSUsername = null;
+                    var EMDSPassword = null;
+                    var path = null;
+                    var downloadResult = aa.document.downloadFile2Disk(documentObject, documentObject.getModuleName(), EMDSUsername, EMDSPassword, useDefaultUserPassword);
+                    if (downloadResult.getSuccess())
+                    {
+                        path = downloadResult.getOutput();
+                    }
+                    var tmpEntId = pToCapId.getID1() + "-" + pToCapId.getID2() + "-" + pToCapId.getID3();
+                    documentObject.setDocumentNo(null);
+                    documentObject.setCapID(pToCapId)
+                    documentObject.setEntityID(tmpEntId);
+
+                    // Open and process file
+                    try
+                    {
+                        if (path != null && path != "")
+                        {
+                            // put together the document content - use java.io.FileInputStream
+                            var newContentModel = aa.document.newDocumentContentModel().getOutput();
+                            inputstream = new java.io.FileInputStream(path);
+                            newContentModel.setDocInputStream(inputstream);
+                            documentObject.setDocumentContent(newContentModel);
+                            var newDocResult = aa.document.createDocument(documentObject);
+                            if (newDocResult.getSuccess())
+                            {
+                                newDocResult.getOutput();
+                                logDebug("Successfully copied document: " + documentObject.getFileName() + " From: " + pFromCapId.getCustomID() + " To: " + pToCapId.getCustomID());
+                            }
+                            else
+                            {
+                                logDebug("Failed to copy document: " + documentObject.getFileName());
+                                logDebug(newDocResult.getErrorMessage());
+                            }
+                        }
+                    }
+                    catch (err)
+                    {
+                        logDebug("Error copying document: " + err.message);
+                        return false;
+                    }
+                }
+            } // end for loop
+        }
+    }
+}
+
 function findLatestInspection(originalInspectionId)
 {
     var inspResults = aa.inspection.getInspections(capId);
