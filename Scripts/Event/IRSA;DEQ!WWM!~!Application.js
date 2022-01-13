@@ -73,13 +73,9 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
     
             if (iResult.getSuccess())
             {                     
-                logDebug("Copy successfully.");
-
-                var newResultObj = iResult.getOutput();
-                logDebug("newResultObj.length." + newResultObj);
-                logDebug("newResultObj.length." + newResultObj.length());
-               
+                logDebug("Copy successfully.");              
                 logDebug("capId: " + capId);
+                logDebug("Retrieve new inspection number: " + inspId + 1);
 
                 var newInsResult = aa.inspection.getInspection(capId,inspId + 1);              
                 if (newInsResult.getSuccess()) {
