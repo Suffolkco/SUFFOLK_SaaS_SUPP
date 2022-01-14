@@ -64,9 +64,9 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             var inspComment = iObj.getInspectionComments();
             var inspDate = iObj.getInspectionDate()
             var inspector = iObj.getInspector();
-            logDebug("INspection comment for inspection  :" + inspId + ":" +  inspComment);            
-            logDebug("Inspector for inspection:" + inspId + ":" + inspector);
-            logDebug("Schedule New inspection");
+            //logDebug("INspection comment for inspection  :" + inspId + ":" +  inspComment);            
+            //logDebug("Inspector for inspection:" + inspId + ":" + inspector);
+            //logDebug("Schedule New inspection");
             schedRes = aa.inspection.scheduleInspection(capId, inspector, inspDate, null, inspectionType, inspComment);
             var newInspId;
             if (schedRes.getSuccess())
@@ -78,23 +78,41 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             else
                 logDebug( "**ERROR: adding scheduling inspection (" + inspectionType + "): " + schedRes.getErrorMessage());
 
+            // Delete checklist on new inspection
+            var r = aa.inspection.getInspections(capId);  // have to use this method to get guidesheet data
 
             // Copy checklist guidsheet
             var r = aa.inspection.getInspections(capId);  // have to use this method to get guidesheet data
 
             if (r.getSuccess())
             {
-                var inspArray = r.getOutput();
-    
+                var inspArray = r.getOutput();    
+                var gs0 = null // original guidesheetModelSources
+
                 for (i in inspArray)
                 {
+                    // Find the existing checklist for original inspection
                     if (inspArray[i].getIdNumber() == inspId)
+                    {
+                        var inspModelOrgin = inspArray[i].getInspection();        
+                        var gs0 = inspModel.getGuideSheets()               
+                        var guideSheetObj0 = null;
+                        logDebug( "gs0 :" + gs0);
+                        if (gs0) 
+                        {                      
+                            logDebug( "gs0 size:" +  gs0.size());     
+                            for (var j = 0; j < gs0.size(); j++) 
+                            {
+                                guideSheetObj0 = gs0.get(j);   
+                                logDebug( "guideSheetObj0 is set.");
+                            }
+                        }
+                    }
+                    if (guideSheetObj0 != null && inspArray[i].getIdNumber() == newInspId)
                         {
-                            var inspModel = inspArray[i].getInspection();
-                            debugObject(inspModel);
-
+                            var inspModel = inspArray[i].getInspection();                           
                             var gs = inspModel.getGuideSheets()
-                            debugObject(gs);
+                            
                             logDebug( "gs:" + gs);
                             if (gs) 
                             {
@@ -103,6 +121,13 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                 {
                                     var guideSheetObj = gs.get(j);
                                     var guidesheetItem = guideSheetObj.getItems();
+                                    var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj0,guideSheetObj0.getAuditID());
+                                    if (updateResult.getSuccess()) {
+                                        logDebug("Successfully updated on inspection " + newInspId + ".");                                       
+                                    } else {
+                                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());                                       
+                                    }                
+
                                     // To copy guidesheet 
                                     /*
                                     logDebug( "copy guidesheet item to :" + newInspId);                 
@@ -115,21 +140,14 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                         logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
                                     }*/
                                     // To update guidesheet         
-                                    var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
+                                    /*var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
                                     if (updateResult.getSuccess()) {
                                         logDebug("Successfully updated " + gName + " on inspection " + inspId + ".");
                                         return true;
                                     } else {
                                         logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
                                         return false;
-                                    }
-
-                                    //copyGGuideSheetItems(java.util.List guideSheetModelSources,com.accela.aa.aamain.cap.CapIDModel targetCapId,java.lang.Long targetInspectionId,java.lang.String callerID) 
-                                    //Copy g guide sheet items.
-                                    //aa.guidesheet.updateGGuidesheet(guideSheetObj, guideSheetObj.getAuditID());
-                                    //updateGGuidesheet(com.accela.aa.inspection.guidesheet.GGuideSheetModel gGuidesheetModel,java.lang.String callerId) 
-                                    //Update guidesheet. 
-                
+                                    } */               
                                 }
                             }
                             
@@ -140,7 +158,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
          
          
 
-           
+           /*
             if (iObj.getRequestDate() != null)
             {
                 logDebug("Get Existing Requuest Date:" + iObj.getRequestDate());
@@ -149,7 +167,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                 logDebug ("Request Date Hour: " + iObj.getRequestDate().getHourOfDay());
                 logDebug ("Request Date getMinute: " + iObj.getRequestDate().getMinute());
                 logDebug ("Request Date getSecond: " + iObj.getRequestDate().getSecond());
-            }
+            }*/
 
             //iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
                 
@@ -173,8 +191,8 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         //logDebug("Current Date: " + sysDateMMDDYYYY);                       
                         //inspObj.setRequestDate(aa.date.parseDate(sysDateMMDDYYYY));
                      
-                        var reqDate = inspObj.getRequestDate().getYear() + "-" + inspObj.getRequestDate().getMonth() + "-" + inspObj.getRequestDate().getDayOfMonth();
-                        logDebug("Request Date:" + reqDate);
+                        //var reqDate = inspObj.getRequestDate().getYear() + "-" + inspObj.getRequestDate().getMonth() + "-" + inspObj.getRequestDate().getDayOfMonth();
+                        //logDebug("Request Date:" + reqDate);
 
                         var fromInspEntityId = capId + "-" + inspId;
                         var newInspEntityId = capId + "-" + newInspId;
