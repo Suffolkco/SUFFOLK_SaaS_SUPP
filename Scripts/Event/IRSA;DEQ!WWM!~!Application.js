@@ -63,8 +63,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             {
                 logDebug("Get Existing Requuest Date:" + iObj.getRequestDate());
                 logDebug ("Request Date Year: " + iObj.getRequestDate().getYear());
-                logDebug ("Request Date Month: " + iObj.getRequestDate().getMonth());
-                logDebug ("Request Date Day: " + iObj.getRequestDate().getday());
+                logDebug ("Request Date Month: " + iObj.getRequestDate().getMonth());              
                 logDebug ("Request Date Hour: " + iObj.getRequestDate().getHourOfDay());
                 logDebug ("Request Date getMinute: " + iObj.getRequestDate().getMinute());
                 logDebug ("Request Date getSecond: " + iObj.getRequestDate().getSecond());
