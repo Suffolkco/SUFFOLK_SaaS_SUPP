@@ -82,6 +82,14 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             // Copy checklist guidsheet
 
             var gs = inspModel.getGuideSheets();
+            logDebug( "gs:" + gs);
+            if (gsList) {
+                gsArr = gs.toArray();
+                for (gsi in gsArr) {
+                    logDebug( "Here:");
+                }
+            }
+
             if (gs) 
 			{
                 logDebug( "gs:" + gs);
