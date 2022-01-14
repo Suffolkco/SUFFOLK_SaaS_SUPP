@@ -61,7 +61,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             logDebug("capid: " + capId)
 
             // Create new inspection
-            var inspComment = iOjb.getInspectionComments();
+            var inspComment = iObj.getInspectionComments();
             var inspDate = iObj.getInspectionDate()
             var inspector = iObj.getInspector();
             logDebug("INspection comment for inspection  :" + inspId + ":" +  inspComment);            
