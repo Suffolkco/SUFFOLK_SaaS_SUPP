@@ -91,8 +91,10 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                     if (inspArray[i].getIdNumber() == inspId)
                         {
                             var inspModel = inspArray[i].getInspection();
-            
+                            debugObject(inspModel);
+
                             var gs = inspModel.getGuideSheets()
+                            debugObject(gs);
                             logDebug( "gs:" + gs);
                             if (gs) 
                             {
@@ -101,6 +103,8 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                 {
                                     var guideSheetObj = gs.get(j);
                                     var guidesheetItem = guideSheetObj.getItems();
+                                    // To copy guidesheet 
+                                    /*
                                     logDebug( "copy guidesheet item to :" + newInspId);                 
                                     var updateResult = aa.guidesheet.copyGGuideSheetItems(gs, capId, newInspId, guideSheetObj.getAuditID())
                                  
@@ -109,9 +113,17 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                         
                                     } else {
                                         logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+                                    }*/
+                                    // To update guidesheet         
+                                    var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
+                                    if (updateResult.getSuccess()) {
+                                        logDebug("Successfully updated " + gName + " on inspection " + inspId + ".");
+                                        return true;
+                                    } else {
+                                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+                                        return false;
                                     }
-                                                
-                
+
                                     //copyGGuideSheetItems(java.util.List guideSheetModelSources,com.accela.aa.aamain.cap.CapIDModel targetCapId,java.lang.Long targetInspectionId,java.lang.String callerID) 
                                     //Copy g guide sheet items.
                                     //aa.guidesheet.updateGGuidesheet(guideSheetObj, guideSheetObj.getAuditID());
