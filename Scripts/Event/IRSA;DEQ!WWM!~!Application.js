@@ -95,7 +95,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                     if (inspArray[i].getIdNumber() == inspId)
                     {
                         var inspModelOrgin = inspArray[i].getInspection();        
-                        var gs0 = inspModel.getGuideSheets()               
+                        var gs0 = inspModelOrgin.getGuideSheets()               
                         var guideSheetObj0 = null;
                         logDebug( "gs0 :" + gs0);
                         if (gs0) 
