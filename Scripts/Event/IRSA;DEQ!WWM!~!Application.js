@@ -70,8 +70,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
             }
 
             iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
-    
-            
+                
             if (iResult.getSuccess())
             {                     
                 logDebug("Copy successfully.");        
