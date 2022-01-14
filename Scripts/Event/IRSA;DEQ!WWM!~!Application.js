@@ -59,6 +59,55 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
         if (inspModel != null) 
         {
             logDebug("capid: " + capId)
+
+            // Create new inspection
+            var inspComment = iOjb.getInspectionComments();
+            var inspDate = iObj.getInspectionDate()
+            var inspector = iObj.getInspector();
+            logDebug("INspection comment for inspection  :" + inspId + ":" +  inspComment);            
+            logDebug("Inspector for inspection:" + inspId + ":" + inspector);
+            logDebug("Schedule New inspection");
+            schedRes = aa.inspection.scheduleInspection(capId, inspector, inspDate, null, inspectionType, inspComment);
+            var newInspId;
+            if (schedRes.getSuccess())
+            {
+                logDebug("Successfully scheduled inspection : " + inspectionType);
+                newInspId = findLatestInspection(inspId);
+                logDebug("New inspection number found: " + newInspId);
+            }
+            else
+                logDebug( "**ERROR: adding scheduling inspection (" + inspectionType + "): " + schedRes.getErrorMessage());
+
+
+            // Copy checklist guidsheet
+            var gs = inspModel.getGuideSheets();
+			if (!gs.isEmpty()) 
+			{
+				checkLoop:
+				for (var j = 0; j < gs.size(); j++) 
+				{
+                    var guideSheetObj = gs.get(j);
+                    var guidesheetItem = guideSheetObj.getItems();
+
+                    var updateResult =a.guidesheet.copyGGuideSheetItems(guidesheetItem, capId, newInspId, guideSheetObj.getAuditID())
+                 
+                    if (updateResult.getSuccess()) {
+                        logDebug("Successfully updated checklist on inspection " + newInspId + ".");
+                        
+                    } else {
+                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+                    }
+								
+
+                    //copyGGuideSheetItems(java.util.List guideSheetModelSources,com.accela.aa.aamain.cap.CapIDModel targetCapId,java.lang.Long targetInspectionId,java.lang.String callerID) 
+                    //Copy g guide sheet items.
+                    //aa.guidesheet.updateGGuidesheet(guideSheetObj, guideSheetObj.getAuditID());
+                    //updateGGuidesheet(com.accela.aa.inspection.guidesheet.GGuideSheetModel gGuidesheetModel,java.lang.String callerId) 
+                    //Update guidesheet. 
+
+                }
+            }
+            
             if (iObj.getRequestDate() != null)
             {
                 logDebug("Get Existing Requuest Date:" + iObj.getRequestDate());
@@ -69,36 +118,37 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                 logDebug ("Request Date getSecond: " + iObj.getRequestDate().getSecond());
             }
 
-            iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
+            //iResult = aa.inspection.copyInspectionWithGuideSheet(capId, capId, inspModel);
                 
-            if (iResult.getSuccess())
+            //if (iResult.getSuccess())
             {                     
-                logDebug("Copy successfully.");        
+                //logDebug("Copy successfully.");        
                 //var capId = aa.cap.getCapID("22CAP","00000","0000G").getOutput();
                 // logDebug"Inspection Status: " + inspObj.getInspectionStatus();
                 logDebug("capId: " + capId); //22CAP-00000-0000G
+              
                 // 566073
-                var newInspId = findLatestInspection(inspId);
-                logDebug("New inspection number found: " + newInspId);
+              
                 var newInsResult = aa.inspection.getInspection(capId,newInspId);              
                 if (newInsResult.getSuccess()) {
                     var inspObj = newInsResult.getOutput();
                     if (inspObj) {
                         
-                        inspObj.setInspectionStatus("Scheduled");      
-                        var sysDate = aa.date.getCurrentDate();
-                        var sysDateMMDDYYYY = dateFormatted(sysDate.getMonth(), sysDate.getDayOfMonth(), sysDate.getYear(), "MM/DD/YYYY");
-                        logDebug("Current Date: " + sysDateMMDDYYYY);                       
-                        inspObj.setRequestDate(aa.date.parseDate(sysDateMMDDYYYY));
+                        //inspObj.setInspectionStatus("Scheduled");      
+                        //var sysDate = aa.date.getCurrentDate();
+                        //var sysDateMMDDYYYY = dateFormatted(sysDate.getMonth(), sysDate.getDayOfMonth(), sysDate.getYear(), "MM/DD/YYYY");
+                        //logDebug("Current Date: " + sysDateMMDDYYYY);                       
+                        //inspObj.setRequestDate(aa.date.parseDate(sysDateMMDDYYYY));
                      
-                      
                         var reqDate = inspObj.getRequestDate().getYear() + "-" + inspObj.getRequestDate().getMonth() + "-" + inspObj.getRequestDate().getDayOfMonth();
                         logDebug("Request Date:" + reqDate);
 
                         var fromInspEntityId = capId + "-" + inspId;
                         var newInspEntityId = capId + "-" + newInspId;
                         copyInspectionDocuments(fromInspEntityId, newInspEntityId);
+                        logDebug("Copy inspection document completed for inspection ID:" + newInspId);
                         aa.inspection.editInspection(inspObj);
+                    
 
                        /*
                         //"Insp Scheduled" == inspObj.getDocumentDescription()             
