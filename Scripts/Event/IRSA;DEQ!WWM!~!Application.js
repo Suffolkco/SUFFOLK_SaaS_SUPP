@@ -91,24 +91,8 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
                 for (i in inspArray)
                 {
-                    // Find the existing checklist for original inspection
+                   
                     if (inspArray[i].getIdNumber() == inspId)
-                    {
-                        var inspModelOrgin = inspArray[i].getInspection();        
-                        var gs0 = inspModelOrgin.getGuideSheets()               
-                        var guideSheetObj0 = null;
-                        logDebug( "gs0 :" + gs0);
-                        if (gs0) 
-                        {                      
-                            logDebug( "gs0 size:" +  gs0.size());     
-                            for (var j = 0; j < gs0.size(); j++) 
-                            {
-                                guideSheetObj0 = gs0.get(j);   
-                                logDebug( "guideSheetObj0 is set.");
-                            }
-                        }
-                    }
-                    if (guideSheetObj0 != null && inspArray[i].getIdNumber() == newInspId)
                         {
                             var inspModel = inspArray[i].getInspection();                           
                             var gs = inspModel.getGuideSheets()
@@ -121,15 +105,9 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                 {
                                     var guideSheetObj = gs.get(j);
                                     var guidesheetItem = guideSheetObj.getItems();
-                                    var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj0,guideSheetObj0.getAuditID());
-                                    if (updateResult.getSuccess()) {
-                                        logDebug("Successfully updated on inspection " + newInspId + ".");                                       
-                                    } else {
-                                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());                                       
-                                    }                
-
+                                   
                                     // To copy guidesheet 
-                                    /*
+                                    
                                     logDebug( "copy guidesheet item to :" + newInspId);                 
                                     var updateResult = aa.guidesheet.copyGGuideSheetItems(gs, capId, newInspId, guideSheetObj.getAuditID())
                                  
@@ -138,7 +116,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                         
                                     } else {
                                         logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
-                                    }*/
+                                    }
                                     // To update guidesheet         
                                     /*var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
                                     if (updateResult.getSuccess()) {
