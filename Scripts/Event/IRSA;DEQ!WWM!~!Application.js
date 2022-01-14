@@ -102,7 +102,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                                     var guideSheetObj = gs.get(j);
                                     var guidesheetItem = guideSheetObj.getItems();
                                     logDebug( "copy guidesheet item to :" + newInspId);                 
-                                    var updateResult = aa.guidesheet.copyGGuideSheetItems(guidesheetItem, capId, newInspId, guideSheetObj.getAuditID())
+                                    var updateResult = aa.guidesheet.copyGGuideSheetItems(gs, capId, newInspId, guideSheetObj.getAuditID())
                                  
                                     if (updateResult.getSuccess()) {
                                         logDebug("Successfully updated checklist on inspection " + newInspId + ".");
