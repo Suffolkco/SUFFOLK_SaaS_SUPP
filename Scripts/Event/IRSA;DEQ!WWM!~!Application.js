@@ -91,13 +91,9 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
                         logDebug("Current Date: " + sysDateMMDDYYYY);                       
                         inspObj.setRequestDate(aa.date.parseDate(sysDateMMDDYYYY));
                      
-                        logDebug ("Request Date Year: " + inspObj.getRequestDate().getYear());
-                        logDebug ("Request Date Month: " + inspObj.getRequestDate().getMonth());    
-                        logDebug ("Request Date Day: " + inspObj.getRequestDate().getDayofMonth());             
-                        logDebug ("Request Date Hour: " + inspObj.getRequestDate().getHourOfDay());
-                        logDebug ("Request Date getMinute: " + inspObj.getRequestDate().getMinute());
-                        logDebug ("Request Date getSecond: " + inspObj.getRequestDate().getSecond());
-
+                      
+                        var reqDate = inspObj.getRequestDate().getYear() + "-" + inspObj.getRequestDate().getMonth() + "-" + inspObj.getRequestDate().getDayOfMonth();
+                        logDebug("Request Date:" + reqDate);
 
                         var fromInspEntityId = capId + "-" + inspId;
                         var newInspEntityId = capId + "-" + newInspId;
