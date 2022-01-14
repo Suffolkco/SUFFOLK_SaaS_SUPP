@@ -81,7 +81,7 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
             // Copy checklist guidsheet
             var gs = inspModel.getGuideSheets();
-			if (!gs.isEmpty()) 
+            if (gs) 
 			{
 				checkLoop:
 				for (var j = 0; j < gs.size(); j++) 
