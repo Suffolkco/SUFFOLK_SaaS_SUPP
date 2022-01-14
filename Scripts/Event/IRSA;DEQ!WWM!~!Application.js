@@ -80,43 +80,55 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
 
             // Copy checklist guidsheet
+            var r = aa.inspection.getInspections(capId);  // have to use this method to get guidesheet data
 
-            var gs = inspModel.getGuideSheets();
-            logDebug( "gs:" + gs);
-            if (gsList) {
-                gsArr = gs.toArray();
-                for (gsi in gsArr) {
-                    logDebug( "Here:");
-                }
-            }
-
-            if (gs) 
-			{
-                logDebug( "gs:" + gs);
-				for (var j = 0; j < gs.size(); j++) 
-				{
-                    var guideSheetObj = gs.get(j);
-                    var guidesheetItem = guideSheetObj.getItems();
-                    logDebug( "copy guidesheet item to :" + newInspId);                 
-                    var updateResult = aa.guidesheet.copyGGuideSheetItems(guidesheetItem, capId, newInspId, guideSheetObj.getAuditID())
-                 
-                    if (updateResult.getSuccess()) {
-                        logDebug("Successfully updated checklist on inspection " + newInspId + ".");
-                        
-                    } else {
-                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
-                    }
-								
-
-                    //copyGGuideSheetItems(java.util.List guideSheetModelSources,com.accela.aa.aamain.cap.CapIDModel targetCapId,java.lang.Long targetInspectionId,java.lang.String callerID) 
-                    //Copy g guide sheet items.
-                    //aa.guidesheet.updateGGuidesheet(guideSheetObj, guideSheetObj.getAuditID());
-                    //updateGGuidesheet(com.accela.aa.inspection.guidesheet.GGuideSheetModel gGuidesheetModel,java.lang.String callerId) 
-                    //Update guidesheet. 
-
-                }
-            }
+            if (r.getSuccess())
+            {
+                var inspArray = r.getOutput();
+    
+                for (i in inspArray)
+                {
+                    if (inspArray[i].getIdNumber() == inspId)
+                        {
+                            var inspModel = inspArray[i].getInspection();
             
+                            var gs = inspModel.getGuideSheets()
+                            logDebug( "gs:" + gs);
+                            if (gs) 
+                            {
+                                logDebug( "gs:" + gs);
+                                for (var j = 0; j < gs.size(); j++) 
+                                {
+                                    var guideSheetObj = gs.get(j);
+                                    var guidesheetItem = guideSheetObj.getItems();
+                                    logDebug( "copy guidesheet item to :" + newInspId);                 
+                                    var updateResult = aa.guidesheet.copyGGuideSheetItems(guidesheetItem, capId, newInspId, guideSheetObj.getAuditID())
+                                 
+                                    if (updateResult.getSuccess()) {
+                                        logDebug("Successfully updated checklist on inspection " + newInspId + ".");
+                                        
+                                    } else {
+                                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+                                    }
+                                                
+                
+                                    //copyGGuideSheetItems(java.util.List guideSheetModelSources,com.accela.aa.aamain.cap.CapIDModel targetCapId,java.lang.Long targetInspectionId,java.lang.String callerID) 
+                                    //Copy g guide sheet items.
+                                    //aa.guidesheet.updateGGuidesheet(guideSheetObj, guideSheetObj.getAuditID());
+                                    //updateGGuidesheet(com.accela.aa.inspection.guidesheet.GGuideSheetModel gGuidesheetModel,java.lang.String callerId) 
+                                    //Update guidesheet. 
+                
+                                }
+                            }
+                            
+                        }
+                    }
+            }
+                        
+         
+         
+
+           
             if (iObj.getRequestDate() != null)
             {
                 logDebug("Get Existing Requuest Date:" + iObj.getRequestDate());
