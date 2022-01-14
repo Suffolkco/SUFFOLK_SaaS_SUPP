@@ -80,16 +80,17 @@ if (itemCapType == "DEQ/WWM/Residence/Application" ||
 
 
             // Copy checklist guidsheet
+
             var gs = inspModel.getGuideSheets();
             if (gs) 
 			{
-				checkLoop:
+                logDebug( "gs:" + gs);
 				for (var j = 0; j < gs.size(); j++) 
 				{
                     var guideSheetObj = gs.get(j);
                     var guidesheetItem = guideSheetObj.getItems();
-
-                    var updateResult =a.guidesheet.copyGGuideSheetItems(guidesheetItem, capId, newInspId, guideSheetObj.getAuditID())
+                    logDebug( "copy guidesheet item to :" + newInspId);                 
+                    var updateResult = aa.guidesheet.copyGGuideSheetItems(guidesheetItem, capId, newInspId, guideSheetObj.getAuditID())
                  
                     if (updateResult.getSuccess()) {
                         logDebug("Successfully updated checklist on inspection " + newInspId + ".");
