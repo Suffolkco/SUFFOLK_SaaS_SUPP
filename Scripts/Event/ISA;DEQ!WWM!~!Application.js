@@ -1,7 +1,9 @@
 //ISA;DEQ!WWM!~!Application
 showDebug = true;
+var emailText ="";
 
 var inspections = aa.inspection.getInspections(capId);
+logDebug("ISA starts here: " + insps.length);
 if (inspections.getSuccess()) 
 {
     insps = inspections.getOutput();
@@ -118,3 +120,12 @@ function getOutput(result, object) {
 		return null;
 	}
 }
+
+function logDebug(dstr) {
+	if(showDebug) {
+		aa.print(dstr)
+		emailText += dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
