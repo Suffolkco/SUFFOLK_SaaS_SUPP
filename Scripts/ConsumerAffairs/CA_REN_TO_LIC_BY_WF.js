@@ -5,8 +5,8 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
     //Updating Expiration Date of License
-    
-    
+
+
     if (expDateASI != null)
     {
         logDebug("ASI Expdate is: " + expDateASI);
@@ -31,7 +31,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         var today = new Date();
         logDebug("today's date is " + today);
-        var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear()+ 2);
+        var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
         logDebug("null date is " + nullExpDate);
         editAppSpecific("Expiration Date", nullExpDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
@@ -44,7 +44,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
             activateTask("Issuance");
-        } 
+        }
     }
 
 
@@ -73,7 +73,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     var conArray = getContactByType("Applicant", capId);
     var conEmail = "";
 
-    if (!matches(conArray.email, null, undefined, ""))
+    if (!matches(conArray.email, null, undefined, "") && appTypeArray[1] != "TLC")
     {
         addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
         addParameter(vEParams, "$$expDate$$", newExpDate);
@@ -81,7 +81,18 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE", vEParams, null);
     }
+    if (!matches(conArray.email, null, undefined, "") && appTypeArray[1] == "TLC")
+    {
+        var curExp = b1Exp.getExpDate();
+        addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
+        addParameter(vEParams, "$$expDateTlc$$", curExp);
+        conEmail += conArray.email + "; ";
+        logDebug("Email addresses: " + conEmail);
+        sendNotification("", conEmail, "", "CA_LICENSE_RENEWAL_APPLICANT_NOTICE_TLC", vEParams, null);
+    }
+
 }
+
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
