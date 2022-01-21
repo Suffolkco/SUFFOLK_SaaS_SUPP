@@ -45,9 +45,9 @@ if (publicUser)
             }
         }
     }
-    if (!foundCondition)
+    if (!foundCondition && appTypeArray[1] != "TLC")
     {
-        //Updating Expiration Date of License
+        //Updating Expiration Date of License 
         logDebug("ASI Expdate is: " + expDateASI);
         expDateASI = new Date(expDateASI);
         logDebug("New Date Exp Date is: " + expDateASI)
