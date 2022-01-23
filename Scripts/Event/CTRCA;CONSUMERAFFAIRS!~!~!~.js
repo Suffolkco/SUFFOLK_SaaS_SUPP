@@ -37,8 +37,8 @@ try{
 	logDebug("**WARN: Error in CTRCA updating short notes and address -  " + err.message);
 }
 
-var newCap = checkTypeAndRename(capId);
-logDebug("new renewal CAP ID: " + newCap.getCustomID());
+//var newCap = checkTypeAndRename(capId);
+//logDebug("new renewal CAP ID: " + newCap.getCustomID());
 
 
 //// functions - to be moved to INCLUDES_CUSTOM sometime later
@@ -107,7 +107,7 @@ logDebug("new renewal CAP ID: " + newCap.getCustomID());
 //	//logDebug("Added record address " + newAddr1 + ", " + newCity + ", " + newState + ", " + newZip + " successfully!");
 //}
 
-function checkTypeAndRename(capIdObj) {
+/*function checkTypeAndRename(capIdObj) {
     var title = "checkTypeAndRenew(): ";
     var newRecObj = null;
 
@@ -235,4 +235,4 @@ function getParentLicense(capIdObj) {
     }
 
     return parentLicObj;
-}
+}*/
