@@ -37,6 +37,10 @@ try{
 	logDebug("**WARN: Error in CTRCA updating short notes and address -  " + err.message);
 }
 
+var newCap = checkTypeAndRename(capId);
+logDebug("new renewal CAP ID: " + newCap.getCustomID());
+
+
 //// functions - to be moved to INCLUDES_CUSTOM sometime later
 //
 //function getVendorInfo(cType, capId) {
@@ -102,3 +106,133 @@ try{
 //	aa.address.createAddress(newAddressModel);
 //	//logDebug("Added record address " + newAddr1 + ", " + newCity + ", " + newState + ", " + newZip + " successfully!");
 //}
+
+function checkTypeAndRename(capIdObj) {
+    var title = "checkTypeAndRenew(): ";
+    var newRecObj = null;
+
+    var typesObj = {
+        "Building/Residential/Addition/NA": true,
+        "ConsumerAffairs/ID Cards/Backflow Tester/Renewal": true,
+        "ConsumerAffairs/Licenses/Appliance Repair/Renewal": true,
+        "ConsumerAffairs/Licenses/Commercial Paint/Renewal": true,
+        "ConsumerAffairs/Licenses/Dry Cleaning/Renewal": true,
+        "ConsumerAffairs/Licenses/Electrical Inspector/Renewal": true,
+        "ConsumerAffairs/Licenses/Home Furnishing/Renewal": true,
+        "ConsumerAffairs/Licenses/Home Improvement/Renewal": true,
+        "ConsumerAffairs/Licenses/Liquid Waste/Renewal": true,
+        "ConsumerAffairs/Licenses/Master Electrician/Renewal": true,
+        "ConsumerAffairs/Licenses/Master Plumber/Renewal": true,
+        "ConsumerAffairs/Licenses/Pet Cemetary/Renewal": true,
+        "ConsumerAffairs/Licenses/Polygraph Examiner/Renewal": true,
+        "ConsumerAffairs/Licenses/Precious Metal/Renewal": true,
+        "ConsumerAffairs/Licenses/Restricted Electrical/Renewal": true,
+        "ConsumerAffairs/Licenses/Restricted Plumbing/Renewal": true,
+        "ConsumerAffairs/Licenses/Second Hand Dealer/Renewal": true,
+        "ConsumerAffairs/Licenses/Sign Hanger/Renewal": true,
+        "ConsumerAffairs/Licenses/Tax Grievance/Renewal": true,
+        "ConsumerAffairs/Registrations/Swimming Pool Maintenance/Renewal": true,
+        "ConsumerAffairs/TLC/Drivers/Renewal": true,
+        "ConsumerAffairs/TLC/Renewal/NA": true,
+        "ConsumerAffairs/TLC/Vehicles/Renewal": true
+    };
+
+    var getCapResult = aa.cap.getCap(capIdObj);
+    var capObj = {};
+    if (!getCapResult.getSuccess()) {
+        logDebug(title + "Unable to retrieve CAP object. Message = " + getCapResult.getErrorMessage());
+        return newRecObj;
+    }
+    capObj = getCapResult.getOutput();
+    var capType = capObj.getCapType();
+
+    if (typesObj[capType]) {
+        newRecObj = renamePermit(capIdObj);
+    } else {
+        logDebug(title + "Wrong record type to renew.");
+    }
+
+    return newRecObj;
+}
+
+function renamePermit(capIdObj) {
+    var title = "renamePermit(): ";
+
+    var capIdString = capIdObj.getCustomID();
+    var retval = null;
+
+    //get the cap object
+    var getCapResult = aa.cap.getCap(capIdObj);
+    var capObj = {};
+    if (!getCapResult.getSuccess()) {
+        logDebug(title + "Unable to retrieve CAP object. Message = " + getCapResult.getErrorMessage());
+        return retval;
+    }
+    capObj = getCapResult.getOutput();
+
+    var appTypeString = capObj.getCapType() + "";
+
+    //retrieve parent cap for the same record type
+    var parentCapObj = getParentLicense(capIdObj);
+    if (parentCapObj == null) {
+        logDebug(title + "No parent license available for record (" + capIdObj + ")");
+        return retval;
+    }
+    var parentIdString = parentCapObj.getCustomID();
+
+    var seqArr = [];
+    var childrenArr = getChildren(appTypeString, parentCapObj);
+    if (childrenArr) {
+        for (var cIdx in childrenArr) {
+            if (childrenArr[cIdx].getCustomID().indexOf(parentIdString + '-REN') > -1) {
+                var seqVal = parseInt(childrenArr[cIdx].getCustomID().replace(parentIdString + '-REN', ''));
+                if (!isNaN(seqVal)) {
+                    seqArr.push(seqVal);
+                }
+            }
+        }
+    }
+
+    var childNewAltId = capIdObj.getCustomID() + '-REN01';
+    if (seqArr.length > 0) {
+        var lastSeq = seqArr.sort(function (a, b) {
+            return b - a;
+        })[0] + 1;
+        childNewAltId = capIdObj.getCustomID() + '-REN' + (String(lastSeq).length > 1 ? lastSeq : '0' + String(lastSeq));
+    }
+    var updateCapAltIdResult = aa.cap.updateCapAltID(capIdObj, childNewAltId);
+    if (!updateCapAltIdResult.getSuccess()) {
+        logDebug(title + "Error updating record to renewal CAP Id. Message = " + updateCapAltIdResult.getErrorMessage());
+        return retval;
+    }
+
+    var childCapIdResult = aa.cap.getCapID(childNewAltId);
+    if (!childCapIdResult.getSuccess()) {
+        logDebug(title + "Unable to retrieve new child CAP Id. Message = " + childCapIdResult.getErrorMessage());
+        return retval;
+    }
+    var childCapId = aa.cap.getCapID(childNewAltId).getOutput();
+
+    return childCapId;    
+}
+
+function getParentLicense(capIdObj) {
+    var title = "getParentLicense(): ";
+
+    var parentLicObj = null;
+    var parentLicArr = [];
+
+    var getProjectResult = aa.cap.getProjectByChildCapID(capIdObj, "Renewal", null);
+    if (!getProjectResult.getSuccess()) {
+        getProjectResult = aa.cap.getProjectByChildCapID(capIdObj, "EST", null);
+    }
+
+    parentLicArr = getProjectResult.getOutput();
+    if (parentLicArr != null && parentLicArr.length > 0) {
+        parentLicObj = parentLicArr[0];
+    } else {
+        logDebug(title + "No parent license for child license (" + capIdObj + ")");
+    }
+
+    return parentLicObj;
+}
