@@ -55,7 +55,6 @@ try
         docComments += "Vehicle Insurance" + "<br>";
     }
 
-
     if (docComments != "") 
     {
         cancel = true;
