@@ -36,24 +36,26 @@ try
     {
         docComments += "Vehicle Registration" + "<br>";
     }
+    if (!determineACADocumentAttached("Vehicle Insurance"))
+    {
+        docComments += "Vehicle Insurance" + "<br>";
+    }
     if (!determineACADocumentAttached("Workers Comp Insurance"))
     {
-        docComments += "Workers Comp Insurance." + "<br>";
+        docComments += "Workers Comp Insurance" + "<br>";
+    }
+    if (!determineACADocumentAttached("Disability Insurance"))
+    {
+        docComments += "Disability Insurance." + "<br>";
     }
     if (!determineACADocumentAttached("Disposal Site Authorization"))
     {
         docComments += "Disposal Site Authorization" + "<br>";
     }
 
-    if (!determineACADocumentAttached("Workers Comp Insurance"))
-    {
-        docComments += "Workers Comp Insurance" + "<br>";
-    }
+    
 
-    if (!determineACADocumentAttached("Vehicle Insurance"))
-    {
-        docComments += "Vehicle Insurance" + "<br>";
-    }
+    
 
     if (docComments != "") 
     {
