@@ -4,6 +4,8 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     var parentCapId = getParentCapID4Renewal();
     var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
+    renewalCapProject.setStatus("Complete")
+
     //Updating Expiration Date of License
 
 
