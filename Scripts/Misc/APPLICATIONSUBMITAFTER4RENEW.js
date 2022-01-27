@@ -69,7 +69,7 @@ function isRenewProcess(parentCapID, partialCapID)
 			aa.print("Warning: Renewal process was initiated before. ( "+ parentCapID + ")");
 			return false;
 		}
-		
+		 
 	}
 	//4 . Check to see if parent CAP is ready for renew.
 	return isReadyRenew(parentCapID);
