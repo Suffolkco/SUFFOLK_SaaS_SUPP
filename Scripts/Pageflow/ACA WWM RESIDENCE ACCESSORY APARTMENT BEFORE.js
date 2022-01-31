@@ -171,6 +171,7 @@ logGlobals(AInfo);
 /-----------------------------------------------------------------------------------------------------*/
 
 var accApartment = AInfo["Accessory Apartment"];
+var bor = AInfo["Are you applying for a Board of Review(BOR) hearing at this time? If yes, submit form WWM"]; 
 var form = false;
 
 if(accApartment =="CHECKED")
@@ -181,6 +182,16 @@ if(accApartment =="CHECKED")
             cancel = true;
             showMessage = true;
             comment("Please submit completed form WWM-105 with the application.");
+    }
+}
+if (bor == "Yes")
+{
+    form = determineACADocumentAttached("Board of Review Application");
+    if (!form)
+	{
+            cancel = true;
+            showMessage = true;
+            comment("Please submit Board of Review Application with the application.");
     }
 }
 

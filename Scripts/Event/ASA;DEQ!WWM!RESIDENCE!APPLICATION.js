@@ -50,6 +50,16 @@ var countyState = AInfo["Is this application part of the County/State I/A OWTS S
 		}
 	}
 //}
+// Add BOR fee if the custom field is set to Yes by public user
+if (publicUser)
+{
+	var bor = AInfo["Are you applying for a Board of Review(BOR) hearing at this time? If yes, submit form WWM"];
+	
+	if (bor == 'Yes')
+	{
+	    addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y")
+	}
+}
 
 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
 if(capmodel.isCompleteCap() && capmodel.getCreatedByACA() == "N")
