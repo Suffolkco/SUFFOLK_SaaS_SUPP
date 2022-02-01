@@ -4,7 +4,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     var parentCapId = getParentCapID4Renewal();
     var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
-    renewalCapProject.setStatus("Complete")
+
 
     //Updating Expiration Date of License
 
@@ -27,6 +27,20 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Renewed", "", "", "", parentCapId);
         }
+
+        var projIncomplete = aa.cap.getProjectByChildCapID(capId, "Renewal", "Incomplete");
+
+        if (projIncomplete.getSuccess())
+        {
+            var projInc = projIncomplete.getOutput();
+            for (var pi in projInc)
+            {
+                parentCapId = projInc[pi].getProjectID();
+                projInc[pi].setStatus("Complete");
+                var updateresult = aa.cap.updateProject(projInc[pi]);
+                logDebug("Renewal " + capId.getCustomID() + " has been set to " + projInc[pi].getStatus());
+            }
+        }
     }
 
     else
@@ -46,6 +60,20 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
             activateTask("Issuance");
+        } 
+
+        var projIncomplete = aa.cap.getProjectByChildCapID(capId, "Renewal", "Incomplete");
+
+        if (projIncomplete.getSuccess())
+        {
+            var projInc = projIncomplete.getOutput();
+            for (var pi in projInc)
+            {
+                parentCapId = projInc[pi].getProjectID();
+                projInc[pi].setStatus("Complete");
+                var updateresult = aa.cap.updateProject(projInc[pi]);
+                logDebug("Renewal " + capId.getCustomID() + " has been set to " + projInc[pi].getStatus());
+            }
         }
     }
 
@@ -97,125 +125,132 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", emailTemplate, vEParams, null);
     }
-    }
+}
 
 
-    function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+{
+    var itemCap = capId;
+    var itemGroup = null;
+    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
+
+    if (useAppSpecificGroupName)
     {
-        var itemCap = capId;
-        var itemGroup = null;
-        if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
+        if (itemName.indexOf(".") < 0)
+        { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
 
-        if (useAppSpecificGroupName)
+
+        itemGroup = itemName.substr(0, itemName.indexOf("."));
+        itemName = itemName.substr(itemName.indexOf(".") + 1);
+    }
+    // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
+    // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
+    // and replacing with the field name
+
+    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+    if (asiFieldResult.getSuccess())
+    {
+        var asiFieldArray = asiFieldResult.getOutput();
+        if (asiFieldArray.length > 0)
         {
-            if (itemName.indexOf(".") < 0)
-            { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
-
-
-            itemGroup = itemName.substr(0, itemName.indexOf("."));
-            itemName = itemName.substr(itemName.indexOf(".") + 1);
-        }
-        // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
-        // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
-        // and replacing with the field name
-
-        var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
-        if (asiFieldResult.getSuccess())
-        {
-            var asiFieldArray = asiFieldResult.getOutput();
-            if (asiFieldArray.length > 0)
+            var asiField = asiFieldArray[0];
+            if (asiField)
             {
-                var asiField = asiFieldArray[0];
-                if (asiField)
-                {
-                    var origAsiValue = asiField.getChecklistComment();
-                    asiField.setChecklistComment(itemValue);
+                var origAsiValue = asiField.getChecklistComment();
+                asiField.setChecklistComment(itemValue);
 
-                    var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
-                    if (updateFieldResult.getSuccess())
-                    {
-                        logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
-                        if (arguments.length < 3) //If no capId passed update the ASI Array
-                            AInfo[itemName] = itemValue;
-                    }
-                    else
-                    { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                if (updateFieldResult.getSuccess())
+                {
+                    logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
+                    if (arguments.length < 3) //If no capId passed update the ASI Array
+                        AInfo[itemName] = itemValue;
                 }
                 else
                 { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
             }
-        }
-        else
-        {
-            logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
-        }
-    } 
-
-    function copyASITablesWithRemove(pFromCapId, pToCapId) {
-        // Function dependencies on addASITable()
-        // par3 is optional 0 based string array of table to ignore
-        var itemCap = pFromCapId;
-    
-        var gm = aa.appSpecificTableScript.getAppSpecificTableGroupModel(itemCap).getOutput();
-        var ta = gm.getTablesArray()
-            var tai = ta.iterator();
-        var tableArr = new Array();
-        var ignoreArr = new Array();
-        var limitCopy = false;
-        if (arguments.length > 2) {
-            ignoreArr = arguments[2]; 
-            limitCopy = true;
-        }
-        while (tai.hasNext()) {
-            var tsm = tai.next();
-    
-            var tempObject = new Array();
-            var tempArray = new Array();
-            var tn = tsm.getTableName() + "";
-            var numrows = 0;
-    
-            //Check list
-            if (limitCopy) {
-                var ignore = false;
-                for (var i = 0; i < ignoreArr.length; i++)
-                    if (ignoreArr[i] == tn) {
-                        ignore = true;
-                        break;
-                    }
-                if (ignore)
-                    continue;
-            }
-            if (!tsm.rowIndex.isEmpty()) {
-                var tsmfldi = tsm.getTableField().iterator();
-                var tsmcoli = tsm.getColumns().iterator();
-                var readOnlyi = tsm.getAppSpecificTableModel().getReadonlyField().iterator(); // get Readonly filed
-                var numrows = 1;
-                while (tsmfldi.hasNext()) // cycle through fields
-                {
-                    if (!tsmcoli.hasNext()) // cycle through columns
-                    {
-                        var tsmcoli = tsm.getColumns().iterator();
-                        tempArray.push(tempObject); // end of record
-                        var tempObject = new Array(); // clear the temp obj
-                        numrows++;
-                    }
-                    var tcol = tsmcoli.next();
-                    var tval = tsmfldi.next();
-    
-                    var readOnly = 'N';
-                    if (readOnlyi.hasNext()) {
-                        readOnly = readOnlyi.next();
-                    }
-    
-                    var fieldInfo = new asiTableValObj(tcol.getColumnName(), tval, readOnly);
-                    tempObject[tcol.getColumnName()] = fieldInfo;
-                    //tempObject[tcol.getColumnName()] = tval;
-                }
-    
-                tempArray.push(tempObject); // end of record
-            }
-            removeASITable(tn, pToCapId)
-            addASITable(tn, tempArray, pToCapId);
-            logDebug("ASI Table Array : " + tn + " (" + numrows + " Rows)");
+            else
+            { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
         }
     }
+    else
+    {
+        logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
+    }
+}
+
+function copyASITablesWithRemove(pFromCapId, pToCapId)
+{
+    // Function dependencies on addASITable()
+    // par3 is optional 0 based string array of table to ignore
+    var itemCap = pFromCapId;
+
+    var gm = aa.appSpecificTableScript.getAppSpecificTableGroupModel(itemCap).getOutput();
+    var ta = gm.getTablesArray()
+    var tai = ta.iterator();
+    var tableArr = new Array();
+    var ignoreArr = new Array();
+    var limitCopy = false;
+    if (arguments.length > 2)
+    {
+        ignoreArr = arguments[2];
+        limitCopy = true;
+    }
+    while (tai.hasNext())
+    {
+        var tsm = tai.next();
+
+        var tempObject = new Array();
+        var tempArray = new Array();
+        var tn = tsm.getTableName() + "";
+        var numrows = 0;
+
+        //Check list
+        if (limitCopy)
+        {
+            var ignore = false;
+            for (var i = 0; i < ignoreArr.length; i++)
+                if (ignoreArr[i] == tn)
+                {
+                    ignore = true;
+                    break;
+                }
+            if (ignore)
+                continue;
+        }
+        if (!tsm.rowIndex.isEmpty())
+        {
+            var tsmfldi = tsm.getTableField().iterator();
+            var tsmcoli = tsm.getColumns().iterator();
+            var readOnlyi = tsm.getAppSpecificTableModel().getReadonlyField().iterator(); // get Readonly filed
+            var numrows = 1;
+            while (tsmfldi.hasNext()) // cycle through fields
+            {
+                if (!tsmcoli.hasNext()) // cycle through columns
+                {
+                    var tsmcoli = tsm.getColumns().iterator();
+                    tempArray.push(tempObject); // end of record
+                    var tempObject = new Array(); // clear the temp obj
+                    numrows++;
+                }
+                var tcol = tsmcoli.next();
+                var tval = tsmfldi.next();
+
+                var readOnly = 'N';
+                if (readOnlyi.hasNext())
+                {
+                    readOnly = readOnlyi.next();
+                }
+
+                var fieldInfo = new asiTableValObj(tcol.getColumnName(), tval, readOnly);
+                tempObject[tcol.getColumnName()] = fieldInfo;
+                //tempObject[tcol.getColumnName()] = tval;
+            }
+
+            tempArray.push(tempObject); // end of record
+        }
+        removeASITable(tn, pToCapId)
+        addASITable(tn, tempArray, pToCapId);
+        logDebug("ASI Table Array : " + tn + " (" + numrows + " Rows)");
+    }
+}
