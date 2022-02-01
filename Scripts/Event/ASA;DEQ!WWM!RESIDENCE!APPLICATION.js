@@ -50,11 +50,15 @@ var countyState = AInfo["Is this application part of the County/State I/A OWTS S
 		}
 	}
 //}
+removeBORFees(capId);
+
 // Add BOR fee if the custom field is set to Yes by public user
 if (publicUser)
 {
 	var bor = AInfo["Are you applying for a Board of Review(BOR) hearing at this time? If yes, submit form WWM"];
 	
+	removeBORFees(capId);
+
 	if (bor == 'Yes')
 	{
 	    addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y")
@@ -84,6 +88,38 @@ if(capmodel.isCompleteCap() && capmodel.getCreatedByACA() == "N")
 	}
 }
 
+function removeBORFees(itemCap) 
+{
+	getFeeResult = aa.fee.getFeeItems(itemCap, null, "NEW");
+	if (getFeeResult.getSuccess()) 
+	{
+		var feeList = getFeeResult.getOutput();
+		for (feeNum in feeList) 
+		{
+			if (feeList[feeNum].getFeeitemStatus().equals("NEW")) 
+			{
+				
+				if (feeList[feeNum].getFeeCod() == "BOR")
+				{
+					var feeSeq = feeList[feeNum].getFeeSeqNbr();
+					var editResult = aa.finance.removeFeeItem(itemCap, feeSeq);
+					if (editResult.getSuccess()) {
+						logDebug("Removed existing Fee Item: " + feeList[feeNum].getFeeCod());
+					} else {
+						logDebug("**ERROR: removing fee item (" + feeList[feeNum].getFeeCod() + "): " + editResult.getErrorMessage());
+						break
+					}
+				}
+				
+			}
+			
+		}
+	} 
+	else {
+		logDebug("**ERROR: getting fee items (" + feeList[feeNum].getFeeCod() + "): " + getFeeResult.getErrorMessage())
+	}
+
+} 
 
 function addDays(date, days) 
 {

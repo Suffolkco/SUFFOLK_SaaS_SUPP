@@ -27,6 +27,7 @@ if (feeEx == "No" || feeEx == null)
         }
     } 
 }
+removeBORFees(capId);
 
 // Add BOR fee if the custom field is set to Yes by public user
 if (publicUser)
@@ -62,7 +63,38 @@ if(capmodel.isCompleteCap() && capmodel.getCreatedByACA() == "N")
 		aa.expiration.editB1Expiration(b1Exp.getB1Expiration());      
 	}
 }
+function removeBORFees(itemCap) 
+{
+	getFeeResult = aa.fee.getFeeItems(itemCap, null, "NEW");
+	if (getFeeResult.getSuccess()) 
+	{
+		var feeList = getFeeResult.getOutput();
+		for (feeNum in feeList) 
+		{
+			if (feeList[feeNum].getFeeitemStatus().equals("NEW")) 
+			{
+				
+				if (feeList[feeNum].getFeeCod() == "BOR")
+				{
+					var feeSeq = feeList[feeNum].getFeeSeqNbr();
+					var editResult = aa.finance.removeFeeItem(itemCap, feeSeq);
+					if (editResult.getSuccess()) {
+						logDebug("Removed existing Fee Item: " + feeList[feeNum].getFeeCod());
+					} else {
+						logDebug("**ERROR: removing fee item (" + feeList[feeNum].getFeeCod() + "): " + editResult.getErrorMessage());
+						break
+					}
+				}
+				
+			}
+			
+		}
+	} 
+	else {
+		logDebug("**ERROR: getting fee items (" + feeList[feeNum].getFeeCod() + "): " + getFeeResult.getErrorMessage())
+	}
 
+} 
 function addDays(date, days) 
 {
 	var result = new Date(date);
