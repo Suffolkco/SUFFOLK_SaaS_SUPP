@@ -227,7 +227,11 @@ function mainProcess()
                             }
                             aa.cap.updateAppStatus(capId, "Set to Expired from Batch", "Expired", sysDate, "", systemUserObj);
                             logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
-                            var contactResult = aa.people.getCapContactByCapID(capId);
+
+                            // As per DAP-349, do not send email until after 60 days of the expiration. Blocking sending email here
+                            
+                            /*var contactResult = aa.people.getCapContactByCapID(capId);
+                            
                             if (contactResult.getSuccess())
                             {
                                 var capContacts = contactResult.getOutput();
@@ -242,7 +246,7 @@ function mainProcess()
                                         }
                                     }
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
