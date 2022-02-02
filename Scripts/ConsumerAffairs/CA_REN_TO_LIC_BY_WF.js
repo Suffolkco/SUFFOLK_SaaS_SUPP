@@ -78,7 +78,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     }
 
 
-    var capContacts = aa.people.getCapContactByCapID(parentCapId);
+    /*var capContacts = aa.people.getCapContactByCapID(parentCapId);
     if (capContacts.getSuccess())
     {
         capContacts = capContacts.getOutput();
@@ -87,9 +87,9 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         {
             aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
         }
-    }
+    }*/
     copyDocuments(capId, parentCapId);
-    copyContacts(capId, parentCapId);
+    //copyContacts(capId, parentCapId);
     AInfo = new Array();
     loadAppSpecific(AInfo, capId);
     for (asi in AInfo)
