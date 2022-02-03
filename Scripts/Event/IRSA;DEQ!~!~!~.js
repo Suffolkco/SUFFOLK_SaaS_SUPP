@@ -33,17 +33,14 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 //IA Record Creation from WWM Record 
 
 
-var wwmNumber = AInfo["WWM Application Number"];
-var getCapResult = aa.cap.getCapID(wwmNumber);
-var wwmId = getCapResult.getOutput();
 
-if (appTypeArray[1] == "WWM");
+if (appTypeArray[1] == "WWM")
 {
     
-    var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Manufacturer");
-    var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
+    var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Manufacturer");
+    var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Model");
     logDebug("Manufacturer = " + iaManufacturer)
-    var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
+    var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWM_LEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
     var iaLeachOtherType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Type");
     var iaLeachProduct = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Product");
     // JG - Need to add this once field is added to Custom Field Group var iaEffluentPumpLeachPool = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "EffluentPump");
@@ -52,21 +49,20 @@ if (appTypeArray[1] == "WWM");
 
     // JG - Need to add this once field is added to Custom Field Group var iaPolishingUnit = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
     
-    if (inspType == "WWM_RES_System 1" && inspResult != null && iaManufacturer != null)
+    if (inspType == "WWM_RES_System 1" && iaManufacturer != null)
     
     {
         
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
-        logDebug("Manufact")
         copyLicenseProfessional(capId, wwmIA);
         copyAddress(capId, wwmIA);
         copyParcel(capId, wwmIA);
         copyDocumentsToCapID(capId, wwmIA); 
-        editAppSpecific("Installation Date", insCon, wwmIA);
-        editAppSpecific("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecific("Model", iaModel, wwmIA);
-        editAppSpecific("WWM Application Number", wwmId, wwmIA);
+        editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
+        editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
+        editAppSpecificLOCAL("Model", iaModel, wwmIA);
+        editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
     }
 }
 
@@ -189,4 +185,53 @@ function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asi
 	}
 	return asiValue;
 }
+function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+{
+    var itemCap = capId;
+    var itemGroup = null;
+    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
 
+    if (useAppSpecificGroupName)
+    {
+        if (itemName.indexOf(".") < 0)
+        { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
+
+
+        itemGroup = itemName.substr(0, itemName.indexOf("."));
+        itemName = itemName.substr(itemName.indexOf(".") + 1);
+    }
+    // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
+    // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
+    // and replacing with the field name
+
+    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+    if (asiFieldResult.getSuccess())
+    {
+        var asiFieldArray = asiFieldResult.getOutput();
+        if (asiFieldArray.length > 0)
+        {
+            var asiField = asiFieldArray[0];
+            if (asiField)
+            {
+                var origAsiValue = asiField.getChecklistComment();
+                asiField.setChecklistComment(itemValue);
+
+                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                if (updateFieldResult.getSuccess())
+                {
+                    logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
+                    if (arguments.length < 3) //If no capId passed update the ASI Array
+                        AInfo[itemName] = itemValue;
+                }
+                else
+                { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+            }
+            else
+            { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+        }
+    }
+    else
+    {
+        logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
+    }
+} 
