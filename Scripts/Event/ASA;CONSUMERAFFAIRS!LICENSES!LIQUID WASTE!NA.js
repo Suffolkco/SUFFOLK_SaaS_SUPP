@@ -1,5 +1,6 @@
 
-    removeAllFees(capId); //If user updates table after assessment 
+    // DAP-347: As per Matt request, do not add endorsement fee automatically for LW application.
+    /*removeAllFees(capId); //If user updates table after assessment 
     if (typeof (RESTRICTIONS) == "object")
     {
         var rowsToPay = 0;
@@ -24,7 +25,7 @@
         {
             addFee("SLS_22", "CA_SALES", "FINAL", rowsToPay -1, "Y"); 
         }
-    }
+    }*/
 
 
 
