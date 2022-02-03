@@ -52,7 +52,10 @@ else
 {
     removeAllFees(capId); //If user updates table after assessment 
 
-    //addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
+    if (publicUser)
+{
+    addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
+}
 if (typeof (RESTRICTIONS) == "object") {
     var rowsToPay = 0;
     logDebug("RESTRICTIONS is an object");
