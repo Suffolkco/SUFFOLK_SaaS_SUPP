@@ -222,7 +222,6 @@ function mainProcess()
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
                             addParameter(vEParams, "$$PINNumber$$", PIN);
-
                          
                             addACAUrlsVarToEmail(vEParams);                           
                             logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
