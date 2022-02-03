@@ -48,16 +48,18 @@ if (appTypeArray[1] == "WWM" && iaManufacturer != null);
 
 
     if (inspType == "WWM_RES_System 1" && inspResult != null)
+    
     {
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
+        logDebug("Manufact")
         copyLicenseProfessional(capId, wwmIA);
         copyAddress(capId, wwmIA);
         copyParcel(capId, wwmIA);
-        copyDocumentsToCapID(capId, wwmIA);
-        editAppSpecific("Installation Date", insCon);
-        editAppSpecific("Manufacturer", iaManufacturer);
-        editAppSpecific("Model", iaModel);
+        copyDocumentsToCapID(capId, wwmIA); 
+        editAppSpecific("Installation Date", insCon, wwmIA);
+        editAppSpecific("Manufacturer", iaManufacturer, wwmIA);
+        editAppSpecific("Model", iaModel, wwmIA);
         editAppSpecific("WWM Application Number", capIDString);
     }
 }
