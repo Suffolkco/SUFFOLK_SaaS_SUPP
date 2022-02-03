@@ -37,7 +37,7 @@ var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supp
 if (appTypeArray[1] == "WWM" && iaManufacturer != null);
 {
     var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
-    logDebug("Model Number = " + iaModel)
+    logDebug("Manufacturer = " + iaManufacturer)
     var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
     var iaLeachOtherType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Type");
     var iaLeachProduct = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Product");
