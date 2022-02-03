@@ -33,7 +33,9 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 //IA Record Creation from WWM Record 
 
 var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Manufacturer");
-
+var wwmNumber = AInfo["WWM Application Number"];
+var getCapResult = aa.cap.getCapID(wwmNumber);
+var wwmId = getCapResult.getOutput();
 if (appTypeArray[1] == "WWM" && iaManufacturer != null);
 {
     var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
@@ -51,6 +53,7 @@ if (appTypeArray[1] == "WWM" && iaManufacturer != null);
     if (inspType == "WWM_RES_System 1" && inspResult != null)
     
     {
+        
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
         logDebug("Manufact")
@@ -61,7 +64,7 @@ if (appTypeArray[1] == "WWM" && iaManufacturer != null);
         editAppSpecific("Installation Date", insCon, wwmIA);
         editAppSpecific("Manufacturer", iaManufacturer, wwmIA);
         editAppSpecific("Model", iaModel, wwmIA);
-        editAppSpecific("WWM Application Number", capIDString);
+        editAppSpecific("WWM Application Number", wwmId, wwmIA);
     }
 }
 
