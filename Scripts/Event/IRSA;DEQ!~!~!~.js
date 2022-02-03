@@ -55,9 +55,9 @@ if (appTypeArray[1] == "WWM" && iaManufacturer != null);
         copyAddress(capId, wwmIA);
         copyParcel(capId, wwmIA);
         copyDocumentsToCapID(capId, wwmIA);
-        editAppSpecific("Installation Date", insCon, wwmIA);
-        editAppSpecific("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecific("Model", iaModel, wwmIA);
+        editAppSpecific("Installation Date", insCon);
+        editAppSpecific("Manufacturer", iaManufacturer);
+        editAppSpecific("Model", iaModel);
         editAppSpecific("WWM Application Number", capIDString);
     }
 }
