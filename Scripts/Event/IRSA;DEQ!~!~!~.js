@@ -22,7 +22,7 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
     var rFile = new Array();
     rParams.put("INSP_SEQ_NO", insId.toString());
     rParams.put("BLANK", insCon);
-    //logDebug("Params are: " + rParams);//
+    //logDebug("Params are: " + rParams);// 
     // Old report
     //rFile = reportRunSave("Analysis_Request_Form_by_Insp_Seq_No", true, false, true, "General", rParams);
     // New report
