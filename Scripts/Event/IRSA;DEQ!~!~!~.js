@@ -32,12 +32,15 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 
 //IA Record Creation from WWM Record 
 
-var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Manufacturer");
+
 var wwmNumber = AInfo["WWM Application Number"];
 var getCapResult = aa.cap.getCapID(wwmNumber);
 var wwmId = getCapResult.getOutput();
-if (appTypeArray[1] == "WWM" && iaManufacturer != null);
+
+if (appTypeArray[1] == "WWM");
 {
+    
+    var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Manufacturer");
     var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
     logDebug("Manufacturer = " + iaManufacturer)
     var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
@@ -48,9 +51,8 @@ if (appTypeArray[1] == "WWM" && iaManufacturer != null);
     // JG - Need to add this once field is added to Custom Field Group var iaEffluentPumpLeachOther = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "EffluentPump");
 
     // JG - Need to add this once field is added to Custom Field Group var iaPolishingUnit = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
-
-
-    if (inspType == "WWM_RES_System 1" && inspResult != null)
+    
+    if (inspType == "WWM_RES_System 1" && inspResult != null && iaManufacturer != null)
     
     {
         
