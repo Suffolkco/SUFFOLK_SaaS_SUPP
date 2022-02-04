@@ -244,7 +244,6 @@ function mainProcess()
                                     }
                                 }
                             }
-
                         }
                     }
                 }
