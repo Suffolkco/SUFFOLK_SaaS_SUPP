@@ -40,7 +40,23 @@ if (appTypeArray[1] == "WWM")
     var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Manufacturer");
     var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Model");
     logDebug("Manufacturer = " + iaManufacturer)
-    var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWM_LEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
+    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+	if (getCapResult.getSuccess())
+    {
+		var apsArray = getCapResult.getOutput();
+        for (aps in apsArray)
+        {
+        myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+        logDebug("apsArray = " + apsArray);
+
+        var relCap = myCap.getCapID();
+        logDebug("relCap = " + relCap);
+
+        var relCapID = relCap.getCustomID()
+        logDebug("relCapID = " + relCapID);
+        }
+    }
+    var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
     var iaLeachOtherType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Type");
     var iaLeachProduct = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Product");
     // JG - Need to add this once field is added to Custom Field Group var iaEffluentPumpLeachPool = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "EffluentPump");
@@ -56,13 +72,22 @@ if (appTypeArray[1] == "WWM")
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
         copyLicenseProfessional(capId, wwmIA);
+        copyLicenseProfessional(relCap, wwmIA);
         copyAddress(capId, wwmIA);
         copyParcel(capId, wwmIA);
         copyDocumentsToCapID(capId, wwmIA); 
         editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
         editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecificLOCAL("Model", iaModel, wwmIA);
+        editAppSpecificLOCAL("Model", iaModel, wwmIA); 
         editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+        if (iaLeachPoolType != null)
+        {
+            editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
+        }
+        else if (iaLeachPoolType == null)
+        {
+            editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
+        }
     }
 }
 
