@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: BATCH_CA_ID_CARDS_EXPIRED_AFTER60DAYS.js 
+| Program: BATCH_CA_REGISTRATIONS_EXPIRED_AFTER60DAYS.js
 | Trigger: Batch
 | Client: Suffolk
 | Version 1.0 07/01/2021
@@ -116,7 +116,6 @@ else
 {
     logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
-var recTypeArray = ["ConsumerAffairs/Licenses/Home Improvement/NA"];
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: END CONFIGURABLE PARAMETERS
@@ -152,7 +151,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_ID_CARDS_EXPIRED_AFTER60DAYS", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_REGISTRATIONS_EXPIRED_AFTER60DAYS", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -168,11 +167,10 @@ function mainProcess()
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
         
         logDebugLocal("Date to check: " + dateToCheck);
-
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE LIKE '%LICENSE DATES%' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'ID Cards' and B1_PER_CATEGORY = 'NA' ";
-        //  
+      
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Registrations'"; 
         var output = "Record ID | Expiration Date \n";
-        var vResult = doSQLSelect_local(vSQL);
+        var vResult = doSQLSelect_local(vSQL); 
 
         for (r in vResult)
         {
@@ -187,29 +185,22 @@ function mainProcess()
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
-                    if (matches(getAppStatus(), "Expired"))
-                    {
+                    if (getAppStatus() == "Expired")
+                    {                       
                         {                           
                             var vEParams = aa.util.newHashtable();
                             var vRParams = aa.util.newHashtable();
                             var AInfo = new Array();
                             loadAppSpecific(AInfo);
                             var PIN = AInfo["PIN Number"];
-                            var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
-                            acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-
-                            //Save Base ACA URL
-                            addParameter(vEParams, "$$acaURL$$", acaSite);
-
-                            //Save Record Direct URL
-                            addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl());
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
-                            addACAUrlsVarToEmail(vEParams);
                             addParameter(vEParams, "$$PINNumber$$", PIN);
-                          
-                          
+                            addACAUrlsVarToEmail(vEParams);
+                           
+                            logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
+
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())
                             {
@@ -220,6 +211,7 @@ function mainProcess()
                                     if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
                                     {
                                         addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+
                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                         {
                                             addParameter(vRParams, "RecordID", capIDString);
@@ -238,12 +230,13 @@ function mainProcess()
                                                 caReports.push(caReport);
                                             }
 
-                                            var success = sendNotification("", conEmail, "", "CA_ID_CARDS_EXPIRATION", vEParams, caReports);
+                                            var success = sendNotification("", conEmail, "", "CA_LICENSE_EXPIRATION", vEParams, caReports);
                                             logDebugLocal("success:" + success);
                                         }
+
                                     }
                                 }
-                            }
+                            } 
 
                         }
                     }
@@ -264,6 +257,43 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function generateReportBatch(itemCap, reportName, module, parameters)
+{
+    //returns the report file which can be attached to an email.
+    var user = currentUserID; // Setting the User Name
+    var report = aa.reportManager.getReportInfoModelByName(reportName);
+    if (!report.getSuccess() || report.getOutput() == null)
+    {
+        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
+        return false;
+    }
+    report = report.getOutput();
+    report.setModule(module);
+    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName, user);
+
+    if (permit.getOutput().booleanValue())
+    {
+        var reportResult = aa.reportManager.getReportResult(report);
+        if (reportResult.getSuccess())
+        {
+            reportOutput = reportResult.getOutput();
+            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
+            reportFile = reportFile.getOutput();
+            return reportFile;
+        } else
+        {
+            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
+            return false;
+        }
+    } else
+    {
+        logDebug("You have no permission.");
+        return false;
+    }
+}
 function getContactName(vConObj)
 {
     if (vConObj.people.getContactTypeFlag() == "organization")
@@ -419,46 +449,6 @@ function doSQLSelect_local(sql)
         return array
     }
 }
-
-
-
-function generateReportBatch(itemCap, reportName, module, parameters)
-{
-    //returns the report file which can be attached to an email.
-    var user = currentUserID; // Setting the User Name
-    var report = aa.reportManager.getReportInfoModelByName(reportName);
-    if (!report.getSuccess() || report.getOutput() == null)
-    {
-        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
-        return false;
-    }
-    report = report.getOutput();
-    report.setModule(module);
-    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
-    report.setReportParameters(parameters);
-
-    var permit = aa.reportManager.hasPermission(reportName, user);
-
-    if (permit.getOutput().booleanValue())
-    {
-        var reportResult = aa.reportManager.getReportResult(report);
-        if (reportResult.getSuccess())
-        {
-            reportOutput = reportResult.getOutput();
-            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
-            reportFile = reportFile.getOutput();
-            return reportFile;
-        } else
-        {
-            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
-            return false;
-        }
-    } else
-    {
-        logDebug("You have no permission.");
-        return false;
-    }
-}
 function loadAppSpecific(thisArr) {
 	// 
 	// Returns an associative array of App Specific Info
@@ -482,5 +472,7 @@ function loadAppSpecific(thisArr) {
 			}
 		}
 	}
+
+
 
 
