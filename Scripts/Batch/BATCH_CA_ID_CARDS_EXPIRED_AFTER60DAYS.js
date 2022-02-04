@@ -189,8 +189,7 @@ function mainProcess()
                 {
                     if (matches(getAppStatus(), "Expired"))
                     {
-                        {
-                           
+                        {                           
                             var vEParams = aa.util.newHashtable();
                             var vRParams = aa.util.newHashtable();
                             var AInfo = new Array();
