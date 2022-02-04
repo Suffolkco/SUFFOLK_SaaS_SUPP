@@ -40,6 +40,22 @@ if (appTypeArray[1] == "WWM")
     var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Manufacturer");
     var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Model");
     logDebug("Manufacturer = " + iaManufacturer)
+    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+	if (getCapResult.getSuccess())
+    {
+		var apsArray = getCapResult.getOutput();
+        for (aps in apsArray)
+        {
+        myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+        logDebug("apsArray = " + apsArray);
+
+        var relCap = myCap.getCapID();
+        logDebug("relCap = " + relCap);
+
+        var relCapID = relCap.getCustomID()
+        logDebug("relCapID = " + relCapID);
+        }
+    }
     var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
     var iaLeachOtherType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Type");
     var iaLeachProduct = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Product");
@@ -56,6 +72,7 @@ if (appTypeArray[1] == "WWM")
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
         copyLicenseProfessional(capId, wwmIA);
+        copyLicenseProfessional(relCap, wwmIA);
         copyAddress(capId, wwmIA);
         copyParcel(capId, wwmIA);
         copyDocumentsToCapID(capId, wwmIA); 
