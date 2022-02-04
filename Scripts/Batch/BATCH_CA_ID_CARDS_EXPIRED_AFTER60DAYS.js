@@ -208,7 +208,7 @@ function mainProcess()
                             addParameter(vEParams, "$$expirDate$$", expirationDate);
                             addACAUrlsVarToEmail(vEParams);
                             addParameter(vEParams, "$$PINNumber$$", PIN);
-                            
+                          
                           
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess())
