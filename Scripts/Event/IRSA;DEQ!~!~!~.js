@@ -61,7 +61,7 @@ if (appTypeArray[1] == "WWM")
         copyDocumentsToCapID(capId, wwmIA); 
         editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
         editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecificLOCAL("Model", iaModel, wwmIA);
+        editAppSpecificLOCAL("Model", iaModel, wwmIA); 
         editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
         if (iaLeachPoolType != null)
         {
