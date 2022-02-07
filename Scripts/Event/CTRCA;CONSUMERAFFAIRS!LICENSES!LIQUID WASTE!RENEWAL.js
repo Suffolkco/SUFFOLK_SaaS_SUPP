@@ -27,10 +27,10 @@ if (!publicUser)
             }
         }
         logDebug("Number of Billable Rows in Table is: " + rowsToPay);
-        if (rowsToPay)
+        if (rowsToPay -1 > 0)
         {
-            addFee("SLS_22", "CA_SALES", "FINAL", rowsToPay, "Y");
+            addFee("SLS_22", "CA_SALES", "FINAL", rowsToPay -1, "Y");
         }
-    }
+}
 }
 
