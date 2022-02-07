@@ -71,8 +71,7 @@ if (appTypeArray[1] == "WWM")
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
         logDebug("wwmIA =" + wwmIA);
-        var iaCap = iaResult.getCapID();
-        var iaCustom = iaCap.getCustomID();
+        var iaCustom = wwmIA.getCustomID();
         copyLicenseProfessional(capId, wwmIA);
         copyLicenseProfessional(relCap, wwmIA);
         copyAddress(capId, wwmIA);
