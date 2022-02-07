@@ -6,7 +6,7 @@ aa.cap.updateAccessByACA(capId, "Y");
 
 if (!publicUser)
 {
-    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
+    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
     {
         logDebug("app is not Dry Cleaning");
         addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y");
