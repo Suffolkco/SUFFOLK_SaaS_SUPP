@@ -228,7 +228,7 @@ function mainProcess()
                                             addParameter(vRParams, "Email", "Yes");
 
                                             conEmail += capContacts[c].email;
-                                            logDebugLocal("Conemail is: " + conEmail);
+                                            logDebugLocal("Vendor email is: " + conEmail + ", " + capIDString);
 
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
                                             if (caReport)

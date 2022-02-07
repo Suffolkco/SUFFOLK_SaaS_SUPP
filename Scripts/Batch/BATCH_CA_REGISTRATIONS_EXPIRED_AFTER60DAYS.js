@@ -167,12 +167,13 @@ function mainProcess()
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
         
         logDebugLocal("Date to check: " + dateToCheck);      
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Registrations'"; 
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE LIKE '%LICENSE DATES%' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Registrations'"; 
         var output = "Record ID | Expiration Date \n";
         var vResult = doSQLSelect_local(vSQL); 
-
+        logDebugLocal("vResult:" + vResult.length);
         for (r in vResult)
         {
+            
             recordID = vResult[r]["recordNumber"];
             expirationDate = vResult[r]["ExpDate"];
             output += recordID + " | " + expirationDate + "\n";
@@ -184,7 +185,7 @@ function mainProcess()
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
-                    if (getAppStatus() == "Expired")
+                    if (matches(getAppStatus(), "Expired"))
                     {                       
                         {                           
                             var vEParams = aa.util.newHashtable();
@@ -219,7 +220,7 @@ function mainProcess()
                                             addParameter(vRParams, "Email", "Yes");
 
                                             conEmail += capContacts[c].email;
-                                            logDebugLocal("Conemail is: " + conEmail);
+                                            logDebugLocal("Vendor email is: " + conEmail);
 
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
                                             if (caReport)
