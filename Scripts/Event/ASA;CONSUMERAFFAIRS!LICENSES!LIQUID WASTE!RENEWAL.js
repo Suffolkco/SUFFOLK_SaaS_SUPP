@@ -59,8 +59,8 @@ else
 if (typeof (RESTRICTIONS) == "object") {
     var rowsToPay = 0;
     logDebug("RESTRICTIONS is an object");
-    for (var rows = 1; rows < RESTRICTIONS.length; rows++) {
-        var thisRow = RESTRICTIONS[rows];
+    for (var rows = 0; rows < RESTRICTIONS.length; rows++) {
+        var thisRow = RESTRICTIONS[rows]; 
         var categoryNeeded = thisRow["Category"];
         logDebug("Category found is: " + categoryNeeded);
         if (!matches(categoryNeeded, "LW - Wastewater Demo Project", "LW12 - All Endorsements")) { 

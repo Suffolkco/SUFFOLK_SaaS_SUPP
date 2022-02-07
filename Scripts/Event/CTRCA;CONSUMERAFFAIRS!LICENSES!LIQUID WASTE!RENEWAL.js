@@ -11,7 +11,7 @@ if (!publicUser)
     {
         var rowsToPay = 0;
         logDebug("RESTRICTIONS is an object");
-        for (var rows = 1; rows < RESTRICTIONS.length; rows++)
+        for (var rows = 0; rows < RESTRICTIONS.length; rows++) 
         {
             var thisRow = RESTRICTIONS[rows];
             var categoryNeeded = thisRow["Category"];
