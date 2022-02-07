@@ -12,7 +12,7 @@ inspType = WWM_RES_System 1
 inspSchedDate = 1/18/2022 */
 
 
-
+logDebug("inspection type =" + inspType);
 
 if (inspType == "WWM_RES_System 1")
 {
