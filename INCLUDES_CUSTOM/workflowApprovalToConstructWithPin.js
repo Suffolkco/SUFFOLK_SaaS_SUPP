@@ -154,6 +154,8 @@ function workflowApprovalToConstructWithPin()
                         logDebug("Email:" + peop.getEmail());                       
                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
                         addParameter(emailParams, "$$shortNotes$$", shortNotes);
+                        addACAUrlsVarToEmail(emailParams);
+
                         conEmail = peop.getEmail();
                         if (conEmail != null)
                         {
@@ -209,6 +211,7 @@ function workflowApprovalToConstructWithPin()
                         logDebug("Send standard report if any to contact without the PIN Letter: " + conEmail);
                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
                         addParameter(emailParams, "$$shortNotes$$", shortNotes);
+                        addACAUrlsVarToEmail(emailParams);
                         if (conEmail != null)
                         {
 
