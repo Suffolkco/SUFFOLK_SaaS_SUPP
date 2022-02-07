@@ -36,27 +36,26 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 
 if (appTypeArray[1] == "WWM")
 {
-
+    
     var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Manufacturer");
     var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Model");
     logDebug("Manufacturer = " + iaManufacturer)
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
-    if (getCapResult.getSuccess())
+	if (getCapResult.getSuccess())
     {
-        var apsArray = getCapResult.getOutput();
+		var apsArray = getCapResult.getOutput();
         for (aps in apsArray)
         {
-            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-            logDebug("apsArray = " + apsArray);
+        myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+        logDebug("apsArray = " + apsArray);
 
-            var relCap = myCap.getCapID();
-            logDebug("relCap = " + relCap);
+        var relCap = myCap.getCapID();
+        logDebug("relCap = " + relCap);
 
-            var relCapID = relCap.getCustomID()
-            logDebug("relCapID = " + relCapID);
+        var relCapID = relCap.getCustomID()
+        logDebug("relCapID = " + relCapID);
         }
     }
-
     var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
     var iaLeachOtherType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Type");
     var iaLeachProduct = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Product");
@@ -65,22 +64,23 @@ if (appTypeArray[1] == "WWM")
     // JG - Need to add this once field is added to Custom Field Group var iaEffluentPumpLeachOther = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "EffluentPump");
 
     // JG - Need to add this once field is added to Custom Field Group var iaPolishingUnit = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
-
+    
     if (inspType == "WWM_RES_System 1" && iaManufacturer != null)
-{
-
+    
+    { 
         var desc = "Automated via:" + capIDString;
         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
+        var iaCap = wwmIA.getCapID();
+        var iaCustom = iaCap.getCustomID();
         copyLicenseProfessional(capId, wwmIA);
         copyLicenseProfessional(relCap, wwmIA);
         copyAddress(capId, wwmIA);
         copyParcel(capId, wwmIA);
-        copyDocumentsToCapID(capId, wwmIA);
+        copyDocumentsToCapID(capId, wwmIA); 
         editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
         editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecificLOCAL("Model", iaModel, wwmIA);
+        editAppSpecificLOCAL("Model", iaModel, wwmIA); 
         editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
-        editAppSpecificLOCAL("Inspection Number", inspId, wwmIA)
         if (iaLeachPoolType != null)
         {
             editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
@@ -89,28 +89,7 @@ if (appTypeArray[1] == "WWM")
         {
             editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
         }
-    }
-    else if (inspType == "WWM_RES_System 1_Continuation" && iaManufacturer != null)
-    {
-
-        var inspResultObj = aa.inspection.getInspections(capId);
-        var WWMinspId = null
-        if (inspResultObj.getSuccess())
-        {
-            var inspList = inspResultObj.getOutput();
-            for (xx in insplist)
-                if (inspList[xx].getInspectionType() == "WWM_RES_System 1" && !matches(inspList[xx].getInspectionStatus(), null));
-                WWMinspId = inspList[xx].getIdNumber();
-                
-        }
-
-        if (WWMinspId)
-        {
-            var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
-
-        }
-        
-
+        updateGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "IA Record Number", iaCustom);
     }
 }
 
@@ -162,92 +141,76 @@ function copyLicenseProfessional(srcCapId, targetCapId)
 
 function copyDocumentsToCapID(fromCapID, toCapID)
 {
-    var opDocArray = aa.document.getDocumentListByEntity(fromCapID.toString(), "CAP").getOutput();
+    var opDocArray = aa.document.getDocumentListByEntity(fromCapID.toString(),"CAP").getOutput();
     var vDocArray = opDocArray.toArray();
     for (var vCounter in vDocArray)
     {
-        var vDoc = vDocArray[vCounter];
-        aa.document.createDocumentAssociation(vDoc, toCapID.toString(), "CAP");
+    var vDoc = vDocArray[vCounter];
+    aa.document.createDocumentAssociation(vDoc, toCapID.toString(), "CAP");
     }
 }
 
-function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel)
-{
-    var vInspId = parseFloat(pInspId);
-    var vInspectionActivity;
-    var asiValue = "";
-    var guideBiz;
-    var vGuideSheetArray = [];
-    var vGuideSheet;
-    var vGuideSheetItemsArray = [];
-    var vGuideSheetItem;
-    var vInspection;
+function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel) {
+	var vInspId = parseFloat(pInspId);
+	var vInspectionActivity;
+	var asiValue = "";
+	var guideBiz;
+	var vGuideSheetArray = [];
+	var vGuideSheet;
+	var vGuideSheetItemsArray = [];
+	var vGuideSheetItem;
+	var vInspection;
 
-    // Get the specific inspection model
-    vInspection = aa.inspection.getInspection(capId, vInspId);
-    if (vInspection.getSuccess())
-    {
-        vInspection = vInspection.getOutput();
-        vInspectionActivity = vInspection.getInspection().getActivity();
+	// Get the specific inspection model
+	vInspection = aa.inspection.getInspection(capId, vInspId);
+	if (vInspection.getSuccess()) {
+		vInspection = vInspection.getOutput();
+		vInspectionActivity = vInspection.getInspection().getActivity();
 
-        // Get the guidesheets and their items from the activity model
-        guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-        vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
-        if (vGuideSheetArray.length != 0)
-        {
-            var x = 0;
-            for (x in vGuideSheetArray)
-            {
-                vGuideSheet = vGuideSheetArray[x];
-                if (gName.toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
-                {
-                    vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
-                    var z = 0;
-                    for (z in vGuideSheetItemsArray)
-                    {
-                        vGuideSheetItem = vGuideSheetItemsArray[z];
-                        if (vGuideSheetItem && gItem == vGuideSheetItem.getGuideItemText() && asiGroup == vGuideSheetItem.getGuideItemASIGroupName())
-                        {
-                            var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
-                            if (ASISubGroups)
-                            {
-                                for (var k = 0; k < ASISubGroups.size(); k++)
-                                {
-                                    var ASISubGroup = ASISubGroups.get(k);
-                                    if (ASISubGroup && ASISubGroup.getSubgroupCode() == asiSubGroup)
-                                    {
-                                        var ASIModels = ASISubGroup.getAsiList();
-                                        if (ASIModels)
-                                        {
-                                            for (var m = 0; m < ASIModels.size(); m++)
-                                            {
-                                                var ASIModel = ASIModels.get(m);
-                                                if (ASIModel && ASIModel.getAsiName() == asiLabel)
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    asiValue = ASIModel.getAttributeValue();
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else
-                {
-                    logDebug("Failed to get guide sheet item");
-                }
-            }
-        } else
-        {
-            logDebug("Failed to get guidesheets");
-        }
-    } else
-    {
-        logDebug("Failed to get inpection");
-    }
-    return asiValue;
+		// Get the guidesheets and their items from the activity model
+		guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+		vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+		if (vGuideSheetArray.length != 0) {
+			var x = 0;
+			for (x in vGuideSheetArray) {
+				vGuideSheet = vGuideSheetArray[x];
+				if (gName.toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null) {
+					vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+					var z = 0;
+					for (z in vGuideSheetItemsArray) {
+						vGuideSheetItem = vGuideSheetItemsArray[z];
+						if (vGuideSheetItem && gItem == vGuideSheetItem.getGuideItemText() && asiGroup == vGuideSheetItem.getGuideItemASIGroupName()) {
+							var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
+							if (ASISubGroups) {
+								for (var k = 0; k < ASISubGroups.size(); k++) {
+									var ASISubGroup = ASISubGroups.get(k);
+									if (ASISubGroup && ASISubGroup.getSubgroupCode() == asiSubGroup) {
+										var ASIModels = ASISubGroup.getAsiList();
+										if (ASIModels) {
+											for (var m = 0; m < ASIModels.size(); m++) {
+												var ASIModel = ASIModels.get(m);
+												if (ASIModel && ASIModel.getAsiName() == asiLabel) {
+													logDebug("ASI value: " + ASIModel.getAttributeValue());
+													asiValue = ASIModel.getAttributeValue();
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				} else {
+					logDebug("Failed to get guide sheet item");
+				}
+			}
+		} else {
+			logDebug("Failed to get guidesheets");
+		}
+	} else {
+		logDebug("Failed to get inpection");
+	}
+	return asiValue;
 }
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
