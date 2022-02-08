@@ -6,7 +6,7 @@ var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
 
 if (insMonth.length == 1) {
     insMonth = "0" + insMonth;
-}
+} 
 if (insDay.length == 1) {
     insDay = "0" + insDay;
 }
@@ -59,7 +59,8 @@ if (appTypeArray[1] == "WWM") {
                             var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
                             if (ASISubGroups) {
                                 for (var k = 0; k < ASISubGroups.size(); k++) {
-                                    var ASIModels = ASISubGroup.getAsiList();
+                                    var ASISubGroup = ASISubGroups.get(k);
+                                    var ASIModels = ASISubGroups.getAsiList();
                                     if (ASIModels) {
                                         for (var m = 0; m < ASIModels.size(); m++) {
                                             var ASIModel = ASIModels.get(m);
