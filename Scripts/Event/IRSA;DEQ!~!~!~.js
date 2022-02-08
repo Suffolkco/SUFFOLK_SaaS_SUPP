@@ -58,10 +58,10 @@ if (appTypeArray[1] == "WWM") {
                             var vGuideSheetItem = vGuideSheetItemsArray[z];
                             var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
                             if (ASISubGroups) {
-                                for (var k = 0; k < ASISubGroups.size(); k++) {
+                                for(var k=0;k< ASISubGroups.size();k++) {
                                     var ASISubGroup = ASISubGroups.get(k);
-                                    var ASIModels = ASISubGroups.getAsiList();
-                                    if (ASIModels) {
+                                        var ASIModels =  ASISubGroup.getAsiList();
+                                        if(ASIModels) {
                                         for (var m = 0; m < ASIModels.size(); m++) {
                                             var ASIModel = ASIModels.get(m);
                                             if (ASIModel) {
