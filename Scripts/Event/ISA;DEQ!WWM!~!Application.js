@@ -17,7 +17,8 @@ logDebug("inspection type =" + inspType);
 if (inspType == "WWM_RES_System 1")
 {
     logDebug("current insp ID is: " + inspId);
-    var inspModel = aa.inspection.getInspection(capId, inspId);
+    var insArray = inspectionResult.getOutput();
+    var inspModel = insArray[insArray.length - 1].getInspection();
     logDebug("inspModel is: " + inspModel);
     //getting guidesheets from inspection being scheduled
     var gs = inspModel.getGuideSheets();
