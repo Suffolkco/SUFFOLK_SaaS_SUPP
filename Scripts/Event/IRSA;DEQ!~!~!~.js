@@ -4,19 +4,16 @@ var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
 var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
 
-if (insMonth.length == 1)
-{
+if (insMonth.length == 1) {
     insMonth = "0" + insMonth;
 }
-if (insDay.length == 1)
-{
+if (insDay.length == 1) {
     insDay = "0" + insDay;
 }
 
 var insCon = insMonth + "/" + insDay + "/" + insYear;
 
-if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
-{
+if (inspType == "Sampling Event" && inspResult == "Sent to Lab") {
     insId = inspObj.getIdNumber();
     var rParams = aa.util.newHashMap();
     var rFile = new Array();
@@ -34,161 +31,197 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 
 
 
-if (appTypeArray[1] == "WWM")
-{
-
-    var iaManufacturer = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Manufacturer");
-    var iaModel = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "Model");
-    logDebug("Manufacturer = " + iaManufacturer)
-    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
-    if (getCapResult.getSuccess())
-    {
-        var apsArray = getCapResult.getOutput();
-        for (aps in apsArray)
-        {
-            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-            logDebug("apsArray = " + apsArray);
-
-            var relCap = myCap.getCapID();
-            logDebug("relCap = " + relCap);
-
-            var relCapID = relCap.getCustomID()
-            logDebug("relCapID = " + relCapID);
-        }
-    }
-    var iaLeachPoolType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "Type");
-    var iaLeachOtherType = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Type");
-    var iaLeachProduct = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "Leaching Product");
-    var iaNumber = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "IA Record Number");
-    // JG - Need to add this once field is added to Custom Field Group var iaEffluentPumpLeachPool = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Leaching Pool(s)/Galley(s)", "WWMLEACHPOOL", "LEACHING POOL(S)/GALLEY(S)", "EffluentPump");
-
-    // JG - Need to add this once field is added to Custom Field Group var iaEffluentPumpLeachOther = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "Other Leaching Structures", "WWM_OTHLEACH", "OTHER LEACHING STRUCTURES", "EffluentPump");
-
-    // JG - Need to add this once field is added to Custom Field Group var iaPolishingUnit = getGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", " IA TREATMENT UNIT", "Model");
-
-    if (inspType == "WWM_RES_System 1" && iaManufacturer != null && iaNumber == null)
-{
-        var desc = "Automated via:" + capIDString;
-        var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
-        logDebug("wwmIA =" + wwmIA);
-        var iaCustom = wwmIA.getCustomID();
-        copyLicenseProfessional(capId, wwmIA);
-        copyLicenseProfessional(relCap, wwmIA);
-        copyAddress(capId, wwmIA);
-        copyParcel(capId, wwmIA);
-        copyDocumentsToCapID(capId, wwmIA);
-        editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
-        editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecificLOCAL("Model", iaModel, wwmIA);
-        editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
-        if (iaLeachPoolType != null)
-        {
-            editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
-        }
-        else if (iaLeachPoolType == null)
-        {
-            editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
-        }
-        updateGuidesheetASIField(inspId, "Sewage Disposal & Water Supply", "IA Treatment Unit", "WWM_IATREATM", "IA TREATMENT UNIT", "IA Record Number", iaCustom);
-    }
-
-    else if (inspType == "WWM_RES_System 1" && iaManufacturer != null && iaNumber != null)
-    {
-        var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField(iaNumber, iaCustom);
-        if (getCapResult.getSuccess())
-        {
-            var apsArray = getCapResult.getOutput();
-            for (aps in apsArray)
-            {
-                myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-                logDebug("apsArray = " + apsArray);
-
-                var relCap = myCap.getCapID();
-                logDebug("relCap = " + relCap);
-
-                var relCapID = relCap.getCustomID()
-                logDebug("relCapID = " + relCapID);
+if (appTypeArray[1] == "WWM") {
+    if (inspType == "WWM_RES_System 1") {
+        var vInspection = aa.inspection.getInspection(capId, inspId);
+        if (vInspection.getSuccess()) {
+            var vInspection = vInspection.getOutput();
+            var vInspectionActivity = vInspection.getInspection().getActivity();
+            // Get the guidesheets and their items from the activity model
+            var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+            var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+            if (vGuideSheetArray.length != 0) {
+                var x = 0;
+                for (x in vGuideSheetArray) {
+                    var iaManufacturer = null;
+                    var iaModel = null;
+                    var iaLeachPoolType = null;
+                    var iaLeachOtherType = null;
+                    var iaLeachProduct = null;
+                    var iaNumber = null;
+                    var iaASIModel = null;
+                    var vGuideSheet = vGuideSheetArray[x];
+                    if ("Sewage Disposal & Water Supply".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null) {
+                        var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                        var z = 0;
+                        for (z in vGuideSheetItemsArray) {
+                            var vGuideSheetItem = vGuideSheetItemsArray[z];
+                            var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
+                            if (ASISubGroups) {
+                                for (var k = 0; k < ASISubGroups.size(); k++) {
+                                    var ASIModels = ASISubGroup.getAsiList();
+                                    if (ASIModels) {
+                                        for (var m = 0; m < ASIModels.size(); m++) {
+                                            var ASIModel = ASIModels.get(m);
+                                            if (ASIModel) {
+                                                if (ASIModel.getAsiName() == "Manufacturer") {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    iaManufacturer = ASIModel.getAttributeValue();
+        
+                                                }
+                                                else if (ASIModel.getAsiName() == "Model") {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    iaModel = ASIModel.getAttributeValue();
+        
+                                                }
+                                                else if (ASIModel.getAsiName() == "Type") {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    iaLeachPoolType = ASIModel.getAttributeValue();
+        
+                                                }
+                                                else if (ASIModel.getAsiName() == "Leaching Type") {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    iaLeachOtherType = ASIModel.getAttributeValue();
+        
+                                                }
+                                                else if (ASIModel.getAsiName() == "Leaching Product") {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    iaLeachProduct = ASIModel.getAttributeValue();
+        
+                                                }
+                                                else if (ASIModel.getAsiName() == "IA Record Number") {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    iaNumber = ASIModel.getAttributeValue();
+                                                    if (ASIModel.getAttributeValue() == null) {
+                                                        iaASIModel = ASIModel;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        logDebug("Failed to get guide sheet item");
+                    }
+                    if (iaManufacturer) {
+                        var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+                        if (getCapResult.getSuccess()) {
+                            var apsArray = getCapResult.getOutput();
+                            for (aps in apsArray) {
+                                myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+                                logDebug("apsArray = " + apsArray);
+                                var relCap = myCap.getCapID();
+                                logDebug("relCapID = " + relCap.getCustomID());
+                            }
+                        }
+                        if (iaNumber == null) {
+                            var desc = "Automated via:" + capIDString;
+                            var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
+                            logDebug("wwmIA =" + wwmIA);
+                            var iaCustom = wwmIA.getCustomID();
+                            copyLicenseProfessional(capId, wwmIA);
+                            copyLicenseProfessional(relCap, wwmIA);
+                            copyAddress(capId, wwmIA);
+                            copyParcel(capId, wwmIA);
+                            copyDocumentsToCapID(capId, wwmIA);
+                            editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
+                            editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
+                            editAppSpecificLOCAL("Model", iaModel, wwmIA);
+                            editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                            if (iaLeachPoolType != null) {
+                                editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
+                            }
+                            else if (iaLeachPoolType == null) {
+                                editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
+                            }
+                            //Update the guidesheet
+                            if (iaASIModel) {
+                                iaASIModel.setAttributeValue(wwmIA);
+                                var updateResult = aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
+                                if (updateResult.getSuccess()) {
+                                    logDebug("Successfully updated guidesheet on inspection " + inspId + ".");
+                                } else {
+                                    logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+                                }
+                            }
+                        }
+                        else {
+                            var wwmIA = getApplication(iaNumber);
+                            if (wwmIA != undefined) {
+                                editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
+                                editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
+                                editAppSpecificLOCAL("Model", iaModel, wwmIA);
+                                editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                                if (iaLeachPoolType != null) {
+                                    editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
+                                }
+                                else if (iaLeachPoolType == null) {
+                                    editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
+                                }
+                            }
+                        }
+                    }
+                    logDebug("No Manufacturer");
+                }
+            } else {
+                logDebug("Failed to get guidesheets");
             }
+        } else {
+            logDebug("Failed to get inpection");
         }
-        if (matches(iaCustom, relCapID)) 
-        {
-            editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
-        editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
-        editAppSpecificLOCAL("Model", iaModel, wwmIA);
-        editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
-        if (iaLeachPoolType != null)
-        {
-            editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
-        }
-        else if (iaLeachPoolType == null)
-        {
-            editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
-        }
-
-        }
-
     }
 }
 
-function copyLicenseProfessional(srcCapId, targetCapId)
-{
+function copyLicenseProfessional(srcCapId, targetCapId) {
     //1. Get license professionals with source CAPID.
     var capLicenses = getLicenseProfessional(srcCapId);
-    if (capLicenses == null || capLicenses.length == 0)
-    {
+    if (capLicenses == null || capLicenses.length == 0) {
         return;
     }
     //2. Get license professionals with target CAPID.
     var targetLicenses = getLicenseProfessional(targetCapId);
     //3. Check to see which licProf is matched in both source and target.
-    for (loopk in capLicenses)
-    {
+    for (loopk in capLicenses) {
         sourcelicProfModel = capLicenses[loopk];
         //3.1 Set target CAPID to source lic prof.
         sourcelicProfModel.setCapID(targetCapId);
         targetLicProfModel = null;
         //3.2 Check to see if sourceLicProf exist.
-        if (targetLicenses != null && targetLicenses.length > 0)
-        {
-            for (loop2 in targetLicenses)
-            {
-                if (isMatchLicenseProfessional(sourcelicProfModel, targetLicenses[loop2]))
-                {
+        if (targetLicenses != null && targetLicenses.length > 0) {
+            for (loop2 in targetLicenses) {
+                if (isMatchLicenseProfessional(sourcelicProfModel, targetLicenses[loop2])) {
                     targetLicProfModel = targetLicenses[loop2];
                     break;
                 }
             }
         }
         //3.3 It is a matched licProf model.
-        if (targetLicProfModel != null)
-        {
+        if (targetLicProfModel != null) {
             //3.3.1 Copy information from source to target.
             aa.licenseProfessional.copyLicenseProfessionalScriptModel(sourcelicProfModel, targetLicProfModel);
             //3.3.2 Edit licProf with source licProf information. 
             aa.licenseProfessional.editLicensedProfessional(targetLicProfModel);
         }
         //3.4 It is new licProf model.
-        else
-        {
+        else {
             //3.4.1 Create new license professional.
             aa.licenseProfessional.createLicensedProfessional(sourcelicProfModel);
         }
     }
 }
 
-function copyDocumentsToCapID(fromCapID, toCapID)
-{
+function copyDocumentsToCapID(fromCapID, toCapID) {
     var opDocArray = aa.document.getDocumentListByEntity(fromCapID.toString(), "CAP").getOutput();
     var vDocArray = opDocArray.toArray();
-    for (var vCounter in vDocArray)
-    {
+    for (var vCounter in vDocArray) {
         var vDoc = vDocArray[vCounter];
         aa.document.createDocumentAssociation(vDoc, toCapID.toString(), "CAP");
     }
 }
 
-function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel)
-{
+function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel) {
     var vInspId = parseFloat(pInspId);
     var vInspectionActivity;
     var asiValue = "";
@@ -201,45 +234,33 @@ function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asi
 
     // Get the specific inspection model
     vInspection = aa.inspection.getInspection(capId, vInspId);
-    if (vInspection.getSuccess())
-    {
+    if (vInspection.getSuccess()) {
         vInspection = vInspection.getOutput();
         vInspectionActivity = vInspection.getInspection().getActivity();
 
         // Get the guidesheets and their items from the activity model
         guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
         vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
-        if (vGuideSheetArray.length != 0)
-        {
+        if (vGuideSheetArray.length != 0) {
             var x = 0;
-            for (x in vGuideSheetArray)
-            {
+            for (x in vGuideSheetArray) {
                 vGuideSheet = vGuideSheetArray[x];
-                if (gName.toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
-                {
+                if (gName.toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null) {
                     vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
                     var z = 0;
-                    for (z in vGuideSheetItemsArray)
-                    {
+                    for (z in vGuideSheetItemsArray) {
                         vGuideSheetItem = vGuideSheetItemsArray[z];
-                        if (vGuideSheetItem && gItem == vGuideSheetItem.getGuideItemText() && asiGroup == vGuideSheetItem.getGuideItemASIGroupName())
-                        {
+                        if (vGuideSheetItem && gItem == vGuideSheetItem.getGuideItemText() && asiGroup == vGuideSheetItem.getGuideItemASIGroupName()) {
                             var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
-                            if (ASISubGroups)
-                            {
-                                for (var k = 0; k < ASISubGroups.size(); k++)
-                                {
+                            if (ASISubGroups) {
+                                for (var k = 0; k < ASISubGroups.size(); k++) {
                                     var ASISubGroup = ASISubGroups.get(k);
-                                    if (ASISubGroup && ASISubGroup.getSubgroupCode() == asiSubGroup)
-                                    {
+                                    if (ASISubGroup && ASISubGroup.getSubgroupCode() == asiSubGroup) {
                                         var ASIModels = ASISubGroup.getAsiList();
-                                        if (ASIModels)
-                                        {
-                                            for (var m = 0; m < ASIModels.size(); m++)
-                                            {
+                                        if (ASIModels) {
+                                            for (var m = 0; m < ASIModels.size(); m++) {
                                                 var ASIModel = ASIModels.get(m);
-                                                if (ASIModel && ASIModel.getAsiName() == asiLabel)
-                                                {
+                                                if (ASIModel && ASIModel.getAsiName() == asiLabel) {
                                                     logDebug("ASI value: " + ASIModel.getAttributeValue());
                                                     asiValue = ASIModel.getAttributeValue();
                                                 }
@@ -250,17 +271,14 @@ function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asi
                             }
                         }
                     }
-                } else
-                {
+                } else {
                     logDebug("Failed to get guide sheet item");
                 }
             }
-        } else
-        {
+        } else {
             logDebug("Failed to get guidesheets");
         }
-    } else
-    {
+    } else {
         logDebug("Failed to get inpection");
     }
     return asiValue;
@@ -271,10 +289,8 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     var itemGroup = null;
     if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
 
-    if (useAppSpecificGroupName)
-    {
-        if (itemName.indexOf(".") < 0)
-        { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
+    if (useAppSpecificGroupName) {
+        if (itemName.indexOf(".") < 0) { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
 
 
         itemGroup = itemName.substr(0, itemName.indexOf("."));
@@ -285,33 +301,26 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     // and replacing with the field name
 
     var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
-    if (asiFieldResult.getSuccess())
-    {
+    if (asiFieldResult.getSuccess()) {
         var asiFieldArray = asiFieldResult.getOutput();
-        if (asiFieldArray.length > 0)
-        {
+        if (asiFieldArray.length > 0) {
             var asiField = asiFieldArray[0];
-            if (asiField)
-            {
+            if (asiField) {
                 var origAsiValue = asiField.getChecklistComment();
                 asiField.setChecklistComment(itemValue);
 
                 var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
-                if (updateFieldResult.getSuccess())
-                {
+                if (updateFieldResult.getSuccess()) {
                     logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
                     if (arguments.length < 3) //If no capId passed update the ASI Array
                         AInfo[itemName] = itemValue;
                 }
-                else
-                { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+                else { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
             }
-            else
-            { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+            else { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
         }
     }
-    else
-    {
+    else {
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
 } 
