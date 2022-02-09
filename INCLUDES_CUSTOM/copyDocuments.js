@@ -44,7 +44,7 @@ function copyDocuments(pFromCapId, pToCapId)
                         {
                             // put together the document content - use java.io.FileInputStream
                             var newContentModel = aa.document.newDocumentContentModel().getOutput();
-                            inputstream = new java.io.FileInputStream(path);
+                            inputstream = aa.io.FileInputStream(path);
                             newContentModel.setDocInputStream(inputstream);
                             documentObject.setDocumentContent(newContentModel);
                             var newDocResult = aa.document.createDocument(documentObject);
