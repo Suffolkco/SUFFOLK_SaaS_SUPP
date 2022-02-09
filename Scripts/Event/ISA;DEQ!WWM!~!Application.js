@@ -65,7 +65,7 @@ function copyAllGuidesheets(inspId1, inspId2) {
                         for (gs in gArray) {
                             aa.print("Removing guidesheet: " + gArray[gs].getGuideType());
                             var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-                            guideBiz.removeGGuideSheet("FFX", gArray[gs].getGuidesheetSeqNbr(), "ADMIN");
+                            guideBiz.removeGuideSheet("FFX", gArray[gs].getGuidesheetSeqNbr(), "ADMIN");
                         }
                     }
                 }
