@@ -159,6 +159,8 @@ if (appTypeArray[1] == "WWM") {
                             else if (iaLeachPoolType == null) {
                                 editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
                             }
+                            var pinNumber = makePIN(8);
+                            editAppSpecificL('PIN Number',pinNumber,wwmIA)
                             //Update the guidesheet
                             if (iaASIModel) {
                                 iaASIModel.setAttributeValue(iaCustom);
@@ -355,3 +357,12 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
 } 
+function makePIN(length) {
+    var result = '';
+    var characters = 'ABCDEFGHJKMNPQRTWXY2346789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
