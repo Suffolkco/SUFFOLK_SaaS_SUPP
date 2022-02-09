@@ -160,7 +160,7 @@ if (appTypeArray[1] == "WWM") {
                                 editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
                             }
                             var pinNumber = makePIN(8);
-                            editAppSpecificL('PIN Number',pinNumber,wwmIA)
+                            editAppSpecific('PIN Number',pinNumber,wwmIA)
                             //Update the guidesheet
                             if (iaASIModel) {
                                 iaASIModel.setAttributeValue(iaCustom);
