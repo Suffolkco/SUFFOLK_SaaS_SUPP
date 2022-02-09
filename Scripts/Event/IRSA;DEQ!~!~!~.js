@@ -48,7 +48,7 @@ if (appTypeArray[1] == "WWM") {
                     var iaLeachPoolType = null;
                     var iaLeachOtherType = null;
                     var iaLeachProduct = null;
-                    var iaNumber = null;
+                    var iaNumber = null; 
                     var iaASIModel = null;
                     var vGuideSheet = vGuideSheetArray[x];
                     if ("Sewage Disposal & Water Supply".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null) {
