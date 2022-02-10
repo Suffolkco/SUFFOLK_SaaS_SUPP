@@ -160,7 +160,7 @@ if (appTypeArray[1] == "WWM") {
                                 editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
                             }
                             var pinNumber = makePIN(8);
-                            editAppSpecific('PIN Number',pinNumber,wwmIA)
+                            editAppSpecific('IA PIN Number', pinNumber, wwmIA)
                             //Update the guidesheet
                             if (iaASIModel) {
                                 iaASIModel.setAttributeValue(iaCustom);
@@ -171,7 +171,7 @@ if (appTypeArray[1] == "WWM") {
                                     logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
                                 }
                             }
-                        }
+                        } 
                         else {
                             var getCapResult = aa.cap.getCapID(iaNumber);
                             if (getCapResult.getSuccess())
