@@ -34,7 +34,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
             {
                 if (!matches(capContacts[c].email, null, undefined, ""))
                 {
-                conEmail += capContacts[c].email;
+                conEmail += capContacts[c].getPeople().getEmail() + ";";
                 }
             }
         }
@@ -45,8 +45,10 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         for (l in capLPs)
         {
             if (!matches(capContacts[l].email, null, undefined, ""))
-            conEmail += capLPs[l].email;
+            conEmail += capLPs[l].getPeople().getEmail() + ";";
         }
+
+        logDebug("conEmail = " + conEmail);
         
         var vEParams = aa.util.newHashtable();
         var addrResult = aa.address.getAddressByCapId(wwmIA)
