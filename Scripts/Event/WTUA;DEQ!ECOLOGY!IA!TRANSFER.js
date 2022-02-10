@@ -3,7 +3,7 @@
 var pin = AInfo["PIN Number"];
 var iaNumber = AInfo["IA Record Number"];
 
-if (wftask == "Review form and check that documents are correct" && wfStatus == "Complete");
+if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete");
 {
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())
