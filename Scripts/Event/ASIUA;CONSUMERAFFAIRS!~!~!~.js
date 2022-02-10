@@ -16,8 +16,7 @@ try
 		if((appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "Licenses" && appTypeArray[3] == "NA") ||
 		(appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "ID Cards" && appTypeArray[3] == "NA") ||
 		(appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "Registrations" && appTypeArray[3] == "NA")) 
-		{
-			    
+		{			    
 			var customFieldExpDate = getAppSpecific("Expiration Date")
 			
 			logDebug("customFieldExpDate: " + customFieldExpDate);     
@@ -32,11 +31,12 @@ try
 					var curExp = b1Exp.getExpDate();
 					if (curExp != null)
 					{
+						
 						dateMMDDYYY = customFieldExpDate;						
 						dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 						b1Exp.setExpDate(dateMMDDYYY);			
 						aa.expiration.editB1Expiration(b1Exp.getB1Expiration());					
-						logDebug(capId + ": updated Renewal expiration date to " + dateMMDDYYY);
+						logDebug(capId.getCustomID() + ": Updated renewal expiration date to " + customFieldExpDate);
 					}
 					
 				}
