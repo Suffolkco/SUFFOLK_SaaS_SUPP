@@ -2,6 +2,8 @@
 
 var pin = AInfo["PIN Number"];
 var iaNumber = AInfo["IA Record Number"];
+var iaEmail = "";
+
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete");
 {
@@ -22,19 +24,34 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
         var wwmIA = getCapResult.getOutput();
+
+        //Removing Existing LPs
+
+        
+        iaEmail = removeAllIASPLicensedProf(wwmIA);
+        logDebug("iaEmail = " + iaEmail);
+        if (iaEmail != "")
+        {
+            var vEParams = aa.util.newHashtable();
+            var addrResult = getAddressInALine(wwmIA);
+            addParameter(vEParams, "$$altID$$", capIDString);
+            addParameter(vEParams, "$$address$$", addrResult);
+            sendNotification("", iaEmail, "", "DEQ_IA__OWTS_REMOVAL", vEParams, null);
+        }
+
         copyLicenseProfessional(capId, wwmIA);
 
         //Gathering Contacts from IA Record
         var contactResult = aa.people.getCapContactByCapID(wwmIA);
         var capContacts = contactResult.getOutput();
-        var conEmail = ""; 
+        var conEmail = "";
         for (c in capContacts)
         {
             if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Agent"))
             {
                 if (!matches(capContacts[c].email, null, undefined, ""))
                 {
-                conEmail += capContacts[c].getPeople().getEmail() + ";";
+                    conEmail += capContacts[c].email + ";"
                 }
             }
         }
@@ -45,18 +62,22 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         for (l in capLPs)
         {
             if (!matches(capContacts[l].email, null, undefined, ""))
-            conEmail += capLPs[l].getPeople().getEmail() + ";";
+            {
+                conEmail += capLPs[l].email + ";"
+            }
         }
 
-        logDebug("conEmail = " + conEmail);
-        
+        logDebug("ConEmail = " + conEmail);
+
         var vEParams = aa.util.newHashtable();
-        var addrResult = aa.address.getAddressByCapId(wwmIA)
+        var addrResult = getAddressInALine(wwmIA);
         addParameter(vEParams, "$$altID$$", capIDString);
         addParameter(vEParams, "$$address$$", addrResult);
 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
+
+
 }
 
 function copyLicenseProfessional(srcCapId, targetCapId)
@@ -103,4 +124,107 @@ function copyLicenseProfessional(srcCapId, targetCapId)
             aa.licenseProfessional.createLicensedProfessional(sourcelicProfModel);
         }
     }
+}
+
+function getAddressInALine(capId)
+{
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
+}
+
+function removeAllIASPLicensedProf(pCapId)
+{
+    //Function will remove all licensed professionals from the pCapId record.
+    var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(pCapId).getOutput();
+    var iaServProvEmail = "";
+    if (licProf != null)
+    {
+        for (x in licProf)
+        {
+            logDebug("licensed professional is: " + licProf[x]);
+
+            if (licProf[x].getLicenseType() == "IA Service Provider") 
+            {
+                iaServProvEmail = licProf[x].getEmail();
+                logDebug("iaServProvEmail = " + iaServProvEmail)
+                aa.licenseProfessional.removeLicensedProfessional(licProf[x]);
+                logDebug("Removed " + licProf[x].getLicenseNbr());
+            }
+            
+        }
+        if (!matches(iaServProvEmail, "", null, " ", undefined))
+        {
+            return iaServProvEmail;
+        }
+        else
+        {
+            logDebug("no IA Service Provider email was returned");
+        }
+    }
+    else
+    {
+        logDebug("No licensed professional on source");
+    }
+}
+
+function exploreObject(objExplore) {
+
+    logDebug("Methods:")
+    for (x in objExplore) {
+                   if (typeof (objExplore[x]) == "function") {
+                                 logDebug("<font color=blue><u><b>" + x + "</b></u></font> ");
+                                 logDebug("   " + objExplore[x] + "<br>");
+                   }
+    }
+
+    logDebug("");
+    logDebug("Properties:")
+    for (x in objExplore) {
+                   if (typeof (objExplore[x]) != "function")
+                                 logDebug("  <b> " + x + ": </b> " + objExplore[x]);
+    }
+
 }
