@@ -11,11 +11,13 @@ try
 		appTypeResult = cap.getCapType();
 		appTypeString = appTypeResult.toString();
 		appTypeArray = appTypeString.split("/");
+		logDebug("Record Type: " + appTypeArray);     
+
 		if((appTypeArray[0] == "CONSUMERAFFAIRS" && appTypeArray[1] == "Licenses" && appTypeArray[3] == "NA") ||
 		(appTypeArray[0] == "CONSUMERAFFAIRS" && appTypeArray[1] == "ID Cards" && appTypeArray[3] == "NA") ||
 		(appTypeArray[0] == "CONSUMERAFFAIRS" && appTypeArray[1] == "Registrations" && appTypeArray[3] == "NA")) 
 		{
-			logDebug("Record Type: " + appTypeArray);     
+			    
 			var customFieldExpDate = getAppSpecific("Expiration Date")
 			
 			logDebug("customFieldExpDate: " + customFieldExpDate);     
@@ -46,19 +48,5 @@ catch (err) {
     var showDebug = false;
 	logDebug("A JavaScript Error occured: " + err.message + " In Line " + err.lineNumber);
 	}
-function getCompletedInspectionID(insp2Check, capId)
-	{
-	// warning, returns only the first scheduled occurrence
-	var inspResultObj = aa.inspection.getInspections(capId);
-	if (inspResultObj.getSuccess())
-		{
-		var inspList = inspResultObj.getOutput();
-    for (xx in inspList)
-    logDebug("type: " + inspList[xx].getInspectionType() + " status: " + inspList[xx].getInspectionStatus().toUpperCase());
-			if (String(insp2Check).equals(inspList[xx].getInspectionType()) && inspList[xx].getInspectionStatus().toUpperCase().equals("COMPLETE"))
-				return inspList[xx].getIdNumber();
-		}
-	return false;
-    }
-    
+
 
