@@ -41,7 +41,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
         //Gathering LPs from IA Record
         var licProfResult = aa.licenseScript.getLicenseProf(wwmIA);
-        var capLPs = LicProfResult.getOutput();
+        var capLPs = licProfResult.getOutput();
         for (l in capLPs)
         {
             if (!matches(capContacts[l].email, null, undefined, ""))
