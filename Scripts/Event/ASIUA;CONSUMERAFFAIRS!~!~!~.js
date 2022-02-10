@@ -16,8 +16,7 @@ try
 		if((appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "Licenses" && appTypeArray[3] == "NA") ||
 		(appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "ID Cards" && appTypeArray[3] == "NA") ||
 		(appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "Registrations" && appTypeArray[3] == "NA")) 
-		{
-			    
+		{			    
 			var customFieldExpDate = getAppSpecific("Expiration Date")
 			
 			logDebug("customFieldExpDate: " + customFieldExpDate);     
