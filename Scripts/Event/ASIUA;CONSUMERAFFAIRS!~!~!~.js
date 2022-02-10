@@ -32,11 +32,12 @@ try
 					var curExp = b1Exp.getExpDate();
 					if (curExp != null)
 					{
+						
 						dateMMDDYYY = customFieldExpDate;						
 						dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 						b1Exp.setExpDate(dateMMDDYYY);			
 						aa.expiration.editB1Expiration(b1Exp.getB1Expiration());					
-						logDebug(capId + ": updated Renewal expiration date to " + dateMMDDYYY);
+						logDebug(capId.getCustomID() + ": Updated renewal expiration date to " + customFieldExpDate);
 					}
 					
 				}
