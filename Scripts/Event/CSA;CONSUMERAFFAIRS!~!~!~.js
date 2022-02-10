@@ -1,5 +1,4 @@
 // This is to update renewal expiration date to match the custom field expiration date.
-
 var showDebug = true;
 try
 {
