@@ -23,7 +23,7 @@ if (inspectionResult.getSuccess()) {
 
 logDebug("this is the script that is running");
 copyAllGuidesheets(lastInsp, inspId, capId, true);
-logDebug("inspResult =" + inspResult);
+
 
 function copyAllGuidesheets(inspId1, inspId2) { 
     /*
@@ -65,7 +65,7 @@ function copyAllGuidesheets(inspId1, inspId2) {
                         for (gs in gArray) {
                             aa.print("Removing guidesheet: " + gArray[gs].getGuideType());
                             var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-                            guideBiz.removeGuideSheet("FFX", gArray[gs].getGuidesheetSeqNbr(), "ADMIN");
+                            guideBiz.removeGGuideSheet("SUFFOLKCO", gArray[gs].getGuidesheetSeqNbr(), "ADMIN");
                         }
                     }
                 }
