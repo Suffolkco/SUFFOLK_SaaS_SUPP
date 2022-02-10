@@ -11,11 +11,11 @@ try
 		appTypeResult = cap.getCapType();
 		appTypeString = appTypeResult.toString();
 		appTypeArray = appTypeString.split("/");
-		logDebug("Record Type: " + appTypeArray);     
+		logDebug("Record Type: " + appTypeString);     
 
-		if((appTypeArray[0] == "CONSUMERAFFAIRS" && appTypeArray[1] == "Licenses" && appTypeArray[3] == "NA") ||
-		(appTypeArray[0] == "CONSUMERAFFAIRS" && appTypeArray[1] == "ID Cards" && appTypeArray[3] == "NA") ||
-		(appTypeArray[0] == "CONSUMERAFFAIRS" && appTypeArray[1] == "Registrations" && appTypeArray[3] == "NA")) 
+		if((appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "Licenses" && appTypeArray[3] == "NA") ||
+		(appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "ID Cards" && appTypeArray[3] == "NA") ||
+		(appTypeArray[0] == "ConsumerAffairs" && appTypeArray[1] == "Registrations" && appTypeArray[3] == "NA")) 
 		{
 			    
 			var customFieldExpDate = getAppSpecific("Expiration Date")
