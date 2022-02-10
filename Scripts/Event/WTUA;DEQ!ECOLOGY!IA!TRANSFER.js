@@ -48,10 +48,10 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
             conEmail += capLPs[l].email;
         }
         
-        var vRParams = aa.util.newHashtable();
+        var vEParams = aa.util.newHashtable();
         var addrResult = aa.address.getAddressByCapId(wwmIA)
         addParameter(vEParams, "$$altID$$", capIDString);
-        addParameter(vRParams, "$$address$$", addrResult);
+        addParameter(vEParams, "$$address$$", addrResult);
 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
