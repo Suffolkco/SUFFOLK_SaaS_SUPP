@@ -197,7 +197,7 @@ function removeAllIASPLicensedProf(pCapId)
         }
         if (!matches(iaServProvEmail, "", null, " ", undefined))
         {
-            return iaServProvEmail;
+            return iaServProvEmail; 
         }
         else
         {
