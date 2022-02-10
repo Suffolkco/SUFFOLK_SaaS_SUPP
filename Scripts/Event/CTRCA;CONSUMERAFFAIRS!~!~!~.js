@@ -122,7 +122,7 @@ function checkTypeAndRename(capIdObj)
         "ConsumerAffairs/Licenses/Master Plumber/Renewal": true,
         "ConsumerAffairs/Licenses/Pet Cemetary/Renewal": true,
         "ConsumerAffairs/Licenses/Polygraph Examiner/Renewal": true,
-       "ConsumerAffairs/Licenses/Precious Metal/Renewal": true,
+        "ConsumerAffairs/Licenses/Precious Metal/Renewal": true,
         "ConsumerAffairs/Licenses/Restricted Electrical/Renewal": true,
         "ConsumerAffairs/Licenses/Restricted Plumbing/Renewal": true,
         "ConsumerAffairs/Licenses/Second Hand Dealer/Renewal": true,
@@ -144,7 +144,7 @@ function checkTypeAndRename(capIdObj)
         return newRecObj;
     }
     var capObj = {};
-   if (!getCapResult.getSuccess())
+    if (!getCapResult.getSuccess())
     {
         logDebug(title + "Unable to retrieve CAP object. Message = " + getCapResult.getErrorMessage());
         return newRecObj;
@@ -160,8 +160,9 @@ function checkTypeAndRename(capIdObj)
     }
     return newRecObj;
 }
-function renamePermit(capIdObj)
-{
+
+function renamePermit(capIdObj){
+try{
     var title = "renamePermit(): ";
     var capIdString = capIdObj.getCustomID();
     var retval = null;
@@ -184,25 +185,29 @@ function renamePermit(capIdObj)
     }
     var parentIdString = parentCapObj.getCustomID();
     var seqArr = [];
-    var childrenArr = getChildren(appTypeString, parentCapObj);
-    exploreObject(childrenArr);
-    if (childrenArr)
-    {
-        for (var cIdx in childrenArr) 
-        {
-            if (childrenArr[cIdx].getCustomID().indexOf(parentIdString + '-REN') > -1)
-            {
-                var seqVal = parseInt(childrenArr[cIdx].getCustomID().replace(parentIdString + '-REN', ''));
-                if (!isNaN(seqVal))
-                {
+	//lwacht 220210: renewals aren't normal children so have to use special code to find them
+    //var childrenArr = getChildren(appTypeString, parentCapObj);
+	var result = aa.cap.getProjectByMasterID(parentCapObj, "Renewal", null);
+	if(result.getSuccess()){
+		childrenArr = result.getOutput();
+	}
+    //exploreObject(childrenArr);
+    if (childrenArr){
+        for (var cIdx in childrenArr) {
+			//exploreObject(childrenArr[cIdx]);
+			var tChildId = childrenArr[cIdx].capID.toString().split("-");
+			var tChild = aa.cap.getCapID(tChildId[0],tChildId[1],tChildId[2]).getOutput();
+			//lwacht 220210:  end
+            if (tChild.getCustomID().indexOf(parentIdString + '-REN') > -1){
+                var seqVal = parseInt(tChild.getCustomID().replace(parentIdString + '-REN', ''));
+                if (!isNaN(seqVal)){
                     seqArr.push(seqVal);
                 }
             }
         }
     }
     var childNewAltId = parentCapObj.getCustomID() + '-REN01';
-    if (seqArr.length > 0)
-    {
+    if (seqArr.length > 0){
         var lastSeq = seqArr.sort(function (a, b)
         {
             return b - a;
@@ -210,20 +215,22 @@ function renamePermit(capIdObj)
         childNewAltId = parentCapObj.getCustomID() + '-REN' + (String(lastSeq).length > 1 ? lastSeq : '0' + String(lastSeq));
     }
     var updateCapAltIdResult = aa.cap.updateCapAltID(capIdObj, childNewAltId);
-    if (!updateCapAltIdResult.getSuccess())
-    {
+    if (!updateCapAltIdResult.getSuccess()){
         logDebug(title + "Error updating record to renewal CAP Id. Message = " + updateCapAltIdResult.getErrorMessage());
         return retval;
     }
     var childCapIdResult = aa.cap.getCapID(childNewAltId);
-    if (!childCapIdResult.getSuccess())
-    {
+    if (!childCapIdResult.getSuccess()){
         logDebug(title + "Unable to retrieve new child CAP Id. Message = " + childCapIdResult.getErrorMessage());
         return retval;
     }
     var childCapId = aa.cap.getCapID(childNewAltId).getOutput();
     return childCapId;
-}
+}catch (err){
+ 	logDebug("A JavaScript Error occurred: renamePermit: " + err.message);
+	logDebug(err.stack);
+}}
+
 function getParentLicense(capIdObj)
 {
     var title = "getParentLicense(): ";

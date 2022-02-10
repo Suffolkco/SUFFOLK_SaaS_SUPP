@@ -1,4 +1,4 @@
-// ASA;CONSUMERAFFAIRS!LICENSES!HOME IMPROVEMENT!RENEWAL
+// ASA;CONSUMERAFFAIRS!LICENSES!~!RENEWAL
 
 //showDebug = 1;
 //logDebug("Entering Renew ASA");
@@ -11,8 +11,7 @@
 
 var conArray = getContactArray(capId);
 
-if (conArray.length < 1) 
-{
+if (conArray.length < 1) {
     var addChild = aa.cap.createRenewalCap(parentCapId, capId, true);
     aa.cap.updateAccessByACA(capId, "Y");
     /*if (publicUser)
@@ -57,35 +56,44 @@ if (conArray.length < 1)
      copyASITables(parentCapId, capId); 
     }
 
-    
-    
-    /*if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
-    {
-        logDebug("Not Dry Cleaning, RE or RP")
-        addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
-    }
-    if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
-    {
-        var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
+}
+/*lwacht: 220209: this code is needed for ACA records
+  --adding publicUser logic, uncommenting, and removing from contact logic
+  --since it runs twice, changing "addFee" to "updateFee" so they are not duplicated
+*/
+try{
+	if(publicUser){
+		if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
+		{
+			logDebug("Not Dry Cleaning, RE or RP")
+			updateFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y", "N", null)
+		}
+		if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
+		{
+			var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
 
 
-        if (!dryCleanerExempt) 
-        {
-            addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y")
-        }
-    }
-    if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
-    {
-        addFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y") 
-    }
-    if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
-    {
-        addFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y") 
-    }*/ 
+			if (!dryCleanerExempt) 
+			{
+				updateFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y", "N", null)
+			}
+		}
+		if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
+		{
+			updateFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y", "N", null) 
+		}
+		if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
+		{
+			updateFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y", "N", null); 
+		}
+	}
+}catch (err){
+ 	logDebug("A JavaScript Error occurred: ASA;CONSUMERAFFAIRS!LICENSES!~!RENEWAL: Add fees: " + err.message);
+	logDebug(err.stack);
 }
 
-
-    function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+//lwacht: 220209: call commented out so commenting this out for removal at later time
+/*function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     {
         var itemCap = capId;
         var itemGroup = null;
@@ -135,69 +143,38 @@ if (conArray.length < 1)
             logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
         }
     }
-    function checkForFee(pCapId, pFeeCode)
+*/
 
-    {
-    
-        logDebug("pCapId: " + pCapId.getCustomID());
-    
-        var checkStatus = false;
-    
-        var statusArray = ["NEW", "INVOICED"];
-    
-        var feeResult = aa.fee.getFeeItems(pCapId);
-    
-        var feeObjArr;
-    
-        var x = 0;
-    
-        if (feeResult.getSuccess())
-    
-        {
-    
-            feeObjArr = feeResult.getOutput();
-    
-        } else
-    
-        {
-    
-            logDebug("**ERROR: getting fee items: " + capContResult.getErrorMessage());
-    
-            return false
-    
-        }
-    
-        for (x in feeObjArr)
-    
-        {
-    
-            var vFee = feeObjArr[x];
-    
-            var y = 0;
-    
-            logDebug("feeObjArr[x].getFeeCod(): " + feeObjArr[x].getFeeCod());
-    
-            logDebug("feeObjArr[x].getF4FeeItemModel().feeNotes: " + feeObjArr[x].getF4FeeItemModel().feeNotes);
-    
-            logDebug("feeObjArr[x].getFeeitemStatus(): " + feeObjArr[x].getFeeitemStatus());
-    
-            if (pFeeCode == feeObjArr[x].getFeeCod() && exists(feeObjArr[x].getFeeitemStatus(), statusArray))
-    
-            {
-    
-                return true;
-    
-            }
-    
-            /*if (pFeeCode == feeObjArr[x].getFeeCod() && pFeeComment == feeObjArr[x].getF4FeeItemModel().feeNotes && exists(feeObjArr[x].getFeeitemStatus(), statusArray))
-    
-            {
-    
-                return true;
-    
-            }*/
-    
-        }
-    
-        return false;
-    }
+function checkForFee(pCapId, pFeeCode){
+try{
+	logDebug("pCapId: " + pCapId.getCustomID());
+	var checkStatus = false;
+	var statusArray = ["NEW", "INVOICED"];
+	var feeResult = aa.fee.getFeeItems(pCapId);
+	var feeObjArr;
+	var x = 0;
+	if (feeResult.getSuccess()){
+		feeObjArr = feeResult.getOutput();
+	}else{
+		logDebug("**ERROR: getting fee items: " + capContResult.getErrorMessage());
+		return false
+	}
+	for (x in feeObjArr){
+		var vFee = feeObjArr[x];
+		var y = 0;
+		logDebug("feeObjArr[x].getFeeCod(): " + feeObjArr[x].getFeeCod());
+		logDebug("feeObjArr[x].getF4FeeItemModel().feeNotes: " + feeObjArr[x].getF4FeeItemModel().feeNotes);
+		logDebug("feeObjArr[x].getFeeitemStatus(): " + feeObjArr[x].getFeeitemStatus());
+		if (pFeeCode == feeObjArr[x].getFeeCod() && exists(feeObjArr[x].getFeeitemStatus(), statusArray)){
+			return true;
+		}
+		/*if (pFeeCode == feeObjArr[x].getFeeCod() && pFeeComment == feeObjArr[x].getF4FeeItemModel().feeNotes && exists(feeObjArr[x].getFeeitemStatus(), statusArray))
+		{
+			return true;
+		}*/
+	}
+	return false;
+}catch (err){
+ 	logDebug("A JavaScript Error occurred: ASA;CONSUMERAFFAIRS!LICENSES!~!RENEWAL: checkForFee: " + err.message);
+	logDebug(err.stack);
+}}
