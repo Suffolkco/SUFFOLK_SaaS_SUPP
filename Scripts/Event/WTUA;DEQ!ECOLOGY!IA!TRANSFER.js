@@ -27,7 +27,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         //Gathering Contacts from IA Record
         var contactResult = aa.people.getCapContactByCapID(wwmIA);
         var capContacts = contactResult.getOutput();
-        var conEmail = "";
+        var conEmail = ""; 
         for (c in capContacts)
         {
             if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Agent"))
