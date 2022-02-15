@@ -169,7 +169,7 @@ function copy()
             }
             else if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "Garbage" && appTypeArray[3] == "Amendment")
             {
-              logDebugLocal("Debug","Copy Contacts for Garbage Amende from:" + parentCapId + " to " + targetCapId);
+              logDebugLocal("Copy Contacts for Garbage Amend from:" + parentCapId + " to " + targetCapId);
                 copyContacts(parentCapId, targetCapId);
                 var amendCapModel = aa.cap.getCapViewBySingle4ACA(targetCapId);
                 useAppSpecificGroupName = false;
