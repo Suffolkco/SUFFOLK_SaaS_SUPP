@@ -22,18 +22,30 @@ var br = "<BR>";
  
 //eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
 //eval(getScriptText("INCLUDES_CUSTOM")); 
- 
+
 var errorMessage = "";
- 
+var emailText = "";
+var showDebug = true;
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 var errorCode = "0";
 var currentUserID = aa.env.getValue("CurrentUserID");
 if (currentUserID.indexOf("PUBLICUSER") == 0) { currentUserID = "ADMIN" ; publicUser = true }  // ignore public users
-
+var pgParms = aa.env.getParamValues();
+var pgParmK = pgParms.keys();
+while (pgParmK.hasNext())
+{
+    k = pgParmK.next();
+    if (k == "Send Batch log to:")
+    {
+        emailAddress = pgParms.get(k);
+    }
+}
 //execute
 var capModelInited = aa.env.getValue("CAP_MODEL_INITED");
 if (capModelInited != "TRUE")
 {
     copy();
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA_AMEND_ONLOAD", emailText);
 }
 
 /*------------------------------------------------------------------------------------------------------/
@@ -49,7 +61,7 @@ function copy()
     targetCapId = capModel.getCapID();
    
     aa.debug("Debug:","TargetCapId:" + targetCapId);
-
+    logDebugLocal("Debug:","TargetCapId:" + targetCapId);
     if(targetCapId==null)
     {
       errorMessage+="targetCapId is null.";
@@ -62,10 +74,11 @@ function copy()
     var parentCapId = getParent(targetCapId);
     
     aa.debug("Debug","Parent:" + parentCapId);
-	
+    logDebugLocal("Debug","Parent:" + parentCapId);
 	// getParent() returns false on failure, check for that, too.
     if(parentCapId==null || parentCapId == false)
     {
+      logDebugLocal("Debug","Parent is NULL: Exit");
       return;
     }
     
@@ -78,27 +91,27 @@ function copy()
         //copyASIFields(parentCapId, targetCapId);
       
         //copyAppSpecificInfo(parentCapId, targetCapId);
-		
+        logDebugLocal("Debug","Copy LP from:" + parentCapId + " to " + targetCapId);
         copyLicenseProfessional(parentCapId, targetCapId);
-      
+        logDebugLocal("Debug","Copy Address from:" + parentCapId + " to " + targetCapId);
         copyAddress(parentCapId, targetCapId);
-
+        logDebugLocal("Debug","Copy Parcel from:" + parentCapId + " to " + targetCapId);
         copyParcel(parentCapId, targetCapId);
       
         //copyPeople(parentCapId, targetCapId);
-      
+        logDebugLocal("Debug","Copy owner from:" + parentCapId + " to " + targetCapId);
         copyOwner(parentCapId, targetCapId);
       
         //copyContacts(parentCapId, targetCapId);
-
+        logDebugLocal("Debug","Copy condition from:" + parentCapId + " to " + targetCapId);
 	      copyCapCondition(parentCapId, targetCapId);
-      
+        logDebugLocal("Debug","Copy additional info from:" + parentCapId + " to " + targetCapId);
         copyAdditionalInfo(parentCapId, targetCapId);
-      
+        logDebugLocal("Debug","Copy cap detail from:" + parentCapId + " to " + targetCapId);
         copyCapDetailInfo(parentCapId, targetCapId);
-      
+        logDebugLocal("Debug","Copy work des from:" + parentCapId + " to " + targetCapId);
         copyCapWorkDesInfo(parentCapId, targetCapId);
-
+        logDebugLocal("Debug","Copy ASI table from:" + parentCapId + " to " + targetCapId);
         copyAppSpecificTableForDEQ(parentCapId, targetCapId);
          
         var cap = aa.cap.getCap(targetCapId).getOutput();	
@@ -107,6 +120,7 @@ function copy()
             appTypeResult = cap.getCapType();
             appTypeString = appTypeResult.toString();
             appTypeArray = appTypeString.split("/");
+            logDebugLocal("Debug","appTypeString:" + appTypeString);
             if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "OPC" && appTypeArray[2] == "Swimming Pool" && appTypeArray[3] == "Amendment")
             {
                 copyContactsSwim(parentCapId, targetCapId);
@@ -155,6 +169,7 @@ function copy()
             }
             else if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "Garbage" && appTypeArray[3] == "Amendment")
             {
+              logDebugLocal("Debug","Copy Contacts for Garbage Amende from:" + parentCapId + " to " + targetCapId);
                 copyContacts(parentCapId, targetCapId);
                 var amendCapModel = aa.cap.getCapViewBySingle4ACA(targetCapId);
                 useAppSpecificGroupName = false;
@@ -167,6 +182,15 @@ function copy()
                 var workPol = getAppSpecific("Worker's Comp. policy number", parentCapId);
                 var workCom = getAppSpecific("Worker's Comp. company", parentCapId);
                 var workDate = getAppSpecific("Worker's Comp. expiration date", parentCapId);
+                logDebugLocal("Debug","Update ASI for offMat ACA:" + offMat);
+                logDebugLocal("Debug","Update ASI for totTruck ACA:" + totTruck);
+                logDebugLocal("Debug","Update ASI for servArea ACA:" + servArea);
+                logDebugLocal("Debug","Update ASI for disIns ACA:" + disIns);
+                logDebugLocal("Debug","Update ASI for disDate  ACA:" + disDate );
+                logDebugLocal("Debug","Update ASI for workPol ACA:" + workPol);
+                logDebugLocal("Debug","Update ASI for workCom ACA:" + workCom);
+                logDebugLocal("Debug","Update ASI for workDate ACA:" + workDate);
+            
 
                 editAppSpecific4ACA("Type of offensive material to be handled (Household Garbage, C&D, etc)", offMat, amendCapModel);
                 editAppSpecific4ACA("Total number of trucks", totTruck, amendCapModel);
@@ -177,17 +201,29 @@ function copy()
                 editAppSpecific4ACA("Worker's Comp. policy number", workPol, amendCapModel);
                 editAppSpecific4ACA("Worker's Comp. company", workCom, amendCapModel);
                 editAppSpecific4ACA("Worker's Comp. expiration date", workDate, amendCapModel);
-              
+                logDebugLocal("Debug","Set CapModel:");
                 aa.env.setValue("CapModel", amendCapModel);
-              
+                logDebugLocal("Debug","Set CAP_MODEL_INITED:");
                 aa.env.setValue("CAP_MODEL_INITED", "TRUE");   
+                logDebugLocal("Debug","Done:");
             }
         }
     }
     catch(e)
     { 
         logError("Error: "+e); 
+        logDebugLocal("Error: "+e); 
         end();
+    }
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
     }
 }
 function copyCapWorkDesInfo(srcCapId, targetCapId)
