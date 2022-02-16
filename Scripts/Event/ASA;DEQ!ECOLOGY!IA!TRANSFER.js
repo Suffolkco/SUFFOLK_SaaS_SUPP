@@ -209,7 +209,7 @@ function copyContactsTransfer(pFromCapId, pToCapId) {
 */
 var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 if (capParcelResult.getSuccess())
-{ var Parcels = capParcelResult.getOutput().toArray(); }
+{ var Parcels = capParcelResult.getOutput().toArray(); } 
 else
 { logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage()); }
 
