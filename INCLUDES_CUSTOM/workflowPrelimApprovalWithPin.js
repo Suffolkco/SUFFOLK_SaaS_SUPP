@@ -125,7 +125,6 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
                         }
                     }
                    
-
                     var emailParams = aa.util.newHashtable();	
                     var reportParams = aa.util.newHashtable();
                     var reportFile = new Array();	

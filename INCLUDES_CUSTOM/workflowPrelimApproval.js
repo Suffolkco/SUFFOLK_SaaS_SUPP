@@ -8,7 +8,6 @@ function workflowPrelimApproval(reportName, reportParamRecID)
     var fromEmail = "";
 	var itemCap = aa.cap.getCap(capId).getOutput();
 	var alternateID = capId.getCustomID();
-
 	/*
 	appTypeResult = itemCap.getCapType();
 	appTypeString = appTypeResult.toString(); 
@@ -61,7 +60,7 @@ function workflowPrelimApproval(reportName, reportParamRecID)
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
 	addACAUrlsVarToEmail(emailParams);
-	
+
 	if (conEmail != null)
 	{
         sendNotification("", conEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", emailParams, null);
