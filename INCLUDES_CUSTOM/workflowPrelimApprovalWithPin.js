@@ -125,7 +125,6 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
                         }
                     }
                    
-
                     var emailParams = aa.util.newHashtable();	
                     var reportParams = aa.util.newHashtable();
                     var reportFile = new Array();	
@@ -184,6 +183,7 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
                         logDebug("Email:" + peop.getEmail());                       
                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
                         addParameter(emailParams, "$$shortNotes$$", shortNotes);
+                        addACAUrlsVarToEmail(emailParams);
                         conEmail = peop.getEmail();
                         if (conEmail != null)
                         {
@@ -240,7 +240,7 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
                         logDebug("Send standard report to contact without the PIN Letter: " + conEmail);
                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
                         addParameter(emailParams, "$$shortNotes$$", shortNotes);
-
+                        addACAUrlsVarToEmail(emailParams);
                         if (conEmail != null)
                         {
                             // Add email to the array so we do not send duplicate email.
@@ -319,6 +319,7 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
     addParameter(lpEmailParams, "$$altID$$", capId.getCustomID());
     addParameter(lpEmailParams, "$$shortNotes$$", shortNotes);
+    addACAUrlsVarToEmail(lpEmailParams);
 	if (lpEmail != null)
 	{
         sendNotification("", lpEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", lpEmailParams, null);
