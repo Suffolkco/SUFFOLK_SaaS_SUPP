@@ -24,7 +24,10 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
         var wwmIA = getCapResult.getOutput();
-        logDebug("wwmIA = " + wwmIA);
+        var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(pCapId).getOutput();
+        var licProfId = licProf.getLicenseNbr()
+        
+        logDebug("wwmIA = " + wwmIA.getCustomID());
 
         //Removing Existing LPs
 
@@ -41,6 +44,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         }
 
         copyLicenseProfessional(capId, wwmIA);
+        logDebug("Added License Profoessinal " + licProfId);
 
         //Gathering Contacts from IA Record
         var contactResult = aa.people.getCapContactByCapID(wwmIA);
