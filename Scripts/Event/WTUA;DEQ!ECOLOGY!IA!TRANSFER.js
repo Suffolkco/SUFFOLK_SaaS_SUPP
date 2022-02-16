@@ -198,7 +198,7 @@ function removeAllIASPLicensedProf(pCapId)
             }          
         }
     }
-    else
+    else 
     {
         logDebug("**ERROR: getting lic prof: " + capLicenseResult.getErrorMessage());
         return false;
@@ -207,7 +207,7 @@ function removeAllIASPLicensedProf(pCapId)
         {
             return iaServProvEmail;
         }
-        else
+        else 
         {
             logDebug("no IA Service Provider email was returned");
         }    
