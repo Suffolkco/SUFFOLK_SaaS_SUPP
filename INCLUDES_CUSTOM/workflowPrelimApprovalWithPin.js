@@ -320,8 +320,9 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
     addParameter(lpEmailParams, "$$altID$$", capId.getCustomID());
     addParameter(lpEmailParams, "$$shortNotes$$", shortNotes);
     addACAUrlsVarToEmail(lpEmailParams);
-	if (lpEmail != null)
+    if (!matches(lpEmail, null, undefined, ""))	
 	{
+        logDebug("Found: " + lpEmail + " lp email in the array.");
         sendNotification("", lpEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", lpEmailParams, null);
     }
 }
