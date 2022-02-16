@@ -24,12 +24,12 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
         var wwmIA = getCapResult.getOutput();
-    
+
         logDebug("wwmIA = " + wwmIA.getCustomID());
 
         //Removing Existing LPs
 
-        
+
         iaEmail = removeAllIASPLicensedProf(wwmIA);
         logDebug("iaEmail = " + iaEmail);
         if (iaEmail != "")
@@ -75,7 +75,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         var vEParams = aa.util.newHashtable();
         var addrResult = getAddressInALine(wwmIA);
         addParameter(vEParams, "$$altID$$", capIDString);
-        addParameter(vEParams, "$$address$$", addrResult); 
+        addParameter(vEParams, "$$address$$", addrResult);
 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
@@ -181,53 +181,58 @@ function getAddressInALine(capId)
 function removeAllIASPLicensedProf(pCapId)
 {
     //Function will remove all licensed professionals from the pCapId record.
-    var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(pCapId).getOutput();
     var iaServProvEmail = "";
-    if (licProf != null)
+    var capLicenseResult = aa.licenseScript.getLicenseProf(pCapId);
+    if (capLicenseResult.getSuccess())
     {
-        for (x in licProf)
+        var capLicenseArr = capLicenseResult.getOutput();
+        for (var currLic in capLicenseArr)
         {
-            logDebug("licensed professional is: " + licProf[x]);
-
-            if (licProf[x].getLicenseType() == "IA Service Provider") 
+            var thisLP = capLicenseArr[currLic];
+            logDebug("This LP is " + thisLP);
+            if (thisLP.getLicenseType() == "IA Service Provider")
             {
-                iaServProvEmail = licProf[x].getEmail();
+                iaServProvEmail = thisLP.getEmail();
                 logDebug("iaServProvEmail = " + iaServProvEmail)
-                aa.licenseProfessional.removeLicensedProfessional(licProf[x]);
-                logDebug("Removed " + licProf[x].getLicenseNbr());
-            }
-            
+                var remCapResult = aa.licenseProfessional.removeLicensedProfessional(thisLP);
+                logDebug("Removed " + thisLP.getLicenseNbr());
+            }          
         }
+    }
+    else 
+    {
+        logDebug("**ERROR: getting lic prof: " + capLicenseResult.getErrorMessage());
+        return false;
+    } 
         if (!matches(iaServProvEmail, "", null, " ", undefined))
         {
-            return iaServProvEmail; 
+            return iaServProvEmail;
         }
-        else
+        else 
         {
             logDebug("no IA Service Provider email was returned");
-        }
-    }
-    else
-    {
-        logDebug("No licensed professional on source");
-    }
+        }    
 }
 
-function exploreObject(objExplore) {
+function exploreObject(objExplore)
+{
 
     logDebug("Methods:")
-    for (x in objExplore) {
-                   if (typeof (objExplore[x]) == "function") {
-                                 logDebug("<font color=blue><u><b>" + x + "</b></u></font> ");
-                                 logDebug("   " + objExplore[x] + "<br>");
-                   }
+    for (x in objExplore)
+    {
+        if (typeof (objExplore[x]) == "function")
+        {
+            logDebug("<font color=blue><u><b>" + x + "</b></u></font> ");
+            logDebug("   " + objExplore[x] + "<br>");
+        }
     }
 
     logDebug("");
     logDebug("Properties:")
-    for (x in objExplore) {
-                   if (typeof (objExplore[x]) != "function")
-                                 logDebug("  <b> " + x + ": </b> " + objExplore[x]);
+    for (x in objExplore)
+    {
+        if (typeof (objExplore[x]) != "function")
+            logDebug("  <b> " + x + ": </b> " + objExplore[x]);
     }
 
 }
