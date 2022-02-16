@@ -184,7 +184,7 @@ function removeAllIASPLicensedProf(pCapId)
     {
         for (x in licProf)
         {
-            logDebug("licensed professional is: " + licProf[x]);
+            logDebug("licensed professional is: " + licProf[x].getOutput());
 
             if (licProf[x].getLicenseType() == "IA Service Provider") 
             {
