@@ -61,7 +61,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         var capLPs = licProfResult.getOutput();
         for (l in capLPs)
         {
-            if (!matches(capContacts[l].email, null, undefined, ""))
+            if (!matches(capLPs[l].email, null, undefined, ""))
             {
                 conEmail += capLPs[l].email + ";"
             }
@@ -72,7 +72,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         var vEParams = aa.util.newHashtable();
         var addrResult = getAddressInALine(wwmIA);
         addParameter(vEParams, "$$altID$$", capIDString);
-        addParameter(vEParams, "$$address$$", addrResult);
+        addParameter(vEParams, "$$address$$", addrResult); 
 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
