@@ -24,6 +24,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
         var wwmIA = getCapResult.getOutput();
+        logDebug("wwmIA = " + wwmIA);
 
         //Removing Existing LPs
 
@@ -184,7 +185,7 @@ function removeAllIASPLicensedProf(pCapId)
     {
         for (x in licProf)
         {
-            logDebug("licensed professional is: " + licProf[x].getOutput());
+            logDebug("licensed professional is: " + licProf[x]);
 
             if (licProf[x].getLicenseType() == "IA Service Provider") 
             {
