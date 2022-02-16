@@ -60,6 +60,8 @@ function workflowPrelimApproval(reportName, reportParamRecID)
     
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
+	addACAUrlsVarToEmail(emailParams);
+	
 	if (conEmail != null)
 	{
         sendNotification("", conEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", emailParams, null);
