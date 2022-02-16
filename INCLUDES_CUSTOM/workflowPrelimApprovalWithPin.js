@@ -312,7 +312,6 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
         lpReportFile.push(rFile);
     }
 
-
 	getRecordParams4Notification(lpEmailParams);
     getWorkflowParams4Notification(lpEmailParams);
     
