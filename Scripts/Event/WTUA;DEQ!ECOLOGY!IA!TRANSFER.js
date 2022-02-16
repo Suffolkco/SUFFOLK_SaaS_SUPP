@@ -24,7 +24,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
         var wwmIA = getCapResult.getOutput();
-        var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(pCapId).getOutput();
+        var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(capId).getOutput();
         var licProfId = licProf.getLicenseNbr()
         
         logDebug("wwmIA = " + wwmIA.getCustomID());
