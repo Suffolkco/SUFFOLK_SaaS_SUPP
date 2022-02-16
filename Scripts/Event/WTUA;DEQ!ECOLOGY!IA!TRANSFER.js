@@ -189,6 +189,7 @@ function removeAllIASPLicensedProf(pCapId)
         for (var currLic in capLicenseArr)
         {
             var thisLP = capLicenseArr[currLic];
+            logDebug("This LP is " + thisLP);
             if (thisLP.getLicenseType() == "IA Service Provider")
             {
                 iaServProvEmail = thisLP.getEmail();
