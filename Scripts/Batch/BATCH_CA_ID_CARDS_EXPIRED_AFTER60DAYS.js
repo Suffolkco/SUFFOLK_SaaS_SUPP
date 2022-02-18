@@ -227,13 +227,12 @@ function mainProcess()
                                             addParameter(vRParams, "ToDate", dateToCheck);
                                             addParameter(vRParams, "Email", "Yes");
 
-                                            conEmail += capContacts[c].email;
-                                            logDebugLocal("Vendor email is: " + conEmail + ", " + capIDString);
+                                            conEmail += capContacts[c].email + "; ";
+                                            logDebugLocal("Vendor email is: " + conEmail + " for " + capIDString);
 
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
                                             if (caReport)
-                                            {
-                                                logDebugLocal("Here");
+                                            {                                               
                                                 var caReports = new Array();
                                                 caReports.push(caReport);
                                             }
