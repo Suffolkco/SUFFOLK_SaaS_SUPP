@@ -1,5 +1,9 @@
 //ASA:DEQ/ECOLOGY/IA/TRANSFER
 
+/*
+
+Removing previous code JG 2.16.22 
+
 var showDebug = false;
  
 var parentId = getParent();
@@ -125,23 +129,23 @@ if (capContactResult.getSuccess())
 
 function addDays(date, days) 
 {
-	var result = new Date(date);
-	result.setDate(result.getDate() + days);
-	return result;
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 function jsDateToMMDDYYYY(pJavaScriptDate) {
-	//converts javascript date to string in MM/DD/YYYY format
-	if (pJavaScriptDate != null) {
-		if (Date.prototype.isPrototypeOf(pJavaScriptDate)) {
-			return (pJavaScriptDate.getMonth() + 1).toString() + "/" + pJavaScriptDate.getDate() + "/" + pJavaScriptDate.getFullYear();
-		} else {
-			logDebug("Parameter is not a javascript date");
-			return ("INVALID JAVASCRIPT DATE");
-		}
-	} else {
-		logDebug("Parameter is null");
-		return ("NULL PARAMETER VALUE");
-	}
+  //converts javascript date to string in MM/DD/YYYY format
+  if (pJavaScriptDate != null) {
+    if (Date.prototype.isPrototypeOf(pJavaScriptDate)) {
+      return (pJavaScriptDate.getMonth() + 1).toString() + "/" + pJavaScriptDate.getDate() + "/" + pJavaScriptDate.getFullYear();
+    } else {
+      logDebug("Parameter is not a javascript date");
+      return ("INVALID JAVASCRIPT DATE");
+    }
+  } else {
+    logDebug("Parameter is null");
+    return ("NULL PARAMETER VALUE");
+  }
 }
 function copyContactsTransfer(pFromCapId, pToCapId) {
     //Copies all contacts from pFromCapId to pToCapId
@@ -187,10 +191,10 @@ function copyContactsTransfer(pFromCapId, pToCapId) {
 
    function copyLicensedProf(sCapId, tCapId)
 {
-	//Function will copy all licensed professionals from source CapID to target CapID
+  //Function will copy all licensed professionals from source CapID to target CapID
 
   var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(sCapId).getOutput();
-	if (licProf != null){
+  if (licProf != null){
     for (x in licProf)
     {
         licProf[x].setCapID(tCapId);
@@ -202,3 +206,42 @@ function copyContactsTransfer(pFromCapId, pToCapId) {
     //logDebug("No licensed professional on source");
   }
 }
+*/
+var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+if (capParcelResult.getSuccess())
+{ var Parcels = capParcelResult.getOutput().toArray(); } 
+else
+{ logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage()); }
+
+for (zz in Parcels)
+{
+  var ParcelValidatedNumber = Parcels[zz].getParcelNumber();
+  logDebug("There is a parcel number, we are checking for IAs now.");  
+}
+
+var foundIA = false;
+var iaCap;
+var listOfRelatedRecorsdFromParcel = capIdsGetByParcel(ParcelValidatedNumber);
+
+
+for (record in listOfRelatedRecorsdFromParcel)
+{
+  //Here we will pull out the cap. 
+  //We are looking for a related SITE record for this particular Parcel Number
+  var itemCap = listOfRelatedRecorsdFromParcel[record];
+  var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
+  logDebug("We found this record: " + itemCap.getCustomID() + " which is a: " + itemCapType);
+  if (itemCapType == "DEQ/Ecology/IA/Application")
+  {
+    //Set globally true if there's a site.
+    foundIA = true;
+    iaCap = itemCap;
+  }
+
+  if (foundIA)
+  {
+    logDebug("We found a matching IA record: " + iaCap.getCustomID());
+    addParent(iaCap);
+  }
+}
+
