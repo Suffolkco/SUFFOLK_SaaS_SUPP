@@ -224,8 +224,7 @@ function mainProcess()
                                             addParameter(vRParams, "ToDate", dateToCheck);
                                             addParameter(vRParams, "Email", "Yes");
 
-                                            conEmail += capContacts[c].email + "; ";
-                                            logDebugLocal("Conemail is: " + conEmail);
+                                            conEmail = capContacts[c].email;
 
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
                                             if (caReport)
@@ -234,7 +233,7 @@ function mainProcess()
                                                 var caReports = new Array();
                                                 caReports.push(caReport);
                                             }
-
+                                            logDebugLocal("Conemail is: " + conEmail);
                                             var success = sendNotification("", conEmail, "", "CA_LICENSE_EXPIRATION", vEParams, caReports);
                                             logDebugLocal("success:" + success);
                                         }
