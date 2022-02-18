@@ -180,6 +180,8 @@ function mainProcess()
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
+            logDebugLocal(capIDString + ". Status: " + getAppStatus() + "Expiration Date: " + expirationDate);      
+            
             if (cap)
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();

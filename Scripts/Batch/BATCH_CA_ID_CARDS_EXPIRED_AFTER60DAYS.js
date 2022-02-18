@@ -173,7 +173,7 @@ function mainProcess()
         //  
         var output = "Record ID | Expiration Date \n";
         var vResult = doSQLSelect_local(vSQL);
-
+         
         for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];
@@ -181,6 +181,7 @@ function mainProcess()
             output += recordID + " | " + expirationDate + "\n";
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
+            logDebugLocal(capIDString + ". Status: " + getAppStatus() + "Expiration Date: " + expirationDate);      
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
