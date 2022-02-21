@@ -9,7 +9,7 @@ if (feeEx == null)
 }
 
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
-if(matches(itemCapType, "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", "DEQ/OPC/Site Assessment/Application",  "DEQ/WR/Backflow/Application", "DEQ/WR/Private Well Request/Application", "DEQ/WR/Public Water Complaint/NA","DEQ/WR/Water Modification/Application",  "DEQ/WWM/STP/Upgrade",  "DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application", "DEQ/WWM/Subdivision/Application")) 
+if(matches(itemCapType, "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", "DEQ/OPC/Site Assessment/Application",  "DEQ/WR/Backflow/Application", "DEQ/WR/Private Well Request/Application", "DEQ/WR/Public Water Complaint/NA","DEQ/WR/Water Modification/Application",  "DEQ/WWM/STP/Upgrade",  "DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application", "DEQ/WWM/SHIP/Application")) 
 {
 
     var capParcelResult = aa.parcel.getParcelandAttribute(capId,null);

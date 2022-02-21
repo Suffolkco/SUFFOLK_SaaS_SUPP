@@ -7,7 +7,7 @@ if(!publicUser)
     var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString(); 
     logDebug("Here's the output for getCap of capId and this shouldn't be null: " + aa.cap.getCap(capId))
     logDebug("Here is the output before getCapType, and this also shouldn't be null: " + aa.cap.getCap(capId).getOutput())
-    if(matches(itemCapType, "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", "DEQ/OPC/Swimming Pool/Permit", "DEQ/OPC/Site Assessment/Application",  "DEQ/WR/Backflow/Application", "DEQ/WR/Public Water Complaint/NA","DEQ/WR/Private Well Request/Application",  "DEQ/WWM/STP/Upgrade",  "DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application", "DEQ/WWM/Subdivision/Application")) 
+    if(matches(itemCapType, "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", "DEQ/OPC/Swimming Pool/Permit", "DEQ/OPC/Site Assessment/Application",  "DEQ/WR/Backflow/Application", "DEQ/WR/Public Water Complaint/NA","DEQ/WR/Private Well Request/Application",  "DEQ/WWM/STP/Upgrade",  "DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application", "DEQ/WWM/SHIP/Application"))
     {
 
         var capParcelResult = aa.parcel.getParcelandAttribute(capId,null);
