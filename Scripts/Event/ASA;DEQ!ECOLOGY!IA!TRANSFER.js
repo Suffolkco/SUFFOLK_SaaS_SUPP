@@ -207,6 +207,9 @@ function copyContactsTransfer(pFromCapId, pToCapId) {
   }
 }
 */
+
+if (!publicUser)
+{
 var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 if (capParcelResult.getSuccess())
 { var Parcels = capParcelResult.getOutput().toArray(); } 
@@ -271,4 +274,5 @@ logDebug ("foundIA = " + foundIA);
     logDebug("We found a matching IA record: " + iaCap);
     addParent(iaCap);
   }
+}
 
