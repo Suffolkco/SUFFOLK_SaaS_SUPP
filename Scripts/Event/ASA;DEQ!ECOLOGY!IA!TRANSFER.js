@@ -220,8 +220,8 @@ for (zz in Parcels)
 }
 
 var foundIA = false;
-var iaCap;
-var listOfRelatedRecorsdFromParcel = capIdsGetByParcel(ParcelValidatedNumber);
+var iaCap = "";
+var listOfRelatedRecordsFromParcel = capIdsGetByParcel(ParcelValidatedNumber);
 var pin = AInfo["PIN Number"];
 var iaNumber = AInfo["IA Record Number"];
 
@@ -241,31 +241,34 @@ var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     var getCapResult = aa.cap.getCapID(iaNumber);
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
-        var wwmIA = getCapResult.getOutput();
+        var wwmIA = getCapResult.getOutput().getCustomID();
+        logDebug("wwmIA = " + wwmIA);
     }
 
     
 
 
-for (record in listOfRelatedRecorsdFromParcel) 
+for (record in listOfRelatedRecordsFromParcel) 
 {
   //Here we will pull out the cap. 
   //We are looking for a related IA record for this particular Parcel Number
-  var item = listOfRelatedRecorsdFromParcel[record];
-  var itemCap = aa.cap.getCapID(item);
-  var itemCapID = itemCap.getCustomID();
+  var item = listOfRelatedRecordsFromParcel[record];
+  logDebug("item = " + item);
+  var itemCapID = item.getCustomID();
   logDebug("We found this record: " + itemCapID);
   if (matches(itemCapID, wwmIA))
   {
+      logDebug ("We found a match and it is " + wwmIA);
     //Set globally true if there's a site.
     foundIA = true;
-    iaCap = itemCap;
-  }
-
-  if (foundIA)
-  {
-    logDebug("We found a matching IA record: " + iaCap.getCustomID());
-    addParent(iaCap);
+    iaCap = relCap;
   }
 }
+
+logDebug ("foundIA = " + foundIA);
+  if (foundIA)
+  {
+    logDebug("We found a matching IA record: " + iaCap);
+    addParent(iaCap);
+  }
 
