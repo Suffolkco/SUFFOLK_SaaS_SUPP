@@ -222,16 +222,40 @@ for (zz in Parcels)
 var foundIA = false;
 var iaCap;
 var listOfRelatedRecorsdFromParcel = capIdsGetByParcel(ParcelValidatedNumber);
+var pin = AInfo["PIN Number"];
+var iaNumber = AInfo["IA Record Number"];
+
+var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
+    if (getCapResult.getSuccess())
+    {
+        var apsArray = getCapResult.getOutput();
+        for (aps in apsArray)
+        {
+            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+            logDebug("apsArray = " + apsArray);
+            var relCap = myCap.getCapID();
+            var relCapID = relCap.getCustomID();
+        }
+    }
+
+    var getCapResult = aa.cap.getCapID(iaNumber);
+    if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
+    {
+        var wwmIA = getCapResult.getOutput();
+    }
+
+    
 
 
-for (record in listOfRelatedRecorsdFromParcel)
+for (record in listOfRelatedRecorsdFromParcel) 
 {
   //Here we will pull out the cap. 
-  //We are looking for a related SITE record for this particular Parcel Number
-  var itemCap = listOfRelatedRecorsdFromParcel[record];
-  var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
-  logDebug("We found this record: " + itemCap.getCustomID() + " which is a: " + itemCapType);
-  if (itemCapType == "DEQ/Ecology/IA/Application")
+  //We are looking for a related IA record for this particular Parcel Number
+  var item = listOfRelatedRecorsdFromParcel[record];
+  var itemCap = aa.cap.getCapID(item);
+  var itemCapID = itemCap.getCustomID();
+  logDebug("We found this record: " + itemCapID);
+  if (matches(itemCapID, wwmIA))
   {
     //Set globally true if there's a site.
     foundIA = true;
