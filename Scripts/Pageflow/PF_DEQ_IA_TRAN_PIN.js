@@ -13,7 +13,7 @@ var cancel = true;
 var startDate = new Date();
 var startTime = startDate.getTime();
 var message = " "; // Message String
-var debug = "true"; // Debug String
+var debug = true; // Debug String
 var br = "<BR>"; // Break Tag
 // Comment left by Jason C as a test
 
