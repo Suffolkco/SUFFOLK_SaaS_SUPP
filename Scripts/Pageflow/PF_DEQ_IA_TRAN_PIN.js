@@ -6,14 +6,14 @@ var showMessage = false; // Set to true to see results in popup window
 var showDebug = false; // Set to true to see debug messages in popup window
 var useAppSpecificGroupName = false; // Use Group name when populating App Specific Info Values
 var useTaskSpecificGroupName = false; // Use Group name when populating Task Specific Info Values
-var cancel = false;
+var cancel = true;
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
 var startDate = new Date();
 var startTime = startDate.getTime();
 var message = " "; // Message String
-var debug = ""; // Debug String
+var debug = "true"; // Debug String
 var br = "<BR>"; // Break Tag
 // Comment left by Jason C as a test
 
@@ -144,6 +144,7 @@ local_loadASITables4ACA();
 | <=========== MAIN PROCESSING START ================>
 /-----------------------------------------------------------------------------------------------------*/
 // Validation messaging and halting work on on Before Button in PageFlow
+
 var pin = AInfo["PIN Number"];
 var iaNumber = AInfo["IA Record Number"];
 
