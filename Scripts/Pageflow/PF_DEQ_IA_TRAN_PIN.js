@@ -148,7 +148,10 @@ local_loadASITables4ACA();
 var pin = AInfo["PIN Number"];
 var iaNumber = AInfo["IA Record Number"];
 
+logDebug("pin and iaNumber = " + pin + "and" + iaNumber);
 
+try
+{
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())
     {
@@ -163,18 +166,27 @@ var iaNumber = AInfo["IA Record Number"];
     }
 
     var getCapResult = aa.cap.getCapID(iaNumber);
-    if (getCapResult.getSuccess() && !matches(relCapID, iaNumber))
+    if (getCapResult.getSuccess())
     {
+      if (!matches(relCapID, iaNumber))
+      {
         showMessage = true;
         cancel = true;
-        message = "PIN and IA Number do not match that of " + relcap;
+        message = "PIN and IA Number do not match";
+      }
     }
-   /* else 
+    else 
     {
         showMessage = false;
         cancel = false;
         message = "";
-    }*/
+    }
+
+}
+catch (err)
+{
+    aa.print("A JavaScript Error occured: " + err.message + " at line " + err.lineNumber + " stack: " + err.stack);
+}
 
 //////////////////////////////////////////////
 //  GENERIC BLOCK TO HANDLE MESSAGES - START
@@ -201,3 +213,6 @@ if (debug.indexOf("**ERROR") > 0) {
 /*------------------------------------------------------------------------------------------------------/
 | <=========== MAIN PROCESSING END ================>
 /-----------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------------/
+| <===========External Functions (used by Action entries)
+/------------------------------------------------------------------------------------------------------*/
