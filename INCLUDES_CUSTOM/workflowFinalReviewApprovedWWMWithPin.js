@@ -162,7 +162,7 @@ function workflowFinalReviewApprovedWWMWithPin()
                         logDebug("Email:" + peop.getEmail());                       
                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
                         addParameter(emailParams, "$$shortNotes$$", shortNotes);
-
+                        addACAUrlsVarToEmail(emailParams);
                         conEmail = peop.getEmail();
                         if (conEmail != null)
                         {
@@ -219,6 +219,8 @@ function workflowFinalReviewApprovedWWMWithPin()
                         logDebug("Send standard report to contact without the PIN Letter: " + conEmail);
                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
                         addParameter(emailParams, "$$shortNotes$$", shortNotes);
+                        addACAUrlsVarToEmail(emailParams);
+
                         if (conEmail != null)
                         {
                             // Add email to the array so we do not send duplicate email.
@@ -290,6 +292,8 @@ function workflowFinalReviewApprovedWWMWithPin()
 
     addParameter(lpEmailParams, "$$altID$$", capId.getCustomID());
     addParameter(lpEmailParams, "$$shortNotes$$", shortNotes);
+    addACAUrlsVarToEmail(lpEmailParams);
+
 	if (lpEmail != null)
 	{
 		sendNotification("", lpEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", lpEmailParams, lpReportFile);
