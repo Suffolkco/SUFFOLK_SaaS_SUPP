@@ -36,7 +36,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         {
             var vEParams = aa.util.newHashtable();
             var addrResult = getAddressInALine(wwmIA);
-            addParameter(vEParams, "$$altID$$", capIDString);
+            addParameter(vEParams, "$$altID$$", wwmIA);
             addParameter(vEParams, "$$address$$", addrResult);
             sendNotification("", iaEmail, "", "DEQ_IA__OWTS_REMOVAL", vEParams, null);
         }
@@ -74,7 +74,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
         var vEParams = aa.util.newHashtable();
         var addrResult = getAddressInALine(wwmIA);
-        addParameter(vEParams, "$$altID$$", capIDString);
+        addParameter(vEParams, "$$altID$$", wwmIA);
         addParameter(vEParams, "$$address$$", addrResult);
 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);

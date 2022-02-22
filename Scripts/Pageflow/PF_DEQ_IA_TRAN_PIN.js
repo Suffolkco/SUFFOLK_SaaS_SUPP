@@ -169,12 +169,12 @@ var iaNumber = AInfo["IA Record Number"];
         cancel = true;
         message = "PIN and IA Number do not match that of " + relcap;
     }
-    else 
+   /* else 
     {
         showMessage = false;
         cancel = false;
         message = "";
-    }
+    }*/
 
 //////////////////////////////////////////////
 //  GENERIC BLOCK TO HANDLE MESSAGES - START
