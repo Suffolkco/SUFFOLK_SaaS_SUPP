@@ -63,6 +63,7 @@ function copy()
     //var parentCapId = capModel.getParentCapID();
 try
 {
+    var AInfo = new Array();
     var pin = AInfo["PIN Number"];
     var iaNumber = AInfo["IA Record Number"];
 
