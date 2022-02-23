@@ -2,11 +2,11 @@
     /*------------------------------------------------------------------------------------------------------/
 | START User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = false; // Set to true to see results in popup window
-var showDebug = false; // Set to true to see debug messages in popup window
+var showMessage = true; // Set to true to see results in popup window
+var showDebug = true; // Set to true to see debug messages in popup window
 var useAppSpecificGroupName = false; // Use Group name when populating App Specific Info Values
 var useTaskSpecificGroupName = false; // Use Group name when populating Task Specific Info Values
-var cancel = false;
+var cancel = true;
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
@@ -15,7 +15,7 @@ var startTime = startDate.getTime();
 var message = " "; // Message String
 var debug = ""; // Debug String
 var br = "<BR>"; // Break Tag
-// Comment left by Jason C as a test
+// Comment left by Jason C as a test 
 
 var useSA = false;
 var SA = null;
@@ -174,13 +174,14 @@ try
         cancel = true;
         message = "PIN and IA Number do not match";
       }
-    }
-    else 
+      else 
     {
         showMessage = false;
         cancel = false;
         message = "";
     }
+    }
+    
 
 }
 catch (err)
