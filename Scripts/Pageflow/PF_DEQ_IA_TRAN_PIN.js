@@ -31,6 +31,9 @@ var AInfo = new Array();
 loadAppSpecific4ACA(AInfo);
 try
 {
+    var pin = AInfo["PIN Number"];
+    var iaNumber = AInfo["IA Record Number"];
+
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())
     {
