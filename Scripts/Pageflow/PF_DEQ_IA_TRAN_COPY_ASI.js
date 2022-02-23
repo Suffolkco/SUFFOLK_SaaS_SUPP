@@ -22,6 +22,7 @@ var cap = aa.env.getValue("CapModel");
 var capId = cap.getCapID();
 useAppSpecificGroupName = false;
 var br = "<BR>";
+var showDebug = true;
 
 //eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
 //eval(getScriptText("INCLUDES_CUSTOM"));
@@ -66,6 +67,7 @@ function copy()
         var AInfo = new Array();
         var iaNumber = AInfo["IA Record Number"];
         iaCapResult = aa.cap.getCapID(iaNumber);
+        lodDebug("iaCapResult: " + iaCapResult);
         var iaCapID = iaCapResult.getOutput();
 
         //copyAppSpecificTableForDEQ(parentCapId, targetCapId);
