@@ -60,14 +60,16 @@ function copy()
         return;
     }
 
-    var iaNumber = AInfo["IA Record Number"];
-    iaCap = aa.cap.getCap(iaNumber);
-    iaCapID = iaCap.getCapID();
+    
 
 
 
     try
     {
+        var iaNumber = AInfo["IA Record Number"];
+        iaCap = aa.cap.getCap(iaNumber);
+        iaCapID = iaCap.getCapID();
+
         //copyAppSpecificTableForDEQ(parentCapId, targetCapId);
 
         copyAppName(iaCapID, cap);
