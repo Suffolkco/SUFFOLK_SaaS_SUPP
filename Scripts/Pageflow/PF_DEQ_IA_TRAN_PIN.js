@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_LIC_REN_1_BEFORE.js
+| Program : PF_DEQ_IA_TRAN_PIN
 | Event   : ACA_BEFORE Event
 |
 |
 | 
-| Author:RLittlefield
+| Author:JGreene
 /------------------------------------------------------------------------------------------------------*/
 
 var documentOnly = false;
