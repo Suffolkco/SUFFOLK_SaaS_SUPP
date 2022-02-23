@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA Amend OnLoad.js
+| Program : PF_DEQ_IA_TRAN_COPY_ASI
 | Event   : ACA Amend OnLoad
 |
-| Usage   : Master Script by Accela.  See accompanying documentation and release notes.
+| Usage   :Copy data from IA Application record into IA Transfer prior to submission in ACA. Author: JGreene
 |
-| Client  : N/A
+| Client  : Suffolk
 | Action# : N/A
 |
 | Notes   :
