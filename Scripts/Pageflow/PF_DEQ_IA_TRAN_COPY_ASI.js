@@ -65,8 +65,8 @@ function copy()
     {
         var AInfo = new Array();
         var iaNumber = AInfo["IA Record Number"];
-        iaCap = aa.cap.getCap(iaNumber);
-        iaCapID = iaCap.getCapID();
+        iaCapResult = aa.cap.getCapID(iaNumber);
+        var iaCapID = iaCapResult.getOutput();
 
         //copyAppSpecificTableForDEQ(parentCapId, targetCapId);
 
