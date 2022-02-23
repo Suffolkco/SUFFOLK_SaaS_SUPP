@@ -67,7 +67,7 @@ try
     var pin = AInfo["PIN Number"];
     var iaNumber = AInfo["IA Record Number"];
 
-    logDebug("pin and iaNumber = " + pin + "and" + iaNumber);
+    logDebugLocal("pin and iaNumber = " + pin + "and" + iaNumber);
 
    
         var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
@@ -77,7 +77,7 @@ try
             for (aps in apsArray)
             {
                 myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-                logDebug("apsArray = " + apsArray);
+                logDebugLocal("apsArray = " + apsArray);
                 var relCap = myCap.getCapID();
                 var relCapID = relCap.getCustomID();
             }
@@ -142,7 +142,7 @@ function getCapId()
     if (s_capResult.getSuccess()) return s_capResult.getOutput();
     else
     {
-        logDebug(
+        logDebugLocal(
             "function getCapID: failed to get capId from script environment: " +
             s_capResult.getErrorMessage()
         );
@@ -177,7 +177,7 @@ function copyAppSpecificTableForDEQ(srcCapId, targetCapId)
     var targetTableNameArray = getTableName(targetCapId);
     if (tableNameArray == null)
     {
-        //logDebug("tableNameArray is null, returning");
+        //logDebugLocal("tableNameArray is null, returning");
         return;
     }
     for (loopk in tableNameArray)
@@ -194,7 +194,7 @@ function copyAppSpecificTableForDEQ(srcCapId, targetCapId)
             var srcTableModel = null;
             if (sourceAppSpecificTable == null)
             {
-                //logDebug("sourceAppSpecificTable is null");
+                //logDebugLocal("sourceAppSpecificTable is null");
                 return;
             } else
             {
@@ -209,7 +209,7 @@ function copyAppSpecificTableForDEQ(srcCapId, targetCapId)
                     tgtTableModel = tgtTableModelResult.getOutput();
                     if (tgtTableModel == null)
                     {
-                        //logDebug("target table model is null");
+                        //logDebugLocal("target table model is null");
                     } else
                     {
                         tgtGroupName = tgtTableModel.getGroupName();
@@ -217,7 +217,7 @@ function copyAppSpecificTableForDEQ(srcCapId, targetCapId)
                     }
                 } else
                 {
-                    logDebug(
+                    logDebugLocal(
                         "Error getting target table model " +
                         tgtTableModelResult.getErrorMessage()
                     );
@@ -230,14 +230,14 @@ function copyAppSpecificTableForDEQ(srcCapId, targetCapId)
             );
             if (editResult.getSuccess())
             {
-                //logDebug("Successfully editing appSpecificTableInfos");
+                //logDebugLocal("Successfully editing appSpecificTableInfos");
             } else
             {
-                //logDebug("Error editing appSpecificTableInfos " + editResult.getErrorMessage());
+                //logDebugLocal("Error editing appSpecificTableInfos " + editResult.getErrorMessage());
             }
         } else
         {
-            //logDebug("Table " + tableName + " is not defined on target");
+            //logDebugLocal("Table " + tableName + " is not defined on target");
         }
     }
 }
@@ -259,7 +259,7 @@ function copyLicensedProf(sCapId, tCapId)
     else
     {
 
-        //logDebug("No licensed professional on source");
+        //logDebugLocal("No licensed professional on source");
     }
 }
 function IsStrInArry(eVal, argArr)
@@ -285,12 +285,12 @@ function getAppSpecificTableForDEQ(capId, tableName)
         appSpecificTable = s_result.getOutput();
         if (appSpecificTable == null || appSpecificTable.length == 0)
         {
-            //logDebug("WARNING: no appSpecificTable on this CAP:" + capId);
+            //logDebugLocal("WARNING: no appSpecificTable on this CAP:" + capId);
             appSpecificTable = null;
         }
     } else
     {
-        //logDebug("ERROR: Failed to appSpecificTable: " + s_result.getErrorMessage());
+        //logDebugLocal("ERROR: Failed to appSpecificTable: " + s_result.getErrorMessage());
         appSpecificTable = null;
     }
     return appSpecificTable;
@@ -387,7 +387,7 @@ function copyASITables(pFromCapId, pToCapId)
         }
 
         addASITable(tn, tempArray, pToCapId);
-        //logDebug("ASI Table Array : " + tn + " (" + numrows + " Rows)");
+        //logDebugLocal("ASI Table Array : " + tn + " (" + numrows + " Rows)");
     }
 }
 function loadAppSpecific(thisArr)
@@ -455,7 +455,7 @@ function editAppSpecific(itemName, itemValue)
     {
         if (itemName.indexOf(".") < 0)
         {
-            //logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true");
+            //logDebugLocal("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true");
             return false;
         }
         itemGroup = itemName.substr(0, itemName.indexOf("."));
@@ -474,7 +474,7 @@ function editAppSpecific(itemName, itemValue)
             AInfo[itemName] = itemValue;
     } else
     {
-        //logDebug("WARNING: " + itemName + " was not updated.");
+        //logDebugLocal("WARNING: " + itemName + " was not updated.");
     }
 }
 
@@ -693,7 +693,7 @@ function copyContacts(pFromCapId, pToCapId)
             // Create cap contact, contact address and contact template
             aa.people.createCapContactWithAttribute(newContact);
             copied++;
-            //logDebug("Copied contact from " + pFromCapId.getCustomID() + " to " + vToCapId.getCustomID());
+            //logDebugLocal("Copied contact from " + pFromCapId.getCustomID() + " to " + vToCapId.getCustomID());
         }
     } else
     {
