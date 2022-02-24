@@ -146,7 +146,7 @@ if (appTypeArray[1] == "WWM") {
                             {
                             copyLicenseProfessional(relCap, wwmIA);
                             }
-                            
+                             
                             copyAddress(capId, wwmIA);
                             copyParcel(capId, wwmIA);
                             copyDocumentsToCapID(capId, wwmIA);
