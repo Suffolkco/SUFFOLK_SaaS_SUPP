@@ -39,19 +39,17 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var reportParams = aa.util.newHashtable();
         var reportFile = new Array();
         var alternateID = capId.getCustomID();
-        var itemCap = aa.cap.getCap(capId).getOutput();
-        appTypeResult = itemCap.getCapType();
-        appTypeString = appTypeResult.toString(); 
-        appTypeArray = appTypeString.split("/");
+      
         //insps[i].getInspectionDate()
         inspModel = inspObj.getInspection();            
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
-     
+        inspDate = inspObj.getInspectionDate();
         logDebug("inspResultDate: " + inspResultDate);       
+        logDebug("inspeciton object date: " + inspObj.getInspectionDate());        
         reportParams.put("TankRecordID", alternateID.toString());
         reportParams.put("InspectionDate",  inspResultDate);
-
-		rFile = generateReport("Inspection result Summary Report",reportParams, appTypeArray[0])
+       
+		rFile = generateReport("Inspection result Summary Report",reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile) {
