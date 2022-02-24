@@ -143,7 +143,7 @@ if (appTypeArray[1] == "WWM") {
                             var iaCustom = wwmIA.getCustomID();
                             copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
                             if (relCap != null)
-                            {
+                            { 
                             copyLicensedProfByType(relCap, wwmIA, ["IA Installer"]);
                             }
                             copyContactsByType(capId, wwmIA, ["Property Owner"]);
