@@ -61,7 +61,6 @@ if (inspResult == "Completed" || inspResult == "Fail")
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
         insId = inspObj.getIdNumber();
         addParameter(emailParams, "$$inspId$$", insId);
-
         
         sendNotification("", "ada.chan@suffolkcountyny.gov", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", "", emailParams, reportFile);    
               
