@@ -26,6 +26,15 @@ if (inspResult == "Completed" || inspResult == "Fail")
     inspType == "PBS Tank Other Inspection" ||
     inspType == "PBS Tank Re-Inspection")
     {
+
+        /*inspId 566672
+        inspResult = Fail
+        inspComment = null
+        inspResultDate = 2/24/2022
+        inspGroup = DEQ_TANKMON
+        inspType = Non-PBS Tank OP Inspection
+        inspSchedDate = 2/24/2022*/
+
         var emailParams = aa.util.newHashtable();
         var reportParams = aa.util.newHashtable();
         var reportFile = new Array();
@@ -37,15 +46,10 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //insps[i].getInspectionDate()
         inspModel = inspObj.getInspection();            
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
-        var insYear = inspObj.getInspectionStatusDate().getYear().toString();
-        var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
-        var insDay = inspObj.getInspectionStatusDate().getDate().toString();
-
-        var insCon = insMonth + "/" + insDay + "/" + insYear;
-
-    
+     
+        logDebug("inspResultDate: " + inspResultDate);       
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  insCon);
+        reportParams.put("InspectionDate",  inspResultDate);
 
 		rFile = generateReport("Inspection result Summary Report",reportParams, appTypeArray[0])
         logDebug("This is the rFile: " + rFile);           
