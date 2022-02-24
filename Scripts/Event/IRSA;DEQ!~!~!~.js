@@ -146,6 +146,7 @@ if (appTypeArray[1] == "WWM") {
                             {
                             copyLicenseProfessional(relCap, wwmIA);
                             }
+                            
                             copyAddress(capId, wwmIA);
                             copyParcel(capId, wwmIA);
                             copyDocumentsToCapID(capId, wwmIA);
@@ -415,21 +416,18 @@ function createChild(grp,typ,stype,cat,desc) // optional parent capId
 			}
 
 		// Copy Contacts
-		capContactResult = aa.people.getCapContactByCapID(itemCap);
+		/*capContactResult = aa.people.getCapContactByCapID(itemCap);
 		if (capContactResult.getSuccess())
 			{
 			Contacts = capContactResult.getOutput();
 			for (yy in Contacts)
 				{
 				var newContact = Contacts[yy].getCapContactModel();
-                if (Contacts[yy].getPeople().getContactType() == "Property Owner")
-                {
 				newContact.setCapID(newId);
 				aa.people.createCapContact(newContact);
 				logDebug("added contact");
-                }
 				}
-			}	
+			}	*/
 
 		// Copy Addresses
 		capAddressResult = aa.address.getAddressByCapId(itemCap);
