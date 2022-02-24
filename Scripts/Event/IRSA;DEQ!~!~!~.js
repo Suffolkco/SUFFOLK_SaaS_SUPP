@@ -141,10 +141,10 @@ if (appTypeArray[1] == "WWM") {
                             var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
                             logDebug("wwmIA =" + wwmIA);
                             var iaCustom = wwmIA.getCustomID();
-                            copyLicenseProfessional(capId, wwmIA);
+                            copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
                             if (relCap != null)
                             {
-                            copyLicenseProfessional(relCap, wwmIA);
+                            copyLicensedProfByType(relCap, wwmIA, ["IA Installer"]);
                             }
                             copyContactsByType(capId, wwmIA, ["Property Owner"]);
                             copyAddress(capId, wwmIA);
@@ -526,4 +526,19 @@ function getPeople3_0(capId) {
         capPeopleArr = null;
     }
     return capPeopleArr;
+}
+function copyLicensedProfByType(capIdFrom, capIdTo, typesArray) {
+    var n = aa.licenseProfessional.getLicensedProfessionalsByCapID(capIdFrom).getOutput();
+    var isByType = typesArray != null && typesArray.length > 0;
+    if (n != null)
+        for (x in n) {
+            if (isByType && !arrayContainsValue(typesArray, n[x].getLicenseType())) {
+                continue;
+            }//isByType
+            n[x].setCapID(capIdTo);
+            aa.licenseProfessional.createLicensedProfessional(n[x]);
+        }//for all LPs
+    else
+        logDebug("No licensed professional on source");
+    return true;
 }
