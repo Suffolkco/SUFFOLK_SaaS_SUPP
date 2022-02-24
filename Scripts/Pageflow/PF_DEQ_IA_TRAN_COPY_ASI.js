@@ -70,7 +70,7 @@ function copy()
 
         //copyAppSpecificTableForDEQ(parentCapId, targetCapId);
 
-        copyAppName(iaCapID, cap);
+        //copyAppName(iaCapID, cap);
 
         //copyLicensedProf(parentCapId, targetCapId);
 
@@ -140,7 +140,7 @@ function copyCapDetailInfo(srcCapId, targetCapId)
     aa.cap.copyCapDetailInfo(srcCapId, targetCapId);
 }
 
-function copyAppName(srcCapId, capModel)
+/*function copyAppName(srcCapId, capModel)
 {
     var appName = aa.cap.getCap(srcCapId).getOutput().specialText;
     capModel.setSpecialText(appName);
@@ -150,7 +150,7 @@ function copyAppName(srcCapId, capModel)
     {
         logError("Failed to update app name");
     }
-}
+}*/
 
 function copyAppSpecificTableForDEQ(srcCapId, targetCapId)
 {
