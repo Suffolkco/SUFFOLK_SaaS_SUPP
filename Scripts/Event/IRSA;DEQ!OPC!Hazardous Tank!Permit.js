@@ -49,7 +49,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         reportParams.put("TankRecordID", alternateID.toString());
         reportParams.put("InspectionDate",  inspResultDate);
        
-		rFile = generateReport("Inspection result Summary Report",reportParams, 'DEQ')
+		rFile = generateReport("Inspection result Tank Operator",reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile) {
