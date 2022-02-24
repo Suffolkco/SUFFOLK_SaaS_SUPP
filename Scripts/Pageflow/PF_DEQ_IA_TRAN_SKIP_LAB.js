@@ -65,14 +65,16 @@ loadAppSpecific4ACA(AInfo);
 |
 /-----------------------------------------------------------------------------------------------------*/
 
-var skipLabResults = true;
+var skipLabResults = false;
 var sampleResult = AInfo["Sample Results"];
 if (sampleResult == "CHECKED") {
-    skipLabResults = false;
+    skipLabResults = true;
 }
-if (skipLabResults == false) {
+if (skipLabResults) {
     aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
 }
+
+
 
 
 /*------------------------------------------------------------------------------------------------------/
