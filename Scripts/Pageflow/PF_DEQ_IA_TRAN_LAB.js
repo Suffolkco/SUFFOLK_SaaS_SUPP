@@ -92,7 +92,7 @@ if (sampleResult == "CHECKED")
         }
 
         removeASITable("LAB RESULTS");
-        addASITable("LAB RESULTS", labResultTable);
+        addASITable4ACAPageFlow(cap.getAppSpecificTableGroupModel(), "LAB RESULTS", labResultTable);
     }
 
 }
