@@ -67,7 +67,7 @@ loadAppSpecific4ACA(AInfo);
 
 var skipLabResults = false;
 var sampleResult = AInfo["Sample Results"];
-if (sampleResult == "CHECKED") {
+if (sampleResult == "UNCHECKED") {
     skipLabResults = true;
 }
 if (skipLabResults) {
