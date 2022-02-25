@@ -217,10 +217,10 @@ if (appTypeArray[1] == "WWM")
                             newRow["Site Name"] = ""; 
                             newRow["Site Address"] = "";
                             newRow["Site City"] = "";
-                            newRow["WWM#"] = parentCapId.getCustomID();
-                            newRow["IA#"] = capId.getCustomID();
+                            newRow["WWM#"] = capId.getCustomID();
+                            newRow["IA#"] = wwmIA.getCustomID();
                             labResultsTable.push(newRow);
-                            addASITable("LAB RESULTS", labResultsTable, capId);
+                            addASITable("LAB RESULTS", labResultsTable, wwmIA);
                         }
                         else
                         {
