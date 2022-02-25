@@ -44,13 +44,15 @@ if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
 logDebug("capId = " + capId);
+var capModel = aa.env.getValue("CapModel");
+targetCapId = capModel.getCapID();
 var AInfo = new Array();
-var parentCapId = getParent(capId);
-logDebug("parentCapId =" + parentCapId);                     
+var parentCapId = getParent(targetCapId);
+logDebug("parentCapId = " + parentCapId);                     
 var conEmail = "";
 var wwmIA = capId.getCustomID();
 logDebug("wwmIA =" + wwmIA);
-var pin = getApplication(AInfo["IA PIN Number"]);
+var pin = AInfo["IA PIN Number"];
                             
 //gathering LPs from parent
 var licProfResult = aa.licenseScript.getLicenseProf(parentCapId);
