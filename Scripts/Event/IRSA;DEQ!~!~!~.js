@@ -209,6 +209,18 @@ if (appTypeArray[1] == "WWM")
                                     logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
                                 }
                             }
+
+                            var labResultsTable = new Array();
+                            var newRow = new Array();
+                            newRow["Technology"] = iaManufacturer;
+                            newRow["Email"] = "";
+                            newRow["Site Name"] = ""; 
+                            newRow["Site Address"] = "";
+                            newRow["Site City"] = "";
+                            newRow["WWM#"] = parentCapId.getCustomID();
+                            newRow["IA#"] = capId.getCustomID();
+                            labResultsTable.push(newRow);
+                            addASITable("LAB RESULTS", labResultsTable, capId);
                         }
                         else
                         {
