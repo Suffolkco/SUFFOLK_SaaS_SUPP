@@ -144,7 +144,7 @@ if (appTypeArray[1] == "WWM") {
                             copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
                             if (relCap != null)
                             { 
-                            copyLicensedProfByType(relCap, wwmIA, ["IA Installer"]);
+                            copyLicensedProfByType(relCap, wwmIA, ["IA Vendor"]);
                             }
                             copyContactsByType(capId, wwmIA, ["Property Owner"]);
                             copyAddress(capId, wwmIA);
