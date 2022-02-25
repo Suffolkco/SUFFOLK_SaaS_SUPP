@@ -44,9 +44,11 @@ if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
 var AInfo = new Array();
-var parentCapId = getApplication(AInfo["WWM Application Number"]);                        
+var parentCapId = getApplication(AInfo["WWM Application Number"]);
+logDebug("parentCapId =" + parentCapId);                     
 var conEmail = "";
 var wwmIA = capId.getCustomID();
+logDebug("wwmIA =" + wwmIA);
 var pin = getApplication(AInfo["IA PIN Number"]);
                             
 //gathering LPs from parent
