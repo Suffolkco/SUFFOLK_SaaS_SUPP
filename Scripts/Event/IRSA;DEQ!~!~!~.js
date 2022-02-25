@@ -542,3 +542,17 @@ function copyLicensedProfByType(capIdFrom, capIdTo, typesArray) {
         logDebug("No licensed professional on source");
     return true;
 }
+function arrayContainsValue(ary, value) {
+    if (ary != null) {
+        //if not array, convert to array
+        if (!Array.isArray(ary)) {
+            ary = [ ary ];
+        }
+        for (t in ary) {
+            if (ary[t] == value) {
+                return true;
+            }
+        }//for all types
+    }
+    return false;
+}
