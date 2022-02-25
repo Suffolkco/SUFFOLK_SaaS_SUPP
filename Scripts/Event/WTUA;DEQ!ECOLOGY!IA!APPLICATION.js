@@ -40,7 +40,7 @@ if (wfTask == "Tracking" && wfStatus == "System Valid")
     }
 }
 
-if (wfTask == "Reistration Submitted" && wfStatus == "System Valid")
+if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
 var AInfo = new Array();
