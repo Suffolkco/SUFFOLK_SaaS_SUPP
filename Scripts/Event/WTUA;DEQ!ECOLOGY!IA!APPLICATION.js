@@ -74,7 +74,7 @@ for (c in capContacts)
 //Sending Notification
 
 var vEParams = aa.util.newHashtable();
-var addrResult = getAddressInALine(capId);
+var addrResult = getAddressInALine(wwmIA);
 addParameter(vEParams, "$$altID$$", wwmIA);
 addParameter(vEParams, "$$address$$", addrResult);
 addParameter (vEParams, "$$pin$$", pinNumber);
