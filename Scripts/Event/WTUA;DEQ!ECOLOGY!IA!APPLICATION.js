@@ -43,6 +43,7 @@ if (wfTask == "Tracking" && wfStatus == "System Valid")
 if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
+logDebug("capId = " + capId);
 var AInfo = new Array();
 var parentCapId = getApplication(AInfo["WWM Application Number"]);
 logDebug("parentCapId =" + parentCapId);                     
