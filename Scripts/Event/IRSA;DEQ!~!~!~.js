@@ -160,6 +160,7 @@ if (appTypeArray[1] == "WWM")
                                 logDebug("apsArray = " + apsArray);
                                 var relCap = myCap.getCapID();
                                 logDebug("relCapID = " + relCap.getCustomID());
+                                var relCapID = relCap.getCustomID();
                             }
                         }
                         if (iaNumber == null)
