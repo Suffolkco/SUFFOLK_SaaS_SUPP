@@ -44,15 +44,13 @@ if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
 logDebug("capId = " + capId);
-var capModel = aa.env.getValue("CapModel");
-targetCapId = capModel.getCapID();
 var AInfo = new Array();
-var parentCapId = getParentByCapId(capId);
 logDebug("parentCapId = " + parentCapId);                     
 var conEmail = "";
 var wwmIA = capId.getCustomID();
 logDebug("wwmIA =" + wwmIA);
 var pin = AInfo["IA PIN Number"];
+logDebug("pin = " + pin);
                             
 //gathering LPs from parent
 var licProfResult = aa.licenseScript.getLicenseProf(parentCapId);
@@ -79,10 +77,10 @@ for (c in capContacts)
 //Sending Notification
 
 var vEParams = aa.util.newHashtable();
-var addrResult = getAddressInALine(wwmIA);
+var addrResult = getAddressInALine(capId);
 addParameter(vEParams, "$$altID$$", wwmIA);
 addParameter(vEParams, "$$address$$", addrResult);
-addParameter (vEParams, "$$pin$$", pinNumber);
+addParameter (vEParams, "$$pin$$", pin);
 
 sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 }
