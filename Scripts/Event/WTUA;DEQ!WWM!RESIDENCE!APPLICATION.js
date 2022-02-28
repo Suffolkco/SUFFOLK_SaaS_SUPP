@@ -263,7 +263,10 @@ function scheduleInspection(iType,DaysAhead) // optional inspector ID.  This fun
 			var inspectorObj = inspRes.getOutput();
 		}
 
-	var schedRes = aa.inspection.scheduleInspection(capId, inspectorObj, aa.date.parseDate(dateAdd(null,DaysAhead)), null, iType, "Scheduled via Script")
+		var startDate = new Date();
+		var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+
+	var schedRes = aa.inspection.scheduleInspection(capId, inspectorObj, aa.date.parseDate(todayDate), null, iType, "Scheduled via Script")
 
 	if (schedRes.getSuccess())
 		logDebug("Successfully scheduled inspection : " + iType + " for " + dateAdd(null,DaysAhead));
