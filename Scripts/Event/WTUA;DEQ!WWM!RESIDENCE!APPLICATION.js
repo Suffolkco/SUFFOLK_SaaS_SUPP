@@ -88,6 +88,9 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
     if(taskHistoryResult.getSuccess())
     {
         var taskArr = taskHistoryResult.getOutput();
+		logDebug("Number of workflow history found for " + wfTask + " is " + taskArr.length);
+		var count;
+
         for(obj in taskArr)
         {
             var taskObj = taskArr[obj];
@@ -96,6 +99,10 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			//debugObject(taskObj);
 			if (taskObj.getDisposition() == "Approved")
 			{
+				count++;
+				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + "," + taskObj.getProcessID() + "," +
+				taskObj.getTaskDescription() + ", " + taskObj.getDisposition());
+				/*
 				// Do not schedule inspection
 				logDebug("Current history step: " + taskObj.getStepNumber());
 				if (taskObj.getTaskDescription() == wfTask && wfStep == taskObj.getStepNumber() &&
@@ -108,12 +115,12 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 					scheduled = false;
 					logDebug("Found workflow history already has: " + taskObj.getTaskDescription() + " status:" + taskObj.getDisposition());
 					logDebug("No need to create new WWM_RES_System 1 inspection via script.");
-				}
+				}*/
 			}		
 
         }
 		// Only if it's the very first time, Create new inspection
-		if (scheduled)
+		if (count == 1)
 		{
 			scheduleInspection("WWM_RES_System 1", 0);
 		}
