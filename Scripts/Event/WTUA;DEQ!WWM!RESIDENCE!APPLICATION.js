@@ -91,11 +91,12 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         {
             var taskObj = taskArr[obj];
 			var taskItem = taskObj.getTaskItem();
-			var taskStatus = taskObj.getTaskStatus(taskItem);
-			
-			logDebug("taskStatus : " + taskStatus);
+		
+			logDebug("*********");
+			debugObject(taskObj);
+			logDebug("*********");
 			debugObject(taskItem);
-
+			logDebug("*********");
 			if (taskStatus == wfStatus)
 			{
 				// Do not schedule inspection
