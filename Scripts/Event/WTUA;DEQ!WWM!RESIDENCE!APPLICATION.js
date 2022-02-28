@@ -269,7 +269,7 @@ function scheduleInspection(iType,DaysAhead) // optional inspector ID.  This fun
 	var schedRes = aa.inspection.scheduleInspection(capId, inspectorObj, aa.date.parseDate(todayDate), null, iType, "Scheduled via Script")
 
 	if (schedRes.getSuccess())
-		logDebug("Successfully scheduled inspection : " + iType + " for " + dateAdd(null,DaysAhead));
+		logDebug("Successfully scheduled inspection : " + iType);
 	else
 		logDebug( "**ERROR: adding scheduling inspection (" + iType + "): " + schedRes.getErrorMessage());
 }
