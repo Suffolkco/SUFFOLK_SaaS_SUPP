@@ -92,16 +92,15 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
             var taskObj = taskArr[obj];
 			var taskItem = taskObj.getTaskItem();
 		
-			logDebug("*********");
-			debugObject(taskObj);
-			logDebug("*********");
-			debugObject(taskItem);
-			logDebug("*********");
-			if (taskStatus == wfStatus)
+			//logDebug("*********");
+			//debugObject(taskObj);
+			if (taskObj.getDisposition() == "Approved")
 			{
 				// Do not schedule inspection
 				scheduled = false;
-			}
+				logDebug("Found workflow history already has: " + taskObj.getTaskDescription() + " status:" + taskObj.getDisposition());
+				logDebug("No need to create new WWM_RES_System 1 inspection via script.");
+			}		
 
         }
 		// Only if it's the very first time, Create new inspection
