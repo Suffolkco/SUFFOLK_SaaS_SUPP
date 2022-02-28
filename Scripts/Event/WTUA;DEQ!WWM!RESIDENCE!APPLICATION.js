@@ -270,6 +270,28 @@ function scheduleInspection(iType,DaysAhead) // optional inspector ID.  This fun
 	else
 		logDebug( "**ERROR: adding scheduling inspection (" + iType + "): " + schedRes.getErrorMessage());
 }
+function dateAdd(td,amt) 
+{
+	// perform date arithmetic on a string
+	// td can be "mm/dd/yyyy" (or any string that will convert to JS date)
+	// amt can be positive or negative (5, -3) days
+	if (!td) 
+	{
+		dDate = new Date();
+	} 
+	else 
+	{
+		dDate = convertDate(td);
+	}
+	//var i = 0;
+	//while (i < Math.abs(amt)) 
+	//{
+	//	dDate = new Date(aa.calendar.getNextWorkDay(aa.date.parseDate(dDate.getMonth()+1 + "/" + dDate.getDate() + "/" + dDate.getFullYear())).getOutput().getTime());
+	//	i++;
+	//}
+	dDate.setTime(dDate.getTime() + (1000 * 60 * 60 * 24 * amt));
+	return (dDate.getMonth() + 1) + "/" + dDate.getDate() + "/" + dDate.getFullYear();
+}
 
 function dateDifference(date1, date2)
 {
