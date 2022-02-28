@@ -55,6 +55,7 @@ if (appTypeArray[1] == "WWM")
                     var iaModel = null;
                     var iaLeachPoolType = null;
                     var iaLeachOtherType = null;
+                    var iaEffluentPumpOther = null;
                     var iaLeachProduct = null;
                     var iaNumber = null;
                     var iaASIModel = null;
