@@ -82,7 +82,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 	}
 
 	// EHIMS-4763
-	var taskHistoryResult = aa.workflow.getWorkflowHistory(capID,wfTask,null);
+	var taskHistoryResult = aa.workflow.getWorkflowHistory(capId,wfTask,null);
 	var scheduled = true;
     if(taskHistoryResult.getSuccess())
     {
