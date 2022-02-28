@@ -89,7 +89,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
     {
         var taskArr = taskHistoryResult.getOutput();
 		logDebug("Number of workflow history found for " + wfTask + " is " + taskArr.length);
-		var count;
+		var count = 0;
 
         for(obj in taskArr)
         {
