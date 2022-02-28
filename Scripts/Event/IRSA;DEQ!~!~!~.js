@@ -260,6 +260,7 @@ if (appTypeArray[1] == "WWM")
                                 editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
                                 editAppSpecificLOCAL("Model", iaModel, wwmIA);
                                 editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                                editAppSpecificLOCAL("Leaching Product", iaLeachProduct, wwmIA);
                                 if (iaLeachPoolType != null)
                                 {
                                     editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
@@ -267,6 +268,14 @@ if (appTypeArray[1] == "WWM")
                                 else if (iaLeachPoolType == null)
                                 {
                                     editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
+                                }
+                                if (iaEffluentPumpPools != null)
+                                {
+                                    editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, wwmIA);
+                                }
+                                else if (iaEffluentPumpPools == null)
+                                {
+                                    editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
                                 }
                             }
                             else
