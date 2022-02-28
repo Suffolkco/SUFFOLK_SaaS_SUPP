@@ -83,6 +83,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 
 	// EHIMS-4763
 	var taskHistoryResult = aa.workflow.getWorkflowHistory(capId,wfTask,null);
+
+	var currentStepNum = wfTask.getStepNumber();
+	var currentTaskProcessID = wfTask.getProcessID();
+	logDebug("Current workflow step: " + currentStepNum + ". Current Process ID" + currentTaskProcessID);
+
 	var scheduled = true;
     if(taskHistoryResult.getSuccess())
     {
@@ -90,16 +95,24 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         for(obj in taskArr)
         {
             var taskObj = taskArr[obj];
-			var taskItem = taskObj.getTaskItem();
 		
 			//logDebug("*********");
 			//debugObject(taskObj);
 			if (taskObj.getDisposition() == "Approved")
 			{
 				// Do not schedule inspection
-				scheduled = false;
-				logDebug("Found workflow history already has: " + taskObj.getTaskDescription() + " status:" + taskObj.getDisposition());
-				logDebug("No need to create new WWM_RES_System 1 inspection via script.");
+				logDebug("Current history step: " + taskObj.getStepNumber + ". Current history Process ID" + taskObj.getProcessId());
+				if (currentStepNum == taskObj.getStepNumber() &&
+					currentTaskProcessID == taskObj.getProcessId())
+				{
+					logDebug("This is the current active workflow: " + currentStepNum + ", " + currentTaskProcessID);
+				}
+				else
+				{
+					scheduled = false;
+					logDebug("Found workflow history already has: " + taskObj.getTaskDescription() + " status:" + taskObj.getDisposition());
+					logDebug("No need to create new WWM_RES_System 1 inspection via script.");
+				}
 			}		
 
         }
