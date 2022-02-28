@@ -199,6 +199,7 @@ if (appTypeArray[1] == "WWM")
                             editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
                             editAppSpecificLOCAL("Model", iaModel, wwmIA);
                             editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                            editAppSpecificLOCAL("Leaching Product", iaLeachProduct, wwmIA);
                             if (iaLeachPoolType != null)
                             {
                                 editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
@@ -215,10 +216,7 @@ if (appTypeArray[1] == "WWM")
                             {
                                 editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
                             }
-                            if (iaLeachProduct != "N/A")
-                            {
-                                editAppSpecificLOCAL("Leaching Product", iaLeachProduct, wwmIA);
-                            }
+                            
                             var pinNumber = makePIN(8);
                             editAppSpecific('IA PIN Number', pinNumber, wwmIA)
                             
