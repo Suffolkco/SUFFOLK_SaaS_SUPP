@@ -84,10 +84,6 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 	// EHIMS-4763
 	var taskHistoryResult = aa.workflow.getWorkflowHistory(capId,wfTask,null);
 
-	var currentStepNum = wfTask.getStepNumber();
-	var currentTaskProcessID = wfTask.getProcessID();
-	logDebug("Current workflow step: " + currentStepNum + ". Current Process ID" + currentTaskProcessID);
-
 	var scheduled = true;
     if(taskHistoryResult.getSuccess())
     {
@@ -101,11 +97,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			if (taskObj.getDisposition() == "Approved")
 			{
 				// Do not schedule inspection
-				logDebug("Current history step: " + taskObj.getStepNumber + ". Current history Process ID" + taskObj.getProcessId());
-				if (currentStepNum == taskObj.getStepNumber() &&
-					currentTaskProcessID == taskObj.getProcessId())
+				logDebug("Current history step: " + taskObj.getStepNumber());
+				if (taskObj.getTaskDescription() == wfTask && wfStep == taskObj.getStepNumber() &&
+				taskObj.getDisposition() == wfStatus)					
 				{
-					logDebug("This is the current active workflow: " + currentStepNum + ", " + currentTaskProcessID);
+					logDebug("This is the current active workflow: " + wfStep + ", " + wfTask + ", " + wfStatus);
 				}
 				else
 				{
