@@ -49,7 +49,7 @@ logDebug("parentCapId = " + parentCapId);
 var conEmail = "";
 var wwmIA = capId.getCustomID();
 logDebug("wwmIA =" + wwmIA);
-var pin = AInfo["IA PIN Number"];
+var pin = getAppSpecific("IA PIN Number", capId);
 logDebug("pin = " + pin);
                             
 //gathering LPs from parent
