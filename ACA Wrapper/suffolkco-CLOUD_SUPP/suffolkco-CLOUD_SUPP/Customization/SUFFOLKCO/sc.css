@@ -1,0 +1,75 @@
+.header{
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url("/suffolkco/customization/suffolkco/img/bgTOP_color.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color:#fff !important;
+}
+.header h1{
+	color: #fff !important;
+	font-size: 1.5rem !important;
+}
+.footer{
+    background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url("/suffolkco/customization/suffolkco/img/bgBOTTOM.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    color:#fff;
+}
+.footer .container {
+	margin: 10px 10px 0 10px;
+}
+.footer .nav-item{
+	
+}
+.footer .nav-link {
+	display: block;
+    padding: .1rem .5rem;
+    color:#fff !important;
+}
+.footer h4{
+    color:#E0B111;
+}
+.d-flex {
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+.align-items-center {
+  -ms-flex-align: center !important;
+  align-items: center !important;
+}
+.justify-content-center{
+	justify-content: center;
+}
+.flex-grid {
+  display: flex;
+}
+.col {
+  flex: 1;
+}
+.flex-grid-thirds {
+  /*display: flex;*/
+  justify-content: space-between;
+}
+.flex-grid-thirds .col {
+  width: 32%;
+}
+.px-3{
+	padding-left:1rem;
+	padding-right:1rem;
+}
+.py-3 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+.py-5 {
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+@media (max-width: 400px) {
+    .flex-grid {
+      display: block;
+    }
+  }
+
+.ACA_Welcome_Block {
+  display: none !important;
+}
