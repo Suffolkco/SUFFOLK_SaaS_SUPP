@@ -25,17 +25,20 @@ var useSA = false;
 var SA = null;
 var SAScript = null;
 var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
-if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I") {
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
+{
     useSA = true;
     SA = bzr.getOutput().getDescription();
     bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
     if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
 }
 
-if (SA) {
+if (SA)
+{
     eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
     eval(getScriptText(SAScript, SA));
-} else {
+} else
+{
     eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 }
 
@@ -65,15 +68,34 @@ loadAppSpecific4ACA(AInfo);
 |
 /-----------------------------------------------------------------------------------------------------*/
 
-var skipLabResults = false;
 var sampleResult = AInfo["Sample Results"];
-if (sampleResult == "UNCHECKED") {
-    skipLabResults = true;
-}
-if (skipLabResults) {
-    aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
-}
+if (sampleResult == "CHECKED") 
+{
+    var pcapId = getParent();
+    if (pcapId)
+    {
 
+        var parentTable = loadASITable("LAB RESULTS", pcapId);
+        var labResultTable = new Array();
+        var newRow = new Array();
+        for (var row in LABRESULTS)
+        {
+            newRow["Technology"] = LABRESULTS[row]["Technology"];
+            newRow["Email"] = LABRESULTS[row]["Email"];
+            newRow["Site Name"] = LABRESULTS[row]["Site Name"];
+            newRow["Site Address"] = LABRESULTS[row]["Site Address"];
+            newRow["Site City"] = LABRESULTS[row]["Site City"];
+            newRow["WWM#"] = LABRESULTS[row]["WWM#"];
+            newRow["IA#"] = LABRESULTS[row]["IA#"];
+            labResultTable.push(newRow);
+            break;
+        }
+
+        removeASITable("LAB RESULTS");
+        addASITable4ACAPageFlow(cap.getAppSpecificTableGroupModel(), "LAB RESULTS", labResultTable);
+    }
+
+}
 
 
 
@@ -81,17 +103,21 @@ if (skipLabResults) {
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
 
-if (debug.indexOf("**ERROR") > 0) {
+if (debug.indexOf("**ERROR") > 0)
+{
     aa.env.setValue("ErrorCode", "1");
     aa.env.setValue("ErrorMessage", debug);
 }
-else {
-    if (cancel) {
+else
+{
+    if (cancel)
+    {
         aa.env.setValue("ErrorCode", "-2");
         if (showMessage) aa.env.setValue("ErrorMessage", message);
         if (showDebug) aa.env.setValue("ErrorMessage", debug);
     }
-    else {
+    else
+    {
         aa.env.setValue("ErrorCode", "0");
         if (showMessage) aa.env.setValue("ErrorMessage", message);
         if (showDebug) aa.env.setValue("ErrorMessage", debug);
@@ -101,18 +127,23 @@ else {
 /*------------------------------------------------------------------------------------------------------/
 | <===========External Functions (used by Action entries)
 /------------------------------------------------------------------------------------------------------*/
-function getScriptText(vScriptName, servProvCode, useProductScripts) {
-	if (!servProvCode)  servProvCode = aa.getServiceProviderCode();
-	vScriptName = vScriptName.toUpperCase();
-	var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-	try {
-		if (useProductScripts) {
-			var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
-		} else {
-			var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
-		}
-		return emseScript.getScriptText() + "";
-	} catch (err) {
-		return "";
-	}
+function getScriptText(vScriptName, servProvCode, useProductScripts)
+{
+    if (!servProvCode) servProvCode = aa.getServiceProviderCode();
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        if (useProductScripts)
+        {
+            var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
+        } else
+        {
+            var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
+        }
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
 }
