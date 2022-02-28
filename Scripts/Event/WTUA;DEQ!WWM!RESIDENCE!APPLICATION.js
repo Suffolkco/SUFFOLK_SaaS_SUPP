@@ -73,14 +73,49 @@ if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 	}
 }
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
+{
+	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
+	var prelimCondTxt = AInfo["Permit Conditions Text"];
+	if (!matches(prelimCondTxt, null, undefined, ""))				
 	{
-		//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
-		var prelimCondTxt = AInfo["Permit Conditions Text"];
-		if (!matches(prelimCondTxt, null, undefined, ""))				
-		{
-			workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
-		}
+		workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
 	}
+
+	// EHIMS-4763
+	var taskHistoryResult = aa.workflow.getWorkflowHistory(capID,wfTask,null);
+	var scheduled = true;
+    if(taskHistoryResult.getSuccess())
+    {
+        var taskArr = taskHistoryResult.getOutput();
+        for(obj in taskArr)
+        {
+            var taskObj = taskArr[obj];
+			var taskItem = taskObj.getTaskItem();
+			var taskStatus = taskObj.getTaskStatus(taskItem);
+			
+			logDebug("taskStatus : " + taskStatus);
+			debugObject(taskItem);
+
+			if (taskStatus == wfStatus)
+			{
+				// Do not schedule inspection
+				scheduled = false;
+			}
+
+        }
+		// Only if it's the very first time, Create new inspection
+		if (scheduled)
+		{
+			scheduleInspection("WWM_RES_System 1", 0);
+		}
+		
+    }
+    else
+    {
+        logDebug("No task history.")
+    }
+
+}
 	
 if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 (wfTask == "Inspections" && wfStatus == "Awaiting Client Reply"))
@@ -115,6 +150,15 @@ function logDebugLocal(dstr)
 		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
 	}
 }
+
+function debugObject(object) {
+    var output = '';
+    for (property in object) {
+        output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
+    }
+    logDebug(output);
+}
+
 
 function latestInspectionResultWithComments()
 {
@@ -193,6 +237,24 @@ function latestInspectionResultWithComments()
 	return inspResultComments;
 }
 
+function scheduleInspection(iType,DaysAhead) // optional inspector ID.  This function requires dateAdd function
+{
+	var inspectorObj = null;
+	if (arguments.length == 3)
+		{
+		var inspRes = aa.person.getUser(arguments[2])
+		if (inspRes.getSuccess())
+			var inspectorObj = inspRes.getOutput();
+		}
+
+	var schedRes = aa.inspection.scheduleInspection(capId, inspectorObj, aa.date.parseDate(dateAdd(null,DaysAhead)), null, iType, "Scheduled via Script")
+
+	if (schedRes.getSuccess())
+		logDebug("Successfully scheduled inspection : " + iType + " for " + dateAdd(null,DaysAhead));
+	else
+		logDebug( "**ERROR: adding scheduling inspection (" + iType + "): " + schedRes.getErrorMessage());
+}
+
 function dateDifference(date1, date2)
 {
     return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
@@ -251,7 +313,37 @@ function inspectionResultComments()
 	
 	return inspResultComments;
 }
+function getWorkflowTask(capID, taskName)
+{
+    var taskHistoryResult = aa.workflow.getWorkflowHistory(capID,taskName,null);
+    if(taskHistoryResult.getSuccess())
+    {
+        var taskArr = taskHistoryResult.getOutput();
+        for(obj in taskArr)
+        {
+            var taskObj = taskArr[obj];
+          
+			
+			var sysObj = taskObj.getTaskItem().getSysUser();
+            if(sysObj)
+            {
+                var userResult = aa.person.getUser(sysObj.getFirstName(),sysObj.getMiddleName(),sysObj.getLastName());
+                if(userResult.getSuccess())
+                {
+                    var userObj = userResult.getOutput();
+                    return userObj.getUserID();
+                }
 
+            }
+        }
+    }
+    else
+    {
+        logDebug("No task history.")
+    }
+
+    return null;
+}
 function inspectionCompleted()
 {
 	var insps;
