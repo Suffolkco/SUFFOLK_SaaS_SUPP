@@ -55,6 +55,7 @@ if (appTypeArray[1] == "WWM")
                     var iaModel = null;
                     var iaLeachPoolType = null;
                     var iaLeachOtherType = null;
+                    var iaEffluentPumpOther = null;
                     var iaLeachProduct = null;
                     var iaNumber = null;
                     var iaASIModel = null;
@@ -123,6 +124,23 @@ if (appTypeArray[1] == "WWM")
                                                     {
                                                         iaLeachProduct = ASIModel.getAttributeValue();
                                                     }
+                                                }
+                                                else if (ASIModel.getAsiName() == "Effluent Pump")
+                                                {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
+                                                    {
+                                                        iaEffluentPumpPools = ASIModel.getAttributeValue();
+                                                    }
+
+                                                }
+                                                else if (ASIModel.getAsiName() == "Effluent Pump")
+                                                {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+                                                    {
+                                                        iaEffluentPumpOther = ASIModel.getAttributeValue();
+                                                    }
 
                                                 }
                                                 else if (ASIModel.getAsiName() == "IA Record Number")
@@ -182,6 +200,7 @@ if (appTypeArray[1] == "WWM")
                             editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
                             editAppSpecificLOCAL("Model", iaModel, wwmIA);
                             editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                            editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
                             if (iaLeachPoolType != null)
                             {
                                 editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
@@ -190,6 +209,15 @@ if (appTypeArray[1] == "WWM")
                             {
                                 editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
                             }
+                            if (iaEffluentPumpPools != null)
+                            {
+                                editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, wwmIA);
+                            }
+                            else if (iaEffluentPumpPools == null)
+                            {
+                                editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
+                            }
+                            
                             var pinNumber = makePIN(8);
                             editAppSpecific('IA PIN Number', pinNumber, wwmIA)
                             
@@ -232,6 +260,7 @@ if (appTypeArray[1] == "WWM")
                                 editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
                                 editAppSpecificLOCAL("Model", iaModel, wwmIA);
                                 editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                                editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
                                 if (iaLeachPoolType != null)
                                 {
                                     editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
@@ -239,6 +268,14 @@ if (appTypeArray[1] == "WWM")
                                 else if (iaLeachPoolType == null)
                                 {
                                     editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
+                                }
+                                if (iaEffluentPumpPools != null)
+                                {
+                                    editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, wwmIA);
+                                }
+                                else if (iaEffluentPumpPools == null)
+                                {
+                                    editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
                                 }
                             }
                             else

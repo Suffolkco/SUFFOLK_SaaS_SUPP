@@ -94,52 +94,41 @@ loadAppSpecific4ACA(AInfo); 						// Add AppSpecific Info
 |
 /-----------------------------------------------------------------------------------------------------*/
 try {
- 
-	var parentCapId = getApplication(AInfo["IA Record Number"]);
-	//var wwmApp = AInfo["WWM Application Number"];
-	//var inspApp = AInfo["Inspection Number"];
-  
-	if (parentCapId) 
-	{
-		parentCap =aa.cap.getCapViewBySingle4ACA(parentCapId);
-	}
-	if (parentCap) 
-	{
-		n_asit = parentCap.getAppSpecificTableGroupModel();
-	}
-   if (parentCap) 
-   	{
-		cap.setAppSpecificTableGroupModel(n_asit);
-	}
+    var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
+	if (parentResult.getSuccess()) {
+		var parentCapId = parentResult.getOutput();
+        //var wwmApp = AInfo["WWM Application Number"];
+        //var inspApp = AInfo["Inspection Number"];
+    
+        var parentCap =aa.cap.getCapViewBySingle4ACA(parentCapId);
+        if (parentCap) {
+            cap.setAppSpecificTableGroupModel(parentCap.getAppSpecificTableGroupModel());
+        }
 
-   //copyAppName(parentCapId,cap);
+        //copyAppName(parentCapId,cap);
+    
+        //copyLicensedProf(parentCapId, capId);
+    
+        copyAddress(parentCapId, capId);
+    
+        copyParcel(parentCapId, capId);
+    
+        copyContactIA(parentCapId, capId);
+    
+        //copyOwner(parentCapId, capId);
 
-   //copyLicensedProf(parentCapId, capId);
-
-   copyAddress(parentCapId, capId);
-
-   copyParcel(parentCapId, capId);
-
-   copyContactIA(parentCapId, capId);
-
-   //copyOwner(parentCapId, capId);
-
-  	var capId = aa.cap.getCapViewBySingle4ACA(capId);
-
-
-      var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
-      var model = getAppSpecific("Model", parentCapId);
-      var installDate = getAppSpecific("Installation Date", parentCapId);
-      var type = getAppSpecific("Type", parentCapId);
-
-      editAppSpecific4ACA("Manufacturer", Manufacturer, capId);
-      editAppSpecific4ACA("Model", model, capId);
-      editAppSpecific4ACA("Installation Date", installDate, capId);
-      editAppSpecific4ACA("Type", type, capId);
-
-	aa.env.setValue("CapModel",capId);
-	aa.env.setValue("CAP_MODEL_INITED", "TRUE");   
-
+        var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
+        var model = getAppSpecific("Model", parentCapId);
+        var installDate = getAppSpecific("Installation Date", parentCapId);
+        var type = getAppSpecific("Type", parentCapId);
+    
+        aa.env.setValue('CapModel', cap);
+    
+        editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
+        editAppSpecific4ACA("Model", model, cap);
+        editAppSpecific4ACA("Installation Date", installDate, cap);
+        editAppSpecific4ACA("Type", type, cap);
+    }
 }	
 catch (err) { aa.print("**ERROR : " + err); }
                
