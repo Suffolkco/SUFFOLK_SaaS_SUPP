@@ -94,11 +94,9 @@ loadAppSpecific4ACA(AInfo); 						// Add AppSpecific Info
 |
 /-----------------------------------------------------------------------------------------------------*/
 try {
-  var iaNumber = getApplication(AInfo["IA Record Number"]);
-    var parentResult = aa.cap.getCapID(iaNumber);
-    logDebug("parentResult = " + parentResult);
+    var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
 	if (parentResult.getSuccess()) {
-		var parentCapId = parentCapId.getOutput();
+		var parentCapId = parentResult.getOutput();
         //var wwmApp = AInfo["WWM Application Number"];
         //var inspApp = AInfo["Inspection Number"];
     
