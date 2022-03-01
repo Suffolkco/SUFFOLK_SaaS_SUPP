@@ -80,6 +80,7 @@ if (sampleResult == "CHECKED")
         var newRow = new Array();
         for (var row in LABRESULTS)
         {
+            newRow["Status"] = LABRESULTS[row]["Status"];
             newRow["Technology"] = LABRESULTS[row]["Technology"];
             newRow["Email"] = LABRESULTS[row]["Email"];
             newRow["Site Name"] = LABRESULTS[row]["Site Name"];
