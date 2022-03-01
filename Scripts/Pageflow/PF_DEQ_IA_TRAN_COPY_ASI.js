@@ -97,37 +97,22 @@ try {
     var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
 	if (parentResult.getSuccess()) {
 		var parentCapId = parentResult.getOutput();
-        //var wwmApp = AInfo["WWM Application Number"];
-        //var inspApp = AInfo["Inspection Number"];
-    
+
         var parentCap =aa.cap.getCapViewBySingle4ACA(parentCapId);
         if (parentCap) {
             cap.setAppSpecificTableGroupModel(parentCap.getAppSpecificTableGroupModel());
         }
-
-        //copyAppName(parentCapId,cap);
-    
-        //copyLicensedProf(parentCapId, capId);
-    
-        copyAddress(parentCapId, capId);
-    
-        copyParcel(parentCapId, capId);
-    
-        copyContactIA(parentCapId, capId);
-    
-        //copyOwner(parentCapId, capId);
-
         var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
         var model = getAppSpecific("Model", parentCapId);
         var installDate = getAppSpecific("Installation Date", parentCapId);
         var type = getAppSpecific("Type", parentCapId);
-    
-        aa.env.setValue('CapModel', cap);
+
+        populateAmendmentAPOContacts(parentCapId);
     
         editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
         editAppSpecific4ACA("Model", model, cap);
         editAppSpecific4ACA("Installation Date", installDate, cap);
-        editAppSpecific4ACA("Type", type, cap);
+        editAppSpecific4ACA("Type", type, cap);  
     }
 }	
 catch (err) { aa.print("**ERROR : " + err); }
@@ -156,6 +141,61 @@ else {
 /*------------------------------------------------------------------------------------------------------/
 | <===========External Functions (used by Action entries)
 /------------------------------------------------------------------------------------------------------*/
+function populateAmendmentAPOContacts(parent) {
+	var capModel = aa.env.getValue("CapModel");
+    copyAddressFromParent4ACA(capModel, parent);
+    copyParcelsFromParent4ACA(capModel, parent);
+    copyContactFromParent4ACA(capModel, parent);
+    aa.env.setValue('CapModel', capModel);
+}
+function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId) {
+
+	var capAddressResult = aa.address.getAddressWithAttributeByCapId(parentCapId).getOutput();
+	if (capAddressResult == null || capAddressResult.length == 0) {
+		return;
+	}
+
+	var adrr = getPrimaryOrAddressByType(capAddressResult);
+	if (adrr != null) {
+		currentRecordCapModel.setAddressModel(adrr);
+	}
+}
+function getPrimaryOrAddressByType(addresses) {
+	var ourTypeAddress = null;
+
+	for (a in addresses) {
+		if (addresses[a].getPrimaryFlag() == "Y") {
+			return addresses[a];
+		} else if (ourTypeAddress == null) {
+			ourTypeAddress = addresses[a];
+		}
+	} //for
+
+	return ourTypeAddress;
+}
+function copyParcelsFromParent4ACA(currentRecordCapModel, parentCapId) {
+
+	//assume primary parcel is at index=0
+	var primaryIndex = 0;
+
+	var capParcelResult = aa.parcel.getParcelandAttribute(parentCapId, null).getOutput();
+
+	if (capParcelResult == null || capParcelResult.size() == 0) {
+		return;
+	}
+
+	for (var i = 0; i < capParcelResult.size(); i++) {
+
+		if (capParcelResult.get(i).getPrimaryParcelFlag() == "Y") {
+			primaryIndex = i;
+			break;
+		}
+	} //for all parcels
+
+	var capParcel = aa.parcel.getCapParcelModel().getOutput();
+	capParcel.setParcelModel(capParcelResult.get(primaryIndex));
+	currentRecordCapModel.setParcelModel(capParcel);
+}
 function copyLicensedProf(sCapId, tCapId)
 {
 	//Function will copy all licensed professionals from source CapID to target CapID
@@ -410,48 +450,54 @@ function convertContactAddressModelArr(contactAddressScriptModelArr) {
   
     return contactAddressModelArr;
   }
-  
-  function copyContactIA(pFromCapId, pToCapId) {
-    //Copies all contacts from pFromCapId to pToCapId
-    //07SSP-00037/SP5017
-    //
-    if (pToCapId == null)
-     var vToCapId = capId;
-    else
-     var vToCapId = pToCapId;
-   
-   var capContactResult = aa.people.getCapContactByCapID(pFromCapId);
-    var copied = 0;
-    if (capContactResult.getSuccess()) {
-     var Contacts = capContactResult.getOutput();
-      for (yy in Contacts) {
-        var newContact = Contacts[yy].getCapContactModel();
-        if (Contacts[yy].getPeople().getContactType() == "Property Owner") {
-  
-      // Retrieve contact address list and set to related contact
-        var contactAddressrs = aa.address.getContactAddressListByCapContact(newContact);
-        if (contactAddressrs.getSuccess()) {
-        var contactAddressModelArr = convertContactAddressModelArr(contactAddressrs.getOutput());
-        newContact.getPeople().setContactAddressList(contactAddressModelArr);
-        }
-        newContact.setCapID(vToCapId);
-    
-  
-  
-  
-      // Create cap contact, contact address and contact template
-        aa.people.createCapContactWithAttribute(newContact);
-        copied++;
-        //logDebug("Copied contact from " + pFromCapId.getCustomID() + " to " + vToCapId.getCustomID());
-      }
-    }
-    } else {
-     logMessage("**ERROR: Failed to get contacts: " + capContactResult.getErrorMessage());
-     return false;
-    }
-    return copied;
-   }
+  function copyContactFromParent4ACA(currentRecordCapModel, parentCapId) {
+	contactsGroup = currentRecordCapModel.getContactsGroup();
+	if (contactsGroup.size() > 0) {
+		return;
+	}
+	var t = aa.people.getCapContactByCapID(parentCapId);
+	if (t.getSuccess()) {
+		capPeopleArr = t.getOutput();
+		for (cp in capPeopleArr) {
+            if (capPeopleArr[cp].getCapContactModel().getContactType() == "Property Owner") {
+			    contactAddFromUser4ACA(currentRecordCapModel, capPeopleArr[cp].getCapContactModel());
+            }
+		}
+	}
+}
+function contactAddFromUser4ACA(capModel, contactModel) {
+	var theContact = contactModel.getPeople();
+	var capContactModel = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
+	capContactModel.setContactType(theContact.getContactType());
+	capContactModel.setFirstName(theContact.getFirstName());
+	capContactModel.setMiddleName(theContact.getMiddleName());
+	capContactModel.setLastName(theContact.getLastName());
+	capContactModel.setFullName(theContact.getFullName());
+	capContactModel.setEmail(theContact.getEmail());
+	capContactModel.setPhone2(theContact.getPhone2());
+	capContactModel.setPhone1CountryCode(theContact.getPhone1CountryCode());
+	capContactModel.setPhone2CountryCode(theContact.getPhone2CountryCode());
+	capContactModel.setPhone3CountryCode(theContact.getPhone3CountryCode());
+	capContactModel.setCompactAddress(theContact.getCompactAddress());
+	capContactModel.sePreferredChannele(theContact.getPreferredChannel()); // Preferred Channel is used for 'Particiapnt Type' in ePermits. Yes, the function itself is misspelled, just use it like this.
+	capContactModel.setPeople(theContact);
+	var birthDate = theContact.getBirthDate();
+	if (birthDate != null && birthDate != "") {
+		capContactModel.setBirthDate(aa.util.parseDate(birthDate));
+	}
+	// clear ACA components so that they display in the correct component per the ACA pageflow.
+	//capContactModel.setComponentName(null);
+	var peopleAttributes = aa.people.getPeopleAttributeByPeople(theContact.getContactSeqNumber(), theContact.getContactType()).getOutput();
+	if (peopleAttributes) {
+		var newPeopleAttributes = aa.util.newArrayList();
+		for (var i in peopleAttributes) {
+			newPeopleAttributes.add(peopleAttributes[i].getPeopleAttributeModel())
+		}
+		capContactModel.getPeople().setAttributes(newPeopleAttributes)
+	}
+	capModel.getContactsGroup().add(capContactModel);
 
+}
   
 function getGuidesheetASIField(inspId, gName, gItem, asiGroup, asiSubGroup, asiLabel, capId) 
 {
