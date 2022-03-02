@@ -41,7 +41,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                                 newRow["TSS"] = labResultsTable[l]["TSS"];
                                 newRow["ALK"] = labResultsTable[l]["ALK"];
 
-                                newLabResultsTable.push(newRow);
+                                newLabResultsTable.push(newRow); 
                             }
                             //addASITable("LAB RESULTS", newLabResultsTable, capId);
                             editASITableRow(capId, "LAB RESULTS", "", newLabResultsTable)
