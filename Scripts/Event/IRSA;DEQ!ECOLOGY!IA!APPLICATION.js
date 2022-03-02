@@ -46,14 +46,14 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                     
                             //addASITable("LAB RESULTS", newLabResultsTable, capId);
                             editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["Lab ID"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["TN"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["NO3 Nitrate"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["NO2 Nitrate"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["TKN"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["NH4 Ammonia"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["BOD"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["TSS"]);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["ALK"]);
+                            editASITableRow(capId, "LAB RESULTS", "TN", newRow["TN"]);
+                            editASITableRow(capId, "LAB RESULTS", "NO3 Nitrate", newRow["NO3 Nitrate"]);
+                            editASITableRow(capId, "LAB RESULTS", "NO2 Nitrate", newRow["NO2 Nitrate"]);
+                            editASITableRow(capId, "LAB RESULTS", "TKN", newRow["TKN"]);
+                            editASITableRow(capId, "LAB RESULTS", "NH4 Ammonia", newRow["NH4 Ammonia"]);
+                            editASITableRow(capId, "LAB RESULTS", "BOD", newRow["BOD"]);
+                            editASITableRow(capId, "LAB RESULTS", "TSS", newRow["TSS"]);
+                            editASITableRow(capId, "LAB RESULTS", "ALK", newRow["ALK"]);
                             break;  
                         } 
                     }
