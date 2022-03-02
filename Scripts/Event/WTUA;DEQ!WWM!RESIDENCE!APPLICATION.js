@@ -141,8 +141,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							tSubMap = thisRow["SubMap"];
 							tBedroomCnt = thisRow["Bedroom Count"];
 							tComments = thisRow["Comments"];
-							tIAMan = thisRow["IA Manufacturer"];
-							tIAModel = thisRow["IA Mdoel"];
+							tIAMan = thisRow["I/A Manufacturer"];
+							tIAModel = thisRow["I/A Model"];
 							tSepticTank = thisRow["Septic Tank"];
 							tLeachType = thisRow["Leaching Type"];
 							tLeachDim = thisRow["Leaching Dimensions"];
@@ -200,6 +200,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 															{													
 																if (vGuideSheetItem.getGuideItemText() == "Plan Review & Contractor Information")
 																{
+																	debugObject(ASIModel);
 																	logDebug("ASI value: " + ASIModel.getAsiName());																	
 																	logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
 
