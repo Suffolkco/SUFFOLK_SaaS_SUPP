@@ -1,10 +1,10 @@
 if (inspType == "Lab Results" && inspResult == "Complete")
 {
-var doValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
+/*var doValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
 var phValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
 var wwTemp = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
 var airTemp = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
-
+*/
 var insp = aa.inspection.getInspection(capId, inspId).getOutput();
 var vInspectionActivity = insp.getInspection().getActivity();
 
@@ -19,7 +19,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                 if ("IA Lab Results".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
                 {
                     vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
-                    var z = 0;
+                    var z = 0; 
                     for (z in vGuideSheetItemsArray)
                     {
                         var vGuideSheetItem = vGuideSheetItemsArray[z];
