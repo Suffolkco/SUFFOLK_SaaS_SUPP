@@ -132,10 +132,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 
 						// Retrieve Custom List table of "System Details". For each line, add a checklist.					
 						sysDetailsASITable = loadASITable("SYSTEM DETAILS");
-						if (sysDetailsASITable)
-						{
-							logDebug("****** Retrieved Successfully ***." + sysDetailsASITable.length());
-						}
+						
 						for (rowIndex in sysDetailsASITable) 
 						{
 							logDebug("****** Custom List row index: " + rowIndex);
