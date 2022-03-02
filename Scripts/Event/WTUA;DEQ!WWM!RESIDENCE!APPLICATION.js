@@ -172,7 +172,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 								
 								logDebug("Current gsSeqNumber: " + gsSeqNumber);
 								logDebug("The newly added checklist sequence number is: " + gsSequence);
-
+								logDebug("vGuideSheet debug item object");
+								debugObject(vGuideSheet);
 								if (gsSeqNumber == gsSequence)
 								{
 									logDebug("Checklist matches!");
@@ -184,6 +185,9 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 										for (z in vGuideSheetItemsArray)
 										{
 											var vGuideSheetItem = vGuideSheetItemsArray[z];
+											logDebug("vGuideSheetItem debug object");
+											debugObject(vGuideSheetItem);
+
 											var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
 											if (ASISubGroups)
 											{
@@ -200,7 +204,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 															{													
 																if (vGuideSheetItem.getGuideItemText() == "Plan Review & Contractor Information")
 																{
-																	debugObject(ASIModel);
+																	//debugObject(ASIModel);
 																	logDebug("ASI value: " + ASIModel.getAsiName());																	
 																	logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
 
