@@ -43,8 +43,9 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
 
                                 newLabResultsTable.push(newRow); 
                             }
+                    
                             //addASITable("LAB RESULTS", newLabResultsTable, capId);
-                            editASITableRow(capId, "LAB RESULTS", "", newLabResultsTable)
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newLabResultsTable)
                             break;
                         }
                     }
