@@ -75,7 +75,7 @@ if (sampleResult == "CHECKED")
     if (pcapId)
     {
 
-        var parentTable = loadASITable("LAB RESULTS", pcapId);
+        /*var parentTable = loadASITable("LAB RESULTS", pcapId);
         var labResultTable = new Array();
         var newRow = new Array();
         for (var row in LABRESULTS)
@@ -90,10 +90,10 @@ if (sampleResult == "CHECKED")
             newRow["IA#"] = LABRESULTS[row]["IA#"];
             labResultTable.push(newRow);
             break;
-        }
+        }*/
 
         removeASITable("LAB RESULTS");
-        addASITable4ACAPageFlow(cap.getAppSpecificTableGroupModel(), "LAB RESULTS", labResultTable);
+        //addASITable4ACAPageFlow(cap.getAppSpecificTableGroupModel(), "LAB RESULTS", labResultTable);
     }
 
 }
