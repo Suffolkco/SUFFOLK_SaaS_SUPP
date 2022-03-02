@@ -221,7 +221,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																	// Revisit here														
 																	logDebug("ASI Comment: " + tComments);
 																	//	comment = // from CL comment
-																	ASIModel.setChecklistComment(tComments)
+																	vGuideSheetItem.setGuideItemComment(tComments);
 																	
 																	}
 																if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
