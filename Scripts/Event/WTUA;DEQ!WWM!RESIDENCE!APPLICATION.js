@@ -150,6 +150,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							tLeachModel = thisRow["Leaching Model"];
 							tEffPump = thisRow["Effluent Pump"];
 							tPumpModel = thisRow["Pump Model"];
+							
+							logDebug("Adding checklist: " + inspId);
 
 							var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
 												
@@ -198,18 +200,18 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 															{													
 																if (vGuideSheetItem.getGuideItemText() == "Plan Review & Contractor Information")
 																{
-																	logDebug("ASI value: " + ASIModel.getAsiName());
-																	logDebug("ASI value: " + ASIModel.getAttributeValue());
+																	logDebug("ASI value: " + ASIModel.getAsiName());																	
 																	logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
 
 																	if (ASIModel.getAsiName() == "SubMap")
 																	{																																
 																		ASIModel.setAttributeValue(tSubMap);
-																		
+																		logDebug("Set SubMap to: " + tSubMap);
 																	}
 																	if (ASIModel.getAsiName() == "Bedroom Count")
 																	{																	
 																		ASIModel.setAttributeValue(tBedroomCnt);
+																		logDebug("Set tBedroomCnt to: " + tBedroomCnt);
 																	}
 																	// Revisit here														
 																	if (ASIModel.getAsiName() == "Comment")
@@ -225,7 +227,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																		//iaProposed = ASIModel.getAttributeValue();
 																		var combined = tIAMan + " " + tIAModel;
 																		ASIModel.setAttributeValue(combined);
-
+																		logDebug("Set Proposed to: " + combined);
 																	}
 																}
 																if (vGuideSheetItem.getGuideItemText() == "Septic Tank")
@@ -234,7 +236,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																	{
 																		//septicProposed = ASIModel.getAttributeValue();
 																		ASIModel.setAttributeValue(tSepticTank);
-					
+																		logDebug("Set Septic Tank Proposed to: " + tSepticTank);
 																	}
 																}											                                                   
 																if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
@@ -244,6 +246,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																	//	iaLeachPoolType = ASIModel.getAttributeValue();
 																		var combined1 = tLeachType + " " + tLeachDim;
 																		ASIModel.setAttributeValue(combined1);
+																		logDebug("Set Leaching Pool Proposed to: " + combined1);
 																	}
 																}
 
@@ -254,6 +257,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																	{													
 																		var combined2 = tLeachType + " " + tLeachDim + " " + tLeachProd + " " + tLeachModel + " " + tEffPump + " " + tPumpModel;
 																		ASIModel.setAttributeValue(combined2);
+																		logDebug("Set Other Leaching Structures Proposed to: " + combined2);
 																	}
 																	
 																}
@@ -448,7 +452,7 @@ function scheduleInspection(iType,DaysAhead) // optional inspector ID.  This fun
 		logDebug("Successfully scheduled inspection : " + iType);
 
 		var insObj = schedRes.getOutput();
-		debugObject(insObj)		
+		//debugObject(insObj)		
 	}
 	else
 		logDebug( "**ERROR: adding scheduling inspection (" + iType + "): " + schedRes.getErrorMessage());
