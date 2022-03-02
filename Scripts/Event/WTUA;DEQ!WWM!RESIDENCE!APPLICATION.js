@@ -131,11 +131,15 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						inspId = insObj[i].getIdNumber();
 
 						// Retrieve Custom List table of "System Details". For each line, add a checklist.					
-						sysDetailsASITable = loadASITable("System Details");
+						sysDetailsASITable = loadASITable("SYSTEM DETAILS");
+						if (!sysDetailsASITable)
+						{
+							logDebug("****** Retrieved Successfully ***." + sysDetailsASITable.length());
+						}
 						for (rowIndex in sysDetailsASITable) 
 						{
 							logDebug("****** Custom List row index: " + rowIndex);
-							thisRow = tmpTable[rowIndex]; 
+							thisRow = sysDetailsASITable[rowIndex]; 
 							//recNum = thisRow["Record Number"].fieldValue;
 							tSubMap = thisRow["SubMap"].fieldValue;
 							tBedroomCnt = thisRow["Bedroom Count"].fieldValue;
