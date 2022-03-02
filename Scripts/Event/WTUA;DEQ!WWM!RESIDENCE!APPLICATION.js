@@ -132,7 +132,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 
 						// Retrieve Custom List table of "System Details". For each line, add a checklist.					
 						sysDetailsASITable = loadASITable("SYSTEM DETAILS");
-						if (!sysDetailsASITable)
+						if (sysDetailsASITable)
 						{
 							logDebug("****** Retrieved Successfully ***." + sysDetailsASITable.length());
 						}
@@ -141,18 +141,18 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							logDebug("****** Custom List row index: " + rowIndex);
 							thisRow = sysDetailsASITable[rowIndex]; 
 							//recNum = thisRow["Record Number"].fieldValue;
-							tSubMap = thisRow["SubMap"].fieldValue;
-							tBedroomCnt = thisRow["Bedroom Count"].fieldValue;
-							tComments = thisRow["Comments"].fieldValue;
-							tIAMan = thisRow["IA Manufacturer"].fieldValue;
-							tIAModel = thisRow["IA Mdoel"].fieldValue;
-							tSepticTank = thisRow["Septic Tank"].fieldValue;
-							tLeachType = thisRow["Leaching Type"].fieldValue;
-							tLeachDim = thisRow["Leaching Dimensions"].fieldValue;
-							tLeachProd = thisRow["Leaching Product/Material"].fieldValue;
-							tLeachModel = thisRow["Leaching Model"].fieldValue;
-							tEffPump = thisRow["Effluent Pump"].fieldValue;
-							tPumpModel = thisRow["Pump Model"].fieldValue;
+							tSubMap = thisRow["SubMap"];
+							tBedroomCnt = thisRow["Bedroom Count"];
+							tComments = thisRow["Comments"];
+							tIAMan = thisRow["IA Manufacturer"];
+							tIAModel = thisRow["IA Mdoel"];
+							tSepticTank = thisRow["Septic Tank"];
+							tLeachType = thisRow["Leaching Type"];
+							tLeachDim = thisRow["Leaching Dimensions"];
+							tLeachProd = thisRow["Leaching Product/Material"];
+							tLeachModel = thisRow["Leaching Model"];
+							tEffPump = thisRow["Effluent Pump"];
+							tPumpModel = thisRow["Pump Model"];
 
 							var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
 												
