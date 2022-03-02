@@ -1,9 +1,9 @@
 if (inspType == "Lab Results" && inspResult == "Complete")
 {
-var doValue = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
-var phValue = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
-var wwTemp = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
-var airTemp = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
+var doValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
+var phValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
+var wwTemp = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
+var airTemp = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
 
 var insp = aa.inspection.getInspection(capId, inspId).getOutput();
 var vInspectionActivity = insp.getInspection().getActivity();
