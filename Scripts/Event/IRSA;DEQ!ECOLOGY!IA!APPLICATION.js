@@ -41,12 +41,20 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                                 newRow["TSS"] = labResultsTable[l]["TSS"];
                                 newRow["ALK"] = labResultsTable[l]["ALK"];
 
-                                newLabResultsTable.push(newRow); 
+                                //newLabResultsTable.push(newRow); 
                             }
                     
                             //addASITable("LAB RESULTS", newLabResultsTable, capId);
-                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["Lab ID"])
-                            break; 
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["Lab ID"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["TN"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["NO3 Nitrate"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["NO2 Nitrate"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["TKN"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["NH4 Ammonia"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["BOD"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["TSS"]);
+                            editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["ALK"]);
+                            break;  
                         } 
                     }
                 }
