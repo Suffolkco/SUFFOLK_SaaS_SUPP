@@ -150,7 +150,6 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							tEffPump = thisRow["Effluent Pump"].fieldValue;
 							tPumpModel = thisRow["Pump Model"].fieldValue;
 
-
 							var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
 												
 							logDebug("Guidesheet Sequence: " + gsSequence);
