@@ -123,7 +123,6 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 		if (count == 1)
 		{
 			scheduleInspection("Pre-Inspection Review", 0);
-
 			var inspectionResult = aa.inspection.getInspections(capId);
             if (inspectionResult.getSuccess())
             {
