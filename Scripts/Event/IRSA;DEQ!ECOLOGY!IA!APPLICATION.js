@@ -39,10 +39,6 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                                 newRow["BOD"] = labResultsTable[l]["BOD"];
                                 newRow["TSS"] = labResultsTable[l]["TSS"];
                                 newRow["ALK"] = labResultsTable[l]["ALK"];
-                                newRow["DO"] = doValue;
-                                newRow["PH"] = phValue;
-                                newRow["WW Temp"] = wwTemp;
-                                newRow["Air Temp"] = airTemp;
 
                                 newLabResultsTable.push(newRow);
                             }
