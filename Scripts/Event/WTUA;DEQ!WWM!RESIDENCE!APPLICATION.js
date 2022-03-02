@@ -143,10 +143,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						logDebug("IsCompleted? " + inspModel.isCompleted());
 						logDebug("Get Scheduled Date: " + inspModel.getScheduledDate());
 						logDebug("Inspection Seq Number: " + inspModel.getInspSequenceNumber());
-						logDebug("ID Number: " + insObj[i].getIDNumber());
+						
+						logDebug("ID Number: " + insObj[i].getIdNumber());
 						logDebug("Inspection Status: " + inspModel.getInspectionStatus());
 						//InspectionId
-						inspId = insObj[i].getIDNumber();
+						inspId = insObj[i].getIdNumber();
 						var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
 											
 						logDebug("Guidesheet Sequence: " + gsSequence);
