@@ -215,12 +215,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																		logDebug("Set tBedroomCnt to: " + tBedroomCnt);
 																	}
 																	// Revisit here														
-																	if (ASIModel.getAsiName() == "Comment")
-																	{
+																	logDebug("ASI Comment: " + tComments);
 																	//	comment = // from CL comment
-																		//ASIModel.setAttributeValue
+																	ASIModel.setChecklistComment(tComments)
+																	
 																	}
-																}
 																if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
 																{
 																	if (ASIModel.getAsiName() == "Proposed")
