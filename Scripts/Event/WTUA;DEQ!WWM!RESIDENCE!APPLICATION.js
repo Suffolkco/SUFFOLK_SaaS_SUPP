@@ -147,7 +147,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						//InspectionId
 						inspId = inspModel.getIDNumber();
 						var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
-												
+											
 
 						logDebug("Guidesheet Sequence: " + gsSequence);
 						vInspectionActivity = inspModel.getActivity();
