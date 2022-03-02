@@ -191,11 +191,13 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												{
 													var ASIModel = ASIModels.get(m);
 													if (ASIModel)
-													{
-														logDebug("ASI value: " + ASIModel.getAttributeValue());
-														logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
-														if (vGuideSheetItem.getGuideItemText() == "Contractor Information")
+													{													
+														if (vGuideSheetItem.getGuideItemText() == "Plan Review & Contractor Information")
 														{
+															logDebug("ASI value: " + ASIModel.getAsiName());
+															logDebug("ASI value: " + ASIModel.getAttributeValue());
+															logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
+
 															if (ASIModel.getAsiName() == "SubMap")
 															{
 																//subMap = // From custom field list
@@ -248,15 +250,15 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 															{													
 																//iaLeachOtherType = ASIModel.getAttributeValue();													
 															}
+															if (ASIModel.getAsiName() == "Leaching Product")
+															{														
+																
+																//iaLeachProduct = ASIModel.getAttributeValue();
+																
+															}
 
 														}
-														if (ASIModel.getAsiName() == "Leaching Product")
-														{														
-															if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
-															{
-																//iaLeachProduct = ASIModel.getAttributeValue();
-															}
-														}
+													
 													}
 													
 												}
