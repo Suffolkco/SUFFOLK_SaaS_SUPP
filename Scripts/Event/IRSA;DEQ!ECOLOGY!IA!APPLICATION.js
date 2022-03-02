@@ -1,3 +1,5 @@
+if (inspType == "Lab Results" && inspResult == "Complete")
+{
 var doValue = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
 var phValue = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
 var wwTemp = getGuidesheetASIField(pInspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
@@ -50,3 +52,4 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                 }
             }
         }
+    }
