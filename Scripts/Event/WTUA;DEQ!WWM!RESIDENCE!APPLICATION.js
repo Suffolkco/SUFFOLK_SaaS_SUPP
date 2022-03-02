@@ -135,16 +135,20 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 
 					logDebug("****");
 					debugObject(inspModel);
-					if (inspModel.getInspectionType() == "Pre-Inspection Review")					
+					if (inspModel.getInspectionType() == "Pre-Inspection Review" &&
+					inspModel.getRequestComment() == "Scheduled via Script" )					
 					{
 						logDebug("IsScheduled? " + inspModel.isScheduled());
 						logDebug("IsCompleted? " + inspModel.isCompleted());
 						logDebug("Get Scheduled Date: " + inspModel.getScheduledDate());
-						logDebug("Inspection Seq Number: " + inspModel.getInpspSequenceNumber());
+						logDebug("Inspection Seq Number: " + inspModel.getInspSequenceNumber());
 						logDebug("ID Number: " + inspModel.getIDNumber());
 						logDebug("Inspection Status: " + inspModel.getInspectionStatus());
+						//InspectionId
+						inspId = inspModel.getIDNumber();
 						var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
-						
+											
+
 						logDebug("Guidesheet Sequence: " + gsSequence);
 						vInspectionActivity = inspModel.getActivity();
 
