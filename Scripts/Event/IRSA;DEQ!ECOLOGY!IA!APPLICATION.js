@@ -131,3 +131,16 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
     }
     return asiValue;
 }
+
+function getGuidesheetItemASIT(guideSheetModel, itemModel, tableName) {
+    var gso = new guideSheetObject(guideSheetModel, itemModel);
+    gso.loadInfoTables();
+    if (gso.validTables && gso.infoTables) {
+        for (tbl in gso.infoTables) {
+            if (tbl.toUpperCase().equals(tableName.toUpperCase()) && gso.infoTables[tbl].length > 0) {
+                return gso.infoTables[tbl];
+            }
+        }
+    }
+    return null;
+}
