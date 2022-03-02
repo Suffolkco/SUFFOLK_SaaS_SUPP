@@ -26,7 +26,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                         var vGuideSheetItem = vGuideSheetItemsArray[z];
                         if (vGuideSheetItem && "IA Lab Results" == vGuideSheetItem.getGuideItemText())
                         {
-                            var labResultsTable = getGuidesheetItemASIT(vGuideSheet, vGuideSheetItem, "LAB RESULTS");
+                            var labResultsTable = getGuidesheetItemASIT(vGuideSheet, vGuideSheetItem, "LAB RESULTS AND FIELD DATA");
                             var newLabResultsTable = new Array();
                             for (var l in labResultsTable)
                             {
