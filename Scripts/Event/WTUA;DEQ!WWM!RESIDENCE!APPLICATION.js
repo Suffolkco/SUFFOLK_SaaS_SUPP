@@ -158,7 +158,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							tPrivateWell = thisRow["Private Well"];							
 							tIaTreatmentUnit = thisRow["IA Treatment Unit"];
 							tSepticTankInsp = thisRow["Septic Tank Inspection"];
-							tDistrBox = thisRow["DB_PBon"];
+							tDistrBox = thisRow["DB_PB"];
 							tLeachingPool = thisRow["LP_LG"];
 							tOtherLeaching = thisRow["Other Leaching"];
 
