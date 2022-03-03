@@ -316,8 +316,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 													
 						}
 						logDebug("Updated Inspection Status from: " +  inspModel.getInspectionStatus() + " to Complete");
-						inspModel.setInspectionStatus("Complete");
-						logDebug("Created inspection. Break loop.");	
+						insObj[i].setInspectionStatus("Complete");
+						logDebug("Created and updated inspection. Break loop.");	
 					}
 				}	
 				
