@@ -84,7 +84,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 
     var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
-    var labResultTable = new Array();
+    var labResultsTable = new Array();
     var newRow = new Array();
     for (var l in parentTable)
     {
