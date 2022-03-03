@@ -88,19 +88,19 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     var newRow = new Array();
     for (var l in parentTable)
     {
-        newRow["Lab ID"] = labResultsTable[l]["Lab ID"];
-        newRow["TN"] = labResultsTable[l]["TN"];
-        newRow["NO3 Nitrate"] = labResultsTable[l]["NO3 Nitrate"];
-        newRow["NO2 Nitrate"] = labResultsTable[l]["NO2 Nitrate"];
-        newRow["TKN"] = labResultsTable[l]["TKN"];
-        newRow["NH4 Ammonia"] = labResultsTable[l]["NH4 Ammonia"];
-        newRow["BOD"] = labResultsTable[l]["BOD"];
-        newRow["TSS"] = labResultsTable[l]["TSS"];
-        newRow["ALK"] = labResultsTable[l]["ALK"];
-        newRow["DO"] = labResultsTable[l]["DO"];
-        newRow["PH"] = labResultsTable[l]["PH"];
-        newRow["WW Temp"] = labResultsTable[l]["WW Temp"];
-        newRow["Air Temp"] = labResultsTable[l]["Air Temp"];
+        newRow["Lab ID"] = parentTable[l]["Lab ID"];
+        newRow["TN"] = parentTable[l]["TN"];
+        newRow["NO3 Nitrate"] = parentTable[l]["NO3 Nitrate"];
+        newRow["NO2 Nitrate"] = parentTable[l]["NO2 Nitrate"];
+        newRow["TKN"] = parentTable[l]["TKN"];
+        newRow["NH4 Ammonia"] = parentTable[l]["NH4 Ammonia"];
+        newRow["BOD"] = parentTable[l]["BOD"];
+        newRow["TSS"] = parentTable[l]["TSS"];
+        newRow["ALK"] = parentTable[l]["ALK"];
+        newRow["DO"] = parentTable[l]["DO"];
+        newRow["PH"] = parentTable[l]["PH"];
+        newRow["WW Temp"] = parentTable[l]["WW Temp"];
+        newRow["Air Temp"] = parentTable[l]["Air Temp"];
         labResultTable.push(newRow);
         break;
     }
