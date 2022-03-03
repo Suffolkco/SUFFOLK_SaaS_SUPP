@@ -196,7 +196,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 										var z = 0;
 
 										// Checklist ID									
-										debugObject(vGuideSheet);
+										//debugObject(vGuideSheet);
 										logDebug("Update checklist ID:" + tSysLocation);
 										vGuideSheet.setIdentifier(tSysLocation);
 										aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
