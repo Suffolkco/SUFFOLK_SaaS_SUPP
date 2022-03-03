@@ -153,7 +153,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							tPumpModel = thisRow["Pump Model"];
 							
 							tExcavation = thisRow["Excavation"];
-							tPublicWater = thisRow["PublicWater"];
+							tPublicWater = thisRow["Public Water"];
 							tIaTreatmentUnit = thisRow["IA Treatment Unit"];
 							tSepticTankInsp = thisRow["Septic Tank Inspection"];
 
@@ -313,8 +313,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 									logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
 								}														
 							}
-							logDebug("Created inspection. Break loop.");							
+													
 						}
+						logDebug("Updated Inspection Status from: " +  inspModel.getInspectionStatus() + " to Complete");
+						inspModel.setInspectionStatus("Complete");
+						logDebug("Created inspection. Break loop.");	
 					}
 				}	
 				
