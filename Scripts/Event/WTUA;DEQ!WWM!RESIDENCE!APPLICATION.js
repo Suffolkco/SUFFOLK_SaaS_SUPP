@@ -96,7 +96,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			if (taskObj.getDisposition() == "Approved")
 			{
 				count++;
-				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + "," + taskObj.getProcessID() + "," +
+				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + ", " + taskObj.getProcessID() + ", " +
 				taskObj.getTaskDescription() + ", " + taskObj.getDisposition());				
 			}		
 
@@ -114,7 +114,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
                 {
                     var inspModel = insObj[i].getInspection();
 
-					//logDebug("****");
+					logDebug("**** Inspection Type; " + inspModel.getInspectionType() + ", Inspection Status: " + inspModel.getInspectionStatus());
 					//debugObject(inspModel);
 					if (inspModel.getInspectionType() == "Pre-Inspection Review" &&
 					inspModel.getRequestComment() == "Scheduled via Script" && 
@@ -344,7 +344,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							}
 													
 						}
-						logDebug("Updated Inspection Status from: " +  inspModel.getInspectionStatus() + " to Complete");
+						logDebug("Current inspection status: " +  inspModel.getInspectionStatus() + ". Inpsection ID: " + inspId);
 						//insObj[i].setInspectionStatus("Complete");
 						//aa.inspection.editInspection(insObj[i]);
 
