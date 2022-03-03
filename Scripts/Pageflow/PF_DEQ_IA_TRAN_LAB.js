@@ -71,9 +71,7 @@ loadAppSpecific4ACA(AInfo);
 var sampleResult = AInfo["Sample Results"];
 if (sampleResult == "CHECKED") 
 {
-    var pcapId = getParent();
-    if (pcapId)
-    {
+    
 
         /*var parentTable = loadASITable("LAB RESULTS", pcapId);
         var labResultTable = new Array();
@@ -94,7 +92,7 @@ if (sampleResult == "CHECKED")
 
         removeASITable("LAB RESULTS");
         //addASITable4ACAPageFlow(cap.getAppSpecificTableGroupModel(), "LAB RESULTS", labResultTable);
-    }
+    
 
 }
 

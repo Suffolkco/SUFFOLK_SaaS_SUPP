@@ -56,7 +56,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                             editASITableRow(capId, "LAB RESULTS", "ALK", newRow["ALK"]);
                             editASITableRow(capId, "LAB RESULTS", "DO", doValue);
                             editASITableRow(capId, "LAB RESULTS", "PH", phValue);
-                            editASITableRow(capId, "LAB RESULTS", "WW TEMP", wwTemp);
+                            editASITableRow(capId, "LAB RESULTS", "WW Temp", wwTemp);
                             editASITableRow(capId, "LAB RESULTS", "Air Temp", airTemp);
                             break;   
                         }  
