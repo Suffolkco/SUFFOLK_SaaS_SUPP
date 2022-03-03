@@ -85,9 +85,9 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
     var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
     var labResultsTable = new Array();
-    var newRow = new Array();
     for (var l in parentTable)
     {
+        var newRow = new Array();
         newRow["Lab ID"] = parentTable[l]["Lab ID"];
         newRow["TN"] = parentTable[l]["TN"];
         newRow["NO3 Nitrate"] = parentTable[l]["NO3 Nitrate"];
