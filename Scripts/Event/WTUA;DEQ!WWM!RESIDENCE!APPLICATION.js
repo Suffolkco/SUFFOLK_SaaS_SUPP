@@ -316,7 +316,12 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 													
 						}
 						logDebug("Updated Inspection Status from: " +  inspModel.getInspectionStatus() + " to Complete");
-						insObj[i].setInspectionStatus("Complete");
+						//insObj[i].setInspectionStatus("Complete");
+						//aa.inspection.editInspection(insObj[i]);
+
+						var sysDateYYYYMMDD = dateFormatted(sysDate.getMonth(),sysDate.getDayOfMonth(),sysDate.getYear(),"YYYY-MM-DD");
+						logDebug("Date: " + sysDateYYYYMMDD);
+						resultInspection(inspModel.getInspectionType(), "Complete", sysDateYYYYMMDD, "Test") 
 						logDebug("Created and updated inspection. Break loop.");	
 					}
 				}	
