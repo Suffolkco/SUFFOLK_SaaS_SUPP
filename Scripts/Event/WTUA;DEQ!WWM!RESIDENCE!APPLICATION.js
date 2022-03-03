@@ -117,7 +117,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 					//logDebug("****");
 					//debugObject(inspModel);
 					if (inspModel.getInspectionType() == "Pre-Inspection Review" &&
-					inspModel.getRequestComment() == "Scheduled via Script" )					
+					inspModel.getRequestComment() == "Scheduled via Script" && 
+					inspModel.getInspectionStatus() == "Scheduled")					
 					{
 						logDebug("IsScheduled? " + inspModel.getRequestComment());
 						logDebug("IsScheduled? " + inspModel.isScheduled());
@@ -151,6 +152,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							tEffPump = thisRow["Effluent Pump"];
 							tPumpModel = thisRow["Pump Model"];
 							
+							tExcavation = thisRow["Excavation"];
+							tPublicWater = thisRow["PublicWater"];
+							tIaTreatmentUnit = thisRow["IA Treatment Unit"];
+							tSepticTankInsp = thisRow["Septic Tank Inspection"];
+
 							logDebug("Adding checklist: " + inspId);
 
 							var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
@@ -172,8 +178,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 								
 								logDebug("Current gsSeqNumber: " + gsSeqNumber);
 								logDebug("The newly added checklist sequence number is: " + gsSequence);
-								logDebug("vGuideSheet debug item object");
-								debugObject(vGuideSheet);
+								//logDebug("vGuideSheet debug item object");
+								//debugObject(vGuideSheet);
 								if (gsSeqNumber == gsSequence)
 								{
 									logDebug("Checklist matches!");
@@ -185,8 +191,29 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 										for (z in vGuideSheetItemsArray)
 										{
 											var vGuideSheetItem = vGuideSheetItemsArray[z];
-											logDebug("vGuideSheetItem debug object");
-											debugObject(vGuideSheetItem);
+											//logDebug("vGuideSheetItem debug object");
+											//debugObject(vGuideSheetItem);
+
+											if (vGuideSheetItem.getGuideItemText() == "Excavation Inspection")
+											{
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tExcavation);
+												vGuideSheetItem.setGuideItemStatus(tExcavation);
+											}
+											else if (vGuideSheetItem.getGuideItemText() == "Public Water")
+											{										
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tPublicWater);
+												vGuideSheetItem.setGuideItemStatus(tPublicWater);
+											}
+											else if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+											{												
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tIaTreatmentUnit);
+												vGuideSheetItem.setGuideItemStatus(tIaTreatmentUnit);
+											}
+											else if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tSepticTankInsp);
+												vGuideSheetItem.setGuideItemStatus(tSepticTankInsp);										
+											}	
 
 											var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
 											if (ASISubGroups)
