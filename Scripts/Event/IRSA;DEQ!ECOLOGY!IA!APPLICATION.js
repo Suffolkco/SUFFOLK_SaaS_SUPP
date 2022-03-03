@@ -1,11 +1,11 @@
 if (inspType == "Lab Results" && inspResult == "Complete")
 {
 logDebug("capId = " + capId);
-/*var doValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
-var phValue = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
-var wwTemp = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
-var airTemp = getGuidesheetASIField(inspId, "Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
-*/
+var doValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
+var phValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
+var wwTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
+var airTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
+
 var insp = aa.inspection.getInspection(capId, inspId).getOutput();
 var vInspectionActivity = insp.getInspection().getActivity();
 
@@ -54,6 +54,10 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                             editASITableRow(capId, "LAB RESULTS", "BOD", newRow["BOD"]);
                             editASITableRow(capId, "LAB RESULTS", "TSS", newRow["TSS"]);
                             editASITableRow(capId, "LAB RESULTS", "ALK", newRow["ALK"]);
+                            editASITableRow(capId, "LAB RESULTS", "DO", doValue);
+                            editASITableRow(capId, "LAB RESULTS", "PH", phValue);
+                            editASITableRow(capId, "LAB RESULTS", "WW TEMP", wwTemp);
+                            editASITableRow(capId, "LAB RESULTS", "Air Temp", airTemp);
                             break;   
                         } 
                     }
