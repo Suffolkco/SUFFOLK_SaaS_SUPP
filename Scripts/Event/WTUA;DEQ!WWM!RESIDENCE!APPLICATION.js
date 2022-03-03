@@ -193,7 +193,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 											var vGuideSheetItem = vGuideSheetItemsArray[z];
 											//logDebug("vGuideSheetItem debug object");
 											//debugObject(vGuideSheetItem);
-
+											logDebug("GuideItemTest:" + vGuideSheetItem.getGuideItemText());
 											if (vGuideSheetItem.getGuideItemText() == "Excavation Inspection")
 											{
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tExcavation);
@@ -209,7 +209,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tIaTreatmentUnit);
 												vGuideSheetItem.setGuideItemStatus(tIaTreatmentUnit);
 											}
-											else if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+											else if (vGuideSheetItem.getGuideItemText() == "Septic Tank")
 											{											
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tSepticTankInsp);
 												vGuideSheetItem.setGuideItemStatus(tSepticTankInsp);										
