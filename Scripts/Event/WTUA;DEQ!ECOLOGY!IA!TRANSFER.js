@@ -101,11 +101,11 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["PH"] = parentTable[l]["PH"];
         newRow["WW Temp"] = parentTable[l]["WW Temp"];
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
-        labResultTable.push(newRow);
+        labResultsTable.push(newRow);
         break;
     }
 
-    addASITable("LAB RESULTS", labResultTable, parentCapId);
+    addASITable("LAB RESULTS", labResultsTable, parentCapId);
 
 }
 
