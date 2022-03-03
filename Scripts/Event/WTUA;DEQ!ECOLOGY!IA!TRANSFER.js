@@ -82,7 +82,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 
 
-
+    var currentWfStatus = wfStatus
+    var collectionDate = getAppSpecific("Sample Collection Date", capId);
     var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
     var labResultsTable = new Array();
     for (var l in parentTable)
@@ -101,9 +102,14 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["PH"] = parentTable[l]["PH"];
         newRow["WW Temp"] = parentTable[l]["WW Temp"]; 
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
+        newRow[currentWfStatus] = parentTable[l]["Status"]
+        newRow[collectionDate] = parentTable[l]["Sample Date"]
+
         labResultsTable.push(newRow);
         break;
     }
+    
+
 
     addASITable("LAB RESULTS", labResultsTable, parentCapId);
 
