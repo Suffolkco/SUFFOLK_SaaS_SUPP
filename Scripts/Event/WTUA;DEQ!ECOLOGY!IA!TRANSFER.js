@@ -80,7 +80,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
 
-    copyASITables(capId, parentCapId);
+    copyASITables(capId, parentCapId); 
     logDebug("Table Successfully Copied")
 
 }
