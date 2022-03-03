@@ -140,6 +140,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
     if (sampleCollectionDate != null)
     {
+        sampleCollectionDate = new Date(sampleCollectionDate);
         var newSampleDate = (sampleCollectionDate.getMonth() + 1 + "/" + (sampleCollectionDate.getDate()) + "/" + (sampleCollectionDate.getFullYear() + 3)); 
         editAppSpecific("Next Sample Date", newSampleDate, parentCapId);
     }
