@@ -193,14 +193,19 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 									{
 										var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
 										var z = 0;
+
+										// Checklist ID									
+										debugObject(vGuideSheet);
+										logDebug("Update checklist ID:" + tSysLocation);
+										vGuideSheet.setIdentifier(tSysLocation);
+
 										for (z in vGuideSheetItemsArray)
 										{
 											var vGuideSheetItem = vGuideSheetItemsArray[z];
 											//logDebug("vGuideSheetItem debug object");
 											//debugObject(vGuideSheetItem);
-											logDebug("GuideItemTest:" + vGuideSheetItem.getGuideItemText());
-											// Checklist ID
-											vGuideSheetItem.setIdentifier(tSysLocation);
+											//logDebug("GuideItemTest:" + vGuideSheetItem.getGuideItemText());
+								
 
 											if (vGuideSheetItem.getGuideItemText() == "Excavation Inspection")
 											{
