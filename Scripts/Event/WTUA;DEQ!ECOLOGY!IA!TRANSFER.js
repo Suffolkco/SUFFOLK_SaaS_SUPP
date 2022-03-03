@@ -99,7 +99,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["ALK"] = parentTable[l]["ALK"];
         newRow["DO"] = parentTable[l]["DO"];
         newRow["PH"] = parentTable[l]["PH"];
-        newRow["WW Temp"] = parentTable[l]["WW Temp"];
+        newRow["WW Temp"] = parentTable[l]["WW Temp"]; 
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
         labResultsTable.push(newRow);
         break;
