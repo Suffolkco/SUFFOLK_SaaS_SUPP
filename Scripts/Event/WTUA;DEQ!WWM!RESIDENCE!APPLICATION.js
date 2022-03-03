@@ -234,12 +234,12 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tSepticTankInsp);
 												vGuideSheetItem.setGuideItemStatus(tSepticTankInsp);										
 											}	
-											else if (vGuideSheetItem.getGuideItemText() == "Distribution Box/Pumping Basin")
+											else if (vGuideSheetItem.getGuideItemText() == "Distribution Box/Pump Basin")
 											{											
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tDistrBox);
 												vGuideSheetItem.setGuideItemStatus(tDistrBox);										
 											}	
-											else if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Gallery(s)")
+											else if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
 											{											
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tLeachingPool);
 												vGuideSheetItem.setGuideItemStatus(tLeachingPool);										
