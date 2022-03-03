@@ -139,6 +139,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							logDebug("****** Custom List row index: " + rowIndex);
 							thisRow = sysDetailsASITable[rowIndex]; 
 							//recNum = thisRow["Record Number"].fieldValue;
+							tSysLocation = thisRow["System Location"];
 							tSubMap = thisRow["SubMap"];
 							tBedroomCnt = thisRow["Bedroom Count"];
 							tComments = thisRow["Comments"];
@@ -154,8 +155,12 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							
 							tExcavation = thisRow["Excavation"];
 							tPublicWater = thisRow["Public Water"];
+							tPrivateWell = thisRow["Private Well"];							
 							tIaTreatmentUnit = thisRow["IA Treatment Unit"];
 							tSepticTankInsp = thisRow["Septic Tank Inspection"];
+							tDistrBox = thisRow["DB_PBon"];
+							tLeachingPool = thisRow["LP_LG"];
+							tOtherLeaching = thisRow["Other Leaching"];
 
 							logDebug("Adding checklist: " + inspId);
 
@@ -194,6 +199,9 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 											//logDebug("vGuideSheetItem debug object");
 											//debugObject(vGuideSheetItem);
 											logDebug("GuideItemTest:" + vGuideSheetItem.getGuideItemText());
+											// Checklist ID
+											vGuideSheetItem.setIdentifier(tSysLocation);
+
 											if (vGuideSheetItem.getGuideItemText() == "Excavation Inspection")
 											{
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tExcavation);
@@ -204,6 +212,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tPublicWater);
 												vGuideSheetItem.setGuideItemStatus(tPublicWater);
 											}
+											else if (vGuideSheetItem.getGuideItemText() == "Private Well")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tPrivateWell);
+												vGuideSheetItem.setGuideItemStatus(tPrivateWell);										
+											}	
 											else if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
 											{												
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tIaTreatmentUnit);
@@ -214,6 +227,22 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tSepticTankInsp);
 												vGuideSheetItem.setGuideItemStatus(tSepticTankInsp);										
 											}	
+											else if (vGuideSheetItem.getGuideItemText() == "Distribution Box/Pumping Basin")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tDistrBox);
+												vGuideSheetItem.setGuideItemStatus(tDistrBox);										
+											}	
+											else if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Gallery(s)")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tLeachingPool);
+												vGuideSheetItem.setGuideItemStatus(tLeachingPool);										
+											}	
+											else if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tOtherLeaching);
+												vGuideSheetItem.setGuideItemStatus(tOtherLeaching);										
+											}	
+																				
 
 											var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
 											if (ASISubGroups)
