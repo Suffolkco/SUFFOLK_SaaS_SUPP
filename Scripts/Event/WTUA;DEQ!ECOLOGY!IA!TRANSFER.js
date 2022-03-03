@@ -16,7 +16,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
             myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
             logDebug("apsArray = " + apsArray);
             var relCap = myCap.getCapID();
-            var relCapID = relCap.getCustomID(); 
+            var relCapID = relCap.getCustomID();
         }
     }
 
@@ -80,8 +80,32 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
 
-    copyASITables(capId, parentCapId); 
-    logDebug("Table Successfully Copied")
+
+
+
+    var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
+    var labResultTable = new Array();
+    var newRow = new Array();
+    for (var l in parentTable)
+    {
+        newRow["Lab ID"] = labResultsTable[l]["Lab ID"];
+        newRow["TN"] = labResultsTable[l]["TN"];
+        newRow["NO3 Nitrate"] = labResultsTable[l]["NO3 Nitrate"];
+        newRow["NO2 Nitrate"] = labResultsTable[l]["NO2 Nitrate"];
+        newRow["TKN"] = labResultsTable[l]["TKN"];
+        newRow["NH4 Ammonia"] = labResultsTable[l]["NH4 Ammonia"];
+        newRow["BOD"] = labResultsTable[l]["BOD"];
+        newRow["TSS"] = labResultsTable[l]["TSS"];
+        newRow["ALK"] = labResultsTable[l]["ALK"];
+        newRow["DO"] = labResultsTable[l]["DO"];
+        newRow["PH"] = labResultsTable[l]["PH"];
+        newRow["WW Temp"] = labResultsTable[l]["WW Temp"];
+        newRow["Air Temp"] = labResultsTable[l]["Air Temp"];
+        labResultTable.push(newRow);
+        break;
+    }
+
+    addASITable("LAB RESULTS", labResultTable, parentCapId);
 
 }
 
@@ -198,22 +222,22 @@ function removeAllIASPLicensedProf(pCapId)
                 logDebug("iaServProvEmail = " + iaServProvEmail)
                 var remCapResult = aa.licenseProfessional.removeLicensedProfessional(thisLP);
                 logDebug("Removed " + thisLP.getLicenseNbr());
-            }          
+            }
         }
     }
     else 
     {
         logDebug("**ERROR: getting lic prof: " + capLicenseResult.getErrorMessage());
         return false;
-    } 
-        if (!matches(iaServProvEmail, "", null, " ", undefined))
-        {
-            return iaServProvEmail;
-        }
-        else 
-        {
-            logDebug("no IA Service Provider email was returned");
-        }    
+    }
+    if (!matches(iaServProvEmail, "", null, " ", undefined))
+    {
+        return iaServProvEmail;
+    }
+    else 
+    {
+        logDebug("no IA Service Provider email was returned");
+    }
 }
 
 function exploreObject(objExplore)
@@ -238,71 +262,78 @@ function exploreObject(objExplore)
     }
 
 }
-function copyASITables(pFromCapId, pToCapId) {
-	// Function dependencies on addASITable()
-	// par3 is optional 0 based string array of table to ignore
-	var itemCap = pFromCapId;
+function copyASITables(pFromCapId, pToCapId)
+{
+    // Function dependencies on addASITable()
+    // par3 is optional 0 based string array of table to ignore
+    var itemCap = pFromCapId;
 
-	var gm = aa.appSpecificTableScript.getAppSpecificTableGroupModel(itemCap).getOutput();
-	var ta = gm.getTablesArray()
-		var tai = ta.iterator();
-	var tableArr = new Array();
-	var ignoreArr = new Array();
-	var limitCopy = false;
-	if (arguments.length > 2) {
-		ignoreArr = arguments[2];
-		limitCopy = true;
-	}
-	while (tai.hasNext()) {
-		var tsm = tai.next();
+    var gm = aa.appSpecificTableScript.getAppSpecificTableGroupModel(itemCap).getOutput();
+    var ta = gm.getTablesArray()
+    var tai = ta.iterator();
+    var tableArr = new Array();
+    var ignoreArr = new Array();
+    var limitCopy = false;
+    if (arguments.length > 2)
+    {
+        ignoreArr = arguments[2];
+        limitCopy = true;
+    }
+    while (tai.hasNext())
+    {
+        var tsm = tai.next();
 
-		var tempObject = new Array();
-		var tempArray = new Array();
-		var tn = tsm.getTableName() + "";
-		var numrows = 0;
+        var tempObject = new Array();
+        var tempArray = new Array();
+        var tn = tsm.getTableName() + "";
+        var numrows = 0;
 
-		//Check list
-		if (limitCopy) {
-			var ignore = false;
-			for (var i = 0; i < ignoreArr.length; i++)
-				if (ignoreArr[i] == tn) {
-					ignore = true;
-					break;
-				}
-			if (ignore)
-				continue;
-		}
-		if (!tsm.rowIndex.isEmpty()) {
-			var tsmfldi = tsm.getTableField().iterator();
-			var tsmcoli = tsm.getColumns().iterator();
-			var readOnlyi = tsm.getAppSpecificTableModel().getReadonlyField().iterator(); // get Readonly filed
-			var numrows = 1;
-			while (tsmfldi.hasNext()) // cycle through fields
-			{
-				if (!tsmcoli.hasNext()) // cycle through columns
-				{
-					var tsmcoli = tsm.getColumns().iterator();
-					tempArray.push(tempObject); // end of record
-					var tempObject = new Array(); // clear the temp obj
-					numrows++;
-				}
-				var tcol = tsmcoli.next();
-				var tval = tsmfldi.next();
+        //Check list
+        if (limitCopy)
+        {
+            var ignore = false;
+            for (var i = 0; i < ignoreArr.length; i++)
+                if (ignoreArr[i] == tn)
+                {
+                    ignore = true;
+                    break;
+                }
+            if (ignore)
+                continue;
+        }
+        if (!tsm.rowIndex.isEmpty())
+        {
+            var tsmfldi = tsm.getTableField().iterator();
+            var tsmcoli = tsm.getColumns().iterator();
+            var readOnlyi = tsm.getAppSpecificTableModel().getReadonlyField().iterator(); // get Readonly filed
+            var numrows = 1;
+            while (tsmfldi.hasNext()) // cycle through fields
+            {
+                if (!tsmcoli.hasNext()) // cycle through columns
+                {
+                    var tsmcoli = tsm.getColumns().iterator();
+                    tempArray.push(tempObject); // end of record
+                    var tempObject = new Array(); // clear the temp obj
+                    numrows++;
+                }
+                var tcol = tsmcoli.next();
+                var tval = tsmfldi.next();
 
-				var readOnly = 'N';
-				if (readOnlyi.hasNext()) {
-					readOnly = readOnlyi.next();
-				}
+                var readOnly = 'N';
+                if (readOnlyi.hasNext())
+                {
+                    readOnly = readOnlyi.next();
+                }
 
-				var fieldInfo = new asiTableValObj(tcol.getColumnName(), tval, readOnly);
-				tempObject[tcol.getColumnName()] = fieldInfo;
-				//tempObject[tcol.getColumnName()] = tval;
-			}
+                var fieldInfo = new asiTableValObj(tcol.getColumnName(), tval, readOnly);
+                tempObject[tcol.getColumnName()] = fieldInfo;
+                //tempObject[tcol.getColumnName()] = tval;
+            }
 
-			tempArray.push(tempObject); // end of record
-		}
+            tempArray.push(tempObject); // end of record
+        }
 
-		addASITable(tn, tempArray, pToCapId);
-		logDebug("ASI Table Array : " + tn + " (" + numrows + " Rows)");
-	}
+        addASITable(tn, tempArray, pToCapId);
+        logDebug("ASI Table Array : " + tn + " (" + numrows + " Rows)");
+    }
 } 
