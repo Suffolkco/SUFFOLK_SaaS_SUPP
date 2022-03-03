@@ -342,8 +342,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 									logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
 								}														
 							}
-													
-						}
+											
+						
 						logDebug("Current inspection status: " +  inspModel.getInspectionStatus() + ". Inpsection ID: " + inspId);
 						//insObj[i].setInspectionStatus("Complete");
 						//aa.inspection.editInspection(insObj[i]);
@@ -354,13 +354,16 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						logDebug("Created and updated inspection. Break loop.");
 						break;	
 					}
-				}	
+					
+				}
 				
-			}
-			else
-			{
-				logDebug("This is not the very first Plans Coordination and Approved task. Skip creating new inspection.")
-			}
+			}	
+		}		
+		else		
+		{
+			logDebug("This is not the very first Plans Coordination and Approved task. Skip creating new inspection.")
+		
+		}
 	
 
 	}
