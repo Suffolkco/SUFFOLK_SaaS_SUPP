@@ -27,41 +27,47 @@ var cancel = false;
 /------------------------------------------------------------------------------------------------------*/
 var startDate = new Date();
 var startTime = startDate.getTime();
-var message =    "";       // Message String
+var message = "";       // Message String
 var debug = ""; // Debug String
 var br = "<BR>"; // Break Tag
 
 var useSA = false;
 var SA = null;
 var SAScript = null;
-var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS","SUPER_AGENCY_FOR_EMSE"); 
-if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I") { 
-   useSA = true;      
-   SA = bzr.getOutput().getDescription();
-   bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS","SUPER_AGENCY_INCLUDE_SCRIPT"); 
-   if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
-   }
-if (SA) {
-   eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS",SA));
-   eval(getScriptText(SAScript,SA));
-   }
-else {
-   eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
-  }
-               
+var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
+{
+  useSA = true;
+  SA = bzr.getOutput().getDescription();
+  bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
+  if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
+}
+if (SA)
+{
+  eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
+  eval(getScriptText(SAScript, SA));
+}
+else
+{
+  eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+}
+
 eval(getScriptText("INCLUDES_CUSTOM"));
 
-function getScriptText(vScriptName){
-   var servProvCode = aa.getServiceProviderCode();
-   if (arguments.length > 1) servProvCode = arguments[1]; // use different serv prov code
-   vScriptName = vScriptName.toUpperCase();          
-   var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-   try {
-	  var emseScript = emseBiz.getScriptByPK(servProvCode,vScriptName,"ADMIN");
-	  return emseScript.getScriptText() + "";      
-	} catch(err) {
-		return "";
-   }
+function getScriptText(vScriptName)
+{
+  var servProvCode = aa.getServiceProviderCode();
+  if (arguments.length > 1) servProvCode = arguments[1]; // use different serv prov code
+  vScriptName = vScriptName.toUpperCase();
+  var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+  try
+  {
+    var emseScript = emseBiz.getScriptByPK(servProvCode, vScriptName, "ADMIN");
+    return emseScript.getScriptText() + "";
+  } catch (err)
+  {
+    return "";
+  }
 }
 
 var cap = aa.env.getValue("CapModel");
@@ -93,155 +99,177 @@ loadAppSpecific4ACA(AInfo); 						// Add AppSpecific Info
 | <===========Main=Loop================>
 |
 /-----------------------------------------------------------------------------------------------------*/
-try {
-    var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
-	if (parentResult.getSuccess()) {
-		var parentCapId = parentResult.getOutput();
+try
+{
+  var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
+  if (parentResult.getSuccess())
+  {
+    var parentCapId = parentResult.getOutput();
 
-        var parentCap =aa.cap.getCapViewBySingle4ACA(parentCapId);
-        if (parentCap) {
-            cap.setAppSpecificTableGroupModel(parentCap.getAppSpecificTableGroupModel());
-        }
-        var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
-        var model = getAppSpecific("Model", parentCapId);
-        var installDate = getAppSpecific("Installation Date", parentCapId);
-        var type = getAppSpecific("Type", parentCapId);
 
-        populateAmendmentAPOContacts(parentCapId);
-    
-        editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
-        editAppSpecific4ACA("Model", model, cap);
-        editAppSpecific4ACA("Installation Date", installDate, cap);
-        editAppSpecific4ACA("Type", type, cap);  
-    }
-}	
+    var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
+    var model = getAppSpecific("Model", parentCapId);
+    var installDate = getAppSpecific("Installation Date", parentCapId);
+    var type = getAppSpecific("Type", parentCapId);
+
+    populateAmendmentAPOContacts(parentCapId);
+
+    editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
+    editAppSpecific4ACA("Model", model, cap);
+    editAppSpecific4ACA("Installation Date", installDate, cap);
+    editAppSpecific4ACA("Type", type, cap);
+  }
+}
 catch (err) { aa.print("**ERROR : " + err); }
-               
+
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
 
-if (debug.indexOf("**ERROR") > 0) {
-    aa.env.setValue("ErrorCode", "1");
-    aa.env.setValue("ErrorMessage", debug);
+if (debug.indexOf("**ERROR") > 0)
+{
+  aa.env.setValue("ErrorCode", "1");
+  aa.env.setValue("ErrorMessage", debug);
 }
-else {
-    if (cancel) {
-        aa.env.setValue("ErrorCode", "-2");
-        if (showMessage) aa.env.setValue("ErrorMessage", message);
-        if (showDebug) aa.env.setValue("ErrorMessage", debug);
-    }
-    else {
-        aa.env.setValue("ErrorCode", "0");
-        if (showMessage) aa.env.setValue("ErrorMessage", message);
-        if (showDebug) aa.env.setValue("ErrorMessage", debug);
-    }
+else
+{
+  if (cancel)
+  {
+    aa.env.setValue("ErrorCode", "-2");
+    if (showMessage) aa.env.setValue("ErrorMessage", message);
+    if (showDebug) aa.env.setValue("ErrorMessage", debug);
+  }
+  else
+  {
+    aa.env.setValue("ErrorCode", "0");
+    if (showMessage) aa.env.setValue("ErrorMessage", message);
+    if (showDebug) aa.env.setValue("ErrorMessage", debug);
+  }
 }
 
 /*------------------------------------------------------------------------------------------------------/
 | <===========External Functions (used by Action entries)
 /------------------------------------------------------------------------------------------------------*/
-function populateAmendmentAPOContacts(parent) {
-	var capModel = aa.env.getValue("CapModel");
-    copyAddressFromParent4ACA(capModel, parent);
-    copyParcelsFromParent4ACA(capModel, parent);
-    copyContactFromParent4ACA(capModel, parent);
-    aa.env.setValue('CapModel', capModel);
+function populateAmendmentAPOContacts(parent)
+{
+  var capModel = aa.env.getValue("CapModel");
+  copyAddressFromParent4ACA(capModel, parent);
+  copyParcelsFromParent4ACA(capModel, parent);
+  copyContactFromParent4ACA(capModel, parent);
+  aa.env.setValue('CapModel', capModel);
 }
-function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId) {
+function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
+{
 
-	var capAddressResult = aa.address.getAddressWithAttributeByCapId(parentCapId).getOutput();
-	if (capAddressResult == null || capAddressResult.length == 0) {
-		return;
-	}
+  var capAddressResult = aa.address.getAddressWithAttributeByCapId(parentCapId).getOutput();
+  if (capAddressResult == null || capAddressResult.length == 0)
+  {
+    return;
+  }
 
-	var adrr = getPrimaryOrAddressByType(capAddressResult);
-	if (adrr != null) {
-		currentRecordCapModel.setAddressModel(adrr);
-	}
+  var adrr = getPrimaryOrAddressByType(capAddressResult);
+  if (adrr != null)
+  {
+    currentRecordCapModel.setAddressModel(adrr);
+  }
 }
-function getPrimaryOrAddressByType(addresses) {
-	var ourTypeAddress = null;
+function getPrimaryOrAddressByType(addresses)
+{
+  var ourTypeAddress = null;
 
-	for (a in addresses) {
-		if (addresses[a].getPrimaryFlag() == "Y") {
-			return addresses[a];
-		} else if (ourTypeAddress == null) {
-			ourTypeAddress = addresses[a];
-		}
-	} //for
+  for (a in addresses)
+  {
+    if (addresses[a].getPrimaryFlag() == "Y")
+    {
+      return addresses[a];
+    } else if (ourTypeAddress == null)
+    {
+      ourTypeAddress = addresses[a];
+    }
+  } //for
 
-	return ourTypeAddress;
+  return ourTypeAddress;
 }
-function copyParcelsFromParent4ACA(currentRecordCapModel, parentCapId) {
+function copyParcelsFromParent4ACA(currentRecordCapModel, parentCapId)
+{
 
-	//assume primary parcel is at index=0
-	var primaryIndex = 0;
+  //assume primary parcel is at index=0
+  var primaryIndex = 0;
 
-	var capParcelResult = aa.parcel.getParcelandAttribute(parentCapId, null).getOutput();
+  var capParcelResult = aa.parcel.getParcelandAttribute(parentCapId, null).getOutput();
 
-	if (capParcelResult == null || capParcelResult.size() == 0) {
-		return;
-	}
+  if (capParcelResult == null || capParcelResult.size() == 0)
+  {
+    return;
+  }
 
-	for (var i = 0; i < capParcelResult.size(); i++) {
+  for (var i = 0; i < capParcelResult.size(); i++)
+  {
 
-		if (capParcelResult.get(i).getPrimaryParcelFlag() == "Y") {
-			primaryIndex = i;
-			break;
-		}
-	} //for all parcels
+    if (capParcelResult.get(i).getPrimaryParcelFlag() == "Y")
+    {
+      primaryIndex = i;
+      break;
+    }
+  } //for all parcels
 
-	var capParcel = aa.parcel.getCapParcelModel().getOutput();
-	capParcel.setParcelModel(capParcelResult.get(primaryIndex));
-	currentRecordCapModel.setParcelModel(capParcel);
+  var capParcel = aa.parcel.getCapParcelModel().getOutput();
+  capParcel.setParcelModel(capParcelResult.get(primaryIndex));
+  currentRecordCapModel.setParcelModel(capParcel);
 }
 function copyLicensedProf(sCapId, tCapId)
 {
-	//Function will copy all licensed professionals from source CapID to target CapID
+  //Function will copy all licensed professionals from source CapID to target CapID
 
-	var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(sCapId).getOutput();
-	if (licProf != null)
-		for(x in licProf)
-		{
-			licProf[x].setCapID(tCapId);
-			aa.licenseProfessional.createLicensedProfessional(licProf[x]);
-			logDebug("Copied " + licProf[x].getLicenseNbr());
-		}
-	else
-		logDebug("No licensed professional on source");
+  var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(sCapId).getOutput();
+  if (licProf != null)
+    for (x in licProf)
+    {
+      licProf[x].setCapID(tCapId);
+      aa.licenseProfessional.createLicensedProfessional(licProf[x]);
+      logDebug("Copied " + licProf[x].getLicenseNbr());
+    }
+  else
+    logDebug("No licensed professional on source");
 }
- 
- 
-function copyPeople(srcCapId, targetCapId) {
+
+
+function copyPeople(srcCapId, targetCapId)
+{
   //1. Get people with source CAPID.
   var capPeoples = getPeople(srcCapId);
   aa.print("Source Cap ID:" + srcCapId.getCustomID());
 
-  if (capPeoples == null || capPeoples.length == 0) {
+  if (capPeoples == null || capPeoples.length == 0)
+  {
     aa.print("Didn't get the source peoples!");
     return;
   }
   //2. Get people with target CAPID.
   var targetPeople = getPeople(targetCapId);
   //3. Check to see which people is matched in both source and target.
-  for (loopk in capPeoples) {
+  for (loopk in capPeoples)
+  {
     sourcePeopleModel = capPeoples[loopk];
     //3.1 Set target CAPID to source people.
     sourcePeopleModel.getCapContactModel().setCapID(targetCapId);
 
     targetPeopleModel = null;
     //3.2 Check to see if sourcePeople exist.
-    if (targetPeople != null && targetPeople.length > 0) {
-      for (loop2 in targetPeople) {
-        if (isMatchPeople(sourcePeopleModel, targetPeople[loop2])) {
+    if (targetPeople != null && targetPeople.length > 0)
+    {
+      for (loop2 in targetPeople)
+      {
+        if (isMatchPeople(sourcePeopleModel, targetPeople[loop2]))
+        {
           targetPeopleModel = targetPeople[loop2];
           break;
         }
       }
     }
     //3.3 It is a matched people model.
-    if (targetPeopleModel != null) {
+    if (targetPeopleModel != null)
+    {
       //3.3.1 Copy information from source to target.
       aa.people.copyCapContactModel(
         sourcePeopleModel.getCapContactModel(),
@@ -254,7 +282,8 @@ function copyPeople(srcCapId, targetCapId) {
       );
     }
     //3.4 It is new People model.
-    else {
+    else
+    {
       //3.4.1 Create new people.
       aa.people.createCapContactWithAttribute(
         sourcePeopleModel.getCapContactModel()
@@ -263,8 +292,10 @@ function copyPeople(srcCapId, targetCapId) {
   }
 }
 
-function isMatchPeople(capContactScriptModel, capContactScriptModel2) {
-  if (capContactScriptModel == null || capContactScriptModel2 == null) {
+function isMatchPeople(capContactScriptModel, capContactScriptModel2)
+{
+  if (capContactScriptModel == null || capContactScriptModel2 == null)
+  {
     return false;
   }
   var contactType1 = capContactScriptModel
@@ -302,85 +333,104 @@ function isMatchPeople(capContactScriptModel, capContactScriptModel2) {
   if (
     (contactType1 == null && contactType2 != null) ||
     (contactType1 != null && contactType2 == null)
-  ) {
+  )
+  {
     return false;
   }
-  if (contactType1 != null && !contactType1.equals(contactType2)) {
+  if (contactType1 != null && !contactType1.equals(contactType2))
+  {
     return false;
   }
   if (
     (firstName1 == null && firstName2 != null) ||
     (firstName1 != null && firstName2 == null)
-  ) {
+  )
+  {
     return false;
   }
-  if (firstName1 != null && !firstName1.equals(firstName2)) {
+  if (firstName1 != null && !firstName1.equals(firstName2))
+  {
     return false;
   }
   if (
     (lastName1 == null && lastName2 != null) ||
     (lastName1 != null && lastName2 == null)
-  ) {
+  )
+  {
     return false;
   }
-  if (lastName1 != null && !lastName1.equals(lastName2)) {
+  if (lastName1 != null && !lastName1.equals(lastName2))
+  {
     return false;
   }
   if (
     (fullName1 == null && fullName2 != null) ||
     (fullName1 != null && fullName2 == null)
-  ) {
+  )
+  {
     return false;
   }
-  if (fullName1 != null && !fullName1.equals(fullName2)) {
+  if (fullName1 != null && !fullName1.equals(fullName2))
+  {
     return false;
   }
   return true;
 }
 
-function getPeople(inputtedCap) {
+function getPeople(inputtedCap)
+{
   capPeopleArr = null;
   var s_result = aa.people.getCapContactByCapID(inputtedCap);
-  if (s_result.getSuccess()) {
+  if (s_result.getSuccess())
+  {
     capPeopleArr = s_result.getOutput();
-    if (capPeopleArr == null || capPeopleArr.length == 0) {
+    if (capPeopleArr == null || capPeopleArr.length == 0)
+    {
       aa.print("WARNING: no People on this CAP:" + inputtedCap.getCustomID());
       capPeopleArr = null;
     }
-  } else {
+  } else
+  {
     aa.print("ERROR: Failed to People: " + s_result.getErrorMessage());
     capPeopleArr = null;
   }
   return capPeopleArr;
 }
 
-function copyLicenseProfessional(srcCapId, targetCapId) {
+function copyLicenseProfessional(srcCapId, targetCapId)
+{
   //1. Get license professionals with source CAPID.
   var capLicenses = getLicenseProfessional(srcCapId);
-  if (capLicenses == null || capLicenses.length == 0) {
+  if (capLicenses == null || capLicenses.length == 0)
+  {
     return;
   }
   //2. Get license professionals with target CAPID.
   var targetLicenses = getLicenseProfessional(targetCapId);
   //3. Check to see which licProf is matched in both source and target.
-  for (loopk in capLicenses) {
+  for (loopk in capLicenses)
+  {
     sourcelicProfModel = capLicenses[loopk];
     //3.1 Set target CAPID to source lic prof.
     sourcelicProfModel.setCapID(targetCapId);
     targetLicProfModel = null;
     //3.2 Check to see if sourceLicProf exist.
-    if (targetLicenses != null && targetLicenses.length > 0) {
-      for (loop2 in targetLicenses) {
+    if (targetLicenses != null && targetLicenses.length > 0)
+    {
+      for (loop2 in targetLicenses)
+      {
         if (
           isMatchLicenseProfessional(sourcelicProfModel, targetLicenses[loop2])
-        ) {
+        )
+        {
           targetLicProfModel = targetLicenses[loop2];
           break;
         }
       }
     }
     //3.3 It is a matched licProf model.
-    if (targetLicProfModel != null) {
+    if (targetLicProfModel != null)
+    {
       //3.3.1 Copy information from source to target.
       aa.licenseProfessional.copyLicenseProfessionalScriptModel(
         sourcelicProfModel,
@@ -390,15 +440,18 @@ function copyLicenseProfessional(srcCapId, targetCapId) {
       aa.licenseProfessional.editLicensedProfessional(targetLicProfModel);
     }
     //3.4 It is new licProf model.
-    else {
+    else
+    {
       //3.4.1 Create new license professional.
       aa.licenseProfessional.createLicensedProfessional(sourcelicProfModel);
     }
   }
 }
 
-function isMatchLicenseProfessional(licProfScriptModel1, licProfScriptModel2) {
-  if (licProfScriptModel1 == null || licProfScriptModel2 == null) {
+function isMatchLicenseProfessional(licProfScriptModel1, licProfScriptModel2)
+{
+  if (licProfScriptModel1 == null || licProfScriptModel2 == null)
+  {
     return false;
   }
   if (
@@ -408,22 +461,27 @@ function isMatchLicenseProfessional(licProfScriptModel1, licProfScriptModel2) {
     licProfScriptModel1
       .getLicenseNbr()
       .equals(licProfScriptModel2.getLicenseNbr())
-  ) {
+  )
+  {
     return true;
   }
   return false;
 }
 
-function getLicenseProfessional(capId) {
+function getLicenseProfessional(capId)
+{
   capLicenseArr = null;
   var s_result = aa.licenseProfessional.getLicenseProf(capId);
-  if (s_result.getSuccess()) {
+  if (s_result.getSuccess())
+  {
     capLicenseArr = s_result.getOutput();
-    if (capLicenseArr == null || capLicenseArr.length == 0) {
+    if (capLicenseArr == null || capLicenseArr.length == 0)
+    {
       aa.print("WARNING: no licensed professionals on this CAP:" + capId);
       capLicenseArr = null;
     }
-  } else {
+  } else
+  {
     aa.print(
       "ERROR: Failed to license professional: " + s_result.getErrorMessage()
     );
@@ -432,256 +490,275 @@ function getLicenseProfessional(capId) {
   return capLicenseArr;
 }
 
-function convertContactAddressModelArr(contactAddressScriptModelArr) {
-    var contactAddressModelArr = null;
-  
-    if (
-      contactAddressScriptModelArr != null &&
-      contactAddressScriptModelArr.length > 0
-    ) {
-      contactAddressModelArr = aa.util.newArrayList();
-  
-      for (loopk in contactAddressScriptModelArr) {
-        contactAddressModelArr.add(
-          contactAddressScriptModelArr[loopk].getContactAddressModel()
-        );
+function convertContactAddressModelArr(contactAddressScriptModelArr)
+{
+  var contactAddressModelArr = null;
+
+  if (
+    contactAddressScriptModelArr != null &&
+    contactAddressScriptModelArr.length > 0
+  )
+  {
+    contactAddressModelArr = aa.util.newArrayList();
+
+    for (loopk in contactAddressScriptModelArr)
+    {
+      contactAddressModelArr.add(
+        contactAddressScriptModelArr[loopk].getContactAddressModel()
+      );
+    }
+  }
+
+  return contactAddressModelArr;
+}
+function copyContactFromParent4ACA(currentRecordCapModel, parentCapId)
+{
+  contactsGroup = currentRecordCapModel.getContactsGroup();
+  if (contactsGroup.size() > 0)
+  {
+    return;
+  }
+  var t = aa.people.getCapContactByCapID(parentCapId);
+  if (t.getSuccess())
+  {
+    capPeopleArr = t.getOutput();
+    for (cp in capPeopleArr)
+    {
+      if (capPeopleArr[cp].getCapContactModel().getContactType() == "Property Owner")
+      {
+        contactAddFromUser4ACA(currentRecordCapModel, capPeopleArr[cp].getCapContactModel());
       }
     }
-  
-    return contactAddressModelArr;
   }
-  function copyContactFromParent4ACA(currentRecordCapModel, parentCapId) {
-	contactsGroup = currentRecordCapModel.getContactsGroup();
-	if (contactsGroup.size() > 0) {
-		return;
-	}
-	var t = aa.people.getCapContactByCapID(parentCapId);
-	if (t.getSuccess()) {
-		capPeopleArr = t.getOutput();
-		for (cp in capPeopleArr) {
-            if (capPeopleArr[cp].getCapContactModel().getContactType() == "Property Owner") {
-			    contactAddFromUser4ACA(currentRecordCapModel, capPeopleArr[cp].getCapContactModel());
-            }
-		}
-	}
 }
-function contactAddFromUser4ACA(capModel, contactModel) {
-	var theContact = contactModel.getPeople();
-	var capContactModel = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
-	capContactModel.setContactType(theContact.getContactType());
-	capContactModel.setFirstName(theContact.getFirstName());
-	capContactModel.setMiddleName(theContact.getMiddleName());
-	capContactModel.setLastName(theContact.getLastName());
-	capContactModel.setFullName(theContact.getFullName());
-	capContactModel.setEmail(theContact.getEmail());
-	capContactModel.setPhone2(theContact.getPhone2());
-	capContactModel.setPhone1CountryCode(theContact.getPhone1CountryCode());
-	capContactModel.setPhone2CountryCode(theContact.getPhone2CountryCode());
-	capContactModel.setPhone3CountryCode(theContact.getPhone3CountryCode());
-	capContactModel.setCompactAddress(theContact.getCompactAddress());
-	capContactModel.sePreferredChannele(theContact.getPreferredChannel()); // Preferred Channel is used for 'Particiapnt Type' in ePermits. Yes, the function itself is misspelled, just use it like this.
-	capContactModel.setPeople(theContact);
-	var birthDate = theContact.getBirthDate();
-	if (birthDate != null && birthDate != "") {
-		capContactModel.setBirthDate(aa.util.parseDate(birthDate));
-	}
-	// clear ACA components so that they display in the correct component per the ACA pageflow.
-	//capContactModel.setComponentName(null);
-	var peopleAttributes = aa.people.getPeopleAttributeByPeople(theContact.getContactSeqNumber(), theContact.getContactType()).getOutput();
-	if (peopleAttributes) {
-		var newPeopleAttributes = aa.util.newArrayList();
-		for (var i in peopleAttributes) {
-			newPeopleAttributes.add(peopleAttributes[i].getPeopleAttributeModel())
-		}
-		capContactModel.getPeople().setAttributes(newPeopleAttributes)
-	}
-	capModel.getContactsGroup().add(capContactModel);
+function contactAddFromUser4ACA(capModel, contactModel)
+{
+  var theContact = contactModel.getPeople();
+  var capContactModel = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
+  capContactModel.setContactType(theContact.getContactType());
+  capContactModel.setFirstName(theContact.getFirstName());
+  capContactModel.setMiddleName(theContact.getMiddleName());
+  capContactModel.setLastName(theContact.getLastName());
+  capContactModel.setFullName(theContact.getFullName());
+  capContactModel.setEmail(theContact.getEmail());
+  capContactModel.setPhone2(theContact.getPhone2());
+  capContactModel.setPhone1CountryCode(theContact.getPhone1CountryCode());
+  capContactModel.setPhone2CountryCode(theContact.getPhone2CountryCode());
+  capContactModel.setPhone3CountryCode(theContact.getPhone3CountryCode());
+  capContactModel.setCompactAddress(theContact.getCompactAddress());
+  capContactModel.sePreferredChannele(theContact.getPreferredChannel()); // Preferred Channel is used for 'Particiapnt Type' in ePermits. Yes, the function itself is misspelled, just use it like this.
+  capContactModel.setPeople(theContact);
+  var birthDate = theContact.getBirthDate();
+  if (birthDate != null && birthDate != "")
+  {
+    capContactModel.setBirthDate(aa.util.parseDate(birthDate));
+  }
+  // clear ACA components so that they display in the correct component per the ACA pageflow.
+  //capContactModel.setComponentName(null);
+  var peopleAttributes = aa.people.getPeopleAttributeByPeople(theContact.getContactSeqNumber(), theContact.getContactType()).getOutput();
+  if (peopleAttributes)
+  {
+    var newPeopleAttributes = aa.util.newArrayList();
+    for (var i in peopleAttributes)
+    {
+      newPeopleAttributes.add(peopleAttributes[i].getPeopleAttributeModel())
+    }
+    capContactModel.getPeople().setAttributes(newPeopleAttributes)
+  }
+  capModel.getContactsGroup().add(capContactModel);
 
 }
-  
+
 function getGuidesheetASIField(inspId, gName, gItem, asiGroup, asiSubGroup, asiLabel, capId) 
 {
-	var asiValue = "";
-	var itemCap = capId;
-	var r = aa.inspection.getInspections(itemCap);
-	if (r.getSuccess()) 
-	{
-		var inspArray = r.getOutput();
-		for (i in inspArray) 
-		{
-			if (inspArray[i].getIdNumber() == inspId) 
-			{
-				var inspModel = inspArray[i].getInspection();
-				var gs = inspModel.getGuideSheets();
-				if (gs) 
-				{
-					for(var i=0; i< gs.size(); i++)
-					{
-						var guideSheetObj = gs.get(i);
-						if (guideSheetObj && gName.toUpperCase() == guideSheetObj.getGuideType().toUpperCase()) 
-						{
-							var guidesheetItem = guideSheetObj.getItems();
-							for(var j=0; j< guidesheetItem.size(); j++)
-							{
-								var item = guidesheetItem.get(j);
-								if(item && gItem == item.getGuideItemText() && asiGroup == item.getGuideItemASIGroupName()) 
-								{
-									var ASISubGroups = item.getItemASISubgroupList();
-									if(ASISubGroups) 
-									{
-										for(var k = 0; k < ASISubGroups.size(); k++) 
-										{
-											var ASISubGroup = ASISubGroups.get(k);
-											if(ASISubGroup && ASISubGroup.getSubgroupCode() == asiSubGroup) 
-											{
-												var ASIModels =  ASISubGroup.getAsiList();
-												if(ASIModels) 
-												{
-													for( var m = 0; m < ASIModels.size(); m++) 
-													{
-														var ASIModel = ASIModels.get(m);
-														if(ASIModel && ASIModel.getAsiName() == asiLabel) 
-														{
-															aa.print("ASI value: " + ASIModel.getAttributeValue());
-															asiValue = ASIModel.getAttributeValue();		
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}							
-						}
-					}
-				} 
-				else 
-				{
-					aa.print("No guidesheets for this inspection");
-					return asiValue;
-				}
-			}
-		}
-	} 
-	else 
-	{
-		aa.print("No inspections on the record");
-		return asiValue;
-	}
-	aa.print("No updates to the guidesheet made");
-	return asiValue;
-}
-function editAppSpecific4ACA(itemName, itemValue, cap) {
-
-
-
-    var i = cap.getAppSpecificInfoGroups().iterator();
-  
-  
-  
-    while (i.hasNext()) {
-  
-        var group = i.next();
-  
-        var fields = group.getFields();
-  
-        if (fields != null) {
-  
-            var iteFields = fields.iterator();
-  
-            while (iteFields.hasNext()) {
-  
-                var field = iteFields.next();
-  
-                if ((useAppSpecificGroupName && itemName.equals(field.getCheckboxType() + "." + 
-  
-  
-  
-  field.getCheckboxDesc())) || itemName.equals(field.getCheckboxDesc())) {
-  
-                    field.setChecklistComment(itemValue);
-  
+  var asiValue = "";
+  var itemCap = capId;
+  var r = aa.inspection.getInspections(itemCap);
+  if (r.getSuccess()) 
+  {
+    var inspArray = r.getOutput();
+    for (i in inspArray) 
+    {
+      if (inspArray[i].getIdNumber() == inspId) 
+      {
+        var inspModel = inspArray[i].getInspection();
+        var gs = inspModel.getGuideSheets();
+        if (gs) 
+        {
+          for (var i = 0; i < gs.size(); i++)
+          {
+            var guideSheetObj = gs.get(i);
+            if (guideSheetObj && gName.toUpperCase() == guideSheetObj.getGuideType().toUpperCase()) 
+            {
+              var guidesheetItem = guideSheetObj.getItems();
+              for (var j = 0; j < guidesheetItem.size(); j++)
+              {
+                var item = guidesheetItem.get(j);
+                if (item && gItem == item.getGuideItemText() && asiGroup == item.getGuideItemASIGroupName()) 
+                {
+                  var ASISubGroups = item.getItemASISubgroupList();
+                  if (ASISubGroups) 
+                  {
+                    for (var k = 0; k < ASISubGroups.size(); k++) 
+                    {
+                      var ASISubGroup = ASISubGroups.get(k);
+                      if (ASISubGroup && ASISubGroup.getSubgroupCode() == asiSubGroup) 
+                      {
+                        var ASIModels = ASISubGroup.getAsiList();
+                        if (ASIModels) 
+                        {
+                          for (var m = 0; m < ASIModels.size(); m++) 
+                          {
+                            var ASIModel = ASIModels.get(m);
+                            if (ASIModel && ASIModel.getAsiName() == asiLabel) 
+                            {
+                              aa.print("ASI value: " + ASIModel.getAttributeValue());
+                              asiValue = ASIModel.getAttributeValue();
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
-  
+              }
             }
-  
+          }
         }
-  
+        else 
+        {
+          aa.print("No guidesheets for this inspection");
+          return asiValue;
+        }
+      }
     }
-  
   }
-  
+  else 
+  {
+    aa.print("No inspections on the record");
+    return asiValue;
+  }
+  aa.print("No updates to the guidesheet made");
+  return asiValue;
+}
+function editAppSpecific4ACA(itemName, itemValue, cap)
+{
+
+
+
+  var i = cap.getAppSpecificInfoGroups().iterator();
+
+
+
+  while (i.hasNext())
+  {
+
+    var group = i.next();
+
+    var fields = group.getFields();
+
+    if (fields != null)
+    {
+
+      var iteFields = fields.iterator();
+
+      while (iteFields.hasNext())
+      {
+
+        var field = iteFields.next();
+
+        if ((useAppSpecificGroupName && itemName.equals(field.getCheckboxType() + "." +
+
+
+
+          field.getCheckboxDesc())) || itemName.equals(field.getCheckboxDesc()))
+        {
+
+          field.setChecklistComment(itemValue);
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
 
 
 function getCompletedInspectionID(insp2Check, capId)
-	{
-	// warning, returns only the first scheduled occurrence
-	var inspResultObj = aa.inspection.getInspections(capId);
-	if (inspResultObj.getSuccess())
-		{
-		var inspList = inspResultObj.getOutput();
+{
+  // warning, returns only the first scheduled occurrence
+  var inspResultObj = aa.inspection.getInspections(capId);
+  if (inspResultObj.getSuccess())
+  {
+    var inspList = inspResultObj.getOutput();
     for (xx in inspList)
-    aa.print("type: " + inspList[xx].getInspectionType() + " status: " + inspList[xx].getInspectionStatus().toUpperCase());
-			if (String(insp2Check).equals(inspList[xx].getInspectionType()) && inspList[xx].getInspectionStatus().toUpperCase().equals("COMPLETE"))
-				return inspList[xx].getIdNumber();
-		}
-	return false;
-    }
-    
-function copyAppName(srcCapId, capModel) {
-    var appName = aa.cap.getCap(srcCapId).getOutput().specialText;
-    capModel.setSpecialText(appName);
+      aa.print("type: " + inspList[xx].getInspectionType() + " status: " + inspList[xx].getInspectionStatus().toUpperCase());
+    if (String(insp2Check).equals(inspList[xx].getInspectionType()) && inspList[xx].getInspectionStatus().toUpperCase().equals("COMPLETE"))
+      return inspList[xx].getIdNumber();
+  }
+  return false;
+}
 
-    var result = aa.cap.editCapByPK(capModel);
-    if (!result.getSuccess()) {
-        logError("Failed to update app name");
-    }
+function copyAppName(srcCapId, capModel)
+{
+  var appName = aa.cap.getCap(srcCapId).getOutput().specialText;
+  capModel.setSpecialText(appName);
+
+  var result = aa.cap.editCapByPK(capModel);
+  if (!result.getSuccess())
+  {
+    logError("Failed to update app name");
+  }
 }
 
 function copyAddress(srcCapId, targetCapId)
 {
-    //1. Get address with source CAPID.
-    var capAddresses = getAddress(srcCapId);
-    if (capAddresses == null || capAddresses.length == 0)
+  //1. Get address with source CAPID.
+  var capAddresses = getAddress(srcCapId);
+  if (capAddresses == null || capAddresses.length == 0)
+  {
+    return;
+  }
+  //2. Get addresses with target CAPID.
+  var targetAddresses = getAddress(targetCapId);
+  //3. Check to see which address is matched in both source and target.
+  for (loopk in capAddresses)
+  {
+    sourceAddressfModel = capAddresses[loopk];
+    //3.1 Set target CAPID to source address.
+    sourceAddressfModel.setCapID(targetCapId);
+    targetAddressfModel = null;
+    //3.2 Check to see if sourceAddress exist.
+    if (targetAddresses != null && targetAddresses.length > 0)
     {
-      return;
-    }
-    //2. Get addresses with target CAPID.
-    var targetAddresses = getAddress(targetCapId);
-    //3. Check to see which address is matched in both source and target.
-    for (loopk in capAddresses)
-    {
-      sourceAddressfModel = capAddresses[loopk];
-      //3.1 Set target CAPID to source address.
-      sourceAddressfModel.setCapID(targetCapId);
-      targetAddressfModel = null;
-      //3.2 Check to see if sourceAddress exist.
-      if (targetAddresses != null && targetAddresses.length > 0)
+      for (loop2 in targetAddresses)
       {
-        for (loop2 in targetAddresses)
+        if (isMatchAddress(sourceAddressfModel, targetAddresses[loop2]))
         {
-          if (isMatchAddress(sourceAddressfModel, targetAddresses[loop2]))
-          {
-            targetAddressfModel = targetAddresses[loop2];
-            break;
-          }
+          targetAddressfModel = targetAddresses[loop2];
+          break;
         }
       }
-      //3.3 It is a matched address model.
-      if (targetAddressfModel != null)
-      {
-        //3.3.1 Copy information from source to target.
-        aa.address.copyAddressModel(sourceAddressfModel, targetAddressfModel);
-        //3.3.2 Edit address with source address information. 
-        aa.address.editAddressWithAPOAttribute(targetCapId, targetAddressfModel);
-      }
-      //3.4 It is new address model.
-      else
-      { 
-        //3.4.1 Create new address.
-        aa.address.createAddressWithAPOAttribute(targetCapId, sourceAddressfModel);
-      }
     }
+    //3.3 It is a matched address model.
+    if (targetAddressfModel != null)
+    {
+      //3.3.1 Copy information from source to target.
+      aa.address.copyAddressModel(sourceAddressfModel, targetAddressfModel);
+      //3.3.2 Edit address with source address information. 
+      aa.address.editAddressWithAPOAttribute(targetCapId, targetAddressfModel);
+    }
+    //3.4 It is new address model.
+    else
+    {
+      //3.4.1 Create new address.
+      aa.address.createAddressWithAPOAttribute(targetCapId, sourceAddressfModel);
+    }
+  }
 }
 
 function isMatchAddress(addressScriptModel1, addressScriptModel2)
@@ -692,7 +769,7 @@ function isMatchAddress(addressScriptModel1, addressScriptModel2)
   }
   var streetName1 = addressScriptModel1.getStreetName();
   var streetName2 = addressScriptModel2.getStreetName();
-  if ((streetName1 == null && streetName2 != null) 
+  if ((streetName1 == null && streetName2 != null)
     || (streetName1 != null && streetName2 == null))
   {
     return false;
@@ -708,7 +785,7 @@ function getAddress(capId)
 {
   capAddresses = null;
   var s_result = aa.address.getAddressByCapId(capId);
-  if(s_result.getSuccess())
+  if (s_result.getSuccess())
   {
     capAddresses = s_result.getOutput();
     if (capAddresses == null || capAddresses.length == 0)
@@ -720,7 +797,7 @@ function getAddress(capId)
   else
   {
     aa.print("ERROR: Failed to address: " + s_result.getErrorMessage());
-    capAddresses = null;  
+    capAddresses = null;
   }
   return capAddresses;
 }
@@ -758,12 +835,12 @@ function copyParcel(srcCapId, targetCapId)
     if (targetParcelModel != null)
     {
       //3.3.1 Copy information from source to target.
-      var tempCapSourceParcel = aa.parcel.warpCapIdParcelModel2CapParcelModel(targetCapId, 
+      var tempCapSourceParcel = aa.parcel.warpCapIdParcelModel2CapParcelModel(targetCapId,
 
-      sourceParcelModel).getOutput();
-      var tempCapTargetParcel = aa.parcel.warpCapIdParcelModel2CapParcelModel(targetCapId, 
+        sourceParcelModel).getOutput();
+      var tempCapTargetParcel = aa.parcel.warpCapIdParcelModel2CapParcelModel(targetCapId,
 
-      targetParcelModel).getOutput();
+        targetParcelModel).getOutput();
       aa.parcel.copyCapParcelModel(tempCapSourceParcel, tempCapTargetParcel);
       //3.3.2 Edit parcel with sourceparcel. 
       aa.parcel.updateDailyParcelWithAPOAttribute(tempCapTargetParcel);
@@ -774,7 +851,7 @@ function copyParcel(srcCapId, targetCapId)
       //3.4.1 Create new parcel.
       aa.parcel.createCapParcelWithAPOAttribute(aa.parcel.warpCapIdParcelModel2CapParcelModel
 
-      (targetCapId, sourceParcelModel).getOutput());
+        (targetCapId, sourceParcelModel).getOutput());
     }
   }
 }
@@ -789,14 +866,14 @@ function isMatchParcel(parcelScriptModel1, parcelScriptModel2)
   {
     return true;
   }
-  return  false;
+  return false;
 }
 
 function getParcel(capId)
 {
   capParcelArr = null;
   var s_result = aa.parcel.getParcelandAttribute(capId, null);
-  if(s_result.getSuccess())
+  if (s_result.getSuccess())
   {
     capParcelArr = s_result.getOutput();
     if (capParcelArr == null || capParcelArr.length == 0)
@@ -808,7 +885,7 @@ function getParcel(capId)
   else
   {
     aa.print("ERROR: Failed to parcel: " + s_result.getErrorMessage());
-    capParcelArr = null;  
+    capParcelArr = null;
   }
   return capParcelArr;
 }
@@ -867,7 +944,7 @@ function isMatchOwner(ownerScriptModel1, ownerScriptModel2)
   }
   var fullName1 = ownerScriptModel1.getOwnerFullName();
   var fullName2 = ownerScriptModel2.getOwnerFullName();
-  if ((fullName1 == null && fullName2 != null) 
+  if ((fullName1 == null && fullName2 != null)
     || (fullName1 != null && fullName2 == null))
   {
     return false;
@@ -876,14 +953,14 @@ function isMatchOwner(ownerScriptModel1, ownerScriptModel2)
   {
     return false;
   }
-  return  true;
+  return true;
 }
 
 function getOwner(capId)
 {
   capOwnerArr = null;
   var s_result = aa.owner.getOwnerByCapId(capId);
-  if(s_result.getSuccess())
+  if (s_result.getSuccess())
   {
     capOwnerArr = s_result.getOutput();
     if (capOwnerArr == null || capOwnerArr.length == 0)
@@ -895,7 +972,7 @@ function getOwner(capId)
   else
   {
     aa.print("ERROR: Failed to Owner: " + s_result.getErrorMessage());
-    capOwnerArr = null; 
+    capOwnerArr = null;
   }
   return capOwnerArr;
 }
