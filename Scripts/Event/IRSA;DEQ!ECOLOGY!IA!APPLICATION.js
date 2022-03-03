@@ -6,6 +6,13 @@ var phValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", 
 var wwTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
 var airTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
 
+var insYear = inspObj.getInspectionStatusDate().getYear().toString();
+var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
+var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
+
+var insCon = insMonth + "/" + insDay + "/" + insYear;
+
+
 var insp = aa.inspection.getInspection(capId, inspId).getOutput();
 var vInspectionActivity = insp.getInspection().getActivity();
 
@@ -58,6 +65,8 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                             editASITableRow(capId, "LAB RESULTS", "PH", phValue);
                             editASITableRow(capId, "LAB RESULTS", "WW Temp", wwTemp);
                             editASITableRow(capId, "LAB RESULTS", "Air Temp", airTemp);
+                            editASITableRow(capId, "LAB RESULTS", "Sample Date", insCon);
+                            editASITableRow(capId, "LAB RESULTS", "Status", inspResult);
                             break;   
                         }  
                     }
