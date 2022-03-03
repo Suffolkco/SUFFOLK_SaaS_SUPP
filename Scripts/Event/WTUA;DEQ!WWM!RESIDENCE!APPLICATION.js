@@ -96,7 +96,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			if (taskObj.getDisposition() == "Approved")
 			{
 				count++;
-				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + "," + taskObj.getProcessID() + "," +
+				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + ", " + taskObj.getProcessID() + ", " +
 				taskObj.getTaskDescription() + ", " + taskObj.getDisposition());				
 			}		
 
@@ -114,7 +114,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
                 {
                     var inspModel = insObj[i].getInspection();
 
-					//logDebug("****");
+					logDebug("**** Inspection Type; " + inspModel.getInspectionType() + ", Inspection Status: " + inspModel.getInspectionStatus());
 					//debugObject(inspModel);
 					if (inspModel.getInspectionType() == "Pre-Inspection Review" &&
 					inspModel.getRequestComment() == "Scheduled via Script" && 
@@ -139,6 +139,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							logDebug("****** Custom List row index: " + rowIndex);
 							thisRow = sysDetailsASITable[rowIndex]; 
 							//recNum = thisRow["Record Number"].fieldValue;
+							tSysLocation = thisRow["System Location"];
 							tSubMap = thisRow["SubMap"];
 							tBedroomCnt = thisRow["Bedroom Count"];
 							tComments = thisRow["Comments"];
@@ -154,8 +155,12 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 							
 							tExcavation = thisRow["Excavation"];
 							tPublicWater = thisRow["Public Water"];
+							tPrivateWell = thisRow["Private Well"];							
 							tIaTreatmentUnit = thisRow["IA Treatment Unit"];
 							tSepticTankInsp = thisRow["Septic Tank Inspection"];
+							tDistrBox = thisRow["DB_PB"];
+							tLeachingPool = thisRow["LP_LG"];
+							tOtherLeaching = thisRow["Other Leaching"];
 
 							logDebug("Adding checklist: " + inspId);
 
@@ -178,6 +183,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 								
 								logDebug("Current gsSeqNumber: " + gsSeqNumber);
 								logDebug("The newly added checklist sequence number is: " + gsSequence);
+								logDebug("Checklist ID is: " + vGuideSheet.setIdentifier(tSysLocation));
 								//logDebug("vGuideSheet debug item object");
 								//debugObject(vGuideSheet);
 								if (gsSeqNumber == gsSequence)
@@ -188,12 +194,21 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 									{
 										var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
 										var z = 0;
+
+										// Checklist ID									
+										//debugObject(vGuideSheet);
+										logDebug("Update checklist ID:" + tSysLocation);
+										vGuideSheet.setIdentifier(tSysLocation);
+										aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
+
 										for (z in vGuideSheetItemsArray)
 										{
 											var vGuideSheetItem = vGuideSheetItemsArray[z];
 											//logDebug("vGuideSheetItem debug object");
 											//debugObject(vGuideSheetItem);
-											logDebug("GuideItemTest:" + vGuideSheetItem.getGuideItemText());
+											//logDebug("GuideItemTest:" + vGuideSheetItem.getGuideItemText());
+								
+
 											if (vGuideSheetItem.getGuideItemText() == "Excavation Inspection")
 											{
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tExcavation);
@@ -204,6 +219,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tPublicWater);
 												vGuideSheetItem.setGuideItemStatus(tPublicWater);
 											}
+											else if (vGuideSheetItem.getGuideItemText() == "Private Well")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tPrivateWell);
+												vGuideSheetItem.setGuideItemStatus(tPrivateWell);										
+											}	
 											else if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
 											{												
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tIaTreatmentUnit);
@@ -214,6 +234,22 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tSepticTankInsp);
 												vGuideSheetItem.setGuideItemStatus(tSepticTankInsp);										
 											}	
+											else if (vGuideSheetItem.getGuideItemText() == "Distribution Box/Pump Basin")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tDistrBox);
+												vGuideSheetItem.setGuideItemStatus(tDistrBox);										
+											}	
+											else if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tLeachingPool);
+												vGuideSheetItem.setGuideItemStatus(tLeachingPool);										
+											}	
+											else if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+											{											
+												logDebug("Setting checklist item status:" +  vGuideSheetItem.getGuideItemText() + " to " + tOtherLeaching);
+												vGuideSheetItem.setGuideItemStatus(tOtherLeaching);										
+											}	
+																				
 
 											var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
 											if (ASISubGroups)
@@ -313,9 +349,9 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 									logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
 								}														
 							}
-													
-						}
-						logDebug("Updated Inspection Status from: " +  inspModel.getInspectionStatus() + " to Complete");
+											
+						
+						logDebug("Current inspection status: " +  inspModel.getInspectionStatus() + ". Inpsection ID: " + inspId);
 						//insObj[i].setInspectionStatus("Complete");
 						//aa.inspection.editInspection(insObj[i]);
 
@@ -325,13 +361,16 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						logDebug("Created and updated inspection. Break loop.");
 						break;	
 					}
-				}	
+					
+				}
 				
-			}
-			else
-			{
-				logDebug("This is not the very first Plans Coordination and Approved task. Skip creating new inspection.")
-			}
+			}	
+		}		
+		else		
+		{
+			logDebug("This is not the very first Plans Coordination and Approved task. Skip creating new inspection.")
+		
+		}
 	
 
 	}
