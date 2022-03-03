@@ -117,7 +117,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 
     addASITable("LAB RESULTS", labResultsTable, parentCapId);
-    editAppSpecific("Use", use, parentCapId); 
+    editAppSpecific("Use", use, parentCapId);  
 
     if (contractStart != null)
     {
