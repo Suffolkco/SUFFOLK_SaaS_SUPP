@@ -322,7 +322,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						var sysDateYYYYMMDD = dateFormatted(sysDate.getMonth(),sysDate.getDayOfMonth(),sysDate.getYear(),"YYYY-MM-DD");
 						logDebug("Date: " + sysDateYYYYMMDD);
 						resultInspection(inspModel.getInspectionType(), "Complete", sysDateYYYYMMDD, null) 
-						logDebug("Created and updated inspection. Break loop.");	
+						logDebug("Created and updated inspection. Break loop.");
+						break;	
 					}
 				}	
 				
