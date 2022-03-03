@@ -183,6 +183,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 								
 								logDebug("Current gsSeqNumber: " + gsSeqNumber);
 								logDebug("The newly added checklist sequence number is: " + gsSequence);
+								logDebug("Checklist ID is: " + vGuideSheet.setIdentifier(tSysLocation));
 								//logDebug("vGuideSheet debug item object");
 								//debugObject(vGuideSheet);
 								if (gsSeqNumber == gsSequence)
@@ -198,6 +199,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 										debugObject(vGuideSheet);
 										logDebug("Update checklist ID:" + tSysLocation);
 										vGuideSheet.setIdentifier(tSysLocation);
+										aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
 
 										for (z in vGuideSheetItemsArray)
 										{
