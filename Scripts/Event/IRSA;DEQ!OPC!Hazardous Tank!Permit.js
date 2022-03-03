@@ -46,10 +46,12 @@ if (inspResult == "Completed" || inspResult == "Fail")
         inspDate = inspObj.getInspectionDate();
         logDebug("inspResultDate: " + inspResultDate);       
         logDebug("inspeciton object date: " + inspObj.getInspectionDate());        
+        logDebug("alternateID: " + alternateID.toString());        
+
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  inspResultDate);
-       
-		rFile = generateReport("Inspection result Tank Operator",reportParams, 'DEQ')
+        reportParams.put("InspectionDate",  inspObj.getInspectionDate());
+            
+		rFile = generateReport("Inspection result Tank Operator", reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile) {
