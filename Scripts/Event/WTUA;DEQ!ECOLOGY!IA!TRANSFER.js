@@ -3,6 +3,12 @@
 var pin = AInfo["PIN Number"];
 var iaNumber = AInfo["IA Record Number"];
 var iaEmail = "";
+var contractStart = getAppSpecific("Contract Start Date", capId);
+var term = getAppSpecific("Term", capId);
+var contractAnualCost = getAppSpecific("Contract Annual Cost", capId);
+var serviceDate = getAppSpecific("Service Date", capId);
+var sampleCollectionDate = getAppSpecific("Sample Collection Date", capId);
+var use = getAppSpecific("Use", capId);
 
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
@@ -82,7 +88,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 
 
-    var currentWfStatus = wfStatus
     var collectionDate = getAppSpecific("Sample Collection Date", capId);
     var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
     var labResultsTable = new Array();
@@ -102,8 +107,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["PH"] = parentTable[l]["PH"];
         newRow["WW Temp"] = parentTable[l]["WW Temp"]; 
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
-        newRow[currentWfStatus] = parentTable[l]["Status"]
-        newRow[collectionDate] = parentTable[l]["Sample Date"]
+        newRow["Status"] = wfStatus;
+        newRow["Sample Date"] = collectionDate;
 
         labResultsTable.push(newRow);
         break;
@@ -112,8 +117,36 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 
     addASITable("LAB RESULTS", labResultsTable, parentCapId);
+    editAppSpecific("Use", use, parentCapId); 
 
+    if (contractStart != null)
+    {
+    contractStart = new Date(contractStart);
+    var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
+    editAppSpecific("Contract Expiration Date", newExpDate, parentCapId);
+    }
+
+    if (contractAnualCost != null)
+    {
+        editAppSpecific("Contract Annual Cost", contractAnualCost, parentCapId);
+    }
+
+    if (serviceDate != null)
+    {
+        serviceDate = new Date(serviceDate);
+        var newServiceDate = (serviceDate.getMonth() + 1 + "/" + (serviceDate.getDate()) + "/" + (serviceDate.getFullYear() + 1)); 
+        editAppSpecific("Next Service Date", newServiceDate, parentCapId);
+    }
+
+    if (sampleCollectionDate != null)
+    {
+        var newSampleDate = (sampleCollectionDate.getMonth() + 1 + "/" + (sampleCollectionDate.getDate()) + "/" + (sampleCollectionDate.getFullYear() + 3)); 
+        editAppSpecific("Next Sample Date", newSampleDate, parentCapId);
+    }
 }
+
+
+
 
 function copyLicenseProfessional(srcCapId, targetCapId)
 {
