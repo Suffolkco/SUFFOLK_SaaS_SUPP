@@ -82,9 +82,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 	}
 
 	// EHIMS-4763
+	// Get workflow history to make sure only the very first time we are at this task, we proceed:
 	var taskHistoryResult = aa.workflow.getWorkflowHistory(capId,wfTask,null);
-
-	var scheduled = true;
     if(taskHistoryResult.getSuccess())
     {
         var taskArr = taskHistoryResult.getOutput();
@@ -94,28 +93,11 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         for(obj in taskArr)
         {
             var taskObj = taskArr[obj];
-		
-			//logDebug("*********");
-			//debugObject(taskObj);
 			if (taskObj.getDisposition() == "Approved")
 			{
 				count++;
 				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + "," + taskObj.getProcessID() + "," +
-				taskObj.getTaskDescription() + ", " + taskObj.getDisposition());
-				/*
-				// Do not schedule inspection
-				logDebug("Current history step: " + taskObj.getStepNumber());
-				if (taskObj.getTaskDescription() == wfTask && wfStep == taskObj.getStepNumber() &&
-				taskObj.getDisposition() == wfStatus)					
-				{
-					logDebug("This is the current active workflow: " + wfStep + ", " + wfTask + ", " + wfStatus);
-				}
-				else
-				{
-					scheduled = false;
-					logDebug("Found workflow history already has: " + taskObj.getTaskDescription() + " status:" + taskObj.getDisposition());
-					logDebug("No need to create new WWM_RES_System 1 inspection via script.");
-				}*/
+				taskObj.getTaskDescription() + ", " + taskObj.getDisposition());				
 			}		
 
         }
@@ -127,13 +109,13 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
             if (inspectionResult.getSuccess())
             {
                 var insObj = inspectionResult.getOutput();
-                outerLoop:
+               
                 for (i in insObj)
                 {
                     var inspModel = insObj[i].getInspection();
 
-					logDebug("****");
-					debugObject(inspModel);
+					//logDebug("****");
+					//debugObject(inspModel);
 					if (inspModel.getInspectionType() == "Pre-Inspection Review" &&
 					inspModel.getRequestComment() == "Scheduled via Script" )					
 					{
@@ -147,136 +129,164 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 						logDebug("Inspection Status: " + inspModel.getInspectionStatus());
 						//InspectionId
 						inspId = insObj[i].getIdNumber();
-						var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
-											
-						logDebug("Guidesheet Sequence: " + gsSequence);
-						vInspectionActivity = inspModel.getActivity();
 
-						var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-						var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
-
-						logDebug("vGuideSheetArray.length: " + vGuideSheetArray.length);
-
-						if (vGuideSheetArray.length != 0)
-						var x = 0;
-						for (x in vGuideSheetArray)
-						{                   
-							var vGuideSheet = vGuideSheetArray[x];							
-							var gsSeqNumber = vGuideSheet.getGuidesheetSeqNbr();
+						// Retrieve Custom List table of "System Details". For each line, add a checklist.					
+						sysDetailsASITable = loadASITable("SYSTEM DETAILS");
+						
+						for (rowIndex in sysDetailsASITable) 
+						{
+							logDebug("****** Custom List row index: " + rowIndex);
+							thisRow = sysDetailsASITable[rowIndex]; 
+							//recNum = thisRow["Record Number"].fieldValue;
+							tSubMap = thisRow["SubMap"];
+							tBedroomCnt = thisRow["Bedroom Count"];
+							tComments = thisRow["Comments"];
+							tIAMan = thisRow["I/A Manufacturer"];
+							tIAModel = thisRow["I/A Model"];
+							tSepticTank = thisRow["Septic Tank"];
+							tLeachType = thisRow["Leaching Type"];
+							tLeachDim = thisRow["Leaching Dimensions"];
+							tLeachProd = thisRow["Leaching Product/Material"];
+							tLeachModel = thisRow["Leaching Model"];
+							tEffPump = thisRow["Effluent Pump"];
+							tPumpModel = thisRow["Pump Model"];
 							
-							logDebug("Current gsSeqNumber: " + gsSeqNumber);
-							logDebug("The newly added checklist sequence number is: " + gsSequence);
+							logDebug("Adding checklist: " + inspId);
 
-							if (gsSeqNumber == gsSequence)
-							{
-								logDebug("Checklist matches!");
-							}
-							if ("Sewage Disposal & Water Supply".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
-							{
-								var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
-								var z = 0;
-								for (z in vGuideSheetItemsArray)
+							var gsSequence = addGuideSheet(capId,inspId,"Sewage Disposal & Water Supply");
+												
+							logDebug("Guidesheet Sequence: " + gsSequence);
+							vInspectionActivity = inspModel.getActivity();
+
+							var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+							var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+
+							logDebug("vGuideSheetArray.length: " + vGuideSheetArray.length);
+
+							if (vGuideSheetArray.length != 0)
+							var x = 0;
+							for (x in vGuideSheetArray)
+							{                   
+								var vGuideSheet = vGuideSheetArray[x];							
+								var gsSeqNumber = vGuideSheet.getGuidesheetSeqNbr();
+								
+								logDebug("Current gsSeqNumber: " + gsSeqNumber);
+								logDebug("The newly added checklist sequence number is: " + gsSequence);
+								logDebug("vGuideSheet debug item object");
+								debugObject(vGuideSheet);
+								if (gsSeqNumber == gsSequence)
 								{
-									var vGuideSheetItem = vGuideSheetItemsArray[z];
-									var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
-									if (ASISubGroups)
+									logDebug("Checklist matches!");
+								
+									if ("Sewage Disposal & Water Supply".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
 									{
-										for (var k = 0; k < ASISubGroups.size(); k++)
+										var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+										var z = 0;
+										for (z in vGuideSheetItemsArray)
 										{
-											var ASISubGroup = ASISubGroups.get(k);
-											var ASIModels = ASISubGroup.getAsiList();
-											if (ASIModels)
-											{
-												for (var m = 0; m < ASIModels.size(); m++)
-												{
-													var ASIModel = ASIModels.get(m);
-													if (ASIModel)
-													{													
-														if (vGuideSheetItem.getGuideItemText() == "Plan Review & Contractor Information")
-														{
-															logDebug("ASI value: " + ASIModel.getAsiName());
-															logDebug("ASI value: " + ASIModel.getAttributeValue());
-															logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
+											var vGuideSheetItem = vGuideSheetItemsArray[z];
+											logDebug("vGuideSheetItem debug object");
+											debugObject(vGuideSheetItem);
 
-															if (ASIModel.getAsiName() == "SubMap")
-															{
-																//subMap = // From custom field list
-																//ASIModel.setAttributeValue(subMap);
-																// Test
-																ASIModel.setAttributeValue("Test");
-																
-															}
-															if (ASIModel.getAsiName() == "Bedroom Count")
-															{
-																//bedroomCnt = // From custom field list
-																//ASIModel.setAttributeValue(bedroomCnt);
+											var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
+											if (ASISubGroups)
+											{
+												for (var k = 0; k < ASISubGroups.size(); k++)
+												{
+													var ASISubGroup = ASISubGroups.get(k);
+													var ASIModels = ASISubGroup.getAsiList();
+													if (ASIModels)
+													{
+														for (var m = 0; m < ASIModels.size(); m++)
+														{
+															var ASIModel = ASIModels.get(m);
+															if (ASIModel)
+															{													
+																if (vGuideSheetItem.getGuideItemText() == "Plan Review & Contractor Information")
+																{
+																	//debugObject(ASIModel);
+																	logDebug("ASI value: " + ASIModel.getAsiName());																	
+																	logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
+
+																	if (ASIModel.getAsiName() == "SubMap")
+																	{																																
+																		ASIModel.setAttributeValue(tSubMap);
+																		logDebug("Set SubMap to: " + tSubMap);
+																	}
+																	if (ASIModel.getAsiName() == "Bedroom Count")
+																	{																	
+																		ASIModel.setAttributeValue(tBedroomCnt);
+																		logDebug("Set tBedroomCnt to: " + tBedroomCnt);
+																	}
+																	// Revisit here														
+																	logDebug("ASI Comment: " + tComments);
+																	//	comment = // from CL comment
+																	vGuideSheetItem.setGuideItemComment(tComments);
+																	
+																	}
+																if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+																{
+																	if (ASIModel.getAsiName() == "Proposed")
+																	{
+																		//iaProposed = ASIModel.getAttributeValue();
+																		var combined = tIAMan + " " + tIAModel;
+																		ASIModel.setAttributeValue(combined);
+																		logDebug("Set Proposed to: " + combined);
+																	}
+																}
+																if (vGuideSheetItem.getGuideItemText() == "Septic Tank")
+																{
+																	if (ASIModel.getAsiName() == "Proposed")
+																	{
+																		//septicProposed = ASIModel.getAttributeValue();
+																		ASIModel.setAttributeValue(tSepticTank);
+																		logDebug("Set Septic Tank Proposed to: " + tSepticTank);
+																	}
+																}											                                                   
+																if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
+																{
+																	if (ASIModel.getAsiName() == "Proposed")
+																	{
+																	//	iaLeachPoolType = ASIModel.getAttributeValue();
+																		var combined1 = tLeachType + " " + tLeachDim;
+																		ASIModel.setAttributeValue(combined1);
+																		logDebug("Set Leaching Pool Proposed to: " + combined1);
+																	}
+																}
+
+																}
+																if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+																{
+																	if (ASIModel.getAsiName() == "Proposed")
+																	{													
+																		var combined2 = tLeachType + " " + tLeachDim + " " + tLeachProd + " " + tLeachModel + " " + tEffPump + " " + tPumpModel;
+																		ASIModel.setAttributeValue(combined2);
+																		logDebug("Set Other Leaching Structures Proposed to: " + combined2);
+																	}
+																	
+																}
+															
 															}
 															
-															// Comment???? 
-															//if (ASIModel.getAsiName() == "Comment")
-															{
-															//	comment = // from CL comment
-															//	ASIModel.setAttributeValue(comment);
-															}
 														}
-														if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
-														{
-															if (ASIModel.getAsiName() == "Proposed")
-															{
-																//iaProposed = ASIModel.getAttributeValue();
-			
-															}
-														}
-														if (vGuideSheetItem.getGuideItemText() == "Septic Tank")
-														{
-															if (ASIModel.getAsiName() == "Proposed")
-															{
-																//septicProposed = ASIModel.getAttributeValue();
-			
-															}
-														}											                                                   
-														if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
-														{
-															if (ASIModel.getAsiName() == "Proposed")
-															{
-															//	iaLeachPoolType = ASIModel.getAttributeValue();
-															}
-														}
-
-														}
-														if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
-														{
-															if (ASIModel.getAsiName() == "Proposed")
-															{													
-																//iaLeachOtherType = ASIModel.getAttributeValue();													
-															}
-															if (ASIModel.getAsiName() == "Leaching Product")
-															{														
-																
-																//iaLeachProduct = ASIModel.getAttributeValue();
-																
-															}
-
-														}
-													
 													}
-													
 												}
 											}
-										}
-									}
-								}
-							} 
-							
-							var updateResult = aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
-							if (updateResult.getSuccess())
-							{
-								logDebug("Successfully updated guidesheet on inspection " + inspId + ".");
-							} 
-							else
-							{
-								logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
-							}														
+										}			
+									}					
+								} 
+								
+								var updateResult = aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
+								if (updateResult.getSuccess())
+								{
+									logDebug("Successfully updated guidesheet on inspection " + inspId + ".");
+								} 
+								else
+								{
+									logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+								}														
+							}
+							logDebug("Created inspection. Break loop.");							
 						}
 					}
 				}	
@@ -446,7 +456,7 @@ function scheduleInspection(iType,DaysAhead) // optional inspector ID.  This fun
 		logDebug("Successfully scheduled inspection : " + iType);
 
 		var insObj = schedRes.getOutput();
-		debugObject(insObj)		
+		//debugObject(insObj)		
 	}
 	else
 		logDebug( "**ERROR: adding scheduling inspection (" + iType + "): " + schedRes.getErrorMessage());
