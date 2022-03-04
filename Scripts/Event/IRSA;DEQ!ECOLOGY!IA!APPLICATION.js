@@ -47,11 +47,21 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                                 newRow["BOD"] = labResultsTable[l]["BOD"];
                                 newRow["TSS"] = labResultsTable[l]["TSS"];
                                 newRow["ALK"] = labResultsTable[l]["ALK"];
+                                newRow["DO"] = doValue;
+                                newRow["PH"] = phValue;
+                                newRow["WW Temp"] = wwTemp;
+                                newRow["Air Temp"] = airTemp;
+                                newRow["Sample Date"] = insCon;
+                                newRow["Status"] = inspResult;
 
-                                //newLabResultsTable.push(newRow); 
+
+                                newLabResultsTable.push(newRow); 
+                                break;
                             }
+
+                            addASITable("LAB RESULTS", newLabResultsTable, capId);
                     
-                            //addASITable("LAB RESULTS", newLabResultsTable, capId);
+                            /*
                             editASITableRow(capId, "LAB RESULTS", "Lab ID", newRow["Lab ID"]);
                             editASITableRow(capId, "LAB RESULTS", "TN", newRow["TN"]);
                             editASITableRow(capId, "LAB RESULTS", "NO3 Nitrate", newRow["NO3 Nitrate"]);
@@ -67,7 +77,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                             editASITableRow(capId, "LAB RESULTS", "Air Temp", airTemp);
                             editASITableRow(capId, "LAB RESULTS", "Sample Date", insCon);
                             editASITableRow(capId, "LAB RESULTS", "Status", inspResult);
-                            break;   
+                            break; */  
                         }  
                     }
                 }
