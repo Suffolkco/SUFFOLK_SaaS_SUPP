@@ -60,11 +60,15 @@ if (inspResult == "Completed" || inspResult == "Fail")
                 
         var inspectionDateCon = month + "/" + day + "/" + year;
         logDebug("Inspection Date: " + month + "/" + day + "/" + year);
-        
+
+      
+        var retVal = new Date(String(inspectionDateCon));
+           
+
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  inspSchedDate);
+        reportParams.put("InspectionDate",  retVal);
             
-		rFile = generateReport("Inspection result Tank Operator", reportParams, 'DEQ')
+		rFile = generateReport1("Inspection result Tank Operator", reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile) {
@@ -83,6 +87,40 @@ if (inspResult == "Completed" || inspResult == "Fail")
     }
 
 } 
+
+function generateReport1(aaReportName,parameters,rModule) {
+	var reportName = aaReportName;
+      
+    report = aa.reportManager.getReportInfoModelByName(reportName);
+    report = report.getOutput();
+    logDebug("This is the report: " + report);           
+    report.setModule(rModule);
+    report.setCapId(capId);
+
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName,currentUserID);
+    logDebug("This is the permit: " + permit);   
+    if(permit.getOutput().booleanValue()) {
+       var reportResult = aa.reportManager.getReportResult(report);
+     
+       if(reportResult) {
+	       reportResult = reportResult.getOutput();
+           logDebug("This is the reportResult: " + reportResult);   
+
+	       var reportFile = aa.reportManager.storeReportToDisk(reportResult);
+			logMessage("Report Result: "+ reportResult);
+	       reportFile = reportFile.getOutput();
+	       return reportFile
+       } else {
+       		logMessage("Unable to run report: "+ reportName + " for Admin" + systemUserObj);
+       		return false;
+       }
+    } else {
+         logMessage("No permission to report: "+ reportName + " for Admin" + systemUserObj);
+         return false;
+    }
+}
 
 	
 
