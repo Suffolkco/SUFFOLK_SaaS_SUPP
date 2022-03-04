@@ -114,7 +114,7 @@ try
     var type = getAppSpecific("Type", parentCapId);
 
 
-    populateAmendmentAPOContacts(parentCapId);
+    populateAmendmentAPOContacts(parentCapId); 
   }
 
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
