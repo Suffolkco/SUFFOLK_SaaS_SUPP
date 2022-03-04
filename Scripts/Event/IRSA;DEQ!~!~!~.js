@@ -238,7 +238,7 @@ if (appTypeArray[1] == "WWM")
                                 }
                             }
 
-                            var labResultsTable = new Array();
+                            /*var labResultsTable = new Array();
                             var newRow = new Array();
                             newRow["Technology"] = iaManufacturer;
                             newRow["Email"] = "";
@@ -248,7 +248,7 @@ if (appTypeArray[1] == "WWM")
                             newRow["WWM#"] = capId.getCustomID();
                             newRow["IA#"] = wwmIA.getCustomID();
                             labResultsTable.push(newRow);
-                            addASITable("LAB RESULTS", labResultsTable, wwmIA);
+                            addASITable("LAB RESULTS", labResultsTable, wwmIA);*/
                         }
                         else
                         {
