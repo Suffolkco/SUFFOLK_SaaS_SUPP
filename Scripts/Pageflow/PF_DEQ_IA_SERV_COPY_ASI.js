@@ -112,7 +112,7 @@ try
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
     editAppSpecific4ACA("Model", model, cap);
     editAppSpecific4ACA("Installation Date", installDate, cap);
-    editAppSpecific4ACA("Type", type, cap);
+    editAppSpecific4ACA("Type", type, cap); 
   
 }
 catch (err) { aa.print("**ERROR : " + err); }
