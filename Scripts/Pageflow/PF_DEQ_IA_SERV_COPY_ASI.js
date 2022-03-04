@@ -101,13 +101,21 @@ loadAppSpecific4ACA(AInfo); 						// Add AppSpecific Info
 /-----------------------------------------------------------------------------------------------------*/
 try
 {
-  
+  var parentCapId = null;
+	var parentCapIdString = "" + cap.getParentCapID();
+	if (parentCapIdString) {
+		var pca = parentCapIdString.split("-");
+		parentCapId = aa.cap.getCapID(pca[0],pca[1],pca[2]).getOutput();
+  }
+  if (parentCapId) {
     var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
     var model = getAppSpecific("Model", parentCapId);
     var installDate = getAppSpecific("Installation Date", parentCapId);
     var type = getAppSpecific("Type", parentCapId);
 
+
     populateAmendmentAPOContacts(parentCapId);
+  }
 
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
     editAppSpecific4ACA("Model", model, cap);
