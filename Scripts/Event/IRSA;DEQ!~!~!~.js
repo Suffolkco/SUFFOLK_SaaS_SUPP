@@ -36,7 +36,7 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 
 if (appTypeArray[1] == "WWM")
 {
-    //if (inspType == "WWM_RES_System 1")
+    //if (inspType == "WWM_RES_System 1") 
     
         var vInspection = aa.inspection.getInspection(capId, inspId);
         if (vInspection.getSuccess())
