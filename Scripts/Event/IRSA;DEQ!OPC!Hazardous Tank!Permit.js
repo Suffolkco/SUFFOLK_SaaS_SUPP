@@ -56,10 +56,11 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var hr = inspObj.getInspectionDate().getHourOfDay();
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
-        logDebug("Inspection Date: " + month + "/" + day + "/" + year);
+        
                 
         var inspectionDateCon = month + "/" + day + "/" + year;
-
+        logDebug("Inspection Date: " + month + "/" + day + "/" + year);
+        
         reportParams.put("TankRecordID", alternateID.toString());
         reportParams.put("InspectionDate",  inspSchedDate);
             
