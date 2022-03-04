@@ -45,12 +45,23 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
         inspDate = inspObj.getInspectionDate();
         logDebug("inspResultDate: " + inspResultDate);       
-        logDebug("inspeciton object date: " + inspObj.getInspectionDate());        
+        logDebug("inspeciton object date: " + inspObj.getInspectionDate());       
+        logDebug("inspeciton object date: " + inspObj.getInspectionDate());       
         logDebug("alternateID: " + alternateID.toString());        
-        dDate = convertDate(inspObj.getInspectionDate());
+        logDebug("inspSchedDate: " + inspSchedDate);       
+
+        var year = inspObj.getInspectionDate().getYear();
+        var month = inspObj.getInspectionDate().getMonth() - 1;
+        var day = inspObj.getInspectionDate().getDayOfMonth();
+        var hr = inspObj.getInspectionDate().getHourOfDay();
+        var min = inspObj.getInspectionDate().getMinute();
+        var sec = inspObj.getInspectionDate().getSecond();
+        logDebug("Inspection Date: " + month + "/" + day + "/" + year);
+                
+        var inspectionDateCon = month + "/" + day + "/" + year;
 
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  dDate);
+        reportParams.put("InspectionDate",  inspSchedDate);
             
 		rFile = generateReport("Inspection result Tank Operator", reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
