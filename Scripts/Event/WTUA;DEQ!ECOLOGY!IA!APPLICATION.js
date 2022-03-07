@@ -43,7 +43,7 @@ if (wfTask == "Tracking" && wfStatus == "System Valid")
 if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
-logDebug("capId = " + capId);
+/*logDebug("capId = " + capId);
 var AInfo = new Array();
 logDebug("parentCapId = " + parentCapId);                     
 var conEmail = "";
@@ -83,6 +83,7 @@ addParameter(vEParams, "$$address$$", addrResult);
 addParameter (vEParams, "$$pin$$", pin);
 
 sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+}*/
 }
 
 function getAddressInALine(capId)

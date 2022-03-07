@@ -15,6 +15,36 @@ logDebug("Actual parent ID: " + parentId);
 logDebug("wfTask: " + wfTask);
 logDebug("wfStatus: " + wfStatus);
 
+var collectionDate = getAppSpecific("Sample Collection Date", capId);
+    var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
+    var labResultsTable = new Array();
+    for (var l in parentTable)
+    {
+        var newRow = new Array();
+        newRow["Lab ID"] = parentTable[l]["Lab ID"];
+		newRow["Source"] = capId;
+        newRow["TN"] = parentTable[l]["TN"];
+        newRow["NO3 Nitrate"] = parentTable[l]["NO3 Nitrate"];
+        newRow["NO2 Nitrate"] = parentTable[l]["NO2 Nitrate"];
+        newRow["TKN"] = parentTable[l]["TKN"];
+        newRow["NH4 Ammonia"] = parentTable[l]["NH4 Ammonia"];
+        newRow["BOD"] = parentTable[l]["BOD"];
+        newRow["TSS"] = parentTable[l]["TSS"];
+        newRow["ALK"] = parentTable[l]["ALK"];
+        newRow["DO"] = parentTable[l]["DO"];
+        newRow["PH"] = parentTable[l]["PH"];
+        newRow["WW Temp"] = parentTable[l]["WW Temp"]; 
+        newRow["Air Temp"] = parentTable[l]["Air Temp"];
+        newRow["Status"] = wfStatus;
+        newRow["Sample Date"] = collectionDate;
+
+        labResultsTable.push(newRow);
+        break;
+    }
+    
+    addASITable("LAB RESULTS", labResultsTable, parentCapId);
+    editAppSpecific("Use", use, parentCapId);  
+
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
     if (conUpdate == "CHECKED")
