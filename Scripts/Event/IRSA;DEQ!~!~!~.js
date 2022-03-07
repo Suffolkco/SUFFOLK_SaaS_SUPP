@@ -37,124 +37,124 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 if (appTypeArray[1] == "WWM")
 {
     //if (inspType == "WWM_RES_System 1") 
-    
-        var vInspection = aa.inspection.getInspection(capId, inspId);
-        if (vInspection.getSuccess())
+
+    var vInspection = aa.inspection.getInspection(capId, inspId);
+    if (vInspection.getSuccess())
+    {
+        var vInspection = vInspection.getOutput();
+        var vInspectionActivity = vInspection.getInspection().getActivity();
+        // Get the guidesheets and their items from the activity model
+        var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+        var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+        if (vGuideSheetArray.length != 0)
         {
-            var vInspection = vInspection.getOutput();
-            var vInspectionActivity = vInspection.getInspection().getActivity();
-            // Get the guidesheets and their items from the activity model
-            var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-            var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
-            if (vGuideSheetArray.length != 0)
+            var x = 0;
+            for (x in vGuideSheetArray)
             {
-                var x = 0;
-                for (x in vGuideSheetArray)
+                var iaManufacturer = null;
+                var iaModel = null;
+                var iaLeachPoolType = null;
+                var iaLeachOtherType = null;
+                var iaEffluentPumpOther = null;
+                var iaEffluentPumpPools = null;
+                var iaLeachProduct = null;
+                var iaNumber = null;
+                var iaASIModel = null;
+                var vGuideSheet = vGuideSheetArray[x];
+                if ("Sewage Disposal & Water Supply".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
                 {
-                    var iaManufacturer = null;
-                    var iaModel = null;
-                    var iaLeachPoolType = null;
-                    var iaLeachOtherType = null;
-                    var iaEffluentPumpOther = null;
-                    var iaLeachProduct = null;
-                    var iaNumber = null;
-                    var iaASIModel = null;
-                    var vGuideSheet = vGuideSheetArray[x];
-                    if ("Sewage Disposal & Water Supply".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
+                    var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                    var z = 0;
+                    for (z in vGuideSheetItemsArray)
                     {
-                        var vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
-                        var z = 0;
-                        for (z in vGuideSheetItemsArray)
+                        var vGuideSheetItem = vGuideSheetItemsArray[z];
+                        var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
+                        if (ASISubGroups)
                         {
-                            var vGuideSheetItem = vGuideSheetItemsArray[z];
-                            var ASISubGroups = vGuideSheetItem.getItemASISubgroupList();
-                            if (ASISubGroups)
+                            for (var k = 0; k < ASISubGroups.size(); k++)
                             {
-                                for (var k = 0; k < ASISubGroups.size(); k++)
+                                var ASISubGroup = ASISubGroups.get(k);
+                                var ASIModels = ASISubGroup.getAsiList();
+                                if (ASIModels)
                                 {
-                                    var ASISubGroup = ASISubGroups.get(k);
-                                    var ASIModels = ASISubGroup.getAsiList();
-                                    if (ASIModels)
+                                    for (var m = 0; m < ASIModels.size(); m++)
                                     {
-                                        for (var m = 0; m < ASIModels.size(); m++)
+                                        var ASIModel = ASIModels.get(m);
+                                        if (ASIModel)
                                         {
-                                            var ASIModel = ASIModels.get(m);
-                                            if (ASIModel)
+                                            if (ASIModel.getAsiName() == "Manufacturer")
                                             {
-                                                if (ASIModel.getAsiName() == "Manufacturer")
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
                                                 {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+                                                    iaManufacturer = ASIModel.getAttributeValue();
+                                                }
+
+                                            }
+                                            else if (ASIModel.getAsiName() == "Model")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+                                                {
+                                                    iaModel = ASIModel.getAttributeValue();
+                                                }
+
+                                            }
+                                            else if (ASIModel.getAsiName() == "Type")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
+                                                {
+                                                    iaLeachPoolType = ASIModel.getAttributeValue();
+                                                }
+
+                                            }
+                                            else if (ASIModel.getAsiName() == "Leaching Type")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+                                                {
+                                                    iaLeachOtherType = ASIModel.getAttributeValue();
+                                                }
+
+                                            }
+                                            else if (ASIModel.getAsiName() == "Leaching Product")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+                                                {
+                                                    iaLeachProduct = ASIModel.getAttributeValue();
+                                                }
+                                            }
+                                            else if (ASIModel.getAsiName() == "Effluent Pump")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
+                                                {
+                                                    iaEffluentPumpPools = ASIModel.getAttributeValue();
+                                                }
+
+                                            }
+                                            else if (ASIModel.getAsiName() == "Effluent Pump:")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
+                                                {
+                                                    iaEffluentPumpOther = ASIModel.getAttributeValue();
+                                                }
+
+                                            }
+                                            else if (ASIModel.getAsiName() == "IA Record Number")
+                                            {
+                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
+                                                {
+                                                    iaNumber = ASIModel.getAttributeValue();
+                                                    if (ASIModel.getAttributeValue() == null)
                                                     {
-                                                        iaManufacturer = ASIModel.getAttributeValue();
+                                                        iaASIModel = ASIModel;
                                                     }
 
-                                                }
-                                                else if (ASIModel.getAsiName() == "Model")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
-                                                    {
-                                                        iaModel = ASIModel.getAttributeValue();
-                                                    }
-
-                                                }
-                                                else if (ASIModel.getAsiName() == "Type")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
-                                                    {
-                                                        iaLeachPoolType = ASIModel.getAttributeValue();
-                                                    }
-
-                                                }
-                                                else if (ASIModel.getAsiName() == "Leaching Type")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
-                                                    {
-                                                        iaLeachOtherType = ASIModel.getAttributeValue();
-                                                    }
-
-                                                }
-                                                else if (ASIModel.getAsiName() == "Leaching Product")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
-                                                    {
-                                                        iaLeachProduct = ASIModel.getAttributeValue();
-                                                    }
-                                                }
-                                                else if (ASIModel.getAsiName() == "Effluent Pump")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "Leaching Pool(s)/Galley(s)")
-                                                    {
-                                                        iaEffluentPumpPools = ASIModel.getAttributeValue();
-                                                    }
-
-                                                }
-                                                else if (ASIModel.getAsiName() == "Effluent Pump")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "Other Leaching Structures")
-                                                    {
-                                                        iaEffluentPumpOther = ASIModel.getAttributeValue();
-                                                    }
-
-                                                }
-                                                else if (ASIModel.getAsiName() == "IA Record Number")
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    if (vGuideSheetItem.getGuideItemText() == "IA Treatment Unit")
-                                                    {
-                                                        iaNumber = ASIModel.getAttributeValue();
-                                                        if (ASIModel.getAttributeValue() == null)
-                                                        {
-                                                            iaASIModel = ASIModel;
-                                                        }
-
-                                                    }
                                                 }
                                             }
                                         }
@@ -162,40 +162,145 @@ if (appTypeArray[1] == "WWM")
                                 }
                             }
                         }
-                    } else
-                    {
-                        logDebug("Failed to get guide sheet item");
                     }
-                    if (iaManufacturer)
+                } else
+                {
+                    logDebug("Failed to get guide sheet item");
+                }
+                if (iaManufacturer)
+                {
+                    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+                    if (getCapResult.getSuccess())
                     {
-                        var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
-                        if (getCapResult.getSuccess())
+                        var apsArray = getCapResult.getOutput();
+                        for (aps in apsArray)
                         {
-                            var apsArray = getCapResult.getOutput();
-                            for (aps in apsArray)
+                            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+                            logDebug("apsArray = " + apsArray);
+                            var relCap = myCap.getCapID();
+                            logDebug("relCapID = " + relCap.getCustomID());
+                            var relCapID = relCap.getCustomID();
+                        }
+                    }
+                    if (iaNumber == null)
+                    {
+                        logDebug("Effluent Pump Pool = " + iaEffluentPumpPools);
+                        var desc = "Automated via:" + capIDString;
+                        var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
+                        logDebug("wwmIA =" + wwmIA);
+                        var iaCustom = wwmIA.getCustomID();
+                        copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
+                        if (relCap != null)
+                        {
+                            copyLicensedProfByType(relCap, wwmIA, ["IA Vendor"]);
+                        }
+                        copyContactsByType(capId, wwmIA, ["Property Owner"]);
+                        copyAddress(capId, wwmIA);
+                        copyParcel(capId, wwmIA);
+                        copyDocumentsToCapID(capId, wwmIA);
+                        editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
+                        editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
+                        editAppSpecificLOCAL("Model", iaModel, wwmIA);
+                        editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
+                        editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
+                        if (iaLeachPoolType != null)
+                        {
+                            editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
+                        }
+                        else if (iaLeachPoolType == null)
+                        {
+                            editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
+                        }
+                        if (iaEffluentPumpPools != null)
+                        {
+                            editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, wwmIA);
+                        }
+                        else if (iaEffluentPumpPools == null)
+                        {
+                            editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
+                        }
+
+                        var pinNumber = makePIN(8);
+                        editAppSpecific('IA PIN Number', pinNumber, wwmIA)
+
+
+
+
+                        //Update the guidesheet
+                        if (iaASIModel)
+                        {
+                            iaASIModel.setAttributeValue(iaCustom);
+                            var updateResult = aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
+                            if (updateResult.getSuccess())
                             {
-                                myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-                                logDebug("apsArray = " + apsArray);
-                                var relCap = myCap.getCapID();
-                                logDebug("relCapID = " + relCap.getCustomID());
-                                var relCapID = relCap.getCustomID();
+                                logDebug("Successfully updated guidesheet on inspection " + inspId + ".");
+                            } else
+                            {
+                                logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
                             }
                         }
-                        if (iaNumber == null)
+
+                        /*var labResultsTable = new Array();
+                        var newRow = new Array();
+                        newRow["Technology"] = iaManufacturer;
+                        newRow["Email"] = "";
+                        newRow["Site Name"] = ""; 
+                        newRow["Site Address"] = "";
+                        newRow["Site City"] = "";
+                        newRow["WWM#"] = capId.getCustomID();
+                        newRow["IA#"] = wwmIA.getCustomID();
+                        labResultsTable.push(newRow);
+                        addASITable("LAB RESULTS", labResultsTable, wwmIA);*/
+
+                        //Start Notification to Parent Contacts/LPs
+                        logDebug("capId = " + capId);
+                        var AInfo = new Array();
+                        logDebug("parentCapId = " + parentCapId);
+                        var conEmail = "";
+                        var wwmIA = capId.getCustomID();
+                        logDebug("wwmIA =" + wwmIA);
+                        var pin = getAppSpecific("IA PIN Number", capId);
+                        logDebug("pin = " + pin);
+
+                        //gathering LPs from parent
+                        var licProfResult = aa.licenseScript.getLicenseProf(parentCapId);
+                        var capLPs = licProfResult.getOutput();
+                        for (l in capLPs)
                         {
-                            var desc = "Automated via:" + capIDString;
-                            var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
-                            logDebug("wwmIA =" + wwmIA);
-                            var iaCustom = wwmIA.getCustomID();
-                            copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
-                            if (relCap != null)
+                            if (!matches(capLPs[l].email, null, undefined, ""))
                             {
-                                copyLicensedProfByType(relCap, wwmIA, ["IA Vendor"]);
+                                conEmail += capLPs[l].email + ";"
                             }
-                            copyContactsByType(capId, wwmIA, ["Property Owner"]);
-                            copyAddress(capId, wwmIA);
-                            copyParcel(capId, wwmIA);
-                            copyDocumentsToCapID(capId, wwmIA);
+                        }
+
+                        //gathering contacts from parent
+                        var contactResult = aa.people.getCapContactByCapID(parentCapId);
+                        var capContacts = contactResult.getOutput();
+                        for (c in capContacts)
+                        {
+                            if (!matches(capContacts[c].email, null, undefined, ""))
+                            {
+                                conEmail += capContacts[c].email + ";"
+                            }
+                        }
+
+                        //Sending Notification
+
+                        var vEParams = aa.util.newHashtable();
+                        var addrResult = getAddressInALine(capId);
+                        addParameter(vEParams, "$$altID$$", wwmIA);
+                        addParameter(vEParams, "$$address$$", addrResult);
+                        addParameter(vEParams, "$$pin$$", pin);
+
+                        sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+
+                    }
+                    else
+                    {
+                        var getCapResult = aa.cap.getCapID(iaNumber);
+                        if (getCapResult.getSuccess())
+                        {
+                            var wwmIA = getCapResult.getOutput();
                             editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
                             editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
                             editAppSpecificLOCAL("Model", iaModel, wwmIA);
@@ -217,87 +322,27 @@ if (appTypeArray[1] == "WWM")
                             {
                                 editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
                             }
-                            
-                            var pinNumber = makePIN(8);
-                            editAppSpecific('IA PIN Number', pinNumber, wwmIA)
-                            
-
-
-
-                            //Update the guidesheet
-                            if (iaASIModel)
-                            {
-                                iaASIModel.setAttributeValue(iaCustom);
-                                var updateResult = aa.guidesheet.updateGGuidesheet(vGuideSheet, vGuideSheet.getAuditID());
-                                if (updateResult.getSuccess())
-                                {
-                                    logDebug("Successfully updated guidesheet on inspection " + inspId + ".");
-                                } else
-                                {
-                                    logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
-                                }
-                            }
-
-                            /*var labResultsTable = new Array();
-                            var newRow = new Array();
-                            newRow["Technology"] = iaManufacturer;
-                            newRow["Email"] = "";
-                            newRow["Site Name"] = ""; 
-                            newRow["Site Address"] = "";
-                            newRow["Site City"] = "";
-                            newRow["WWM#"] = capId.getCustomID();
-                            newRow["IA#"] = wwmIA.getCustomID();
-                            labResultsTable.push(newRow);
-                            addASITable("LAB RESULTS", labResultsTable, wwmIA);*/
                         }
                         else
-                        {
-                            var getCapResult = aa.cap.getCapID(iaNumber);
-                            if (getCapResult.getSuccess())
-                            {
-                                var wwmIA = getCapResult.getOutput();
-                                editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
-                                editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
-                                editAppSpecificLOCAL("Model", iaModel, wwmIA);
-                                editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
-                                editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
-                                if (iaLeachPoolType != null)
-                                {
-                                    editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
-                                }
-                                else if (iaLeachPoolType == null)
-                                {
-                                    editAppSpecificLOCAL("Leaching", iaLeachOtherType, wwmIA);
-                                }
-                                if (iaEffluentPumpPools != null)
-                                {
-                                    editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, wwmIA);
-                                }
-                                else if (iaEffluentPumpPools == null)
-                                {
-                                    editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
-                                }
-                            }
-                            else
-                            { logDebug("**ERROR: getting cap id (" + iaNumber + "): " + getCapResult.getErrorMessage()) }
+                        { logDebug("**ERROR: getting cap id (" + iaNumber + "): " + getCapResult.getErrorMessage()) }
 
 
-                        }
-                    }
-                    else
-                    {
-                        logDebug("No Manufacturer");
                     }
                 }
-            } else
-            {
-                logDebug("Failed to get guidesheets");
+                else
+                {
+                    logDebug("No Manufacturer");
+                }
             }
         } else
         {
-            logDebug("Failed to get inpection");
+            logDebug("Failed to get guidesheets");
         }
-    
+    } else
+    {
+        logDebug("Failed to get inpection");
+    }
+
 }
 
 function copyLicenseProfessional(srcCapId, targetCapId)
@@ -707,4 +752,52 @@ function arrayContainsValue(ary, value)
         }//for all types
     }
     return false;
+}
+function getAddressInALine(capId)
+{
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0]; 
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
 }
