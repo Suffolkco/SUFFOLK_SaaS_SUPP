@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------------------------------/
 | Program:BATCH_CA_CONNECT_PUBLIC_USER_PIN.js: Batch
 | 
-| This batch script will run one time to update a custom field 
-| in converted record without concerning other required fields in custom fields.
+| This batch script will run manually in Script Test. Two parameters MUST be updated to reflect the users
+| before running the script.
 /------------------------------------------------------------------------------------------------------*/
 currentUserID = "ADMIN";
 useAppSpecificGroupName = false;
@@ -146,7 +146,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_LICENSES_ABOUT_TO_EXPIRE", emailText);
+        aa.sendMail("ada.chan@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_CONNECT_PUBLIC_USER_PIN", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
