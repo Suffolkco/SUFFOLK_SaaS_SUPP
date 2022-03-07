@@ -52,7 +52,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         debugObject(inspObj);
 
         var year = inspObj.getInspectionDate().getYear();
-        var month = inspObj.getInspectionDate().getMonth() - 1;
+        var month = inspObj.getInspectionDate().getMonth();
         var day = inspObj.getInspectionDate().getDayOfMonth();
         var hr = inspObj.getInspectionDate().getHourOfDay()-1;
         var min = inspObj.getInspectionDate().getMinute();
