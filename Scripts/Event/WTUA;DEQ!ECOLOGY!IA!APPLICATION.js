@@ -5,7 +5,7 @@ if (wfTask == "Tracking" && wfStatus == "System Valid")
 {
     var workflowResult = aa.workflow.getTasks(capId);
 
-    if (workflowResult.getSuccess())
+    if (workflowResult.getSuccess()) 
     {
         wfObj = workflowResult.getOutput();
     }

@@ -51,7 +51,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                                 newRow["PH"] = phValue;
                                 newRow["WW Temp"] = wwTemp;
                                 newRow["Air Temp"] = airTemp;
-                                newRow["Sample Date"] = insCon;
+                                newRow["Sample Date"] = insCon; 
                                 newRow["Status"] = inspResult;
                                 newRow["Source"] = inspId;
 
