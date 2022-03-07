@@ -8,6 +8,9 @@ var sampleResults = getAppSpecific("Sample Results", capId);
 var parConExp = getAppSpecific("Contract Expiration Date", parentId);
 var conStartServ = getAppSpecific("Contract Start Date", capId);
 var contermServ = getAppSpecific("Contract Term", capId);
+var myCap = capId.getOutput();
+var myCustomCap = myCap.getCustomID();
+var use = getAppSpecific("Use", capId);
 var serviceDate = new Date(AInfo["Service Date"]);
 var sampleDate = new Date(AInfo["Sample Collection Date"]);
 
@@ -22,7 +25,7 @@ var collectionDate = getAppSpecific("Sample Collection Date", capId);
     {
         var newRow = new Array();
         newRow["Lab ID"] = parentTable[l]["Lab ID"];
-		newRow["Source"] = capId;
+		newRow["Source"] = myCustomCap;
         newRow["TN"] = parentTable[l]["TN"];
         newRow["NO3 Nitrate"] = parentTable[l]["NO3 Nitrate"];
         newRow["NO2 Nitrate"] = parentTable[l]["NO2 Nitrate"];
