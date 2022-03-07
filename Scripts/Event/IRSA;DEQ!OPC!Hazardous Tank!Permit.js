@@ -45,28 +45,30 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
         inspDate = inspObj.getInspectionDate();
         logDebug("inspResultDate: " + inspResultDate);       
-        logDebug("inspeciton object date: " + inspObj.getInspectionDate());       
-        logDebug("inspeciton object date: " + inspObj.getInspectionDate());       
+        logDebug("inspection object date: " + inspObj.getInspectionDate());       
+        logDebug("inspection object date: " + inspObj.getInspectionDate());       
         logDebug("alternateID: " + alternateID.toString());        
         logDebug("inspSchedDate: " + inspSchedDate);       
+        debugObject(inspObj);
 
         var year = inspObj.getInspectionDate().getYear();
-        var month = inspObj.getInspectionDate().getMonth() - 1;
+        var month = inspObj.getInspectionDate().getMonth();
         var day = inspObj.getInspectionDate().getDayOfMonth();
-        var hr = inspObj.getInspectionDate().getHourOfDay();
+        var hr = inspObj.getInspectionDate().getHourOfDay()-1;
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
-        
+        logDebug("Inspection teim: " + hr + "," + min + "," + sec);
                 
         var inspectionDateCon = month + "/" + day + "/" + year;
-        logDebug("Inspection Date: " + month + "/" + day + "/" + year);
+        logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
 
+        var newReportInspDate = new Date(year, month, day, hr, min, sec);
       
-        var retVal = new Date(String(inspectionDateCon));
-           
+        //var retVal = new Date(String(inspectionDateCon));
+        //logDebug("retVal Date: " + retVal);
 
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  retVal);
+        reportParams.put("InspectionDate",  newReportInspDate);
             
 		rFile = generateReport1("Inspection result Tank Operator", reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
@@ -87,6 +89,13 @@ if (inspResult == "Completed" || inspResult == "Fail")
     }
 
 } 
+function debugObject(object) {
+    var output = '';
+    for (property in object) {
+        output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
+    }
+    logDebug(output);
+}
 
 function generateReport1(aaReportName,parameters,rModule) {
 	var reportName = aaReportName;
