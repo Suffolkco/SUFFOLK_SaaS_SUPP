@@ -168,8 +168,11 @@ function mainProcess()
         logDebugLocal("Find public user: " + publicUserID);
            if (getUserResult.getSuccess() && getUserResult.getOutput()) {
                userModel = getUserResult.getOutput();	
-            userSeqNum = userModel.getUserSeqNum();
+                userSeqNum = userModel.getUserSeqNum();
             logDebugLocal("Public user sequence number found: " + userSeqNum)
+            logDebugLocal("Public user first name: " + userModel.getFirstName());
+            logDebugLocal("Public user last name: " +userModel.getLastName());
+            logDeubLocal("Public user email address found: " + userModel.getEmail());
             refContact = getRefContactForPublicUser(userSeqNum) 
             if (refContact != null) {
                 refContactNum = refContact.getContactSeqNumber();
