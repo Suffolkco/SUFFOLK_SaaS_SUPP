@@ -45,8 +45,8 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
         inspDate = inspObj.getInspectionDate();
         logDebug("inspResultDate: " + inspResultDate);       
-        logDebug("inspeciton object date: " + inspObj.getInspectionDate());       
-        logDebug("inspeciton object date: " + inspObj.getInspectionDate());       
+        logDebug("inspection object date: " + inspObj.getInspectionDate());       
+        logDebug("inspection object date: " + inspObj.getInspectionDate());       
         logDebug("alternateID: " + alternateID.toString());        
         logDebug("inspSchedDate: " + inspSchedDate);       
 
@@ -63,10 +63,10 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
       
         var retVal = new Date(String(inspectionDateCon));
-           
+        logDebug("retVal Date: " + retVal);
 
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  retVal);
+        reportParams.put("InspectionDate",  inspObj.getInspectionDate());
             
 		rFile = generateReport1("Inspection result Tank Operator", reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
