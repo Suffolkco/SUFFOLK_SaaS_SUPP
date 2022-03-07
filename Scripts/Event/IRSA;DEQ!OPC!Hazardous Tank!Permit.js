@@ -49,6 +49,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         logDebug("inspection object date: " + inspObj.getInspectionDate());       
         logDebug("alternateID: " + alternateID.toString());        
         logDebug("inspSchedDate: " + inspSchedDate);       
+debugObject(inspObj);
 
         var year = inspObj.getInspectionDate().getYear();
         var month = inspObj.getInspectionDate().getMonth() - 1;
@@ -56,7 +57,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var hr = inspObj.getInspectionDate().getHourOfDay();
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
-        
+        logDebug("Inspection teim: " + hr + "," + min + "," + sec);
                 
         var inspectionDateCon = month + "/" + day + "/" + year;
         logDebug("Inspection Date: " + month + "/" + day + "/" + year);
