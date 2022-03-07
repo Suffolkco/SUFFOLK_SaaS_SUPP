@@ -9,6 +9,9 @@ var contractAnualCost = getAppSpecific("Contract Annual Cost", capId);
 var serviceDate = getAppSpecific("Service Date", capId);
 var sampleCollectionDate = getAppSpecific("Sample Collection Date", capId);
 var use = getAppSpecific("Use", capId);
+var myCap = capId;
+var myCustomCap = myCap.getCustomID();
+
 
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
@@ -109,6 +112,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
         newRow["Status"] = wfStatus;
         newRow["Sample Date"] = collectionDate;
+        newRow["Source"] = myCustomCap;
 
         labResultsTable.push(newRow);
         break;
