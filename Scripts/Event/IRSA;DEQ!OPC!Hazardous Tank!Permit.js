@@ -86,8 +86,6 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
 } 
 
- 
-
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
 {
 	var itemCap = capId;
@@ -109,7 +107,7 @@ function sendNotification(emailFrom, emailTo, emailCC, templateName, params, rep
 		return false;
 	}
 }
-IntersectionObserver
+
 function debugObject(object) {
     var output = '';
     for (property in object) {
