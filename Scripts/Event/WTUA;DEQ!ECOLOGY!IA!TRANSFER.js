@@ -11,10 +11,16 @@ var sampleCollectionDate = getAppSpecific("Sample Collection Date", capId);
 var use = getAppSpecific("Use", capId);
 var myCap = capId;
 var myCustomCap = myCap.getCustomID();
+var phase = getAppSpecific("Phase", capId);
+var process = getAppSpecific("Process", capId);
+var collection = getAppSpecific("Collection", capId);
+var collector = getAppSpecific("Collector", capId);
+var fieldId = getAppSpecific("Field ID", capId);
+var lab = getAppSpecific("Lab", capId);
 
 
 
-if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
+if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete") 
 {
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())
@@ -113,6 +119,12 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["Status"] = wfStatus;
         newRow["Sample Date"] = collectionDate;
         newRow["Source"] = myCustomCap;
+        newRow["Phase"] = phase;
+        newRow["Process"] = process;
+        newRow["Collection"] = collection;
+        newRow["Collector"] = collector;
+        newRow["Field ID"] = fieldId;
+        newRow["Lab"] = lab;
 
         labResultsTable.push(newRow);
         break;

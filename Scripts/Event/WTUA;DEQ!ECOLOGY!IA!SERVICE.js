@@ -13,8 +13,14 @@ var myCustomCap = myCap.getCustomID();
 var use = getAppSpecific("Use", capId);
 var serviceDate = new Date(AInfo["Service Date"]);
 var sampleDate = new Date(AInfo["Sample Collection Date"]);
+var phase = getAppSpecific("Phase", capId);
+var process = getAppSpecific("Process", capId);
+var collection = getAppSpecific("Collection", capId);
+var collector = getAppSpecific("Collector", capId);
+var fieldId = getAppSpecific("Field ID", capId);
+var lab = getAppSpecific("Lab", capId);
 
-logDebug("Actual parent ID: " + parentId);
+logDebug("Actual parent ID: " + parentId); 
 logDebug("wfTask: " + wfTask);
 logDebug("wfStatus: " + wfStatus);
 
@@ -40,6 +46,12 @@ var collectionDate = getAppSpecific("Sample Collection Date", capId);
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
         newRow["Status"] = wfStatus;
         newRow["Sample Date"] = collectionDate;
+		newRow["Phase"] = phase;
+        newRow["Process"] = process;
+        newRow["Collection"] = collection;
+        newRow["Collector"] = collector;
+        newRow["Field ID"] = fieldId;
+        newRow["Lab"] = lab;
 
         labResultsTable.push(newRow);
         break;
