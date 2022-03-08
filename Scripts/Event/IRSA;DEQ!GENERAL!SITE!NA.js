@@ -32,7 +32,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
        
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
 
-        inspDate = inspObj.getInspectionDate();
+        //inspDate = inspObj.getInspectionDate();
 
         logDebug("inspResultDate: " + inspResultDate);       
         logDebug("inspection object date: " + inspObj.getInspectionDate());       
@@ -47,9 +47,9 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var sec = inspObj.getInspectionDate().getSecond();
              
         //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
-		logDebug("Inspection DateTime: " + year + "-" + month + "/" + day + " " +  hr + ':' + min + ":" + sec + ".0");
+		logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0");
 	
-		var inspectionDateCon = year + "-" + month + "/" + day + " " +  hr + ':' + min + ":" + sec + ".0";
+		var inspectionDateCon = year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0";
 
         logDebug("capId: " + capId);
 		logDebug("inspectionDateCon: " + inspectionDateCon);

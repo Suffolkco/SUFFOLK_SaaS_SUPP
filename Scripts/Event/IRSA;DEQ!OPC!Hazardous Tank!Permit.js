@@ -42,9 +42,9 @@ if (inspResult == "Completed" || inspResult == "Fail")
       
         //insps[i].getInspectionDate()
         inspModel = inspObj.getInspection();            
-        /*
-        reportParams.put("InspectionDate",  inspObj.getInspectionDate());
-        inspDate = inspObj.getInspectionDate();
+        
+        //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
+        //inspDate = inspObj.getInspectionDate();
 
         logDebug("inspResultDate: " + inspResultDate);       
         logDebug("inspection object date: " + inspObj.getInspectionDate());       
@@ -57,19 +57,21 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var hr = inspObj.getInspectionDate().getHourOfDay()-1;
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
-        logDebug("Inspection teim: " + hr + "," + min + "," + sec);                
-        var inspectionDateCon = month + "/" + day + "/" + year;
-        logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
-
-        var newReportInspDate = new Date(year, month, day, hr, min, sec);
-        */
+        
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0");
+	
+		var inspectionDateCon = year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0";
+       
         logDebug("capId: " + capId);
+        logDebug("inspectionDateCon: " + inspectionDateCon);
+
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
         addParameter(reportParams, "TankRecordID", alternateID.toString());
-        addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
-       
-		rFile = generateReportBatch(capId, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
+        //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
+        addParameter(reportParams, "InspectionDate", inspectionDateCon);
+
+		rFile = generateReportBatch(capId, "Inspection result Tank Operator", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile)
