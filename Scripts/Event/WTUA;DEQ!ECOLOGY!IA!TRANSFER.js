@@ -20,7 +20,7 @@ var Lab = getAppSpecific("Lab", capId);
 
 
 
-if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
+if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete") 
 {
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())

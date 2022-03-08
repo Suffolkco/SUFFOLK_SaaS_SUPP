@@ -20,7 +20,7 @@ var collector = getAppSpecific("Collector", capId);
 var fieldId = getAppSpecific("Field ID", capId);
 var Lab = getAppSpecific("Lab", capId);
 
-logDebug("Actual parent ID: " + parentId);
+logDebug("Actual parent ID: " + parentId); 
 logDebug("wfTask: " + wfTask);
 logDebug("wfStatus: " + wfStatus);
 
