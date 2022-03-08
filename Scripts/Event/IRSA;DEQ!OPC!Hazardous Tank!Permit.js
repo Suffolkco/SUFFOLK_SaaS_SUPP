@@ -71,7 +71,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
         //reportParams.put("TankRecordID", alternateID.toString());
         //reportParams.put("InspectionId",  inspObj.getIdNumber());
-        var rFile = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
+        var rFile = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", reportParams);
 		//rFile = generateReportBatch("Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
         
