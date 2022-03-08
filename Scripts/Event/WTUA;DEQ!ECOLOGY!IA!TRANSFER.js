@@ -100,7 +100,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["Lab ID"] = parentTable[l]["Lab ID"];
         newRow["TN"] = parentTable[l]["TN"];
         newRow["NO3 Nitrate"] = parentTable[l]["NO3 Nitrate"];
-        newRow["NO2 Nitrate"] = parentTable[l]["NO2 Nitrate"];
+        newRow["NO2 Nitrite"] = parentTable[l]["NO2 Nitrite"];
         newRow["TKN"] = parentTable[l]["TKN"];
         newRow["NH4 Ammonia"] = parentTable[l]["NH4 Ammonia"];
         newRow["BOD"] = parentTable[l]["BOD"];
