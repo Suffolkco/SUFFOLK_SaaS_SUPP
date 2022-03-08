@@ -67,7 +67,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
         addParameter(reportParams, "TankRecordID", alternateID.toString());
-        addParameter(reportParams, "InspectionId", inspObj.getIdNumber());
+        addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
        
 		rFile = generateReportBatch(capId, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
@@ -112,7 +112,7 @@ function sendNotification(emailFrom, emailTo, emailCC, templateName, params, rep
 		return false;
 	}
 }
-
+IntersectionObserver
 function debugObject(object) {
     var output = '';
     for (property in object) {
