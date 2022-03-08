@@ -68,9 +68,9 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //logDebug("retVal Date: " + retVal);
 
         reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionDate",  newReportInspDate);
+        reportParams.put("InspectionId",  inspObj.getIdNumber());
             
-		rFile = generateReport1("Inspection result Tank Operator", reportParams, 'DEQ')
+		rFile = generateReport1("Inspection result Tank Operator For Script Use", reportParams, 'DEQ')
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile) {
