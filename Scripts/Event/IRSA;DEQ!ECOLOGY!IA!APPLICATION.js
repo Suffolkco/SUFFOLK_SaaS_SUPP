@@ -5,6 +5,12 @@ var doValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", 
 var phValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
 var wwTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
 var airTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
+var phase = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Phase");
+var process = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Process");
+var collection = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collection");
+var collector = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collector");
+var fieldId = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Field ID");
+var lab = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Lab");
 
 var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
@@ -54,6 +60,12 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                                 newRow["Sample Date"] = insCon; 
                                 newRow["Status"] = inspResult;
                                 newRow["Source"] = inspId;
+                                newRow["Phase"] = phase;
+                                newRow["Process"] = process;
+                                newRow["Collection"] = collection;
+                                newRow["Collector"] = collector;
+                                newRow["Field ID"] = fieldId;
+                                newRow["Lab"] = lab;
 
 
                                 newLabResultsTable.push(newRow); 
