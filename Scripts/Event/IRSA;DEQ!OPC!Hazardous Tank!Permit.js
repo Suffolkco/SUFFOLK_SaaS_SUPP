@@ -88,12 +88,14 @@ if (inspResult == "Completed" || inspResult == "Fail")
         insId = inspObj.getIdNumber();
         addParameter(emailParams, "$$inspId$$", insId);
         
-        sendNotification("", "ada.chan@suffolkcountyny.gov", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", "", emailParams, rFiles);    
+        sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);    
               
 
     }
 
 } 
+
+ 
 
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
 {
