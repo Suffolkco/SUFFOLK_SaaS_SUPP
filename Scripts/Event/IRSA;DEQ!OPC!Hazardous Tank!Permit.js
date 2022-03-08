@@ -42,27 +42,27 @@ if (inspResult == "Completed" || inspResult == "Fail")
       
         //insps[i].getInspectionDate()
         inspModel = inspObj.getInspection();            
-        //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
+        /*
+        reportParams.put("InspectionDate",  inspObj.getInspectionDate());
         inspDate = inspObj.getInspectionDate();
+
         logDebug("inspResultDate: " + inspResultDate);       
         logDebug("inspection object date: " + inspObj.getInspectionDate());       
         logDebug("inspection object date: " + inspObj.getInspectionDate());       
         logDebug("alternateID: " + alternateID.toString());        
-        logDebug("inspSchedDate: " + inspSchedDate);       
-        debugObject(inspObj);
-
+        logDebug("inspSchedDate: " + inspSchedDate);            
         var year = inspObj.getInspectionDate().getYear();
         var month = inspObj.getInspectionDate().getMonth();
         var day = inspObj.getInspectionDate().getDayOfMonth();
         var hr = inspObj.getInspectionDate().getHourOfDay()-1;
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
-        logDebug("Inspection teim: " + hr + "," + min + "," + sec);
-                
+        logDebug("Inspection teim: " + hr + "," + min + "," + sec);                
         var inspectionDateCon = month + "/" + day + "/" + year;
         logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
 
         var newReportInspDate = new Date(year, month, day, hr, min, sec);
+        */
         logDebug("capId: " + capId);
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
@@ -80,10 +80,8 @@ if (inspResult == "Completed" || inspResult == "Fail")
            getRecordParams4Notification(emailParams);                 
            addParameter(emailParams, "$$altID$$", capId.getCustomID());     
            sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
-        }
-        
+        }        
     }
-
 } 
 
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
@@ -155,41 +153,6 @@ function generateReportBatch(itemCap, reportName, module, parameters)
     }
 }
 
-function generateReport1(aaReportName,parameters,rModule) {
-	var reportName = aaReportName;
-      
-    report = aa.reportManager.getReportInfoModelByName(reportName);
-    report = report.getOutput();
-    logDebug("This is the report: " + report);           
-    report.setModule(rModule);
-    report.setCapId(capId);
-
-    report.setReportParameters(parameters);
-
-    var permit = aa.reportManager.hasPermission(reportName,currentUserID);
-    logDebug("This is the permit: " + permit);   
-    if(permit.getOutput().booleanValue()) {
-       var reportResult = aa.reportManager.getReportResult(report);
-     
-       if(reportResult) {
-	       reportResult = reportResult.getOutput();
-           logDebug("This is the reportResult: " + reportResult);   
-
-	       var reportFile = aa.reportManager.storeReportToDisk(reportResult);
-			logMessage("Report Result: "+ reportResult);
-	       reportFile = reportFile.getOutput();
-	       return reportFile
-       } else {
-       		logMessage("Unable to run report: "+ reportName + " for Admin" + systemUserObj);
-       		return false;
-       }
-    } else {
-         logMessage("No permission to report: "+ reportName + " for Admin" + systemUserObj);
-         return false;
-    }
-}
-
-	
 
 
 
