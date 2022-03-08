@@ -69,8 +69,9 @@ if (inspResult == "Completed" || inspResult == "Fail")
         addParameter(reportParams, "TankRecordID", alternateID.toString());
         addParameter(reportParams, "InspectionId", inspObj.getIdNumber());
 
-     
-        var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", reportParams);
+        sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, reportFile);
+        /*
+        var caReport = generateReportBatch(capId, "Inspection result Tank Operator For Script Use", "DEQ", reportParams);
         if (caReport)
         {
             var caReports = new Array();
@@ -78,7 +79,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         }
 
         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, caReports);
-
+*/
         //reportParams.put("TankRecordID", alternateID.toString());
         //reportParams.put("InspectionId",  inspObj.getIdNumber());
        // var rFile = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", reportParams);
