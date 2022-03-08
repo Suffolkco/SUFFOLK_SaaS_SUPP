@@ -1,7 +1,7 @@
 //IRSA:DEQ/OPC/HAZARDOUS TANK/PERMIT
 
 showDebug = true;
-
+var emailText = "";
 var today = new Date();
 
 var parentCap = getParent(capId);
@@ -63,40 +63,27 @@ if (inspResult == "Completed" || inspResult == "Fail")
         logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
 
         var newReportInspDate = new Date(year, month, day, hr, min, sec);
-      
+        logDebug("capId: " + capId);
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
         addParameter(reportParams, "TankRecordID", alternateID.toString());
         addParameter(reportParams, "InspectionId", inspObj.getIdNumber());
-
-        sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, reportFile);
-        /*
-        var caReport = generateReportBatch(capId, "Inspection result Tank Operator For Script Use", "DEQ", reportParams);
-        if (caReport)
-        {
-            var caReports = new Array();
-            caReports.push(caReport);
-        }
-
-        sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, caReports);
-*/
-        //reportParams.put("TankRecordID", alternateID.toString());
-        //reportParams.put("InspectionId",  inspObj.getIdNumber());
-       // var rFile = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", reportParams);
-		//rFile = generateReportBatch("Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
-        //logDebug("This is the rFile: " + rFile);           
+       
         
-       // if (rFile)
-       // {
-        //    var rFiles = new Array();
-        //    rFiles.push(rFile);
-        //}
+        
+		rFile = generateReportBatch(capId, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
+        logDebug("This is the rFile: " + rFile);           
+        
+        if (rFile)
+        {
+           var rFiles = new Array();
+           rFiles.push(rFile);
+        }
         
     
-        //getRecordParams4Notification(emailParams);                 
-        //addParameter(emailParams, "$$altID$$", capId.getCustomID());     
-        //sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);    
-              
+        getRecordParams4Notification(emailParams);                 
+        addParameter(emailParams, "$$altID$$", capId.getCustomID());     
+        sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);   
 
     }
 
