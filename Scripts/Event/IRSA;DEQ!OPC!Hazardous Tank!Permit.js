@@ -66,24 +66,29 @@ if (inspResult == "Completed" || inspResult == "Fail")
       
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
+        addParameter(reportParams, "TankRecordID", alternateID.toString());
+        addParameter(reportParams, "TankRecordID", inspObj.getIdNumber());
 
-        reportParams.put("TankRecordID", alternateID.toString());
-        reportParams.put("InspectionId",  inspObj.getIdNumber());
-            
-		rFile = generateReport1("Inspection result Tank Operator For Script Use", reportParams, 'DEQ')
+        //reportParams.put("TankRecordID", alternateID.toString());
+        //reportParams.put("InspectionId",  inspObj.getIdNumber());
+        var rFile = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
+		//rFile = generateReportBatch("Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
         
-        if (rFile) {
-        reportFile.push(rFile);
+        if (rFile)
+        {
+            var rFiles = new Array();
+            rFiles.push(rFile);
         }
-
+        
+    
         getRecordParams4Notification(emailParams);                 
 
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
         insId = inspObj.getIdNumber();
         addParameter(emailParams, "$$inspId$$", insId);
         
-        sendNotification("", "ada.chan@suffolkcountyny.gov", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", "", emailParams, reportFile);    
+        sendNotification("", "ada.chan@suffolkcountyny.gov", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", "", emailParams, rFiles);    
               
 
     }
@@ -95,6 +100,43 @@ function debugObject(object) {
         output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
     }
     logDebug(output);
+}
+function generateReportBatch(itemCap, reportName, module, parameters)
+{
+    //returns the report file which can be attached to an email.
+    var user = currentUserID; // Setting the User Name
+    var report = aa.reportManager.getReportInfoModelByName(reportName);
+    if (!report.getSuccess() || report.getOutput() == null)
+    {
+        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
+        return false;
+    }
+    report = report.getOutput();
+    report.setModule(module);
+    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName, user);
+
+    if (permit.getOutput().booleanValue())
+    {
+        var reportResult = aa.reportManager.getReportResult(report);
+        if (reportResult.getSuccess())
+        {
+            reportOutput = reportResult.getOutput();
+            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
+            reportFile = reportFile.getOutput();
+            return reportFile;
+        } else
+        {
+            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
+            return false;
+        }
+    } else
+    {
+        logDebug("You have no permission.");
+        return false;
+    }
 }
 
 function generateReport1(aaReportName,parameters,rModule) {
