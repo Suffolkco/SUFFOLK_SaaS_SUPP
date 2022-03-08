@@ -82,9 +82,6 @@ if (inspResult == "Completed" || inspResult == "Fail")
            sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
         }
         
-    
-         
-
     }
 
 } 
