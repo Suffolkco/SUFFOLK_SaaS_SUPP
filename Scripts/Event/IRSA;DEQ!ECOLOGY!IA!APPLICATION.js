@@ -44,6 +44,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                             for (var l in labResultsTable)
                             {
                                 var newRow = new Array();
+                                newRow["Sample Date"] = labResultsTable[l]["Sample Date"];
                                 newRow["Lab ID"] = labResultsTable[l]["Lab ID"];
                                 newRow["TN"] = labResultsTable[l]["TN"];
                                 newRow["NO3 Nitrate"] = labResultsTable[l]["NO3 Nitrate"];
