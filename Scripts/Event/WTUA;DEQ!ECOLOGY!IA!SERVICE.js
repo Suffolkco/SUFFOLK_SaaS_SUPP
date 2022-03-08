@@ -18,7 +18,7 @@ var process = getAppSpecific("Process", capId);
 var collection = getAppSpecific("Collection", capId);
 var collector = getAppSpecific("Collector", capId);
 var fieldId = getAppSpecific("Field ID", capId);
-var Lab = getAppSpecific("Lab", capId);
+var lab = getAppSpecific("Lab", capId);
 
 logDebug("Actual parent ID: " + parentId); 
 logDebug("wfTask: " + wfTask);
