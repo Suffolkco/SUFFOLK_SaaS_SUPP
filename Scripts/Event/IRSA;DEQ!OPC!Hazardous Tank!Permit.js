@@ -69,8 +69,6 @@ if (inspResult == "Completed" || inspResult == "Fail")
         addParameter(reportParams, "TankRecordID", alternateID.toString());
         addParameter(reportParams, "InspectionId", inspObj.getIdNumber());
        
-        
-        
 		rFile = generateReportBatch(capId, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
         
@@ -78,12 +76,14 @@ if (inspResult == "Completed" || inspResult == "Fail")
         {
            var rFiles = new Array();
            rFiles.push(rFile);
+
+           getRecordParams4Notification(emailParams);                 
+           addParameter(emailParams, "$$altID$$", capId.getCustomID());     
+           sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
         }
         
     
-        getRecordParams4Notification(emailParams);                 
-        addParameter(emailParams, "$$altID$$", capId.getCustomID());     
-        sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);   
+         
 
     }
 
@@ -124,6 +124,8 @@ function generateReportBatch(itemCap, reportName, module, parameters)
 {
     //returns the report file which can be attached to an email.
     var user = currentUserID; // Setting the User Name
+    logDebug("user: " + user);
+    logDebug("Resport Name: " + reportName);
     var report = aa.reportManager.getReportInfoModelByName(reportName);
     if (!report.getSuccess() || report.getOutput() == null)
     {
