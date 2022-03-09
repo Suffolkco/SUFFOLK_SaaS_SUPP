@@ -10,7 +10,10 @@ if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses")) {
 } 
 
 // DAP-362
-if (matches(appTypeArray[1], "Registrations", "Licenses")) {
+if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[3] != "Renewal" && matches(appTypeArray[4], "NA"))
+{
+	logDebug("appTypeArray is " + appTypeArray);
+
 	if ( wfTask == "Issuance" && wfStatus == "Issued")
 	{
 		var expDateASI = getAppSpecific("Expiration Date", capId);
