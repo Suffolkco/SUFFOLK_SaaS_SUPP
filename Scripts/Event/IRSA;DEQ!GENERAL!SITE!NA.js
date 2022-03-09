@@ -57,7 +57,8 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //logDebug("retVal Date: " + retVal);
         addParameter(reportParams, "SiteRecordID", alternateID.toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
-       
+        addParameter(reportParams, "InspectionType", inspType);
+        
 		rFile = generateReportBatch(capId, "Facility Inspection Summary Report", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
         

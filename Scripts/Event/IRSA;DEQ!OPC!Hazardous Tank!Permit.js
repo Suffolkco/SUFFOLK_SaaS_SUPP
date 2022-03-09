@@ -70,6 +70,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         addParameter(reportParams, "TankRecordID", alternateID.toString());
         //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
+        addParameter(reportParams, "InspectionType", inspType);
 
 		rFile = generateReportBatch(capId, "Inspection result Tank Operator", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
