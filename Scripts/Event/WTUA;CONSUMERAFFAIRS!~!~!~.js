@@ -9,7 +9,7 @@ if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses")) {
 
 } 
 
-logDebug("appTypeArray is " + appTypeArray);
+logDebug("appTypeString  is " + appTypeString);
 // DAP-362
 if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[2] != "Renewal" && matches(appTypeArray[3], "NA"))
 {
