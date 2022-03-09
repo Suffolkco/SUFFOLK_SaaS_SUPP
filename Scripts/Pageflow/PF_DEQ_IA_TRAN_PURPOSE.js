@@ -73,12 +73,14 @@ var sample = AInfo["Sample Results"];
 
 if (contract =="UNCHECKED" && service =="UNCHECKED" && sample =="UNCHECKED")
 {
+    showmessage = true;
     cancel=true;
     message="Must select either Contract Update, Service Report, or Sample Results in 'SERVICE PERFORMED'";
     
 }
 else
 {
+    showmessage = false;
     cancel=false;
     message="";  
     
