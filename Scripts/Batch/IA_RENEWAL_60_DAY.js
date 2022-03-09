@@ -82,26 +82,10 @@ try {
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
             if (cap) {
-                    var appStatus = getAppStatus();
-                        logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
-                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                        if (capId.getCustomID() != "IA-18-0005" && capId.getCustomID() != "IA-18-0004" && capId.getCustomID() != "IA-18-0002" && capId.getCustomID() != "IA-18-0001")
-                            {
-
-                        if (b1ExpResult.getSuccess()) {
-                            var b1Exp = b1ExpResult.getOutput();
-                            var expDate = b1Exp.getExpDate();
-
-                            var expDateCon = expDate.getMonth() + "/" + expDate.getDayOfMonth() + "/" + expDate.getYear();
-                            logDebug(expDateCon);
-                            //These records were created without expirations  in DEV and will error. Remove before processing to TEST. 
-                            
-                           
-                            if (expDateCon == convertedDate)
+                var expDateCon = getAppSpecific("Contract Expiration Date", capId);
+                if (new Date(expDateCon).getMonth() == new Date(convertedDate).getMonth() && new Date(expDateCon).getDate() == new Date(convertedDate).getDate() && new Date(expDateCon).getFullYear() == new Date(convertedDate).getFullYear())
                              {
-                                    b1Exp.setExpStatus("About to Expire");
-                                    aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                    logDebug("Just set: " + capId.getCustomID() + " to about to expire.");
+                                logDebug(capId.getCustomID()); 
                                     addToSet(capId, "IARENEWAL", "Ecology Renewals");
                                     var contactArray = getPeople(capId);
                                 if(contactArray)
@@ -124,18 +108,14 @@ try {
                                                     reportFile.push(rFile);
                                                     }
 
-                                            var params = aa.util.newHashtable();
-                                            var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
-                                            addParameter(params, "$$altId$$", capId.getCustomID());
-                                        sendNotification("noreplyehims@suffolkcountyny.gov",PropertyOwnerEmail,"","IARenewal60Days",params,reportFile);
-                                        }
+                                var params = aa.util.newHashtable();
+                                var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
+                                addParameter(params, "$$altId$$", capId.getCustomID());
+                                sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal60Days", params, reportFile);
                             }
-                        }
-
-                            }
-
                         }
                     }
+                }
             }
         }
     }
@@ -447,7 +427,7 @@ function lookup(stdChoice, stdValue) {
     return strControl;
 }
 
-function updateAppStatus(stat, cmt) {
+function updateAppStatus(stat, cmt) { 
     updateStatusResult = aa.cap.updateAppStatus(capId, "APPLICATION", stat, sysDate, cmt, systemUserObj);
     if (!updateStatusResult.getSuccess()) {
         logDebug("ERROR: application status update to " + stat + " was unsuccessful.  The reason is " +

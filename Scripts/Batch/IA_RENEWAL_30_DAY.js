@@ -10,7 +10,7 @@
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
-var showDebug = false; // Set to true to see debug messages in email confirmation//
+var showDebug = true; // Set to true to see debug messages in email confirmation//
 var maxSeconds = 60 * 5; // number of seconds allowed for batch processing, usually < 5*60
 var showMessage = false;
 var useAppSpecificGroupName = false;
@@ -80,62 +80,45 @@ try {
             var conEmail = "";
             capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput(); // reload since it's 	capId = aa.cap.getCapID();
             capIDString = capId.getCustomID();
-            cap = aa.cap.getCap(capId).getOutput();
+            cap = aa.cap.getCap(capId).getOutput(); 
             if (cap) {
-                    var appStatus = getAppStatus();
-                        logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
-                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                        if (capId.getCustomID() != "IA-18-0005" && capId.getCustomID() != "IA-18-0004" && capId.getCustomID() != "IA-18-0002" && capId.getCustomID() != "IA-18-0001")
+                var expDateCon = getAppSpecific("Contract Expiration Date", capId);
+
+                if (new Date(expDateCon).getMonth() == new Date(convertedDate).getMonth() && new Date(expDateCon).getDate() == new Date(convertedDate).getDate() && new Date(expDateCon).getFullYear() == new Date(convertedDate).getFullYear())
+                {
+                    logDebug(capId.getCustomID());
+                    addToSet(capId, "IARENEWAL", "Ecology Renewals");
+                    var contactArray = getPeople(capId);
+                    if (contactArray)
+                    {
+                        for (thisContact in contactArray)
+                        {
+                            if ((contactArray[thisContact].getPeople().contactType).toUpperCase() == "PROPERTY OWNER")
                             {
+                                var reportParams = aa.util.newHashtable();
+                                var reportFile = new Array();
+                                var itemCap = aa.cap.getCap(capId).getOutput();
+                                appTypeResult = itemCap.getCapType();
+                                appTypeString = appTypeResult.toString();
+                                appTypeArray = appTypeString.split("/");
 
-                        if (b1ExpResult.getSuccess()) {
-                            var b1Exp = b1ExpResult.getOutput();
-                            var expDate = b1Exp.getExpDate();
+                                reportParams.put("RECORD_ID", capId.getCustomID());
 
-                            var expDateCon = expDate.getMonth() + "/" + expDate.getDayOfMonth() + "/" + expDate.getYear();
-                            logDebug(expDateCon);
-                            //These records were created without expirations  in DEV and will error. Remove before processing to TEST. 
-                            
-                           
-                            if (expDateCon == convertedDate)
-                             {
-                                  //  b1Exp.setExpStatus("About to Expire");
-                                  //  aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                    logDebug("Just set: " + capId.getCustomID() + " to about to expire.");
-                                    addToSet(capId, "IARENEWAL", "Ecology Renewals");
-                                    var contactArray = getPeople(capId);
-                                if(contactArray)
-						{
-                                    for(thisContact in contactArray) {			
-                                        if((contactArray[thisContact].getPeople().contactType).toUpperCase() == "PROPERTY OWNER")
-                                        {
-                                            var reportParams = aa.util.newHashtable();
-                                            var reportFile = new Array();
-                                            var itemCap = aa.cap.getCap(capId).getOutput();
-                                            appTypeResult = itemCap.getCapType();
-                                            appTypeString = appTypeResult.toString(); 
-                                            appTypeArray = appTypeString.split("/");
-                                                   
-                                                reportParams.put("RECORD_ID", capId.getCustomID());
-                                        
-                                                rFile = generateReport('IA Registration Renewal Reminder',reportParams, 'DEQ')
+                                rFile = generateReport('IA Registration Renewal Reminder', reportParams, 'DEQ')
 
-                                                if (rFile) {
-                                                    reportFile.push(rFile);
-                                                    }
+                                if (rFile)
+                                {
+                                    reportFile.push(rFile);
+                                }
 
-                                            var params = aa.util.newHashtable();
-                                            var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
-                                            addParameter(params, "$$altId$$", capId.getCustomID());
-                                        sendNotification("noreplyehims@suffolkcountyny.gov",PropertyOwnerEmail,"","IARenewal30Days",params,reportFile);
-                                        }
+                                var params = aa.util.newHashtable();
+                                var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
+                                addParameter(params, "$$altId$$", capId.getCustomID());
+                                sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal30Days", params, reportFile);
                             }
-                        }
-
-                            }
-
                         }
                     }
+                }         
             }
         }
     }

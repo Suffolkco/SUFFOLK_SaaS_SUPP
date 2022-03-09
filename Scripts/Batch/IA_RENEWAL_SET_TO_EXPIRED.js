@@ -75,37 +75,28 @@ try {
         var recArray = recordListResult.getOutput();
         logDebug("Looping through " + recArray.length + " records of type " + thisType);
 
-        for (var j in recArray) {
+        for (var j in recArray)
+        {
             var conEmail = "";
             capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput(); // reload since it's 	capId = aa.cap.getCapID();
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
-            if (cap) {
-                    var appStatus = getAppStatus();
-                        logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
-                        b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                        if (capId.getCustomID() != "IA-18-0005" && capId.getCustomID() != "IA-18-0004" && capId.getCustomID() != "IA-18-0002" && capId.getCustomID() != "IA-18-0001")
-                            {
+            if (cap)
+            {
+                var appStatus = getAppStatus();
+                logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
+                var expDateCon = getAppSpecific("Contract Expiration Date", capId);
 
-                        if (b1ExpResult.getSuccess()) {
-                            var b1Exp = b1ExpResult.getOutput();
-                            var expDate = b1Exp.getExpDate();
+                var dateDiff = parseFloat(dateDifference(todDateCon, expDateCon));
 
-                            var expDateCon = expDate.getMonth() + "/" + expDate.getDayOfMonth() + "/" + expDate.getYear();
-                            logDebug(expDateCon);
-                            //These records were created without expirations  in DEV and will error. Remove before processing to TEST. 
-                            
-                            var dateDiff = parseFloat(dateDifference(todDateCon, expDateCon));
+                logDebug("dateDiff is: " + dateDiff);
 
-                            logDebug("dateDiff is: " + dateDiff);
-                                                        
-                        // Due today	
-                            if (dateDiff == 0)                            
-                             {
-                                    b1Exp.setExpStatus("Expired");
-                                    aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                    logDebug("Just set: " + capId.getCustomID() + " to expired.");
-                                    addToSet(capId, "IARENEWAL", "Ecology Renewals");
+                // Due today	
+                if (dateDiff == 0)                             
+                {
+                    updateAppStatus("Expired", "");
+                    logDebug("Just set: " + capId.getCustomID() + " to expired.");
+                    addToSet(capId, "IARENEWAL", "Ecology Renewals");
      /*                               var contactArray = getPeople(capId);
                                 if(contactArray)
 						{
@@ -135,10 +126,7 @@ try {
                             }
                         }
 */
-                            }
-
-                        }
-                    }
+                }       
             }
         }
     }
