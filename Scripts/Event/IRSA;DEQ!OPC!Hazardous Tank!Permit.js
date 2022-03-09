@@ -81,7 +81,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
            getRecordParams4Notification(emailParams);                 
            addParameter(emailParams, "$$altID$$", capId.getCustomID());     
-           sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
+           sendNotification("", "Michael.Seaman@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
         }        
     }
 } 
