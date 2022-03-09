@@ -10,7 +10,7 @@
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
-var showDebug = false; // Set to true to see debug messages in email confirmation//
+var showDebug = true; // Set to true to see debug messages in email confirmation//
 var maxSeconds = 60 * 5; // number of seconds allowed for batch processing, usually < 5*60
 var showMessage = false;
 var useAppSpecificGroupName = false;
@@ -40,7 +40,8 @@ var message = "";
 var startDate = new Date();
 var startTime = startDate.getTime(); // Start timer
 var todaysDate = new Date();																
-var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());									
+var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+								
 
 // all record types to check
 var rtArray = ["DEQ/Ecology/IA/Application"];
@@ -84,17 +85,23 @@ try {
             if (cap)
             {
                 var appStatus = getAppStatus();
-                logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
+                
                 var expDateCon = getAppSpecific("Contract Expiration Date", capId);
+                if (expDateCon != null)
+                {
+                
+                var dateDiffernce = parseFloat(dateDifference(todDateCon, expDateCon));
+                } 
 
-                var dateDiff = parseFloat(dateDifference(todDateCon, expDateCon));
-
-                logDebug("dateDiff is: " + dateDiff);
+                
 
                 // Due today	
-                if (dateDiff == 0)                             
+                if (expDateCon != null &&dateDiffernce == 0)                             
                 {
+                    logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
+                    logDebug("ExpDateCon = " + expDateCon);
                     updateAppStatus("Expired", "");
+                    logDebug("dateDiff is: " + dateDiffernce); 
                     logDebug("Just set: " + capId.getCustomID() + " to expired.");
                     addToSet(capId, "IARENEWAL", "Ecology Renewals");
      /*                               var contactArray = getPeople(capId);
@@ -1245,7 +1252,7 @@ function capSet(desiredSetId)
 
 function addToSet(addToSetCapId, setPrefix, setType) {
 
-    var sysDate = todayDate;
+    var sysDate = todDateCon;
 	var sDateMMDDYYYY =     (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear()    ;
     var sysDateArray = sDateMMDDYYYY.split("/");
 	if(sysDateArray[1].length>2){
