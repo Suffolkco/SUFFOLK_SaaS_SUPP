@@ -80,7 +80,7 @@ if (contract =="UNCHECKED" && service =="UNCHECKED" && sample =="UNCHECKED")
 else
 {
     form.blockSubmit=false;
-    form.message=""; 
+    form.message="";  
     
 }
 
