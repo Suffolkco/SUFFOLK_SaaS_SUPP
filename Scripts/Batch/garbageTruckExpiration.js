@@ -10,14 +10,14 @@
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
-var showDebug = false;// Set to true to see debug messages in email confirmation
+var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = false;
 var systemUserObj = aa.person.getUser("ADMIN").getOutput();
 var useAppSpecificGroupName = false;
 var timeExpired = false;
 var br = "<BR>";
-var emailAddress = "ryan.littlefield@scubeenterprise.com";//email to send report
+var emailAddress = "ada.chan@suffolkcoutnyny.gov";//email to send report
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
@@ -43,8 +43,8 @@ else
 /------------------------------------------------------------------------------------------------------*/
 var message = "";
 //THE NEXT LINE IS ONLY HERE FOR TESTING AND SHOULD BE REMOVED TO WORK PROPERLY
-var startDate = new Date("12/31/2019");
-//var startDate = new Date();
+//var startDate = new Date("12/31/2019");
+var startDate = new Date();
 var startTime = startDate.getTime(); // Start timer
 var todayDate = "" + startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
 // all record types to check
@@ -78,7 +78,9 @@ if (paramsOK)
 /-----------------------------------------------------------------------------------------------------*/
 function mainProcess() 
 {
-    if (isOdd(startDate.getYear()))	
+	logDebug("Today's Date: " + todayDate);
+	logDebug("Today's Year: " + startDate.getFullYear())
+    if (isOdd(startDate.getFullYear()))	
     {
         logDebug("We are in an odd year, batch script will run");
         try 
@@ -523,7 +525,15 @@ function getContactArray()
 	}
 	return cArray;
 }
-
+function logDebug(dstr) {
+	vLevel = 1
+	if (arguments.length > 1)
+		vLevel = arguments[1];
+	if ((showDebug & vLevel) == vLevel || vLevel == 1)
+		debug += dstr + br;
+	if ((showDebug & vLevel) == vLevel)
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr);
+}
 function getAppSpecific(itemName) { // optional: itemCap
 	var updated = false;
 	var i=0;
