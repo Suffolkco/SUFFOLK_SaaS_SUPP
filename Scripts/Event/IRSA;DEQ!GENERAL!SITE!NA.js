@@ -31,7 +31,6 @@ if (inspResult == "Completed" || inspResult == "Fail")
         inspModel = inspObj.getInspection();            
        
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
-
         //inspDate = inspObj.getInspectionDate();
 
         logDebug("inspResultDate: " + inspResultDate);       
@@ -57,7 +56,8 @@ if (inspResult == "Completed" || inspResult == "Fail")
         //logDebug("retVal Date: " + retVal);
         addParameter(reportParams, "SiteRecordID", alternateID.toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
-       
+        addParameter(reportParams, "InspectionType", inspType);
+
 		rFile = generateReportBatch(capId, "Facility Inspection Summary Report", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
         
@@ -68,7 +68,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
            getRecordParams4Notification(emailParams);                 
            addParameter(emailParams, "$$altID$$", capId.getCustomID());     
-           sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
+           sendNotification("", "Michael.Seaman@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
         }        
     }
 } 

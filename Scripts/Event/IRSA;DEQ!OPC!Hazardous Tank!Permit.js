@@ -58,8 +58,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
         
-        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0");
-	
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0");	
 		var inspectionDateCon = year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0";
        
         logDebug("capId: " + capId);
@@ -70,6 +69,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         addParameter(reportParams, "TankRecordID", alternateID.toString());
         //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
+        addParameter(reportParams, "InspectionType", inspType);
 
 		rFile = generateReportBatch(capId, "Inspection result Tank Operator", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);           
@@ -81,7 +81,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
            getRecordParams4Notification(emailParams);                 
            addParameter(emailParams, "$$altID$$", capId.getCustomID());     
-           sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
+           sendNotification("", "Michael.Seaman@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
         }        
     }
 } 
