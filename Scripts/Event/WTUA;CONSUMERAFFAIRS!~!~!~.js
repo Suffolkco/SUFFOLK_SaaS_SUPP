@@ -9,10 +9,10 @@ if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses")) {
 
 } 
 
+logDebug("appTypeArray is " + appTypeArray);
 // DAP-362
-if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[3] != "Renewal" && matches(appTypeArray[4], "NA"))
+if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[2] != "Renewal" && matches(appTypeArray[3], "NA"))
 {
-	logDebug("appTypeArray is " + appTypeArray);
 
 	if ( wfTask == "Issuance" && wfStatus == "Issued")
 	{
