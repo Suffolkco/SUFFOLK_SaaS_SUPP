@@ -1,7 +1,7 @@
 //ASIUA:DEQ/Ecology/IA/Application
 //Update the expiration date based off of Custom Field.
  
-var expDate = getAppSpecific("Contract Expiration Date", capId);
+/*var expDate = getAppSpecific("Contract Expiration Date", capId);
 logDebug("Expiration Date: " + expDate);
 var b1Exp;
 logDebug("Type of expDate: " + typeof(expDate));
@@ -26,4 +26,4 @@ var tmpDate2 = b1Exp.getExpDate();
 logDebug("DateCovnerted: " + tmpDate2.getMonth() + "/" + tmpDate2.getDayOfMonth() + "/" + tmpDate2.getYear());
 
 
-} 
+} */
