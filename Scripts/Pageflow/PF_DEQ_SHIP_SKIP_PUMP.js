@@ -65,7 +65,7 @@ loadAppSpecific4ACA(AInfo);
 |
 /-----------------------------------------------------------------------------------------------------*/
 
-var skipPump = false;
+var skipPump = false; 
 var propertyType = AInfo["Select Property Type"];
 
 if (propertyType == "Retro Fit") {

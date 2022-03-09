@@ -67,7 +67,7 @@ loadAppSpecific4ACA(AInfo);
 
 var skipRetro = false;
 var propertyType = AInfo["Select Property Type"];
-
+ 
 if (propertyType == "Pump Out") {
     skipRetro= true;
 }
