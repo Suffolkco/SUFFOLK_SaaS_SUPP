@@ -270,7 +270,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 																	//debugObject(ASIModel);
 																	logDebug("ASI value: " + ASIModel.getAsiName());																	
 																	logDebug("vGuideSheetItem value: " + vGuideSheetItem.getGuideItemText());
-																	if (ASIModel.getAsiName == "System Location")
+																	if (ASIModel.getAsiName() == "System Location")
 																	{
 																		ASIModel.setAttributeValue(tSysLocation);
 																		logDebug("Set System Location to: " + tSysLocation);
