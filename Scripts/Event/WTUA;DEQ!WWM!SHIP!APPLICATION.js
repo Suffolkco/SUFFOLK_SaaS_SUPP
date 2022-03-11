@@ -15,7 +15,7 @@ if (wfTask == "Preliminary Sketch Review" && wfStatus == "Full Permit Required")
     deactivateTask("Final Review");
 }
 
-if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStatus == "Not Elligable" || wfStatus == "OK To Proceed"))
+if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStatus == "Not Eligible" || wfStatus == "OK to Proceed"))
 {
    if(isTaskActive("Site Consult") || isTaskActive("Preliminary Sketch Review"))
    {
