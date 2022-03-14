@@ -35,8 +35,7 @@ function workflowFinalReviewApproved()
 		}
 	}
 	getRecordParams4Notification(emailParams);
-    getWorkflowParams4Notification(emailParams);
-    
+    getWorkflowParams4Notification(emailParams);    
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
 	var shortNotes = getShortNotes(capId);
