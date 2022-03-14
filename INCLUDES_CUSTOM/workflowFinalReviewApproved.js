@@ -39,6 +39,10 @@ function workflowFinalReviewApproved()
     
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
+	var shortNotes = getShortNotes(capId);
+	addParameter(emailParams, "$$shortNotes$$", shortNotes);	
+	addACAUrlsVarToEmail(emailParams);
+
 	if (conEmail != null)
 	{
 		sendNotification("", conEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", emailParams, reportFile);
