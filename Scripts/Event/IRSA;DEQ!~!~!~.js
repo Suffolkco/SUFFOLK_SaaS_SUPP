@@ -257,10 +257,21 @@ if (appTypeArray[1] == "WWM")
                         var AInfo = new Array();
                         logDebug("parentCapId = " + parentCapId);
                         var conEmail = "";
-                        var wwmIA = capId.getCustomID();
+                        //var wwmIA = capId.getCustomID();
                         logDebug("wwmIA =" + wwmIA);
-                        var pin = getAppSpecific("IA PIN Number", capId);
+                        var pin = getAppSpecific('IA PIN Number', wwmIA);
                         logDebug("pin = " + pin);
+                        var altId = capId.getCustomID();
+                        var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+                        if (capParcelResult.getSuccess())
+                        {
+                        var Parcels = capParcelResult.getOutput().toArray();
+                        for (zz in Parcels)
+                        {
+                            var parcelNumber = Parcels[zz].getParcelNumber();
+                            logDebug("parcelNumber = " + parcelNumber);
+                        }
+                    }
 
                         //gathering LPs from parent
                         var licProfResult = aa.licenseScript.getLicenseProf(parentCapId);
@@ -288,9 +299,12 @@ if (appTypeArray[1] == "WWM")
 
                         var vEParams = aa.util.newHashtable();
                         var addrResult = getAddressInALine(capId);
-                        addParameter(vEParams, "$$altID$$", wwmIA);
+                        addParameter(vEParams, "$$altID$$", iaCustom);
                         addParameter(vEParams, "$$address$$", addrResult);
                         addParameter(vEParams, "$$pin$$", pin);
+                        addParameter(vEParams, "$$wwmAltID$$", altId);
+                        addParameter(vEParams, "$$Parcel$$", parcelNumber);
+                        
 
                         sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 
@@ -583,6 +597,7 @@ function createChild(grp, typ, stype, cat, desc) // optional parent capId
                 newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
                 newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
                 aa.parcel.createCapParcel(newCapParcel);
+
             }
         }
 

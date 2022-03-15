@@ -60,7 +60,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         logDebug("Added License Profoessinal");
 
         //Gathering Contacts from IA Record
-        var contactResult = aa.people.getCapContactByCapID(wwmIA);
+        var contactResult = aa.people.getCapContactByCapID(capId);
         var capContacts = contactResult.getOutput();
         var conEmail = "";
         for (c in capContacts)
@@ -75,7 +75,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         }
 
         //Gathering LPs from IA Record
-        var licProfResult = aa.licenseScript.getLicenseProf(wwmIA);
+        var licProfResult = aa.licenseScript.getLicenseProf(capId);
         var capLPs = licProfResult.getOutput();
         for (l in capLPs)
         {
