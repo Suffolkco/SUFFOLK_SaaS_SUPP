@@ -71,8 +71,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 		if (conStartServ != 'null')
 		{
-			editAppSpecific("Contract Start Date", contractStart, parentCapId); 
-    		editAppSpecific("Contract Term", term, parentCapId);
+			editAppSpecific("Contract Start Date", conStartServ, parentCapId); 
+    		editAppSpecific("Contract Term", contermServ, parentCapId);
 			datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + (contractDate.getFullYear() + Number(contermServ));
 			editAppSpecific("Contract Expiration Date", datePlusCon, parentCapId);
 		}
