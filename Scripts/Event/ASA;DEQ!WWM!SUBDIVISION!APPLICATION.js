@@ -16,12 +16,19 @@ removeBORFees(capId);
 // Add BOR fee if the custom field is set to Yes by public user
 if (publicUser)
 {
-	var bor = AInfo["Are you applying for a Board of Review(BOR) hearing at this time? If yes, submit form WWM"];
+	/*var bor = AInfo["Are you applying for a Board of Review (BOR) hearing at this time? If yes, submit form WWM-061"];
 	
 	if (bor == 'Yes')
 	{
 	    addFee("BOR", "DEQ_WWM_SUB", "FINAL", 1, "Y")
+	}*/
+	var borDocCheck = determineACADocumentAttached("Board of Review Application");    
+    
+    if(borDocCheck)
+    {       
+		addFee("BOR", "DEQ_SUB", "FINAL", 1, "Y");
 	}
+
 }
 
 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
@@ -46,6 +53,49 @@ if(capmodel.isCompleteCap() && capmodel.getCreatedByACA() == "N")
         aa.expiration.editB1Expiration(b1Exp.getB1Expiration());      
     }
 }
+
+function determineACADocumentAttached(docType) 
+{
+    var docList = aa.document.getDocumentListByEntity(capId, "TMP_CAP");
+    if (docList.getSuccess()) 
+	{
+        docsOut = docList.getOutput();
+		logDebug("Docs Out " + docsOut.isEmpty());
+        if (docsOut.isEmpty()) 
+		{
+            logDebug("here");
+            return false;
+        }
+        else 
+		{
+            attach = false;
+            docsOuti = docsOut.iterator();
+            while (docsOuti.hasNext()) 
+			{
+                doc = docsOuti.next();
+				//debugObject(doc);
+                docCat = doc.getDocCategory();
+                if (docCat.equals(docType)) 
+				{
+                    attach = true;
+                }
+            }
+            if (attach) 
+			{
+                return true;
+            }
+            else 
+			{
+                return false;
+            }
+        }
+    }
+    else 
+	{
+        return false;
+    }
+}
+
 function removeBORFees(itemCap) 
 {
 	getFeeResult = aa.fee.getFeeItems(itemCap, null, "NEW");
