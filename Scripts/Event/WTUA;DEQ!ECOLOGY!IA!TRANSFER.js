@@ -76,9 +76,15 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
         //Gathering LPs from IA Record
         var licProfResult = aa.licenseScript.getLicenseProf(capId);
+
+        
         var capLPs = licProfResult.getOutput();
         for (l in capLPs)
         {
+            if (capLPs[l].getLicenseType() == "IA Service Provider")
+            {
+            var busName = capLPs[l].getBusinessName()
+            }
             if (!matches(capLPs[l].email, null, undefined, ""))
             {
                 conEmail += capLPs[l].email + ";"
@@ -91,6 +97,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         var addrResult = getAddressInALine(wwmIA);
         addParameter(vEParams, "$$altID$$", relCapID);
         addParameter(vEParams, "$$address$$", addrResult);
+        addParameter(vEParams, "$$busName$$", busName);
 
         sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
     }
