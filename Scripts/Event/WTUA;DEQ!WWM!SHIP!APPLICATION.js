@@ -27,3 +27,12 @@ if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStat
    }
 
 }
+
+if (wfTask == "Application Review" && wfStatus == "I/A OWTS")
+{
+    if (wfTask == "Inspections" && wfStatus == "Complete")
+    {
+        var desc = "SHIP Amendment of Application" + capIDString;
+        var shipAmend = createChild('DEQ', 'WWM', 'SHIP', 'Amendment', desc)
+    }
+}
