@@ -144,6 +144,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
     if (contractStart != null)
     {
+    editAppSpecific("Contract Start Date", contractStart, parentCapId);
+    editAppSpecific("Contract Term", term, parentCapId);
     contractStart = new Date(contractStart);
     var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
     editAppSpecific("Contract Expiration Date", newExpDate, parentCapId);
