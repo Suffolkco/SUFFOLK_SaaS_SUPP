@@ -180,7 +180,7 @@ try
 	var certCheck = determineACADocumentAttached("Certificate of Authorization/Exemption");    
     var appCheck = determineACADocumentAttached("Application Checklist");
 	var seaCheck = determineACADocumentAttached("Short Environmental Assessment Form");
-	var bor = AInfo["Are you applying for a Board of Review(BOR) hearing at this time? If yes, submit form WWM"];
+	var bor = AInfo["Are you applying for a Board of Review (BOR) hearing at this time? If yes, submit form WWM-061"];
 	var borCheck = false;
 
 	
@@ -228,7 +228,7 @@ try
 		{
 			cancel = true;
 			showMessage = true;
-			comment("Please submit Board of Review Application with the application.");
+			comment("Section 2 indicates you're applying for a Board of Review hearing and a BOR Application is required - upload from WWM-061.");
 		}
 	}
 } catch (err) { logDebug(err)	}
