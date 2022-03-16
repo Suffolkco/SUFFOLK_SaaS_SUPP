@@ -28,12 +28,13 @@ if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStat
 
 }
 
-if (wfTask == "Inspections" && wfStatus == "Complete")
+if (wfTask == "Preliminary Sketch Review" && wfStatus == "Ok to Proceed")
 {
-    if (wfTask == "Application Review" && wfStatus == "I/A OWTS")
-    
+    if (isTaskActive("Grant Review"))
     {
-        var desc = "SHIP Amendment of Application" + capIDString;
-        var shipAmend = createChild('DEQ', 'WWM', 'SHIP', 'Amendment', desc) 
+        deactivateTask("Final Review")
+    }
+    else{
+        activateTask("Final Review")
     }
 }
