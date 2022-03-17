@@ -189,10 +189,14 @@ if (appTypeArray[1] == "WWM")
                         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
                         logDebug("wwmIA =" + wwmIA);
                         var iaCustom = wwmIA.getCustomID();
-                        copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
                         if (relCap != null)
                         {
+                            copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
                             copyLicensedProfByType(relCap, wwmIA, ["IA Vendor"]);
+                        }
+                        else
+                        {
+                            copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
                         }
                         copyContactsByType(capId, wwmIA, ["Property Owner"]);
                         copyAddress(capId, wwmIA);
@@ -265,50 +269,75 @@ if (appTypeArray[1] == "WWM")
                         var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
                         if (capParcelResult.getSuccess())
                         {
-                        var Parcels = capParcelResult.getOutput().toArray();
-                        for (zz in Parcels)
-                        {
-                            var parcelNumber = Parcels[zz].getParcelNumber();
-                            logDebug("parcelNumber = " + parcelNumber);
-                        }
-                    }
-
-                        //gathering LPs from parent
-                        var licProfResult = aa.licenseScript.getLicenseProf(parentCapId);
-                        var capLPs = licProfResult.getOutput();
-                        for (l in capLPs)
-                        {
-                            if (!matches(capLPs[l].email, null, undefined, ""))
+                            var Parcels = capParcelResult.getOutput().toArray();
+                            for (zz in Parcels)
                             {
-                                conEmail += capLPs[l].email + ";"
+                                var parcelNumber = Parcels[zz].getParcelNumber();
+                                logDebug("parcelNumber = " + parcelNumber);
                             }
                         }
 
-                        //gathering contacts from parent
-                        var contactResult = aa.people.getCapContactByCapID(parentCapId);
-                        var capContacts = contactResult.getOutput();
-                        for (c in capContacts)
-                        {
-                            if (!matches(capContacts[c].email, null, undefined, ""))
+
+                            //gathering LPs from parent
+                            var licProfResult = aa.licenseScript.getLicenseProf(capId);
+                            var capLPs = licProfResult.getOutput();
+                            logDebug("CapLPs = " + capLPs);
+                            for (l in capLPs)
                             {
-                                conEmail += capContacts[c].email + ";"
+                                logDebug("capLPs = " + capLPs[l]);
+                                if (!matches(capLPs[l].email, null, undefined, ""))
+                                {
+                                    logDebug("LP emails = " + capLPs[l].email);
+                                    conEmail += capLPs[l].email + ";"
+                                    logDebug("conEmail = " + conEmail);
+                                }
                             }
-                        }
 
-                        //Sending Notification
+                            //gathering IA Vendor LP
+                            var wwmIALicProfResult = aa.licenseScript.getLicenseProf(wwmIA);
+                            var iaVendorLPs = wwmIALicProfResult.getOutput();
+                            for (v in iaVendorLPs)
+                            {
+                                if (iaVendorLPs[v].getLicenseType() == "IA Vendor")
+                                {
+                                    conEmail += iaVendorLPs[v].email + ";"
+                                }
+                            }
 
-                        var vEParams = aa.util.newHashtable();
-                        var addrResult = getAddressInALine(capId);
-                        addParameter(vEParams, "$$altID$$", iaCustom);
-                        addParameter(vEParams, "$$address$$", addrResult);
-                        addParameter(vEParams, "$$pin$$", pin);
-                        addParameter(vEParams, "$$wwmAltID$$", altId);
-                        addParameter(vEParams, "$$Parcel$$", parcelNumber);
+
+
+                            
+
+                            //gathering contacts from parent
+                            var contactResult = aa.people.getCapContactByCapID(capId);
+                            var capContacts = contactResult.getOutput();
+                            for (c in capContacts)
+                            {
+                                logDebug("capContacts = " + capContacts[c]);
+                                if (!matches(capContacts[c].email, null, undefined, ""))
+                                {
+                                    logDebug("contact emails = " + capContacts[c].email);
+                                    conEmail += capContacts[c].email + ";"
+                                    logDebug("conEmail post contacts = " + conEmail);
+                                }
+                            }
+
+
+                            //Sending Notification
+
+                            var vEParams = aa.util.newHashtable();
+                            var addrResult = getAddressInALine(capId);
+                            addParameter(vEParams, "$$altID$$", iaCustom);
+                            addParameter(vEParams, "$$address$$", addrResult);
+                            addParameter(vEParams, "$$pin$$", pin);
+                            addParameter(vEParams, "$$wwmAltID$$", altId);
+                            addParameter(vEParams, "$$Parcel$$", parcelNumber);
+
+
+                            sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
                         
-
-                        sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-
                     }
+
                     else
                     {
                         var getCapResult = aa.cap.getCapID(iaNumber);
@@ -787,7 +816,7 @@ function getAddressInALine(capId)
                     addressToUse = capAddress;
             }
             if (addressToUse == null)
-                addressToUse = addresses[0]; 
+                addressToUse = addresses[0];
 
             if (addressToUse)
             {
