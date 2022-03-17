@@ -161,20 +161,21 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
                             }       
                             // PIN report with record id and contact type as params                
                             var reportParams1 = aa.util.newHashtable();
-                            reportParams1.put(reportParamRecID, alternateID.toString());
+                            reportParams1.put("RecordID", alternateID.toString());
                             reportParams1.put("ContactType", contactType);
                             // Local contact ID
                             localCId = conArray[con].getCapContactModel().getPeople().getContactSeqNumber();			
                             reportParams1.put("ContactID", localCId);
                         
-                                // NOI report
-                            rFile = generateReport(thisReport,reportParams1, appTypeArray[0])
+                            // NOI report - from reportParams in the earlier loop.
+                            logDebug(thisReport + ": params are: " + reportParamRecID + ", " + alternateID.toString());
+                            rFile = generateReport(thisReport,reportParams, appTypeArray[0])
                             logDebug("This is the NOI report: " + rFile);           
                             
                             if (rFile) {
                             reportFile.push(rFile);
                             }
-
+                            // ACA PIN - from reportParams1 above.      
                             rFile = generateReport("ACA Registration Pins-WWM",reportParams1, appTypeArray[0])
                             
                             logDebug("This is the ACA Pin File we are emailing: " + rFile);           
