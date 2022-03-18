@@ -14,6 +14,8 @@ if (insDay.length == 1)
 }
 
 var insCon = insMonth + "/" + insDay + "/" + insYear;
+var insConSampleDate = insMonth + "/" + insDay + "/" + insYear + 3;
+var insConServiceDate = insMonth + "/" + insDay + "/" + insYear + 1;
 
 if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 {
@@ -207,6 +209,9 @@ if (appTypeArray[1] == "WWM")
                         editAppSpecificLOCAL("Model", iaModel, wwmIA);
                         editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
                         editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
+                        editAppSpecificLOCAL("Next Sample Date", insConSampleDate, wwmIA);
+                        editAppSpecificLOCAL("Next Service Date", insConServiceDate, wwmIA);
+
                         if (iaLeachPoolType != null)
                         {
                             editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
