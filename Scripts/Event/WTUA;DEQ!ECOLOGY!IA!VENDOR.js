@@ -1,4 +1,4 @@
-if (wfStatus == "Rescinded")
-{
-    deactivateActiveTasks("DEQ_IA_VEN")
-} 
+// if (wfStatus == "Rescinded")
+// {
+//     deactivateActiveTasks("DEQ_IA_VEN")
+// } 
