@@ -14,8 +14,8 @@ if (insDay.length == 1)
 }
 
 var insCon = insMonth + "/" + insDay + "/" + insYear;
-var insConSampleDate = insMonth + "/" + insDay + "/" + insYear + 3;
-var insConServiceDate = insMonth + "/" + insDay + "/" + insYear + 1;
+var insConSampleDate = insMonth + "/" + insDay + "/" + (inspObj.getInspectionStatusDate().getYear() + 3);
+var insConServiceDate = insMonth + "/" + insDay + "/" + (inspObj.getInspectionStatusDate().getYear() + 1);
 
 if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 {
