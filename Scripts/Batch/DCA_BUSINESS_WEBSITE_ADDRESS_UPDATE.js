@@ -172,13 +172,21 @@ function mainProcess()
     {
         logDebug("Batch script will run");
 		var count = 0;
+		var naCount = 0;
+
+		// Version 1:
 		// This query is to retrieve all N/A to replace.
 		//var vSQL = "SELECT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'ConsumerAffairs' AND C.B1_CHECKBOX_DESC = 'Business Website' AND C.B1_CHECKLIST_COMMENT ='N/A'";
 
 		// This query is to find invalid website address.
-		var vSQL = "SELECT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'ConsumerAffairs' AND C.B1_CHECKBOX_DESC = 'Business Website' AND C.B1_CHECKLIST_COMMENT NOT like 'https://%' AND C.B1_CHECKLIST_COMMENT NOT like 'http://%'";
+		//var vSQL = "SELECT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'ConsumerAffairs' AND C.B1_CHECKBOX_DESC = 'Business Website' AND C.B1_CHECKLIST_COMMENT NOT like 'https://%' AND C.B1_CHECKLIST_COMMENT NOT like 'http://%'";
+
+		// Version 2: 
+		// Ninglis' query to find invalid website address:
+		var vSQL = "select b1.B1_ALT_ID as recordNumber from b1permit b1 join BCHCKBOX bch on b1.SERV_PROV_CODE = bch.SERV_PROV_CODE and b1.B1_PER_ID1 = bch.B1_PER_ID1 and b1.B1_PER_ID2 = bch.B1_PER_ID2 and b1.B1_PER_ID3 = bch.B1_PER_ID3 where b1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP like 'Consumer%' and b1.REC_STATUS = 'A' and b1.B1_ALT_ID not like '%TMP%' and bch.B1_CHECKBOX_DESC like '%Website%' and bch.B1_CHECKLIST_COMMENT not like 'http%'";
+		
 		var vResult = doSQLSelect_local(vSQL);  	     
-		logDebugLocal("********DCA records that has N/A as web address: " + vResult.length + "*********\n");
+		logDebugLocal("********DCA records that has bad web address: " + vResult.length + "*********\n");
 
 		for (r in vResult)
         {		
@@ -195,13 +203,23 @@ function mainProcess()
                 {
 					var webAddress = getAppSpecific("Business Website", capId);
 					logDebugLocal("Web address: " + webAddress);
-					//For bad format web business address					
-					logDebugLocal("Record ID: " + capIDString);
-					var newAddress = "https://" + webAddress;
-					logDebugLocal("Update existing address: " + webAddress + " to " + newAddress);
-					editAppSpecific("Business Website", newAddress, capId);
-					count++;
 
+					if(matches(webAddress,"N/A", "n/a"))					
+					{
+						logDebugLocal("Record ID: " + capIDString);
+						editAppSpecific("Business Website", "", capId);
+						logDebugLocal("Update N/A address: " + webAddress + " to blank.");
+						naCount++;
+					}
+					else
+					{
+						//For bad format web business address					
+						logDebugLocal("Record ID: " + capIDString);
+						var newAddress = "https://" + webAddress;
+						logDebugLocal("Update existing address: " + webAddress + " to " + newAddress);
+						editAppSpecific("Business Website", newAddress, capId);
+						count++;
+					}
 					// For N/A query
 					/*
 					if(matches(webAddress,"N/A", "n/a"))					
@@ -215,7 +233,8 @@ function mainProcess()
 			}
 		}
 		
-		logDebugLocal("Number of N/A website address:" + count);		
+		logDebugLocal("Number of N/A website address:" + naCount);		
+		logDebugLocal("Number of bad website address:" + count);	
 	}
     catch (err) 
     {
