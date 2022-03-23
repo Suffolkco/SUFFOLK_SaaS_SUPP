@@ -1,16 +1,16 @@
-if (inspType == ("Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation") && inspResult == "Lab Results Returned")
+if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation" && inspResult == "Lab Results Returned")
 {
 logDebug("capId = " + capId);
-var doValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
-var phValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
-var wwTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
-var airTemp = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
-var phase = getGuidesheetASIField(inspId, "IA Lab Results", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Phase");
-var process = getGuidesheetASIField(inspId, "IA Lab Results", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Process");
-var collection = getGuidesheetASIField(inspId, "IA Lab Results", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collection");
-var collector = getGuidesheetASIField(inspId, "IA Lab Results", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collector");
-var fieldId = getGuidesheetASIField(inspId, "IA Lab Results", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Field ID");
-var lab = getGuidesheetASIField(inspId, "IA Lab Results", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Lab");
+var doValue = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
+var phValue = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "PH");
+var wwTemp = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
+var airTemp = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
+var phase = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Phase");
+var process = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Process");
+var collection = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collection");
+var collector = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collector");
+var fieldId = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Field ID");
+var lab = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Lab");
 
 var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
@@ -32,6 +32,7 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
                 var vGuideSheet = vGuideSheetArray[x];
                 if ("I/A OWTS Sample".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
                 {
+                    logDebug("IA Checklist Found")
                     vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
                     var z = 0; 
                     for (z in vGuideSheetItemsArray)
