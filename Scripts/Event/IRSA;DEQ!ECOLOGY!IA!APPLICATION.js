@@ -1,4 +1,4 @@
-if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation" && inspResult == "Lab Results Returned")
+if (inspType == ("Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation") && inspResult == "Lab Results Returned")
 {
 logDebug("capId = " + capId);
 var doValue = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
