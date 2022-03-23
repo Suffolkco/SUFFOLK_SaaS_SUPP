@@ -1,4 +1,4 @@
-if (inspType == "Lab Results" && inspResult == "Complete")
+if (inspType == ("Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation") && inspResult == "Lab Results Returned")
 {
 logDebug("capId = " + capId);
 var doValue = getGuidesheetASIField(inspId, "IA Lab Results", "IA Lab Results", "DEQ_IA_LAB", "FIELD RESULTS", "DO");
@@ -30,14 +30,14 @@ var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.
             for (x in vGuideSheetArray)
             {
                 var vGuideSheet = vGuideSheetArray[x];
-                if ("IA Lab Results".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
+                if ("I/A OWTS Sample".toUpperCase() == vGuideSheet.getGuideType().toUpperCase() && vGuideSheet.getItems() != null)
                 {
                     vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
                     var z = 0; 
                     for (z in vGuideSheetItemsArray)
                     {
                         var vGuideSheetItem = vGuideSheetItemsArray[z];
-                        if (vGuideSheetItem && "IA Lab Results" == vGuideSheetItem.getGuideItemText())
+                        if (vGuideSheetItem && "Sample Collection" == vGuideSheetItem.getGuideItemText())
                         {
                             var labResultsTable = getGuidesheetItemASIT(vGuideSheet, vGuideSheetItem, "LAB RESULTS AND FIELD DATA");
                             var newLabResultsTable = new Array();
