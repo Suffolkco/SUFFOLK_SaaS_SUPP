@@ -22,10 +22,22 @@ var lab = getAppSpecific("Lab", capId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete") 
 {
+    var capContacts = aa.people.getCapContactByCapID(parentCapId);
+    if (capContacts.getSuccess())
+    {
+        capContacts = capContacts.getOutput();
+        logDebug("capContacts: " + capContacts);
+        for (var yy in capContacts)
+        {
+            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+        }
+    }
+   
+    copyContacts(capId, parentCapId);
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())
     {
-        var apsArray = getCapResult.getOutput();
+        var apsArray = getCapResult.getOutput(); 
         for (aps in apsArray)
         {
             myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();

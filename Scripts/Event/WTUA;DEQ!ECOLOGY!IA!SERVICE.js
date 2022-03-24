@@ -63,6 +63,16 @@ editAppSpecific("Use", use, parentCapId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
+	var capContacts = aa.people.getCapContactByCapID(parentCapId);
+    if (capContacts.getSuccess())
+    {
+        capContacts = capContacts.getOutput();
+        logDebug("capContacts: " + capContacts);
+        for (var yy in capContacts)
+        {
+            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+        }
+    }
 	if (conUpdate == "CHECKED")
 	{
 		var contractDate = new Date(conStartServ);
