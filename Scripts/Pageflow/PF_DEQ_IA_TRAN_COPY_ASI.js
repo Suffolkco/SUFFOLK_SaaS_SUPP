@@ -104,7 +104,7 @@ try
   var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
   if (parentResult.getSuccess())
   {
-    var parentCapId = parentResult.getOutput();
+    var parentCapId = parentResult.getOutput(); 
 
 
     var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
@@ -155,7 +155,7 @@ function populateAmendmentAPOContacts(parent)
   var capModel = aa.env.getValue("CapModel");
   copyAddressFromParent4ACA(capModel, parent);
   copyParcelsFromParent4ACA(capModel, parent);
-  copyContactFromParent4ACA(capModel, parent);
+  //copyContactFromParent4ACA(capModel, parent);
   aa.env.setValue('CapModel', capModel);
 }
 function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
