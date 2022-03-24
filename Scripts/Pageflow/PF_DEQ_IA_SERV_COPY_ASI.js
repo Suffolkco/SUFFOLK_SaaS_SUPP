@@ -17,11 +17,11 @@
 |     will no longer be considered a "Master" script and will not be supported in future releases.  If
 |     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = false;                                                                                        // Set to true to see results in popup window
-var showDebug = false;                                                                                             // Set to true to see debug messages in popup window
+var showMessage = true;                                                                                        // Set to true to see results in popup window
+var showDebug = true;                                                                                             // Set to true to see debug messages in popup window
 var useAppSpecificGroupName = false;                                   // Use Group name when populating App Specific Info Values
 var useTaskSpecificGroupName = false;                                 // Use Group name when populating Task Specific Info Values
-var cancel = false;
+var cancel = true;
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
@@ -113,11 +113,8 @@ try
     var installDate = getAppSpecific("Installation Date", parentCapId);
     var type = getAppSpecific("Type", parentCapId);
 
-    copyAddressFromParent4ACA(capId, parentCapId);
-    copyParcelsFromParent4ACA(capId, parentCapId);
 
-
-    populateAmendmentAPOContacts(parentCapId); 
+    populateAmendmentAPOContacts(parentCapId);  
   }
 
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
@@ -161,7 +158,7 @@ function populateAmendmentAPOContacts(parent)
   var capModel = aa.env.getValue("CapModel");
   copyAddressFromParent4ACA(capModel, parent);
   copyParcelsFromParent4ACA(capModel, parent);
-  //copyContactFromParent4ACA(capModel, parent);
+  copyContactFromParent4ACA(capModel, parent);
   aa.env.setValue('CapModel', capModel);
 }
 function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)

@@ -104,7 +104,7 @@ try
   var parentResult = aa.cap.getCapID(AInfo["IA Record Number"]);
   if (parentResult.getSuccess())
   {
-    var parentCapId = parentResult.getOutput();
+    var parentCapId = parentResult.getOutput(); 
 
 
     var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
