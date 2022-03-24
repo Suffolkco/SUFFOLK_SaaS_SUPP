@@ -112,7 +112,7 @@ try
     var installDate = getAppSpecific("Installation Date", parentCapId);
     var type = getAppSpecific("Type", parentCapId);
 
-    populateAmendmentAPOContacts(parentCapId);
+    //populateAmendmentAPOContacts(parentCapId);
 
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
     editAppSpecific4ACA("Model", model, cap);
