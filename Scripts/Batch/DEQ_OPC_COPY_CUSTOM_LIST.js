@@ -1,8 +1,8 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program:DCA_BUSINESS_WEBSITE_ADDRESS_UPDATE.js
+| Program:DEQ_OPC_COPY_CUSTOM_LIST.js: Batch
 | 
-| This batch script will run one time to update a custom field Business Website Address.
-| The existing format is invalid.
+| This batch script will run copy old custom list fields to new ones
+|
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
 | USER CONFIGURABLE PARAMETERS
@@ -149,7 +149,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate + br);		
-        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DCA_BUSINESS_WEBSITE_ADDRESS_UPDATE", emailText);
+        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_COPY_CUSTOM_LIST", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -170,71 +170,84 @@ function mainProcess()
 {    
     try 
     {
-        logDebug("Batch script will run");
 		var count = 0;
-		var naCount = 0;
-
-		// Version 1:
-		// This query is to retrieve all N/A to replace.
-		//var vSQL = "SELECT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'ConsumerAffairs' AND C.B1_CHECKBOX_DESC = 'Business Website' AND C.B1_CHECKLIST_COMMENT ='N/A'";
-
-		// This query is to find invalid website address.
-		//var vSQL = "SELECT B.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BCHCKBOX C ON B.B1_PER_ID1 = C.B1_PER_ID1 AND B.B1_PER_ID2 = C.B1_PER_ID2 AND B.B1_PER_ID3 = C.B1_PER_ID3 WHERE B.B1_APPL_STATUS = 'Active' AND B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'ConsumerAffairs' AND C.B1_CHECKBOX_DESC = 'Business Website' AND C.B1_CHECKLIST_COMMENT NOT like 'https://%' AND C.B1_CHECKLIST_COMMENT NOT like 'http://%'";
-
-		// Version 2: 
-		// Ninglis' query to find invalid website address:
-		var vSQL = "select b1.B1_ALT_ID as recordNumber from b1permit b1 join BCHCKBOX bch on b1.SERV_PROV_CODE = bch.SERV_PROV_CODE and b1.B1_PER_ID1 = bch.B1_PER_ID1 and b1.B1_PER_ID2 = bch.B1_PER_ID2 and b1.B1_PER_ID3 = bch.B1_PER_ID3 where b1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP like 'Consumer%' and b1.REC_STATUS = 'A' and b1.B1_ALT_ID not like '%TMP%' and bch.B1_CHECKBOX_DESC like '%Website%' and bch.B1_CHECKLIST_COMMENT not like 'http%'";
-		
+		var nycount = 0;
+		var scdhsValue = false;
+		var nysdecValue = false;
+        logDebug("Batch script will run");        
+		var vSQL = "select b.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BAPPSPECTABLE_VALUE ASIT ON B.SERV_PROV_CODE = ASIT.SERV_PROV_CODE AND B.B1_PER_ID1 = ASIT.B1_PER_ID1 AND B.B1_PER_ID2 = ASIT.B1_PER_ID2 AND B.B1_PER_ID3 = ASIT.B1_PER_ID3 AND B.REC_STATUS = ASIT.REC_STATUS AND ASIT.TABLE_NAME = 'SPILL' AND ASIT.COLUMN_NAME IN ('SCDHS No', 'NYSDEC Ref No') and ASIT.ATTRIBUTE_VALUE is not null and ASIT.ATTRIBUTE_VALUE <> 'null' where b.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' and b.B1_PER_TYPE = 'General' and b.REC_STATUS = 'A'";		
+		var output = "Record ID\n";  		
+        		
 		var vResult = doSQLSelect_local(vSQL);  	     
-		logDebugLocal("********DCA records that has bad web address: " + vResult.length + "*********\n");
-
+		logDebugLocal("********Scanning OPC custom list records : " + vResult.length + "*********\n");
+		var sites = "";
 		for (r in vResult)
-        {		
-            recordID = vResult[r]["recordNumber"];     
-          
+        {
+            recordID = vResult[r]["recordNumber"];      
+            //output += recordID + "\n";
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
-			
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
-                {
-					var webAddress = getAppSpecific("Business Website", capId);
-					logDebugLocal("Web address: " + webAddress);
+                {					
+					var tableNameArray = getTableName(capId);
+					logDebugLocal("Get All custom list table: " + tableNameArray.length);
+				
+					var scdhs;
+					var nysdec;
 
-					if(matches(webAddress,"N/A", "n/a"))					
+					if (tableNameArray != null)
 					{
-						logDebugLocal("Record ID: " + capIDString);
-						editAppSpecific("Business Website", "", capId);
-						logDebugLocal("Update N/A address: " + webAddress + " to blank.");
-						naCount++;
-					}
-					else
-					{
-						//For bad format web business address					
-						logDebugLocal("Record ID: " + capIDString);
-						var newAddress = "https://" + webAddress;
-						logDebugLocal("Update existing address: " + webAddress + " to " + newAddress);
-						editAppSpecific("Business Website", newAddress, capId);
-						count++;
-					}
-					// For N/A query
-					/*
-					if(matches(webAddress,"N/A", "n/a"))					
-					{
-						logDebugLocal("Record ID: " + capIDString);
-						editAppSpecific("Business Website", "", capId);
-						count++;
-					}*/
+						for (loopk in tableNameArray)
+						{
+							var tableName = tableNameArray[loopk];
+														
+							if (tableName == "SPILL")
+							{			
+								var spillTable = loadASITable(tableName);                            
+								for (var p in spillTable)
+								{
+									scdhs = spillTable[p]["SCDHS No"];
+									var newScdhs = spillTable[p]["SCDHS Spill No"];
+									
 
+									if (!matches(scdhs,null,undefined,"") &&
+									matches(newScdhs,null,undefined,"")) 
+									{				
+										logDebugLocal("SCDHS value: " + scdhs + ", SCDHS Spill No: " + newScdhs);						
+										logDebugLocal("Record ID: " + capIDString);
+										//editASITableRowNull(capId, "SPILL", "SCDHS Spill No", scdhs.toString());
+										editASITableRowViaRowIdentifer(capId, "SPILL", "SCDHS Spill No", scdhs.toString(), scdhs.toString(), "SCDHS No");
+										count++;
+									}
+
+									nysdec = spillTable[p]["NYSDEC Ref No"];
+									var newNysdec = spillTable[p]["NYSDEC Spill No"];      
+									
+
+									if (!matches(nysdec,null,undefined,"") &&
+									matches(newNysdec,null,undefined,"")) 
+									{
+										logDebugLocal("NYSDEC value: " + nysdec + ", NYSDEC Spill No: " + newNysdec);
+										logDebugLocal("Record ID: " + capIDString);										
+										//editASITableRowNull(capId, "SPILL", "NYSDEC Spill No", nysdec.toString());
+										editASITableRowViaRowIdentifer(capId, "SPILL", "NYSDEC Spill No", nysdec.toString(), nysdec.toString(), "NYSDEC Ref No");
+										nycount++;
+									}		
+								}
+								break;
+							}
+						}
+					}	
+					
 				}
 			}
 		}
-		
-		logDebugLocal("Number of N/A website address:" + naCount);		
-		logDebugLocal("Number of bad website address:" + count);	
+		logDebugLocal("Total of fields copying: " + count);
+	
 	}
     catch (err) 
     {
@@ -251,6 +264,167 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function editASITableRowLocal(tableCapId, tableName, editName, editValue) {
+	logDebugLocal("In editASITableRow with parameters:" + "|" + tableCapId + "|" + tableName + "|" + editName + "|" + editValue);
+	var tableArr = loadASITable(tableName, tableCapId);
+	var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,tableCapId,"ADMIN");
+	if (tableArr) {
+		for (var r in tableArr) {
+			logDebugLocal("In row " + r);
+			var rowArr=new Array();
+			var tempArr=new Array();
+			for (var col in tableArr[r]) {
+				if (tableArr[r][col].columnName.toString() == editName) {
+					logDebugLocal("Editing column: " + editName + " to " + editValue);
+					var tVal = tableArr[r][col];
+					tVal.fieldValue = editValue;
+				}else {
+					var tVal = tableArr[r][col];
+				}
+				logDebugLocal("colName:" + tableArr[r][col].columnName.toString() + "|row:" + tableArr[r][col])
+				//bizarre string conversion - just go with it
+				var colName = new String(tableArr[r][col].columnName.toString());
+				colName=colName.toString();
+				tempArr[colName] = tVal;
+			}
+
+			rowArr.push(tempArr); 
+			//for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+			addASITableLocal(tableName,rowArr,tableCapId);
+		}
+	}
+}
+
+function addASITableLocal(tableName, tableValueArray) // optional capId
+{
+	//  tableName is the name of the ASI table
+	//  tableValueArray is an array of associative array values.  All elements MUST be either a string or asiTableVal object
+	var itemCap = capId
+	logDebugLocal("capId:" + capId);
+		if (arguments.length > 2)
+			itemCap = arguments[2]; // use cap ID specified in args
+		logDebugLocal("Get table name:" + tableName);
+		var tssmResult = aa.appSpecificTableScript.getAppSpecificTableModel(itemCap, tableName)
+
+		if (!tssmResult.getSuccess()) {
+			logDebugLocal("**WARNING: error retrieving app specific table " + tableName + " " + tssmResult.getErrorMessage());
+			return false
+		}
+
+	var tssm = tssmResult.getOutput();
+	var tsm = tssm.getAppSpecificTableModel();
+	var fld = tsm.getTableField();
+	var fld_readonly = tsm.getReadonlyField(); // get Readonly field
+	logDebugLocal("tableValueArray length:" + tableValueArray.length);
+	for (thisrow in tableValueArray) {
+
+		var col = tsm.getColumns()
+			var coli = col.iterator();
+		while (coli.hasNext()) {
+			var colname = coli.next();
+
+			if (!tableValueArray[thisrow][colname.getColumnName()]) {
+				logDebugLocal("addToASITable: null or undefined value supplied for column " + colname.getColumnName() + ", setting to empty string");
+				tableValueArray[thisrow][colname.getColumnName()] = "";
+			}
+			
+			if (typeof(tableValueArray[thisrow][colname.getColumnName()].fieldValue) != "undefined") // we are passed an asiTablVal Obj
+			{
+				fld.add(tableValueArray[thisrow][colname.getColumnName()].fieldValue);
+				fld_readonly.add(tableValueArray[thisrow][colname.getColumnName()].readOnly);
+				//fld_readonly.add(null);
+			} else // we are passed a string
+			{
+				fld.add(tableValueArray[thisrow][colname.getColumnName()]);
+				fld_readonly.add(null);
+			}
+		}
+
+		tsm.setTableField(fld);
+
+		tsm.setReadonlyField(fld_readonly);
+
+	}
+
+	var addResult = aa.appSpecificTableScript.editAppSpecificTableInfos(tsm, itemCap, currentUserID);
+
+	if (!addResult.getSuccess()) {
+		logDebugLocal("**WARNING: error adding record to ASI Table:  " + tableName + " " + addResult.getErrorMessage());
+		return false
+	} else
+	logDebugLocal("Successfully added record to ASI Table: " + tableName);
+
+}
+function loadASITable(tname)
+{
+	itemCap = arguments[1]; // use cap ID specified in args
+
+	var gm = aa.appSpecificTableScript.getAppSpecificTableGroupModel(itemCap).getOutput();
+	var ta = gm.getTablesArray()
+	var tai = ta.iterator();
+
+	while (tai.hasNext())
+	{
+	  var tsm = tai.next();
+	  var tn = tsm.getTableName();
+
+      if (!tn.equals(tname)) continue;
+
+	  if (tsm.rowIndex.isEmpty())
+	  	{
+			logDebugLocal("Couldn't load ASI Table " + tname + " it is empty");
+			return false;
+		}
+
+   	  var tempObject = new Array();
+	  var tempArray = new Array();
+
+  	  var tsmfldi = tsm.getTableField().iterator();
+	  var tsmcoli = tsm.getColumns().iterator();
+      var readOnlyi = tsm.getAppSpecificTableModel().getReadonlyField().iterator(); // get Readonly filed
+	  var numrows = 1;
+
+	  while (tsmfldi.hasNext())  // cycle through fields
+		{
+		if (!tsmcoli.hasNext())  // cycle through columns
+			{
+			var tsmcoli = tsm.getColumns().iterator();
+			tempArray.push(tempObject);  // end of record
+			var tempObject = new Array();  // clear the temp obj
+			numrows++;
+			}
+		var tcol = tsmcoli.next();
+		var tval = tsmfldi.next();
+		var readOnly = 'N';
+		if (readOnlyi.hasNext()) {
+			readOnly = readOnlyi.next();
+		}
+		var fieldInfo = new asiTableValObj(tcol.getColumnName(), tval, readOnly);
+		tempObject[tcol.getColumnName()] = fieldInfo;
+		}		
+	  tempArray.push(tempObject);  // end of record
+	}	
+	return tempArray;
+}
+function removeASITable(tableName) // optional capId
+{
+	//  tableName is the name of the ASI table
+	//  tableValues is an associative array of values.  All elements MUST be strings.
+	var itemCap = capId
+	if (arguments.length > 1) itemCap = arguments[1]; // use cap ID specified in args
+	var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName, itemCap, currentUserID)
+	if (!tssmResult.getSuccess())
+	{ 
+		aa.print("**WARNING: error removing ASI table " + tableName + " " + tssmResult.getErrorMessage()); 
+		return false;
+	}
+	else
+	{
+		logDebug("Successfully removed all rows from ASI Table: " + tableName);
+	}
+}
+
+
 function isNumeric(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
   }
@@ -328,6 +502,42 @@ function doSQLSelect_local(sql)
         //logdebug("ERROR: "+ err.message);
         return array
     }
+}
+
+function copyAppSpecificTable(srcCapId, targetCapId)
+{
+  var tableNameArray = getTableName(srcCapId);
+  if (tableNameArray == null)
+  {
+    return;
+  }
+  for (loopk in tableNameArray)
+  {
+    var tableName = tableNameArray[loopk];
+	logDebug("tableName: " + tableName);
+
+	// UIC Data Alias
+    if (matches(tableName,"CONTAMINANTS"))
+    {
+    	var targetAppSpecificTable = module(tableName,srcCapId);
+		addASITable(tableName, targetAppSpecificTable,targetCapId);
+	}
+  }
+}
+
+function getTableName(capId)
+{
+  var tableName = null;
+  var result = aa.appSpecificTableScript.getAppSpecificGroupTableNames(capId);
+  if(result.getSuccess())
+  {
+    tableName = result.getOutput();
+    if(tableName!=null)
+    {
+      return tableName;
+    }
+  }
+  return tableName;
 }
 
 function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
