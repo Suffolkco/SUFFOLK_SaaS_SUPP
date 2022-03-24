@@ -117,7 +117,7 @@ try
     copyParcelsFromParent4ACA(capId, parentCapId);
 
 
-    //populateAmendmentAPOContacts(parentCapId); 
+    populateAmendmentAPOContacts(parentCapId); 
   }
 
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
@@ -161,7 +161,7 @@ function populateAmendmentAPOContacts(parent)
   var capModel = aa.env.getValue("CapModel");
   copyAddressFromParent4ACA(capModel, parent);
   copyParcelsFromParent4ACA(capModel, parent);
-  copyContactFromParent4ACA(capModel, parent);
+  //copyContactFromParent4ACA(capModel, parent);
   aa.env.setValue('CapModel', capModel);
 }
 function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
