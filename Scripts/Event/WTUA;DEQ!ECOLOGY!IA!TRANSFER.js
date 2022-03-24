@@ -37,7 +37,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     if (getCapResult.getSuccess())
     {
-        var apsArray = getCapResult.getOutput(); 
+        var apsArray = getCapResult.getOutput();  
         for (aps in apsArray)
         {
             myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();

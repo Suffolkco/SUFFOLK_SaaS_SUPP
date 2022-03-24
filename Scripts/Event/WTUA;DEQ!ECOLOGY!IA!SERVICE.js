@@ -75,7 +75,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     }
 	if (conUpdate == "CHECKED")
 	{
-		var contractDate = new Date(conStartServ);
+		var contractDate = new Date(conStartServ); 
 
 		var datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + contractDate.getFullYear();
 
