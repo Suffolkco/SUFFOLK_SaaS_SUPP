@@ -298,16 +298,16 @@ if (appTypeArray[1] == "WWM")
                                 }
                             }
 
-                            //gathering IA Vendor LP
-                            var wwmIALicProfResult = aa.licenseScript.getLicenseProf(wwmIA);
-                            var iaVendorLPs = wwmIALicProfResult.getOutput();
-                            for (v in iaVendorLPs)
-                            {
-                                if (iaVendorLPs[v].getLicenseType() == "IA Vendor")
-                                {
-                                    conEmail += iaVendorLPs[v].email + ";"
-                                }
-                            }
+                            // //gathering IA Vendor LP
+                            // var wwmIALicProfResult = aa.licenseScript.getLicenseProf(wwmIA);
+                            // var iaVendorLPs = wwmIALicProfResult.getOutput();
+                            // for (v in iaVendorLPs)
+                            // {
+                            //     if (iaVendorLPs[v].getLicenseType() == "IA Vendor")
+                            //     {
+                            //         conEmail += iaVendorLPs[v].email + ";"
+                            //     }
+                            // }
 
 
 
