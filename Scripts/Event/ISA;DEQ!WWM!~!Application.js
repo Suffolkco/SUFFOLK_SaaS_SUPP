@@ -29,14 +29,18 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 
 	//var newDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayOfMonth() + "/" + iObj.getScheduledDate().getYear();
     //logDebugLocal("New date: " + newDate);
-    var schDate = new Date(inspSchedDate);          
-	inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
 
-   
+	//inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
 
+    var dateAdd = addDays(inspSchedDate, 0);
+    logDebug("dateAdd is: " + dateAdd);
+    var DDMMYYYY = jsDateToMMDDYYYY(dateAdd);
+    logDebug("Date added to MMDDYYYY is: " + DDMMYYYY);
+    
     logDebugLocal("Set inspeciation date: " + inspSchedDate);
-
-    capId.setScheduledDate(aa.date.parseDate(schDate));
+    logDebugLocal("Set inspeciation date DDMMYYYY: " + DDMMYYYY);
+    gLocal("Set inspeciation date DDMMYYYY: " + aa.date.parseDate(DDMMYYYY));
+    capId.setScheduledDate(aa.date.parseDate(DDMMYYYY));
 }
 
 
