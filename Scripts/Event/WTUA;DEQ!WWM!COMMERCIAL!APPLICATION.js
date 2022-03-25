@@ -5,6 +5,21 @@ var emailText = "";
 //If workflow is approved, add 3 years to the Expiration date//
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {
+	// EHIMS-4832
+	// Check to see if new document has been updated by public user
+	var readValue =  AInfo["New documents uploaded"]
+	// Use ASI instead of TSI
+	//var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
+	if (readValue != null && readValue == 'CHECKED')
+	{
+		//Reset the flag
+		//editAppSpecific("New documents uploaded", "UNCHECKED", capId);
+		cancel = true;
+		showMessage = true;
+		comment("A resubmission was made - verify that the latest documents or payment have been reviewed. Deactivate 'New documents uploaded' flag in custom fields to proceed.");		
+		
+	}
+
 	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
 
 	var prelimCondTxt = AInfo["Permit Conditions Text"];
@@ -144,6 +159,58 @@ if (wfTask == "Final Review" && wfStatus == "Approved")
 		//workflowFinalReviewApprovedWWM();
 		workflowFinalReviewApprovedWWMWithPin();
 	}
+
+
+
+function loadTaskSpecific(wfName,itemName)  // optional: itemCap
+{
+var updated = false;
+var i=0;
+itemCap = capId;
+if (arguments.length == 4) itemCap = arguments[3]; // use cap ID specified in args
+//
+// Get the workflows
+//
+var workflowResult = aa.workflow.getTaskItems(itemCap, wfName, null, null, null, null);
+if (workflowResult.getSuccess())
+	wfObj = workflowResult.getOutput();
+else
+	{ logDebug("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage()); return false; }
+
+//
+// Loop through workflow tasks
+//
+for (i in wfObj)
+	{
+	fTask = wfObj[i];
+	stepnumber = fTask.getStepNumber();
+	processID = fTask.getProcessID();
+	if (wfName.equals(fTask.getTaskDescription())) // Found the right Workflow Task
+		{
+	TSIResult = aa.taskSpecificInfo.getTaskSpecifiInfoByDesc(itemCap,processID,stepnumber,itemName);
+		if (TSIResult.getSuccess())
+			{
+			var TSI = TSIResult.getOutput();
+			if (TSI != null)
+				{
+				var TSIArray = new Array();
+				TSInfoModel = TSI.getTaskSpecificInfoModel();
+				var readValue = TSInfoModel.getChecklistComment();
+				return readValue;
+				}
+			else
+				logDebug("No task specific info field called "+itemName+" found for task "+wfName);
+				return null
+			}
+		else
+			{
+			logDebug("**ERROR: Failed to get Task Specific Info objects: " + TSIResult.getErrorMessage());
+			return null
+			}
+		}  // found workflow task
+	} // each task
+	return null
+}
 
 	function inspectionResultComments()
 {
