@@ -21,7 +21,7 @@ appTypeString = appTypeResult.toString();
 appTypeArray = appTypeString.split("/");
 if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "Residence" && appTypeArray[3] == "Application") 
 {
-    logDebugLocal("Set inspeciation date: " + inspSchedDate + "," + inspType );
+    logDebugLocal("Set inspection date: " + inspSchedDate + "," + inspType );
    
     var iObjResult = aa.inspection.getInspection(capId, inspId);
     var iObj = iObjResult.getOutput();   
@@ -37,9 +37,9 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var DDMMYYYY = jsDateToMMDDYYYY(dateAdd);
     logDebug("Date added to MMDDYYYY is: " + DDMMYYYY);
     
-    logDebugLocal("Set inspeciation date: " + inspSchedDate);
-    logDebugLocal("Set inspeciation date DDMMYYYY: " + DDMMYYYY);
-    gLocal("Set inspeciation date DDMMYYYY: " + aa.date.parseDate(DDMMYYYY));
+    logDebugLocal("Set inspection date: " + inspSchedDate);
+    logDebugLocal("Set inspection date DDMMYYYY: " + DDMMYYYY);
+    logDebugLocal("Set inspection date Parse DDMMYYYY: " + aa.date.parseDate(DDMMYYYY));
     capId.setScheduledDate(aa.date.parseDate(DDMMYYYY));
 }
 
