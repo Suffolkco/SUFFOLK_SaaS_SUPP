@@ -11,6 +11,23 @@ inspGroup = WWM_INSP
 inspType = WWM_RES_System 1
 inspSchedDate = 1/18/2022 */
 
+// EHIMS-4709: Copy the inspection scheduled date to record scheduled date field.
+var iObjResult = aa.inspection.getInspection(capId, inspId);
+var iObj = iObjResult.getOutput();
+var inspTypeArr = inspTypeResult.getOutput();
+var inspType = inspTypeArr[0]; // assume first
+var inspSeq = inspType.getSequenceNumber();
+var inspModel = iObj.getInspection();
+var inspectionType = iObj.getInspectionType();
+
+if (iObj.getScheduledDate() != null) {
+    inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
+    logDebug(inspSchedDate)  
+    capId.setScheduledDate(iObj.getScheduledDate());
+
+}
+
+
 var inspectionResult = aa.inspection.getInspections(capId);
 if (inspectionResult.getSuccess()) {
     if (inspectionResult.getOutput().length >= 2) {
