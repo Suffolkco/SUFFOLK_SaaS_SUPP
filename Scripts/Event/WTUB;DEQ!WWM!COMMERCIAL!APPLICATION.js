@@ -35,7 +35,7 @@ if (methSew != null)
                 {
                     cancel = true;
                     showMessage = true;
-                    comment("CUSTOM LIST REQUIRED.");
+                    comment("CUSTOM LIST REQUIRED - sanitary system information must be entered into Custom Lists; workflow was not advanced.</br>");
                 }
             }
         }
