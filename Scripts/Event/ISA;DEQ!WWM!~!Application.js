@@ -21,14 +21,10 @@ appTypeString = appTypeResult.toString();
 appTypeArray = appTypeString.split("/");
 if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "Residence" && appTypeArray[3] == "Application") 
 {
-    logDebugLocal("Set inspeciation date: " + inspSchedDate + "," + capId);
+    logDebugLocal("Set inspeciation date: " + inspSchedDate + "," + inspType );
    
     var iObjResult = aa.inspection.getInspection(capId, inspId);
-    var iObj = iObjResult.getOutput();
-    var inspTypeArr = inspTypeResult.getOutput();
-    var inspType = inspTypeArr[0]; // assume first
-    var inspSeq = inspType.getSequenceNumber();
-    var inspModel = iObj.getInspection();
+    var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
 
 	//inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
