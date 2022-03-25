@@ -1,5 +1,6 @@
 //ISA;DEQ!WWM!~!Application
 showDebug = true;
+logDebugLocal("Information: " + inspId + "," + inspSchedDate);
 // Not used anymore
 /*
 inspId 566190   // is the new inspection
@@ -12,20 +13,23 @@ inspType = WWM_RES_System 1
 inspSchedDate = 1/18/2022 */
 
 // EHIMS-4709: Copy the inspection scheduled date to record scheduled date field.
-var iObjResult = aa.inspection.getInspection(capId, inspId);
+/*var iObjResult = aa.inspection.getInspection(capId, inspId);
 var iObj = iObjResult.getOutput();
 var inspTypeArr = inspTypeResult.getOutput();
 var inspType = inspTypeArr[0]; // assume first
 var inspSeq = inspType.getSequenceNumber();
 var inspModel = iObj.getInspection();
-var inspectionType = iObj.getInspectionType();
+var inspectionType = iObj.getInspectionType();*/
 
-if (iObj.getScheduledDate() != null) {
-    inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
-    logDebug(inspSchedDate)  
-    capId.setScheduledDate(iObj.getScheduledDate());
-
+appTypeResult = cap.getCapType();
+appTypeString = appTypeResult.toString();
+appTypeArray = appTypeString.split("/");
+if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "Residence" && appTypeArray[3] == "Application") 
+{
+    logDebugLocal("Set inspeciation date: " + inspSchedDate + "," + capId);
+    capId.setScheduledDate( aa.date.parseDate(inspSchedDate));
 }
+
 
 
 var inspectionResult = aa.inspection.getInspections(capId);
@@ -94,5 +98,15 @@ function copyAllGuidesheets(inspId1, inspId2) {
                 aa.print("Copied guidesheet successfully.");
             }
         }
+    }
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
     }
 }
