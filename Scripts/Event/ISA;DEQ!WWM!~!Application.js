@@ -26,9 +26,12 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var iObjResult = aa.inspection.getInspection(capId, inspId);
     var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
-
+	var newDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayOfMonth() + "/" + Obj.getScheduledDate().getYear();
+    logDebugLocal("New date: " + newDate);
+    
+    var recordInspDate = aa.date.parseDate(newDate);
 	//inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
-    capId.setScheduledDate(iObj.getScheduledDate());
+    capId.setScheduledDate(recordInspDate);
 }
 
 
