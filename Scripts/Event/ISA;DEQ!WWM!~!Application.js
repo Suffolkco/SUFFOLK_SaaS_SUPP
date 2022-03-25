@@ -26,10 +26,12 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var iObjResult = aa.inspection.getInspection(capId, inspId);
     var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
+
 	var newDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayOfMonth() + "/" + iObj.getScheduledDate().getYear();
     logDebugLocal("New date: " + newDate);
-
-    var recordInspDate = aa.date.parseDate(newDate);
+    var schDate = new Date(newDate);   
+    var DDMMYYYY = jsDateToMMDDYYYY(schDate);
+    var recordInspDate = aa.date.parseDate(DDMMYYYY);
 	//inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
     capId.setScheduledDate(recordInspDate);
 }
@@ -49,6 +51,28 @@ if (inspectionResult.getSuccess()) {
 logDebug("this is the script that is running");
 copyAllGuidesheets(lastInsp, inspId, capId, true);
 
+function addDays(date, days) 
+{
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
+
+function jsDateToMMDDYYYY(pJavaScriptDate) {
+	//converts javascript date to string in MM/DD/YYYY format
+	if (pJavaScriptDate != null) {
+		if (Date.prototype.isPrototypeOf(pJavaScriptDate)) {
+			return (pJavaScriptDate.getMonth() + 1).toString() + "/" + pJavaScriptDate.getDate() + "/" + pJavaScriptDate.getFullYear();
+		} else {
+			logDebug("Parameter is not a javascript date");
+			return ("INVALID JAVASCRIPT DATE");
+		}
+	} else {
+		logDebug("Parameter is null");
+		return ("NULL PARAMETER VALUE");
+	}
+}
 
 function copyAllGuidesheets(inspId1, inspId2) { 
     /*
