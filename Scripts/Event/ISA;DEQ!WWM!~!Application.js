@@ -31,9 +31,12 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     //logDebugLocal("New date: " + newDate);
     var schDate = new Date(inspSchedDate);          
 	inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
+
+   
+
     logDebugLocal("Set inspeciation date: " + inspSchedDate);
 
-    capId.setScheduledDate(iObj.getScheduledDate());
+    capId.setScheduledDate(aa.date.parseDate(schDate));
 }
 
 
