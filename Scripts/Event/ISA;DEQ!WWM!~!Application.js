@@ -29,11 +29,9 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 
 	//var newDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayOfMonth() + "/" + iObj.getScheduledDate().getYear();
     //logDebugLocal("New date: " + newDate);
-    var schDate = new Date(inspSchedDate);   
-    var DDMMYYYY = jsDateToMMDDYYYY(schDate);
-    var recordInspDate = aa.date.parseDate(DDMMYYYY);
+    var schDate = new Date(inspSchedDate);          
 	//inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
-    capId.setScheduledDate(recordInspDate);
+    capId.setScheduledDate(schDate);
 }
 
 
