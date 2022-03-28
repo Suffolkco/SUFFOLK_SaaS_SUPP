@@ -14,8 +14,7 @@ inspType = WWM_RES_System 1
 inspSchedDate = 1/18/2022 */
 
 // EHIMS-4709: Copy the inspection scheduled date to record scheduled date field.
-
-
+// *********************************************************************************
 appTypeResult = cap.getCapType();
 appTypeString = appTypeResult.toString();
 appTypeArray = appTypeString.split("/");
@@ -27,11 +26,7 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
 
-	//var inspSchDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayofMonth() + "/" + iObj.getScheduledDate().getYear();
-    //logDebugLocal("Inspection scheduled date: " + inspSchDate);
-    //var inspSchDateCon = (inspSchDate.getMonth() + 1) + "/" + inspSchDate.getDayofMonth() + "/" + inspSchDate.getFullYear();
     logDebugLocal("Inspection scheduled Con date: " + inspSchedDate);
-
 	
     var cdScriptObjResult = aa.cap.getCapDetail(capId);
 	if (!cdScriptObjResult.getSuccess())
@@ -48,16 +43,16 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 	//var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
 	//logDebugLocal("dateCon: " + dateCon);
 	var dateAdd = addDays(inspSchedDate, 0);
-	logDebugLocal("dateAdd: " + dateAdd);
+	logDebugLocal("DateAdd Date: " + dateAdd);
 	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);   
-	logDebugLocal("dateMMDDYYY: " + dateMMDDYYY);
-
-	logDebugLocal("getScheduledDate: " + cd.getScheduledDate());
+	logDebugLocal("JS DATE to dateMMDDYYY: " + dateMMDDYYY);
+	logDebugLocal("Current Record Scheduled Date: " + cd.getScheduledDate());
 
 	dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 	logDebugLocal("Parse date: " + dateMMDDYYY);
 	try
 	{
+        logDebugLocal("Set Scehdule Date.");
 		cdScriptObj.setScheduledDate(dateMMDDYYY);
 	}
 	catch (ex)
@@ -68,15 +63,13 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 	cdWrite = aa.cap.editCapDetail(cd)
 
 	if (!cdWrite.getSuccess()){ 
-		logDebugLocal("**ERROR writing capdetail : " + cdWrite.getErrorMessage()); 		
+		logDebugLocal("**ERROR writing capdetail: " + cdWrite.getErrorMessage()); 		
 	}
 	else{
-		logDebugLocal("updated scheduled date to " + dateMMDDYYY);
+		logDebugLocal("Updated scheduled date to: " + dateMMDDYYY);
 	 }
-
 }
-
-
+// *********************************************************************************
 
 var inspectionResult = aa.inspection.getInspections(capId);
 if (inspectionResult.getSuccess()) {
@@ -90,57 +83,6 @@ if (inspectionResult.getSuccess()) {
 
 logDebug("this is the script that is running");
 copyAllGuidesheets(lastInsp, inspId, capId, true);
-
-function updateRecordcheduledDateLocal(newSN){ // option CapId
-	var itemCap = capId
-	if (arguments.length > 1) itemCap = arguments[1]; // use cap ID specified in args
-
-	var cdScriptObjResult = aa.cap.getCapDetail(itemCap);
-	if (!cdScriptObjResult.getSuccess())
-		{ logDebugLocal("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; return false; }
-
-	var cdScriptObj = cdScriptObjResult.getOutput();
-
-	if (!cdScriptObj)
-		{ logDebugLocal("**ERROR: No cap detail script object") ; return false; }
-
-	cd = cdScriptObj.getCapDetailModel();
-
-	//cd.setShortNotes(newSN);
-	
-	var todaysDate = new Date();
-	var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
-	logDebugLocal("dateCon: " + dateCon);
-	var dateAdd = addDays(dateCon, 0);
-	logDebugLocal("dateAdd: " + dateAdd);
-	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);   
-	logDebugLocal("dateMMDDYYY: " + dateMMDDYYY);
-
-	logDebugLocal("getScheduledDate: " + cd.getScheduledDate());
-
-	dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-	logDebugLocal("Parse date: " + dateMMDDYYY);
-	try
-	{
-		cdScriptObj.setScheduledDate(dateMMDDYYY);
-	}
-	catch (ex)
-	{
-		logDebugLocal("**ERROR** runtime error " + ex.message);
-	}
-	
-	cdWrite = aa.cap.editCapDetail(cd)
-
-	if (!cdWrite.getSuccess()){ 
-		logDebugLocal("**ERROR writing capdetail : " + cdWrite.getErrorMessage()); 
-		return false ; 
-	}
-	else{
-		logDebugLocal("updated short notes to " + newSN);
-	 }
-
-	 
-}
 
 
 function addDays(date, days) 
