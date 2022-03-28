@@ -37,6 +37,36 @@ try{
 }catch(err){
    logDebug("**WARN: Error in CTRCA updating short notes and address -  " + err.message);
 }
+
+// DAP-391: Set OPENED_DATE to be submission date on ACA submission
+var emailText = "";
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+
+try
+{
+    cap = aa.cap.getCap(capId).getOutput();
+    fileDateObj = cap.getFileDate();
+    fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();	
+    logDebug("Current file date is: " + fileDate);
+    
+
+    var todaysDate = new Date();
+	var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
+	logDebug("Set to today's date: " + dateCon);
+	var dateAdd = addDays(dateCon, 0);
+	logDebugLocal("dateAdd: " + dateAdd);
+	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);   
+	logDebugLocal("dateMMDDYYY: " + dateMMDDYYY);
+	dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+	fileDateObj = cap.setFileDate(dateMMDDYYY);
+
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "CTRCA - DCA", emailText);
+
+}
+catch(err){
+    logDebug("**WARN: Error in CTRCA updating file date -  " + err.message);
+}
+
 //var newCap = checkTypeAndRename(capId);
 //logDebug("new renewal CAP ID: " + newCap.getCustomID());
 //// functions - to be moved to INCLUDES_CUSTOM sometime later
