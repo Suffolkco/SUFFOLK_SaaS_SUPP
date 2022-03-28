@@ -68,9 +68,9 @@ loadAppSpecific4ACA(AInfo);
 var skipRetro = false;
 var sanitaryDecommission = AInfo["Existing Sanitary System Decommissioning ONLY"];
  
-if (sanitaryDecommission == "CHECKED") {
+if (sanitaryDecommission == "UNCHECKED") { 
     skipRetro= true;
-}
+} 
 
 if (skipRetro) { 
     aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
