@@ -72,7 +72,7 @@ if (sanitaryDecommission == "CHECKED") {
     skipRetro= true;
 }
 
-if (skipRetro) {
+if (skipRetro) { 
     aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
 }
 

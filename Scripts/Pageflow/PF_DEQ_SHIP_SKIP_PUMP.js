@@ -68,7 +68,7 @@ loadAppSpecific4ACA(AInfo);
 var skipPump = false; 
 var pumpOut = AInfo["Pump Out ONLY"];
 
-if (pumpOut == "CHECKED") {
+if (pumpOut == "CHECKED") { 
     skipPump = true;
 }
 
