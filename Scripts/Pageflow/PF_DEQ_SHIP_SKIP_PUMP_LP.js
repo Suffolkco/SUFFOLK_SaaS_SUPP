@@ -72,7 +72,7 @@ if (removal == "No") {
     skipPumper = true;
 }
 
-if (skipPump) {
+if (skipPumper) {
     aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
 }
 
