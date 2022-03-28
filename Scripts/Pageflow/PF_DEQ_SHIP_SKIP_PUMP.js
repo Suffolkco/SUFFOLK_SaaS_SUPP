@@ -66,9 +66,9 @@ loadAppSpecific4ACA(AInfo);
 /-----------------------------------------------------------------------------------------------------*/
 
 var skipPump = false; 
-var propertyType = AInfo["Select Property Type"];
+var pumpOut = AInfo["Pump Out ONLY"];
 
-if (propertyType == "Retro Fit") {
+if (pumpOut == "CHECKED") {
     skipPump = true;
 }
 

@@ -66,9 +66,9 @@ loadAppSpecific4ACA(AInfo);
 /-----------------------------------------------------------------------------------------------------*/
 
 var skipRetro = false;
-var propertyType = AInfo["Select Property Type"];
+var sanitaryDecommission = AInfo["Existing Sanitary System Decommissioning ONLY"];
  
-if (propertyType == "Pump Out") {
+if (sanitaryDecommission == "CHECKED") {
     skipRetro= true;
 }
 
