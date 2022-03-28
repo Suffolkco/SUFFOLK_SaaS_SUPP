@@ -27,13 +27,12 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
 
-	var inspSchDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDate() + "/" + iObj.getScheduledDate().getYear();
+	var inspSchDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayofMonth() + "/" + iObj.getScheduledDate().getYear();
     logDebugLocal("Inspection scheduled date: " + inspSchDate);
-    var inspSchDateCon = (inspSchDate.getMonth() + 1) + "/" + inspSchDate.getDate() + "/" + inspSchDate.getFullYear();
+    var inspSchDateCon = (inspSchDate.getMonth() + 1) + "/" + inspSchDate.getDayofMonth() + "/" + inspSchDate.getFullYear();
     logDebugLocal("Inspection scheduled Con date: " + inspSchDateCon);
 
-	//inspSchedDate = iObj.getScheduledDate().getYear() + "-" + iObj.getScheduledDate().getMonth() + "-" + iObj.getScheduledDate().getDayOfMonth()
-
+	
     var cdScriptObjResult = aa.cap.getCapDetail(capId);
 	if (!cdScriptObjResult.getSuccess())
 		{ logDebugLocal("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
