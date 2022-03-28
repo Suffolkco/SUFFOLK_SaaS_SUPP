@@ -68,7 +68,7 @@ loadAppSpecific4ACA(AInfo);
 var skipPumper = false; 
 var removal = AInfo["Was there wastewater removed?"];
 
-if (removal == "UNCHECKED") {  
+if (removal == "No") {  
     skipPumper = true;
 }
 
