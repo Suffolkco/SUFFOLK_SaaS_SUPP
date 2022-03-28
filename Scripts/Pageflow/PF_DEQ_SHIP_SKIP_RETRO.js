@@ -67,8 +67,9 @@ loadAppSpecific4ACA(AInfo);
 
 var skipRetro = false;
 var sanitaryDecommission = AInfo["Existing Sanitary System Decommissioning ONLY"];
+var pumpOut = AInfo["Pump Out ONLY"];
  
-if (sanitaryDecommission == "UNCHECKED") { 
+if (sanitaryDecommission == "CHECKED" || pumpOut == "CHECKED") { 
     skipRetro= true;
 } 
 
