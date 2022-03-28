@@ -27,10 +27,10 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
 
-	var inspSchDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayofMonth() + "/" + iObj.getScheduledDate().getYear();
-    logDebugLocal("Inspection scheduled date: " + inspSchDate);
-    var inspSchDateCon = (inspSchDate.getMonth() + 1) + "/" + inspSchDate.getDayofMonth() + "/" + inspSchDate.getFullYear();
-    logDebugLocal("Inspection scheduled Con date: " + inspSchDateCon);
+	//var inspSchDate = iObj.getScheduledDate().getMonth() + + "/" + iObj.getScheduledDate().getDayofMonth() + "/" + iObj.getScheduledDate().getYear();
+    //logDebugLocal("Inspection scheduled date: " + inspSchDate);
+    //var inspSchDateCon = (inspSchDate.getMonth() + 1) + "/" + inspSchDate.getDayofMonth() + "/" + inspSchDate.getFullYear();
+    logDebugLocal("Inspection scheduled Con date: " + inspSchedDate);
 
 	
     var cdScriptObjResult = aa.cap.getCapDetail(capId);
@@ -47,7 +47,7 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 	//var todaysDate = new Date();
 	//var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
 	//logDebugLocal("dateCon: " + dateCon);
-	var dateAdd = addDays(inspSchDate, 0);
+	var dateAdd = addDays(inspSchedDate, 0);
 	logDebugLocal("dateAdd: " + dateAdd);
 	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);   
 	logDebugLocal("dateMMDDYYY: " + dateMMDDYYY);
