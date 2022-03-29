@@ -157,7 +157,7 @@ var other = AInfo["Other"];
 var existing = AInfo["Existing Sanitary System Decommissioning ONLY"];
 var pumpOut = AInfo["Pump Out ONLY"];
 
-if(inKind == null && septic == null && iaInstall == null && leach == null && pressure == null && gravity == null && other == null && existing == null && pumpOut == null)
+if((inKind == null && septic == null && iaInstall == null && leach == null && pressure == null && gravity == null && other == null && existing == null && pumpOut == null))
 {
     validationMessage += msgMissingCheck;
 }
