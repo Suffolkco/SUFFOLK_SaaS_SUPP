@@ -1,7 +1,7 @@
 /**
  * Script Name: GET_PAYMENT_MODULE
  * Purpose: payment adapter will call this script to get the module name of the respective payment being made
- * 
+ * In Elavon adapater code: getCapModuleFromETransaction
  * Parameters:
  * - transId: ID of transaction used to get module name
  */
