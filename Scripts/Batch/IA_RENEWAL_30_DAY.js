@@ -95,26 +95,28 @@ try {
                         {
                             if ((contactArray[thisContact].getPeople().contactType).toUpperCase() == "PROPERTY OWNER")
                             {
-                                var reportParams = aa.util.newHashtable();
-                                var reportFile = new Array();
+                                //var reportParams = aa.util.newHashtable();
+                                //var reportFile = new Array();
                                 var itemCap = aa.cap.getCap(capId).getOutput();
                                 appTypeResult = itemCap.getCapType();
                                 appTypeString = appTypeResult.toString();
                                 appTypeArray = appTypeString.split("/");
 
-                                reportParams.put("RECORD_ID", capId.getCustomID());
+                                // reportParams.put("RECORD_ID", capId.getCustomID());
 
-                                rFile = generateReport('IA Registration Renewal Reminder', reportParams, 'DEQ')
+                                // rFile = generateReport('IA Registration Renewal Reminder', reportParams, 'DEQ')
 
-                                if (rFile)
-                                {
-                                    reportFile.push(rFile);
-                                }
+                                // if (rFile)
+                                // {
+                                //     reportFile.push(rFile);
+                                // }
 
                                 var params = aa.util.newHashtable();
                                 var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
+                                var addrResult = getAddressInALine(capId);
                                 addParameter(params, "$$altId$$", capId.getCustomID());
-                                sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal30Days", params, reportFile);
+                                addParameter(params, "$$ADDRESS$$", addrResult);
+                                sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal30Days", params, null);
                             }
                         }
                     }
