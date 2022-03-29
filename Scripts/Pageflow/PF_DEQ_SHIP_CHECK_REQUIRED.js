@@ -130,11 +130,11 @@ if (currentUserID.indexOf("PUBLICUSER") == 0) {
 var capIDString = capId.getCustomID(); // alternate cap id string
 var systemUserObj = aa.person.getUser(currentUserID).getOutput(); // Current User Object
 ///// SET REQUIRED FIELDS - END
-
+ 
 
 //// LOAD CUSTOM FIELDS AND LISTS - START
 var AInfo = new Array(); // Create array for tokenized variables
-useAppSpecificGroupName = true;
+useAppSpecificGroupName = false;
 loadAppSpecific4ACA(AInfo);
 local_loadASITables4ACA();
 //// LOAD CUSTOM FIELDS AND LISTS - END
@@ -157,6 +157,8 @@ var gravity = AInfo["Gravity (Trench or Bed) Drainfield Installation"];
 var other = AInfo["Other"];
 var existing = AInfo["Existing Sanitary System Decommissioning ONLY"];
 var pumpOut = AInfo["Pump Out ONLY"];
+
+logDebug("inKind = " + inKind)
 
 if(inKind != "CHECKED" && septic != "CHECKED" && iaInstall != "CHECKED" && leach != "CHECKED" && pressure != "CHECKED" && gravity != "CHECKED" && other != "CHECKED" && existing != "CHECKED" && pumpOut != "CHECKED")
 {
