@@ -143,7 +143,8 @@ local_loadASITables4ACA();
 | <=========== MAIN PROCESSING START ================>
 /-----------------------------------------------------------------------------------------------------*/
 // Validation messaging and halting work on on Before Button in PageFlow
-var noValidation = false;
+var validationMessage = "";
+var validation = true;
 
 var msgMissingCheck = "At least one type of proposed work is required under the Work Proposed section.<br/>";
 
@@ -157,48 +158,12 @@ var other = AInfo["Other"];
 var existing = AInfo["Existing Sanitary System Decommissioning ONLY"];
 var pumpOut = AInfo["Pump Out ONLY"];
 
-if(inKind == "CHECKED")
+if(inKind == "CHECKED" || septic == "CHECKED" || iaInstall == "CHECKED" || leach == "CHECKED" || pressure == "CHECKED" || gravity == "CHECKED" || other == "CHECKED" || existing == "CHECKED" || pumpOut == "CHECKED")
 {
-    noValidation = true;
-}
+    validation = false;
+}    
 
-if (septic == "CHECKED")
-{
-    noValidation = true;
-}
-
-if (iaInstall == "CHECKED")
-{
-    noValidation = true;  
-} 
-
-if(leach == "CHECKED")
-{
-    noValidation = true;
-}
-
-if(pressure == "CHECKED")
-{
-    noValidation = true;
-} 
-if(gravity == "CHECKED")
-{
-    noValidation = true;
-} 
-if(other == "CHECKED")
-{
-    noValidation = true;
-}
-if (existing == "CHECKED")
-{
-    noValidation = true;
-} 
-if (pumpOut == "CHECKED")
-{
-    noValidation = true;
-}
-
-if (noValidation = false) {
+if (validation) {
     showMessage = true;
     cancel = true;
     message = msgMissingCheck;
