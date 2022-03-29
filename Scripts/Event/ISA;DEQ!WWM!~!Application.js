@@ -26,8 +26,8 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
     var iObj = iObjResult.getOutput();   
     var inspectionType = iObj.getInspectionType();
 
-    logDebugLocal("Inspection scheduled Con date: " + inspSchedDate);
-	
+    logDebugLocal("Inspection scheduled Con date: " + inspSchedDate);	
+    logDebugLocal("Inspection inspector name: " + InspectorFirstName + " " + InspectorMiddleName + " " + InspectorLastName);
     var cdScriptObjResult = aa.cap.getCapDetail(capId);
 	if (!cdScriptObjResult.getSuccess())
 		{ logDebugLocal("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
@@ -47,6 +47,7 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);   
 	logDebugLocal("JS DATE to dateMMDDYYY: " + dateMMDDYYY);
 	logDebugLocal("Current Record Scheduled Date: " + cd.getScheduledDate());
+    logDebugLocal("Current Record Inspection Name is: " + cd.getInspectorName());
 
 	dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 	logDebugLocal("Parse date: " + dateMMDDYYY);
@@ -54,6 +55,18 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 	{
         logDebugLocal("Set Scehdule Date.");
 		cdScriptObj.setScheduledDate(dateMMDDYYY);
+		var inspectorObj = null;
+		inspUserObj = aa.person.getUser(InspectorFirstName, InspectorMiddleName, InspectorLastName);     
+		logDebugLocal("inspUserObj: " + inspUserObj);
+		if (inspUserObj.getSuccess())
+		{
+			logDebugLocal("Set inspector");
+			var inspectorObj = inspUserObj.getOutput();
+			logDebugLocal("inspectorObj: " + inspectorObj);
+			logDebugLocal("userID: " + inspectorObj.getUserID());
+			//cdScriptObj.setInspectorName(firstName + LastName);
+			cdScriptObj.setInspectorId(inspectorObj.getUserID());
+		}	
 	}
 	catch (ex)
 	{
