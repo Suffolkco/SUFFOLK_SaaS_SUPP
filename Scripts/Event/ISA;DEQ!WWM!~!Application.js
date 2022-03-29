@@ -55,17 +55,18 @@ if(appTypeArray[0] == "DEQ" && appTypeArray[1] == "WWM" && appTypeArray[2] == "R
 	{
         logDebugLocal("Set Scehdule Date.");
 		cdScriptObj.setScheduledDate(dateMMDDYYY);
-
-        var inspectorObj = null;
-        inspUserObj = aa.person.getUser(InspectorFirstName, InspectorMiddleName, InspectorLastName);     
-     
-        if (inspUserObj.getSuccess())
-        {
-            logDebugLocal("SEt inspector");
-            var inspectorObj = inspRes.getOutput();
-            cdScriptObj.setInspectorName(inspectorObj);
-        }
-
+		var inspectorObj = null;
+		inspUserObj = aa.person.getUser(InspectorFirstName, InspectorMiddleName, InspectorLastName);     
+		logDebugLocal("inspUserObj: " + inspUserObj);
+		if (inspUserObj.getSuccess())
+		{
+			logDebugLocal("Set inspector");
+			var inspectorObj = inspUserObj.getOutput();
+			logDebugLocal("inspectorObj: " + inspectorObj);
+			logDebugLocal("userID: " + inspectorObj.getUserID());
+			//cdScriptObj.setInspectorName(firstName + LastName);
+			cdScriptObj.setInspectorId(inspectorObj.getUserID());
+		}	
 	}
 	catch (ex)
 	{
