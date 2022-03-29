@@ -164,7 +164,7 @@ if(inKind == "CHECKED" || septic == "CHECKED" || iaInstall == "CHECKED" || leach
 }    
 
 if (validation = true) {
-    showMessage = true;
+    showMessage = true; 
     cancel = true;
     message = msgMissingCheck;
 }
