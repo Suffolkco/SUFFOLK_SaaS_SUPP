@@ -95,26 +95,28 @@ try {
                         {
                             if ((contactArray[thisContact].getPeople().contactType).toUpperCase() == "PROPERTY OWNER")
                             {
-                                var reportParams = aa.util.newHashtable();
-                                var reportFile = new Array();
+                                //var reportParams = aa.util.newHashtable();
+                                //var reportFile = new Array();
                                 var itemCap = aa.cap.getCap(capId).getOutput();
                                 appTypeResult = itemCap.getCapType();
                                 appTypeString = appTypeResult.toString();
                                 appTypeArray = appTypeString.split("/");
 
-                                reportParams.put("RECORD_ID", capId.getCustomID());
+                                // reportParams.put("RECORD_ID", capId.getCustomID());
 
-                                rFile = generateReport('IA Registration Renewal Reminder', reportParams, 'DEQ')
+                                // rFile = generateReport('IA Registration Renewal Reminder', reportParams, 'DEQ')
 
-                                if (rFile)
-                                {
-                                    reportFile.push(rFile);
-                                }
+                                // if (rFile)
+                                // {
+                                //     reportFile.push(rFile);
+                                // }
 
                                 var params = aa.util.newHashtable();
                                 var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
+                                var addrResult = getAddressInALine(capId);
                                 addParameter(params, "$$altId$$", capId.getCustomID());
-                                sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal30Days", params, reportFile);
+                                addParameter(params, "$$ADDRESS$$", addrResult);
+                                sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal30Days", params, null);
                             }
                         }
                     }
@@ -1297,4 +1299,52 @@ function generateReport(aaReportName,parameters,rModule) {
          logMessage("No permission to report: "+ reportName + " for Admin" + systemUserObj);
          return false;
     }
+}
+function getAddressInALine(capId)
+{
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
 }
