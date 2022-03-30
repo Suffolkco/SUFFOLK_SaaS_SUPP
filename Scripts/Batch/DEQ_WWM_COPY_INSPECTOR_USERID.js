@@ -149,7 +149,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate + br);		
-        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_WWM_UPDATE_CUSTOM_LIST", emailText);
+        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_WWM_COPY_INSPECTOR_USERID", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
