@@ -135,15 +135,19 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["PH"] = parentTable[l]["PH"];
         newRow["WW Temp"] = parentTable[l]["WW Temp"]; 
         newRow["Air Temp"] = parentTable[l]["Air Temp"];
+        newRow["Process"] = parentTable[l]["Process"];
+        newRow["Collection"] = parentTable[l]["Collection"];
+        newRow["Lab"] = parentTable[l]["Lab"];
+        newRow["Comments"] = parentTable[l]["Comments"]
         newRow["Status"] = wfStatus;
         newRow["Sample Date"] = collectionDate;
         newRow["Source"] = myCustomCap;
         newRow["Phase"] = phase;
-        newRow["Process"] = process;
-        newRow["Collection"] = collection;
+        // newRow["Process"] = process;
+        // newRow["Collection"] = collection;
         newRow["Collector"] = collector;
         newRow["Field ID"] = fieldId;
-        newRow["Lab"] = lab;
+        // newRow["Lab"] = lab;
 
         labResultsTable.push(newRow);
         break;
