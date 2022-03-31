@@ -1,37 +1,40 @@
 var contactResult = aa.people.getCapContactByCapID(capId);
-        var capContacts = contactResult.getOutput();
-        var conEmail = "";
-        for (c in capContacts)
+var capContacts = contactResult.getOutput();
+var conEmail = "";
+for (c in capContacts)
+{
+    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
+    {
+        addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+    }
+    {
+        if (!matches(capContacts[c].email, null, undefined, ""))
         {
-            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
-            {
-                if (!matches(capContacts[c].email, null, undefined, ""))
-                {
-                    conEmail += capContacts[c].email + ";"
-                }
-            }
+            conEmail += capContacts[c].email + ";"
         }
+    }
+}
 
-        var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
-        if (capParcelResult.getSuccess())
-        {
-            var Parcels = capParcelResult.getOutput().toArray();
-            for (zz in Parcels)
-            {
-                var parcelNumber = Parcels[zz].getParcelNumber();
-                logDebug("parcelNumber = " + parcelNumber);
-            }
-        }
+var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+if (capParcelResult.getSuccess())
+{
+    var Parcels = capParcelResult.getOutput().toArray();
+    for (zz in Parcels)
+    {
+        var parcelNumber = Parcels[zz].getParcelNumber();
+        logDebug("parcelNumber = " + parcelNumber);
+    }
+}
 
-        var addrResult = getAddressInALine(capId);
+var addrResult = getAddressInALine(capId);
 
-        var vEParams = aa.util.newHashtable();
-        var addrResult = getAddressInALine(capId);
-        addParameter(vEParams, "$$altID$$", capId.getCustomID());
-        addParameter(vEParams, "$$address$$", addrResult);
-        addParameter(vEParams, "$$Parcel$$", parcelNumber);
+var vEParams = aa.util.newHashtable();
+var addrResult = getAddressInALine(capId);
+addParameter(vEParams, "$$altID$$", capId.getCustomID());
+addParameter(vEParams, "$$address$$", addrResult);
+addParameter(vEParams, "$$Parcel$$", parcelNumber);
 
-        sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
+sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
 
 
 function getAddressInALine(capId)
@@ -81,4 +84,29 @@ function getAddressInALine(capId)
         }
     }
     return null;
+}
+function getContactName(vConObj)
+{
+    if (vConObj.people.getContactTypeFlag() == "organization")
+    {
+        if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
+            return vConObj.people.getBusinessName();
+
+        return vConObj.people.getBusinessName2();
+    }
+    else
+    {
+        if (vConObj.people.getFullName() != null && vConObj.people.getFullName() != "")
+        {
+            return vConObj.people.getFullName();
+        }
+        if (vConObj.people.getFirstName() != null && vConObj.people.getLastName() != null)
+        {
+            return vConObj.people.getFirstName() + " " + vConObj.people.getLastName();
+        }
+        if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
+            return vConObj.people.getBusinessName();
+
+        return vConObj.people.getBusinessName2();
+    }
 }
