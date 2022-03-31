@@ -138,7 +138,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["Process"] = parentTable[l]["Process"];
         newRow["Collection"] = parentTable[l]["Collection"];
         newRow["Lab"] = parentTable[l]["Lab"];
-        newRow["Comments"] = parentTable[l]["Comments"]
+        newRow["Comment"] = parentTable[l]["Comment"]
         newRow["Status"] = wfStatus;
         newRow["Sample Date"] = collectionDate;
         newRow["Source"] = myCustomCap;

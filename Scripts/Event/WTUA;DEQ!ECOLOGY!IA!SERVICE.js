@@ -48,7 +48,7 @@ for (var l in parentTable)
 	newRow["Process"] = parentTable[l]["Process"];
     newRow["Collection"] = parentTable[l]["Collection"];
     newRow["Lab"] = parentTable[l]["Lab"];
-    newRow["Comments"] = parentTable[l]["Comments"]
+    newRow["Comment"] = parentTable[l]["Comment"]
 	newRow["Status"] = wfStatus;
 	newRow["Sample Date"] = collectionDate;
 	newRow["Phase"] = phase;
