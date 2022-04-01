@@ -37,7 +37,7 @@ try{
        var shortNotesString = fName + " " + lName + ", " + vbusiness + ", " + vPhone;
        updateShortNotes(shortNotesString);
 
-       fileDateObj = newCap.getFileDate();
+       fileDateObj = newCap.getOutput().getFileDate();
        fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();	
        updateShortNotes(fileDate);
    }
