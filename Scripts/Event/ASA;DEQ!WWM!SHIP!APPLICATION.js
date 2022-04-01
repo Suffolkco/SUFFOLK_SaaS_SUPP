@@ -15,7 +15,7 @@ for (c in capContacts)
     }
 }
 
-var capParcelResult = aa.parcel.getParcelandAttribute(capId, null); 
+var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);  
 if (capParcelResult.getSuccess())
 {
     var Parcels = capParcelResult.getOutput().toArray();
