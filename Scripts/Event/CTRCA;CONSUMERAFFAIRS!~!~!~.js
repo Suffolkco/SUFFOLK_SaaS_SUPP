@@ -49,7 +49,6 @@ try
     fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();	
     logDebug("Current file date is: " + fileDate);
     
-
     var todaysDate = new Date();
     var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
     var dateAdd = addDays(dateCon, 0);
@@ -58,14 +57,10 @@ try
     dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);           
 
     try
-    {
-  
-    fileDateObj = capmodel.setFileDate(dateAdd);
-    
-    
-    setNameResult = aa.cap.editCapByPK(capmodel)
-
-    logDebugLocal("edit: " + setNameResult);
+    {  
+        fileDateObj = capmodel.setFileDate(dateAdd);    
+        setNameResult = aa.cap.editCapByPK(capmodel)
+        logDebugLocal("Edit Cap: " + setNameResult);
     }
     catch (err) 
     {
