@@ -19,7 +19,7 @@ if (capParcelResult.getSuccess())
     var Parcels = capParcelResult.getOutput().toArray();
     for (zz in Parcels)
     {
-        var parcelNumber = Parcels[zz].getParcelNumber();
+        var parcelNumber = Parcels[zz].getParcelNumber(); 
         logDebug("parcelNumber = " + parcelNumber);
     }
 }
