@@ -4,9 +4,7 @@ var conEmail = "";
 for (c in capContacts)
 {
     if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
-    {
-        addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
-    }
+
     {
         if (!matches(capContacts[c].email, null, undefined, ""))
         {
@@ -33,6 +31,7 @@ var addrResult = getAddressInALine(capId);
 addParameter(vEParams, "$$altID$$", capId.getCustomID());
 addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$Parcel$$", parcelNumber);
+addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
 
 sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
 
