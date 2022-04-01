@@ -40,50 +40,6 @@ try{
 	logDebug("**WARN: Error in ASA updating short notes and address -  " + err.message);
 }
 
-// DAP-391: Set OPENED_DATE to be submission date on ACA submission
-var emailText = "";
-var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
-
-try
-{
-	if (publicUser)
-	{ 
-		cap = aa.cap.getCap(capId).getOutput();
-		fileDateObj = cap.getFileDate();
-		fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();	
-		logDebug("Current file date is: " + fileDate);
-		
-		var todaysDate = new Date();
-		var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
-		var dateAdd = addDays(dateCon, 0);
-		logDebugLocal("New Open date: " + dateAdd);
-		var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
-		dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);           
-
-		try
-		{  
-			fileDateObj = capmodel.setFileDate(dateAdd);    
-			setNameResult = aa.cap.editCapByPK(capmodel)
-			logDebugLocal("Edit Cap: " + setNameResult);
-		}
-		catch (err) 
-		{
-			logDebugLocal("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
-		}
-
-		if (!setNameResult.getSuccess())
-		{ 
-			logDebugLocal("**WARNING: error setting cap name : " + setNameResult.getErrorMessage()) ;
-		}
-
-		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "CTRCA - DCA", emailText);
-	}	
-
-}
-catch(err){
-    logDebug("**WARN: Error in CTRCA updating file date -  " + err.message);
-}
-
 //// functions - to be moved to INCLUDES_CUSTOM sometime later
 //
 //function getVendorInfo(cType, capId) {

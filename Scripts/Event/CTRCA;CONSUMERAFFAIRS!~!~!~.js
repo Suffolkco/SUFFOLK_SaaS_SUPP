@@ -52,7 +52,7 @@ try
     var todaysDate = new Date();
     var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
     var dateAdd = addDays(dateCon, 0);
-    logDebugLocal("New Open date: " + dateAdd);
+    logDebug("New Open date: " + dateAdd);
     var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
     dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);           
 
@@ -60,15 +60,15 @@ try
     {  
         fileDateObj = capmodel.setFileDate(dateAdd);    
         setNameResult = aa.cap.editCapByPK(capmodel)
-        logDebugLocal("Edit Cap: " + setNameResult);
+        logDebug("Edit Cap: " + setNameResult);
     }
     catch (err) 
     {
-        logDebugLocal("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
+        logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
 
                 if (!setNameResult.getSuccess())
-    { logDebugLocal("**WARNING: error setting cap name : " + setNameResult.getErrorMessage()) ;}
+    { logDebug("**WARNING: error setting cap name : " + setNameResult.getErrorMessage()) ;}
 
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "CTRCA - DCA", emailText);
 
@@ -144,6 +144,50 @@ catch(err){
 //  aa.address.createAddress(newAddressModel);
 //  //logDebug("Added record address " + newAddr1 + ", " + newCity + ", " + newState + ", " + newZip + " successfully!");
 //}
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
+
+function jsDateToMMDDYYYY(pJavaScriptDate) {
+	//converts javascript date to string in MM/DD/YYYY format
+	if (pJavaScriptDate != null) {
+		if (Date.prototype.isPrototypeOf(pJavaScriptDate)) {
+			return (pJavaScriptDate.getMonth()+1).toString()+"/"+pJavaScriptDate.getDate()+"/"+pJavaScriptDate.getFullYear();
+		} else {
+			logDebugLocal("Parameter is not a javascript date");
+			return ("INVALID JAVASCRIPT DATE");
+		}
+	} else {
+		logDebugLocal("Parameter is null");
+		return ("NULL PARAMETER VALUE");
+	}
+}
+
+function addDays(date, days) 
+{
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
+}
+
 function checkTypeAndRename(capIdObj)
 {
     var title = "checkTypeAndRename(): ";
