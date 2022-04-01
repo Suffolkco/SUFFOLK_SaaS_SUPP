@@ -51,14 +51,29 @@ try
     
 
     var todaysDate = new Date();
-	var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
-	logDebug("Set to today's date: " + dateCon);
-	var dateAdd = addDays(dateCon, 0);
-	logDebugLocal("dateAdd: " + dateAdd);
-	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);   
-	logDebugLocal("dateMMDDYYY: " + dateMMDDYYY);
-	dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-	fileDateObj = cap.setFileDate(dateMMDDYYY);
+    var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
+    var dateAdd = addDays(dateCon, 0);
+    logDebugLocal("New Open date: " + dateAdd);
+    var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+    dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);           
+
+    try
+    {
+  
+    fileDateObj = capmodel.setFileDate(dateAdd);
+    
+    
+    setNameResult = aa.cap.editCapByPK(capmodel)
+
+    logDebugLocal("edit: " + setNameResult);
+    }
+    catch (err) 
+    {
+        logDebugLocal("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
+    }
+
+                if (!setNameResult.getSuccess())
+    { logDebugLocal("**WARNING: error setting cap name : " + setNameResult.getErrorMessage()) ;}
 
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "CTRCA - DCA", emailText);
 
