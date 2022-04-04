@@ -18,7 +18,7 @@ var cancel = false;
 /------------------------------------------------------------------------------------------------------*/
 var startDate = new Date();
 var startTime = startDate.getTime();
-var message = "";
+var message = ""; 
 var debug = "";
 var br = "<BR>";
 var useSA = false;

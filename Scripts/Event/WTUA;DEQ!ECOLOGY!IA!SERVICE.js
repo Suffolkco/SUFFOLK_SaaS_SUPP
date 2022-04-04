@@ -13,7 +13,7 @@ var contractAnualCost = getAppSpecific("Contract Annual Cost", capId);
 var myCustomCap = myCap.getCustomID();
 var use = getAppSpecific("Use", capId);
 var serviceDate = new Date(AInfo["Service Date"]);
-var sampleDate = new Date(AInfo["Sample Collection Date"]);
+var sampleDate = new Date(AInfo["Sample Collection Date"]); 
 var phase = getAppSpecific("Phase", capId);
 var process = getAppSpecific("Process", capId);
 var collection = getAppSpecific("Collection", capId);
@@ -73,9 +73,16 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         capContacts = capContacts.getOutput();
         logDebug("capContacts: " + capContacts);
         for (var yy in capContacts)
-        {
-            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
-        }
+            {
+                //aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+
+                if (capContacts[yy].getPeople().getAuditStatus() == "A") {
+                    capContacts[yy].getPeople().setAuditStatus("I"); 
+                    aa.people.editCapContact(capContacts[yy].getCapContactModel());
+                    logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
+                    logDebug("We Got in here");
+                }
+            }
     }
 	if (conUpdate == "CHECKED")
 	{

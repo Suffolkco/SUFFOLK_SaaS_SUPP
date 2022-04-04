@@ -18,7 +18,9 @@ var collector = getAppSpecific("Collector", capId);
 var fieldId = getAppSpecific("Field ID", capId);
 var lab = getAppSpecific("Lab", capId);
 
-
+if (currentUserID == "DPINZON") {
+    showDebug = true;
+}
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete") 
 {
@@ -27,10 +29,19 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     {
         capContacts = capContacts.getOutput();
         logDebug("capContacts: " + capContacts);
-        for (var yy in capContacts)
-        {
-            aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
-        }
+
+            for (var yy in capContacts)
+            {
+                //aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+
+                if (capContacts[yy].getPeople().getAuditStatus() == "A") {
+                    capContacts[yy].getPeople().setAuditStatus("I"); 
+                    aa.people.editCapContact(capContacts[yy].getCapContactModel());
+                    logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
+                    logDebug("We Got in here");
+                }
+            }
+        
     }
    
     copyContacts(capId, parentCapId);
@@ -403,7 +414,7 @@ function copyASITables(pFromCapId, pToCapId)
                 var readOnly = 'N';
                 if (readOnlyi.hasNext())
                 {
-                    readOnly = readOnlyi.next();
+                    readOnly = readOnlyi.next(); 
                 }
 
                 var fieldInfo = new asiTableValObj(tcol.getColumnName(), tval, readOnly);

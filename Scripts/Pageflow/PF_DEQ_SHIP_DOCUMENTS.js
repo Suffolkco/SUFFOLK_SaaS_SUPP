@@ -183,7 +183,7 @@ try
     var waiveIA = AInfo["Waive required I/A OWTS site consultation with SCDHS?"];
     var installIA = AInfo["I/A OWTS Installation"];
 
-    if (waiveIA == "Yes")
+    if (waiveIA == "Yes") 
     {
         var sketchCheck = determineACADocumentAttached("Design Professional Sketch");
         if (!sketchCheck)

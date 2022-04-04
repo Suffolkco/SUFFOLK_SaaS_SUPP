@@ -58,7 +58,7 @@ if (currentUserGroupObj) currentUserGroup = currentUserGroupObj.getGroupName();
 var capName = cap.getSpecialText();
 var capStatus = cap.getCapStatus();
 var AInfo = new Array();
-loadAppSpecific4ACA(AInfo);
+loadAppSpecific4ACA(AInfo); 
 
 /*------------------------------------------------------------------------------------------------------/
 | <===========Main=Loop================>
@@ -68,16 +68,13 @@ loadAppSpecific4ACA(AInfo);
 var skipPumper = false; 
 var removal = AInfo["Was there wastewater removed?"];
 
-if (removal == "No") {  
+if (removal != "Yes") {  
     skipPumper = true;
 }
 
 if (skipPumper) {
     aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
 }
-
-
-
 
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>

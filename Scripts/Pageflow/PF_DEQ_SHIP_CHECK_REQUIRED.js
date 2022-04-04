@@ -126,7 +126,7 @@ var currentUserID = aa.env.getValue("CurrentUserID");
 if (currentUserID.indexOf("PUBLICUSER") == 0) {
     currentUserID = "ADMIN";
 	publicUser = true;
-} // ignore public users
+} // ignore public users 
 var capIDString = capId.getCustomID(); // alternate cap id string
 var systemUserObj = aa.person.getUser(currentUserID).getOutput(); // Current User Object
 ///// SET REQUIRED FIELDS - END
