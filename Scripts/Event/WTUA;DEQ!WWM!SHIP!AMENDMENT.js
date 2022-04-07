@@ -1,4 +1,4 @@
-var parentCapId = parentCapId.getCustomID();
+var parent = parentCapId.getCustomID();
 var useAppSpecificGroupName = true;
 var startDate = getAppSpecific("OPERATIONS CONTRACT.Contract Start Date", capId);
 var term = getAppSpecific("OPERATIONS CONTRACT.Contract Term");
@@ -13,11 +13,11 @@ var propertyUse = getAppSpecific("OPERATIONS CONTRACT.Property Usage")
 
 logDebug("Parent = " + parent);
 
-if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
+if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete") 
 {
     var desc = "Automated via:" + capIDString;
-    var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
-    editAppSpecificLOCAL("WWM APPLICATION NUMBER.WWM Application Number", parentCapId, wwmIA);
+    var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc, parentCapId);
+    editAppSpecificLOCAL("WWM APPLICATION NUMBER.WWM Application Number", parent, wwmIA);
     editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", startDate, wwmIA);
     editAppSpecificLOCAL("IA DEVICE INFORMATION.Installation Date", installDate, wwmIA);
     editAppSpecificLOCAL("IA DEVICE INFORMATION.Leaching", leachType, wwmIA);
@@ -31,9 +31,9 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
     copyLicensedProfByType(capId, wwmIA, ["IA Installer"]);
     copyLicensedProfByType(capId, wwmIA, ["IA Service Provider"]);
     copyLicensedProfByType(capId, wwmIA, ["IA Designer"]);
-    copyDocuments(capId, wwmIA, ["Final Site Sketch"]);
+    copyDocuments(capId, wwmIA, "Final Site Sketch");
 
-}
+} 
 
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
@@ -145,4 +145,22 @@ function copyDocuments(pFromCapId, pToCapId) {
 	    	} // end for loop
 		}
     }
+}
+function copyLicensedProfByType(capIdFrom, capIdTo, typesArray)
+{
+    var n = aa.licenseProfessional.getLicensedProfessionalsByCapID(capIdFrom).getOutput();
+    var isByType = typesArray != null && typesArray.length > 0;
+    if (n != null)
+        for (x in n)
+        {
+            if (isByType && !arrayContainsValue(typesArray, n[x].getLicenseType()))
+            {
+                continue;
+            }//isByType
+            n[x].setCapID(capIdTo);
+            aa.licenseProfessional.createLicensedProfessional(n[x]);
+        }//for all LPs
+    else
+        logDebug("No licensed professional on source");
+    return true;
 }
