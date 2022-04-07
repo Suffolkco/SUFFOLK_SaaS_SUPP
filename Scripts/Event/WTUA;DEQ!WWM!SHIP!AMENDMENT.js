@@ -14,8 +14,8 @@ var propertyUse = getAppSpecific("OPERATIONS CONTRACT.Property Usage")
 logDebug("Parent = " + parent);
 
 if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete") 
-{
-    var desc = "Automated via:" + capIDString;
+{ 
+    var desc = "Automated via:" + capIDString; 
     var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc, parentCapId);
     editAppSpecificLOCAL("WWM APPLICATION NUMBER.WWM Application Number", parent, wwmIA);
     editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", startDate, wwmIA);
