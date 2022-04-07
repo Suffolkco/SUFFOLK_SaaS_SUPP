@@ -182,6 +182,8 @@ try
 {
     var waiveIA = AInfo["Waive required I/A OWTS site consultation with SCDHS?"];
     var installIA = AInfo["I/A OWTS Installation"];
+    var existing = AInfo["Existing Sanitary System Decommissioning ONLY"];
+    var pump = AInfo["Pump Out ONLY"];
 
     if (waiveIA == "Yes") 
     {
@@ -190,18 +192,18 @@ try
         {
             cancel = true;
             showMessage = true;
-            comment("A Design Professional Sketch upload is required as you are requesting to waive the required I/A OWTS site consultation with SCDHS.")
+            comment("Your proposal requires the submission of a ‘Design Professional Sketch’. This is required to waive the SCDHS site consultation for an I/A OWTS installation. If you do not have a sketch created by a licensed design professional for submission, please return to step 3 of this registration and indicate that you will NOT be waiving the site consultation.")
         }
     }
 
-    if (installIA == "UNCHECKED")
+    if (installIA == "UNCHECKED" && existing == "UNCHECKED" && pump == "UNCHECKED")
     {
         var conCheck = determineACADocumentAttached("Proposal Sketch");
         if (!conCheck)
         {
             cancel = true;
             showMessage = true;
-            comment("A Proposal Sketch upload is required as there is no I/A OWTS Installation.");
+            comment("Your proposal requires the submission of a ‘Proposal Sketch’ or a ‘Design Professional Sketch’ for review");
         }
     }
 
@@ -211,7 +213,7 @@ try
         {
             cancel = true;
             showMessage = true;
-            comment("A Proof of Failure Upload is required as there is an I/A OWTS Installation.");
+            comment("The installation of an I/A OWTS through the SHIP registration process requires the submission of adequate ‘Proof of Failure’ photos and/or documentation.");
         }
     }
 
