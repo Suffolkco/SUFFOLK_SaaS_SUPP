@@ -33,7 +33,7 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
     copyLicensedProfByType(capId, wwmIA, ["IA Designer"]);
     copyDocuments(capId, wwmIA, ["Final Site Sketch"]);
 
-} 
+}
 
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
