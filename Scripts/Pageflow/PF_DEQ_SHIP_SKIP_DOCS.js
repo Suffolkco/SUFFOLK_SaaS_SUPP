@@ -1,9 +1,9 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : DEQ_IA_TRAN_SKIP_LAB.js
+| Program : PF_DEQ_SHIP_SKIP_DECOM
 | Event   : ACA ONLOAD Event
 | Client  : SUFFOLK
 | Author  : JGreene
-| Notes   : Updated by JDG on 02/24/2022 
+| Notes   : Updated by JDG on 4/01/2022 
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
 | START User Configurable Parameters
@@ -25,20 +25,17 @@ var useSA = false;
 var SA = null;
 var SAScript = null;
 var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
-if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
-{
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I") {
     useSA = true;
     SA = bzr.getOutput().getDescription();
     bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
     if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
 }
 
-if (SA)
-{
+if (SA) {
     eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
     eval(getScriptText(SAScript, SA));
-} else
-{
+} else {
     eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 }
 
@@ -68,47 +65,31 @@ loadAppSpecific4ACA(AInfo);
 |
 /-----------------------------------------------------------------------------------------------------*/
 
-var skipDesigner = true;
-var iaInstall = AInfo["I/A OWTS Installation"];
-var pressureInstall = AInfo["Pressurized Shallow Drainfield Installation"];
-var gravityInstall = AInfo["Gravity (Trench or Bed) Drainfield Installation"];
-var propertyType = AInfo["Select Property Type"];
-
-if (propertyType != "Commercial")
-{
-    if (iaInstall == "CHECKED" || pressureInstall == "CHECKED" || gravityInstall == "CHECKED")
-    {
-        skipDesigner = false;
-    }
+var skipDocs = false;
+var existing = AInfo["Existing Sanitary System Decommissioning ONLY"];
+var pump = AInfo["Pump Out ONLY"];
+if (existing == "CHECKED" || pump == "CHECKED") {
+    skipDocs = true; 
 }
-
-if (skipDesigner)
-{
+if (skipDocs) {
     aa.env.setValue("ReturnData", "{'PageFlow':{'HidePage':'Y'}}");
 }
-
-
-
 
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
 
-if (debug.indexOf("**ERROR") > 0)
-{
+if (debug.indexOf("**ERROR") > 0) {
     aa.env.setValue("ErrorCode", "1");
     aa.env.setValue("ErrorMessage", debug);
 }
-else
-{
-    if (cancel)
-    {
+else {
+    if (cancel) {
         aa.env.setValue("ErrorCode", "-2");
         if (showMessage) aa.env.setValue("ErrorMessage", message);
         if (showDebug) aa.env.setValue("ErrorMessage", debug);
     }
-    else
-    {
+    else {
         aa.env.setValue("ErrorCode", "0");
         if (showMessage) aa.env.setValue("ErrorMessage", message);
         if (showDebug) aa.env.setValue("ErrorMessage", debug);
@@ -118,23 +99,18 @@ else
 /*------------------------------------------------------------------------------------------------------/
 | <===========External Functions (used by Action entries)
 /------------------------------------------------------------------------------------------------------*/
-function getScriptText(vScriptName, servProvCode, useProductScripts)
-{
-    if (!servProvCode) servProvCode = aa.getServiceProviderCode();
-    vScriptName = vScriptName.toUpperCase();
-    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-    try
-    {
-        if (useProductScripts)
-        {
-            var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
-        } else
-        {
-            var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
-        }
-        return emseScript.getScriptText() + "";
-    } catch (err)
-    {
-        return "";
-    }
+function getScriptText(vScriptName, servProvCode, useProductScripts) {
+	if (!servProvCode)  servProvCode = aa.getServiceProviderCode();
+	vScriptName = vScriptName.toUpperCase();
+	var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+	try {
+		if (useProductScripts) {
+			var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
+		} else {
+			var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
+		}
+		return emseScript.getScriptText() + "";
+	} catch (err) {
+		return "";
+	}
 }

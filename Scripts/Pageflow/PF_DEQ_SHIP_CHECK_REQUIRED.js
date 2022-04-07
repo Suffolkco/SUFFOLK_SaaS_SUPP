@@ -150,7 +150,7 @@ var msgMissingCheck = "At least one type of proposed work is required under the 
 
 var inKind = AInfo["In-Kind Grease Trap Replacement"];
 var septic = AInfo["Septic Tank Installation"];
-var iaInstall = AInfo["I/A OWTS Installation Type"];
+var iaInstall = AInfo["I/A OWTS Installation"];
 var leach = AInfo["Leaching Pool(s)/Galley(s) Installation"];
 var pressure = AInfo["Pressurized Shallow Drainfield Installation"];
 var gravity = AInfo["Gravity (Trench or Bed) Drainfield Installation"];
