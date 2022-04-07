@@ -3,8 +3,6 @@
 // copy First Name, Last Name; Business Name; Phone Number from contact type Vendor to Short Notes field
 // copy Vendor address to record address
 
-var test;
-
 try{
     var newCap = checkTypeAndRename(capId);
     if (newCap){
@@ -37,35 +35,36 @@ try{
        var shortNotesString = fName + " " + lName + ", " + vbusiness + ", " + vPhone;
        updateShortNotes(shortNotesString);
 
-       fileDateObj = newCap.getOutput().getFileDate();
-       fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();	
-       updateShortNotes(fileDate);
    }
 }catch(err){
    logDebug("**WARN: Error in CTRCA updating short notes and address -  " + err.message);
 }
 
 // DAP-391: Set OPENED_DATE to be submission date on ACA submission
-/*
+
 var emailText = "";
 var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
 try
 {       
     cap = aa.cap.getCap(capId).getOutput();
+    var capmodel = cap.getCapModel();
     fileDateObj = cap.getFileDate();
     fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();	
     logDebug("Current file date is: " + fileDate);
     
+   
     var todaysDate = new Date();
-    var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
-    var dateAdd = addDays(dateCon, 0);
-    logDebug("New Open date: " + dateAdd);
-    var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
-    dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);           
+   
 
     try
-    {  
+    {
+        var dateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + todaysDate.getFullYear();
+        var dateAdd = addDays(dateCon, 0);
+        logDebug("New Open date: " + dateAdd);
+        var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+        dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);           
+
         fileDateObj = capmodel.setFileDate(dateAdd);    
         setNameResult = aa.cap.editCapByPK(capmodel)
         logDebug("Edit Cap: " + setNameResult);
@@ -80,12 +79,14 @@ try
 
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "CTRCA - DCA", emailText);
 
+  
+
+
 }
 catch(err){
     logDebug("**WARN: Error in CTRCA updating file date -  " + err.message);
 }
 
-*/
 
 
 //var newCap = checkTypeAndRename(capId);
