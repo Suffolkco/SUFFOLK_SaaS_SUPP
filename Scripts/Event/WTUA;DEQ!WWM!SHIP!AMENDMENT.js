@@ -24,6 +24,7 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
     editAppSpecificLOCAL("IA DEVICE INFORMATION.Leaching Manufacturer", leachProduct, wwmIA);
     editAppSpecificLOCAL("IA DEVICE INFORMATION.Effluent Pump", effluentPump, wwmIA);
     editAppSpecificLOCAL("PROPERTY INFORMATION.Use", propertyUse, wwmIA);
+    editAppSpecificLOCAL()
     copyAddress(capId, wwmIA);
     copyContactsByType(capId, wwmIA, ["Property Owner"]);
     copyContactsByType(capId, wwmIA, ["Agent"]);
@@ -32,7 +33,7 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
     copyLicensedProfByType(capId, wwmIA, ["IA Service Provider"]);
     copyLicensedProfByType(capId, wwmIA, ["IA Designer"]);
     copyDocuments(capId, wwmIA, "Final Site Sketch");
-
+    updateTask("Final Review", "Registration Complete", "", "", parentCapId);
 } 
 
 
