@@ -81,13 +81,14 @@ try {
             capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput(); // reload since it's 	capId = aa.cap.getCapID();
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput(); 
-            if (cap) {
+            if (cap) { 
                 var expDateCon = getAppSpecific("Contract Expiration Date", capId);
+                var pin = getAppSpecific("IA PIN Number", capId);
 
                 if (new Date(expDateCon).getMonth() == new Date(convertedDate).getMonth() && new Date(expDateCon).getDate() == new Date(convertedDate).getDate() && new Date(expDateCon).getFullYear() == new Date(convertedDate).getFullYear())
                 {
                     logDebug(capId.getCustomID());
-                    addToSet(capId, "IARENEWAL", "Ecology Renewals");
+                    addToSet(capId, "IARENEWAL", "Ecology Renewals"); 
                     var contactArray = getPeople(capId);
                     if (contactArray)
                     {
@@ -111,11 +112,40 @@ try {
                                 //     reportFile.push(rFile);
                                 // }
 
+                                var licProfResult = aa.licenseScript.getLicenseProf(capId);
+                                var capLPs = licProfResult.getOutput();
+                                logDebug ("capLps = " + capLPs)
+                                for (l in capLPs)
+                                {
+                                    if (capLPs[l].getLicenseType() == "IA Installer")
+                                    
+                                {
+                                    lpBusType = capLPs[l].getBusinessName();
+                                    logDebug("business name = " + lpBusType)
+                                    lpFirstName = capLPs[l].getLicenseProfessionalModel().getContactFirstName();
+                                    logDebug("first name = " + lpFirstName);
+                                    lpLastName = capLPs[l].getLicenseProfessionalModel().getContactLastName();
+                                    logDebug("last name = " + lpLastName);
+                                    lpemail = capLPs[l].getLicenseProfessionalModel().getEmail().toString();
+                                    logDebug("email = " + lpemail);
+                                    lpPhone = capLPs[l].getLicenseProfessionalModel().getPhone1();
+                                    logDebug ("phone = " + lpPhone);
+                                }
+                                }
+
+                                
+
                                 var params = aa.util.newHashtable();
                                 var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
                                 var addrResult = getAddressInALine(capId);
                                 addParameter(params, "$$altId$$", capId.getCustomID());
                                 addParameter(params, "$$ADDRESS$$", addrResult);
+                                addParameter(params, "$$BusinessName$$", lpBusType);
+                                addParameter(params, "$$FirstName$$", lpFirstName);
+                                addParameter(params, "$$LastName$$", lpLastName);
+                                addParameter(params, "$$Email$$", lpemail);
+                                addParameter(params, "$$Phone$$", lpPhone);
+                                addParameter(params, "$$PIN$$", pin);
                                 sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, "", "IARenewal30Days", params, null);
                             }
                         }
