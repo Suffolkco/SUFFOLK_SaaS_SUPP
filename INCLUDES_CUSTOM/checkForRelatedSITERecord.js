@@ -74,7 +74,13 @@ function checkForRelatedSITERecord(parcelNumber) {
     else if (foundSite) {
         logDebug("We found a matching SITE record: " + siteCap.getCustomID());
         var appStatus;
-        var siteResult = aa.cap.getCap(siteCap);
+        sca = String(siteCap.split("-"));
+        logDebug("Site Cap Id is: " + siteCap);
+        logDebug("Site sca is: " + sca);
+        
+		siteCapId = aa.cap.getCapID(sca[0],sca[1],sca[2]).getOutput()
+        var siteResult = aa.cap.getCap(siteCapId);
+        logDebug("Success? " + siteResult.getSuccess());
         if (siteResult.getSuccess()) {
            licCap = siteResult.getOutput();
            if (licCap != null) {
