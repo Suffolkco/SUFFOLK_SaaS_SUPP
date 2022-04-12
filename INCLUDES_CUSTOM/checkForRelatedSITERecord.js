@@ -16,6 +16,7 @@ function checkForRelatedSITERecord(parcelNumber) {
             siteCap = itemCap;
         }
     }
+
     //No Site Found: we need to create one and copy everything over. 
     //We should also create a new site record
     if (!foundSite) {
@@ -72,12 +73,36 @@ function checkForRelatedSITERecord(parcelNumber) {
     }
     else if (foundSite) {
         logDebug("We found a matching SITE record: " + siteCap.getCustomID());
-        ammendARecord(capId, siteCap);
-        addParent(siteCap);
+        var appStatus;
+        var siteResult = aa.cap.getCap(siteCap);
+        if (siteResult.getSuccess()) {
+           licCap = siteResult.getOutput();
+           if (licCap != null) {
+              appStatus = "" + licCap.getCapStatus();              
+           }
+           
+        if (appStatus != "Retired")
+        {
+            ammendARecord(capId, siteCap);
+            addParent(siteCap);
+        }
     }
 
 }
+	if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
 
+	var appStatus = null;
+   var capResult = aa.cap.getCap(itemCap);
+   if (capResult.getSuccess()) {
+      licCap = capResult.getOutput();
+      if (licCap != null) {
+         appStatus = "" + licCap.getCapStatus();
+      }
+   } else {
+		logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
+	}
+	return appStatus;
+}
 function copyParcelGisObjectsParent(childId, parentId) {
     var capParcelResult = aa.parcel.getParcelandAttribute(childId, null);
     if (capParcelResult.getSuccess()) {
