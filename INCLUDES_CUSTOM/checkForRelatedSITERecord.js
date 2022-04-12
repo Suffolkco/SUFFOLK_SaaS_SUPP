@@ -86,8 +86,7 @@ function checkForRelatedSITERecord(parcelNumber) {
            if (licCap != null) {
               appStatus = "" + licCap.getCapStatus();  
               logDebug("App Status is:" + appStatus);            
-           }
-        
+           }        
         if (appStatus != "Retired")
         {
             ammendARecord(capId, siteCap);
