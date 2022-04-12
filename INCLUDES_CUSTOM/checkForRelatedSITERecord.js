@@ -73,8 +73,8 @@ function checkForRelatedSITERecord(parcelNumber) {
     }
     else if (foundSite) {
         logDebug("We found a matching SITE record: " + siteCap.getCustomID());
-        var appStatus;
-        sca = String(siteCap.split("-"));
+        var appStatus;        
+        sca = String(siteCap).split("-");
         logDebug("Site Cap Id is: " + siteCap);
         logDebug("Site sca is: " + sca);
         
