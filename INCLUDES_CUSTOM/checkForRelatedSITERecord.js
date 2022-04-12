@@ -93,6 +93,10 @@ function checkForRelatedSITERecord(parcelNumber) {
             ammendARecord(capId, siteCap);
             addParent(siteCap);
         }
+        else
+        {
+            logDebug("Not to relate to parent Site. App Status for " + siteCap.getCustomID() + " is:" + appStatus);   
+        }
     }
 
 }
