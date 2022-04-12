@@ -84,9 +84,10 @@ function checkForRelatedSITERecord(parcelNumber) {
         if (siteResult.getSuccess()) {
            licCap = siteResult.getOutput();
            if (licCap != null) {
-              appStatus = "" + licCap.getCapStatus();              
+              appStatus = "" + licCap.getCapStatus();  
+              logDebug("App Status is:" + appStatus);            
            }
-           
+        
         if (appStatus != "Retired")
         {
             ammendARecord(capId, siteCap);
@@ -95,20 +96,8 @@ function checkForRelatedSITERecord(parcelNumber) {
     }
 
 }
-	if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
-
-	var appStatus = null;
-   var capResult = aa.cap.getCap(itemCap);
-   if (capResult.getSuccess()) {
-      licCap = capResult.getOutput();
-      if (licCap != null) {
-         appStatus = "" + licCap.getCapStatus();
-      }
-   } else {
-		logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
-	}
-	return appStatus;
 }
+	
 function copyParcelGisObjectsParent(childId, parentId) {
     var capParcelResult = aa.parcel.getParcelandAttribute(childId, null);
     if (capParcelResult.getSuccess()) {
