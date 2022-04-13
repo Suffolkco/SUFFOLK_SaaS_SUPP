@@ -57,7 +57,7 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
         editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", newSampleDate, wwmIA);
     }
 
-
+ 
 
 } 
 
