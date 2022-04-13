@@ -86,12 +86,15 @@ function checkForRelatedSITERecord(parcelNumber) {
            if (licCap != null) {
               appStatus = "" + licCap.getCapStatus();  
               logDebug("App Status is:" + appStatus);            
-           }
-        
+           }        
         if (appStatus != "Retired")
         {
             ammendARecord(capId, siteCap);
             addParent(siteCap);
+        }
+        else
+        {
+            logDebug("Not to relate to parent Site: " + siteCap.getCustomID() + "App Status is:" + appStatus);   
         }
     }
 
