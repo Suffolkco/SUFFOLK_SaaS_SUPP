@@ -71,7 +71,7 @@ addParameter(vEParams, "$$altID$$", capId.getCustomID());
 addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$Parcel$$", parcelNumber);
 addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
-sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
+sendNotification("", conEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
 
 }
 
