@@ -11,12 +11,26 @@ var leachType = getAppSpecificLOCAL("LEACHING POOLS/GALLEYS.Type");
 var leachProduct = getAppSpecificLOCAL("OTHER LEACHING STRUCTURES.Leaching Product");
 var effluentPump = getAppSpecificLOCAL("LEACHING POOLS/GALLEYS.Effluent Pump Manufacturer");
 var propertyUse = getAppSpecificLOCAL("OPERATIONS CONTRACT.Property Usage")
+var contactResult = aa.people.getCapContactByCapID(capId);
+var capContacts = contactResult.getOutput();
+var conEmail = "";
+for (c in capContacts)
+{
+    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
+
+    {
+        if (!matches(capContacts[c].email, null, undefined, ""))
+        {
+            conEmail += capContacts[c].email + ";"
+        }
+    }
+}
 
 logDebug("Parent = " + parent);
 
 if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete") 
-{ 
-    var desc = "Automated via:" + capIDString; 
+{
+    var desc = "Automated via:" + capIDString;
     var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc, parentCapId);
     editAppSpecificLOCAL("WWM APPLICATION NUMBER.WWM Application Number", parent, wwmIA);
     editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", startDate, wwmIA);
@@ -38,28 +52,49 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
     //copyLicensedProfByType(capId, wwmIA, ["IA Designer"]);
     copyDocuments(capId, wwmIA, "Final Site Sketch");
     //updateTask("Final Review", "Registration Complete", "", "", "", parentCapId);
-    closeTaskByCap("Final Review", parentCapId, "Registration Complete", "","");
+    closeTaskByCap("Final Review", parentCapId, "Registration Complete", "", "");
+    logDebug("Parent = " + parentCapId)
 
     if (startDate != null)
     {
-    
-    contractStart = new Date(startDate);
-    var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
-    editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", newExpDate, wwmIA); 
+
+        contractStart = new Date(startDate);
+        var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
+        editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", newExpDate, wwmIA);
     }
 
     if (installDate != null)
     {
         installDate = new Date(installDate);
-        var newServiceDate = (installDate.getMonth() + 1 + "/" + (installDate.getDate()) + "/" + (installDate.getFullYear() + 1)); 
+        var newServiceDate = (installDate.getMonth() + 1 + "/" + (installDate.getDate()) + "/" + (installDate.getFullYear() + 1));
         editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", newServiceDate, wwmIA);
-        var newSampleDate = (installDate.getMonth() + 1 + "/" + (installDate.getDate()) + "/" + (installDate.getFullYear() + 3)); 
+        var newSampleDate = (installDate.getMonth() + 1 + "/" + (installDate.getDate()) + "/" + (installDate.getFullYear() + 3));
         editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", newSampleDate, wwmIA);
     }
 
- 
+    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[zz].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+        }
+    }
 
-} 
+    ;
+    var vEParams = aa.util.newHashtable();
+    var addrResult = getAddressInALine(capId);
+    addParameter(vEParams, "$$altID$$", capId.getCustomID());
+    addParameter(vEParams, "$$address$$", addrResult);
+    addParameter(vEParams, "$$Parcel$$", parcelNumber);
+    addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
+    sendNotification("", conEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
+
+
+
+}
 
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
@@ -116,7 +151,7 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 // function copyDocuments(pFromCapId, pToCapId) {
 // 	//Copies all attachments (documents) from pFromCapId to pToCapId
 // 	var categoryArray = new Array();
-	
+
 // 	// third optional parameter is comma delimited list of categories to copy.
 // 	if (arguments.length > 2) {
 // 		categoryList = arguments[2];
@@ -144,7 +179,7 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 // 					documentObject.setDocumentNo(null);
 // 					documentObject.setCapID(pToCapId)
 // 					documentObject.setEntityID(tmpEntId);
-	
+
 // 					// Open and process file
 // 					try {
 // 						if (path != null && path != "") {
@@ -175,39 +210,39 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 // }
 
 function copyContactsByType(pFromCapId, pToCapId, pContactType)
-	{
-	//Copies all contacts from pFromCapId to pToCapId
-	//where type == pContactType
-	if (pToCapId==null)
-		var vToCapId = capId;
-	else
-		var vToCapId = pToCapId;
-	
-	var capContactResult = aa.people.getCapContactByCapID(pFromCapId);
-	var copied = 0;
-	if (capContactResult.getSuccess())
-		{
-		var Contacts = capContactResult.getOutput();
-		for (yy in Contacts)
-			{
-			if(Contacts[yy].getCapContactModel().getContactType() == pContactType)
-			    {
-			    var newContact = Contacts[yy].getCapContactModel();
-			    newContact.setCapID(vToCapId);
-			    aa.people.createCapContact(newContact);
-			    copied++;
-			    logDebug("Copied contact from "+pFromCapId.getCustomID()+" to "+vToCapId.getCustomID());
-			    }
-		
-			}
-		}
-	else
-		{
-		logMessage("**ERROR: Failed to get contacts: " + capContactResult.getErrorMessage()); 
-		return false; 
-		}
-	return copied;
-	} 
+{
+    //Copies all contacts from pFromCapId to pToCapId
+    //where type == pContactType
+    if (pToCapId == null)
+        var vToCapId = capId;
+    else
+        var vToCapId = pToCapId;
+
+    var capContactResult = aa.people.getCapContactByCapID(pFromCapId);
+    var copied = 0;
+    if (capContactResult.getSuccess())
+    {
+        var Contacts = capContactResult.getOutput();
+        for (yy in Contacts)
+        {
+            if (Contacts[yy].getCapContactModel().getContactType() == pContactType)
+            {
+                var newContact = Contacts[yy].getCapContactModel();
+                newContact.setCapID(vToCapId);
+                aa.people.createCapContact(newContact);
+                copied++;
+                logDebug("Copied contact from " + pFromCapId.getCustomID() + " to " + vToCapId.getCustomID());
+            }
+
+        }
+    }
+    else
+    {
+        logMessage("**ERROR: Failed to get contacts: " + capContactResult.getErrorMessage());
+        return false;
+    }
+    return copied;
+}
 
 function copyLicensedProfByType(capIdFrom, capIdTo, typesArray)
 {
@@ -249,55 +284,55 @@ function arrayContainsValue(ary, value)
 
 function updateTask(wfstr, wfstat, wfcomment, wfnote) // optional process name, cap id
 {
-	var useProcess = false;
-	var processName = "";
-	if (arguments.length > 4) 
-	{
-		if (arguments[4] != "") 
-		{
-			processName = arguments[4]; // subprocess
-			useProcess = true;
-		}
-	}
-	var itemCap = capId;
-	if (arguments.length == 6)
-	{
-		itemCap = arguments[5]; // use cap ID specified in args
-	}
-	var workflowResult = aa.workflow.getTaskItems(itemCap, wfstr, processName, null, null, null);
-	if (workflowResult.getSuccess())
-	{
-		var wfObj = workflowResult.getOutput();
-	}
-	else 
-	{
-		logDebug("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage());
-		return false;
-	}
-	if (!wfstat)
-	{
-		wfstat = "NA";
-	}
-	for (i in wfObj)
-	{
-		var fTask = wfObj[i];
-		if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase()) && (!useProcess || fTask.getProcessCode().equals(processName))) 
-		{
-			var dispositionDate = aa.date.getCurrentDate();
-			var stepnumber = fTask.getStepNumber();
-			var processID = fTask.getProcessID();
-			if (useProcess)
-			{
-				aa.workflow.handleDisposition(itemCap, stepnumber, processID, wfstat, dispositionDate, wfnote, wfcomment, systemUserObj, "U");
-				logDebug("Updating Workflow Task " + wfstr + " with status " + wfstat);
-			}
-			else
-			{
-				aa.workflow.handleDisposition(itemCap, stepnumber, wfstat, dispositionDate, wfnote, wfcomment, systemUserObj, "U");
-				logDebug("Updating Workflow Task " + wfstr + " with status " + wfstat);
-			}
-		}
-	}
+    var useProcess = false;
+    var processName = "";
+    if (arguments.length > 4) 
+    {
+        if (arguments[4] != "") 
+        {
+            processName = arguments[4]; // subprocess
+            useProcess = true;
+        }
+    }
+    var itemCap = capId;
+    if (arguments.length == 6)
+    {
+        itemCap = arguments[5]; // use cap ID specified in args
+    }
+    var workflowResult = aa.workflow.getTaskItems(itemCap, wfstr, processName, null, null, null);
+    if (workflowResult.getSuccess())
+    {
+        var wfObj = workflowResult.getOutput();
+    }
+    else 
+    {
+        logDebug("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage());
+        return false;
+    }
+    if (!wfstat)
+    {
+        wfstat = "NA";
+    }
+    for (i in wfObj)
+    {
+        var fTask = wfObj[i];
+        if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase()) && (!useProcess || fTask.getProcessCode().equals(processName))) 
+        {
+            var dispositionDate = aa.date.getCurrentDate();
+            var stepnumber = fTask.getStepNumber();
+            var processID = fTask.getProcessID();
+            if (useProcess)
+            {
+                aa.workflow.handleDisposition(itemCap, stepnumber, processID, wfstat, dispositionDate, wfnote, wfcomment, systemUserObj, "U");
+                logDebug("Updating Workflow Task " + wfstr + " with status " + wfstat);
+            }
+            else
+            {
+                aa.workflow.handleDisposition(itemCap, stepnumber, wfstat, dispositionDate, wfnote, wfcomment, systemUserObj, "U");
+                logDebug("Updating Workflow Task " + wfstr + " with status " + wfstat);
+            }
+        }
+    }
 }
 function closeTaskByCap(wfstr, capId, wfstat, wfcomment, wfnote) 
 {
@@ -307,7 +342,7 @@ function closeTaskByCap(wfstr, capId, wfstat, wfcomment, wfnote)
     if (workflowResult.getSuccess()) 
     {
         var wfObj = workflowResult.getOutput();
-    } 
+    }
     else
     {
         logDebug("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage());
@@ -332,36 +367,36 @@ function closeTaskByCap(wfstr, capId, wfstat, wfcomment, wfnote)
 
 function getAppSpecificLOCAL(itemName)  // optional: itemCap
 {
-	var updated = false;
-	var i=0;
-	var itemCap = capId;
-	if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
-   	
-	if (useAppSpecificGroupName)
-	{
-		if (itemName.indexOf(".") < 0)
-			{ logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-		
-		
-		var itemGroup = itemName.substr(0,itemName.indexOf("."));
-		var itemName = itemName.substr(itemName.indexOf(".")+1);
-	}
-	
+    var updated = false;
+    var i = 0;
+    var itemCap = capId;
+    if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
+
+    if (useAppSpecificGroupName)
+    {
+        if (itemName.indexOf(".") < 0)
+        { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true"); return false }
+
+
+        var itemGroup = itemName.substr(0, itemName.indexOf("."));
+        var itemName = itemName.substr(itemName.indexOf(".") + 1);
+    }
+
     var appSpecInfoResult = aa.appSpecificInfo.getByCapID(itemCap);
-	if (appSpecInfoResult.getSuccess())
- 	{
-		var appspecObj = appSpecInfoResult.getOutput();
-		
-		if (itemName != "")
-		{
-			for (i in appspecObj)
-				if( appspecObj[i].getCheckboxDesc() == itemName && (!useAppSpecificGroupName || appspecObj[i].getCheckboxType() == itemGroup) )
-				{
-					return appspecObj[i].getChecklistComment();
-					break;
-				}
-		} // item name blank
-	} 
-	else
-		{ logDebug( "**ERROR: getting app specific info for Cap : " + appSpecInfoResult.getErrorMessage()) }
+    if (appSpecInfoResult.getSuccess())
+    {
+        var appspecObj = appSpecInfoResult.getOutput();
+
+        if (itemName != "")
+        {
+            for (i in appspecObj)
+                if (appspecObj[i].getCheckboxDesc() == itemName && (!useAppSpecificGroupName || appspecObj[i].getCheckboxType() == itemGroup))
+                {
+                    return appspecObj[i].getChecklistComment();
+                    break;
+                }
+        } // item name blank
+    }
+    else
+    { logDebug("**ERROR: getting app specific info for Cap : " + appSpecInfoResult.getErrorMessage()) }
 }
