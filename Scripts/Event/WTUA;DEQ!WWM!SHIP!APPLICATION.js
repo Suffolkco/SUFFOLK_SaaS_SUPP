@@ -53,7 +53,7 @@ if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStat
 if (wfTask == "Final Review" && wfStatus == "Registration Complete")
 
 {
-    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);  
+    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);   
         if (capParcelResult.getSuccess())
         {
             var Parcels = capParcelResult.getOutput().toArray();
