@@ -86,7 +86,7 @@ if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete")
     ;
     var vEParams = aa.util.newHashtable();
     var addrResult = getAddressInALine(capId);
-    addParameter(vEParams, "$$altID$$", capId.getCustomID());
+    addParameter(vEParams, "$$altID$$", parentCapId.getCustomID());
     addParameter(vEParams, "$$address$$", addrResult);
     addParameter(vEParams, "$$Parcel$$", parcelNumber);
     addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
