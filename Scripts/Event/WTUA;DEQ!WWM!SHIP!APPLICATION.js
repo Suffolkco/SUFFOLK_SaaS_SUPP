@@ -13,11 +13,11 @@ for (c in capContacts)
     }
 }
 
-if (wfTask == "Application Review" && wfStatus == "Full Permit Required")
+if (wfTask == "Pending Review" && wfStatus == "Full Permit Required")
 {
     //deactivateActiveTasks("DEQ_SHIP")
     closeTask("Application Review", "Full Permit Required", "", "");
-    deactivateTask("Site Consult");
+    deactivateTask("Required Field Consult");
     deactivateTask("Residential Provisional Phase");
     deactivateTask("Grant Review");
 }

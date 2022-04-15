@@ -28,7 +28,7 @@ for (c in capContacts)
 
 logDebug("Parent = " + parent);
 
-if (wfTask == "Submission Review" && wfStatus == "SHIP Record Complete") 
+if (wfTask == "Submission Review" && wfStatus == "Registration Complete") 
 {
     var desc = "Automated via:" + capIDString;
     var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc, parentCapId);
