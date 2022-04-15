@@ -1,6 +1,6 @@
 try
 {
-    logDebugLocal("This is an ASA Event")
+    logDebug("This is an ASA Event")
 }
 catch (err)
 {
