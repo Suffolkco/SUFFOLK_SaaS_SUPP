@@ -50,6 +50,16 @@ if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStat
         }   
 }
 
+if (wfTask == "Grant Review" && (wfStatus =="OK to Proceed" || wfStatus == "Awaiting Client Reply" || wfStatus == "Awaiting Gran Issuance"))
+{
+    editAppSpecific("Part of Septic Improvement Program(SIP)", "Yes")
+}
+
+if (wfTask == "Grant Review" && (wfStatus =="No Application Received" || wfStatus == "Not Eligible"))
+{
+    editAppSpecific("Part of Septic Improvement Program(SIP)", "No")
+}
+
 if (wfTask == "Final Review" && wfStatus == "Registration Complete")
 
 {
