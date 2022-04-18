@@ -176,7 +176,7 @@ function mainProcess()
                                 logDebug("Expiration Matched");
                                 logDebug("capId = " + capId.getCustomID());
                                 logDebug("Date = " + newStatusDate);
-                                logDebug("Status = " + newStatus);
+                                logDebug("Status = " + newStatus); 
                                 //addToSet(capId, "IARENEWAL", "Ecology Renewals");
                                 var licProfResult = aa.licenseScript.getLicenseProf(capId);
                                 var capLPs = licProfResult.getOutput();
