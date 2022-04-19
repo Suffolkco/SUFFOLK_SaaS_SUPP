@@ -198,13 +198,13 @@ try
 
     if (installIA == "UNCHECKED" && existing == "UNCHECKED" && pump == "UNCHECKED")
     {
-        var conCheck = determineACADocumentAttached("Proposal Sketch");
+        var conCheck = determineACADocumentAttached("Preliminary Sketch");
         var conCheck2 = determineACADocumentAttached("Design Professional Sketch");
-        if (!conCheck || !conCheck2)
+        if (!conCheck && !conCheck2)
         {
             cancel = true;
             showMessage = true;
-            comment("Your proposal requires the submission of a ‘Proposal Sketch’ or a ‘Design Professional Sketch’ for review");
+            comment("Your proposal requires the submission of a ‘Preliminary Sketch’ or a ‘Design Professional Sketch’ for review");
         }
     }
 
