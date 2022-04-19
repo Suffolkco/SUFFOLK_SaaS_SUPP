@@ -199,7 +199,8 @@ try
     if (installIA == "UNCHECKED" && existing == "UNCHECKED" && pump == "UNCHECKED")
     {
         var conCheck = determineACADocumentAttached("Proposal Sketch");
-        if (!conCheck)
+        var conCheck2 = determineACADocumentAttached("Design Professional Sketch");
+        if (!conCheck || !conCheck2)
         {
             cancel = true;
             showMessage = true;
