@@ -1,10 +1,10 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : ACA_CA_LW_DOCUMENTS_BEFORE.js
+| Program : PF_DEQ_PO_EMAIL
 | Event   : ACA_BEFORE Event
 |
 |
 | 
-| Author:RLittlefield
+| Author:JGreene
 /------------------------------------------------------------------------------------------------------*/
 
 var documentOnly = false;
@@ -12,13 +12,13 @@ var disableTokens = false;
 var useAppSpecificGroupName = false;
 var useTaskSpecificGroupName = false;
 var enableVariableBranching = false;
-var maxEntries = 99;
+var maxEntries = 99; 
 var cancel = false;
 var startDate = new Date();
 var startTime = startDate.getTime();
 var message = "";
 var debug = "";
-var br = "<br>";
+var br = "<br>"; 
 var showDebug = false;
 var showMessage = false;
 //Needed to load the includes files
