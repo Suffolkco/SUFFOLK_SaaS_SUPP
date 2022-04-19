@@ -210,7 +210,8 @@ try
 
     if (installIA == "CHECKED")
     {
-        var conCheck = determineACADocumentAttached("Proof of Failure");
+        var proof = determineACADocumentAttached("Proof of Failure");
+        if (!proof)
         {
             cancel = true;
             showMessage = true;
