@@ -13,11 +13,11 @@ for (c in capContacts)
     }
 }
 
-if (wfTask == "Pending Review" && wfStatus == "Full Permit Required")
+if (wfTask == "Application Review" && (wfStatus == "Full Permit Required" || wfStatus == "Withdrawn"))
 {
     //deactivateActiveTasks("DEQ_SHIP")
     closeTask("Application Review", "Full Permit Required", "", "");
-    deactivateTask("Required Field Consult");
+    deactivateTask("Field Consult Required");
     deactivateTask("Residential Provisional Phase");
     deactivateTask("Grant Review");
 }
@@ -49,6 +49,8 @@ if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStat
 
         }   
 }
+
+
 
 if (wfTask == "Grant Review" && (wfStatus =="OK to Proceed" || wfStatus == "Awaiting Client Reply" || wfStatus == "Awaiting Gran Issuance"))
 {
