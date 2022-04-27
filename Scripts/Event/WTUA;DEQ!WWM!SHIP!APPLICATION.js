@@ -24,7 +24,7 @@ if (wfTask == "Application Review" && (wfStatus == "Full Permit Required" || wfS
 
 if (wfTask == "Preliminary Sketch Review")
 {
-    if (wfStatus == "Full Permit Required")
+    if (wfStatus == "Full Permit Required" || wfStatus == "Withdrawn")
     {
     //deactivateActiveTasks("DEQ_SHIP")
     closeTask("Preliminary Sketch Review", "Full Permit Required", "", "");
@@ -46,8 +46,17 @@ if (wfTask == "Grant Review" && (wfStatus == "No Application Received" || wfStat
         {
             deactivateTask("Inspections")
             activateTask("Final Review");
-
         }   
+    if (isTaskStatus("Preliminary Sketch Review", "Inspection Required Prior to Backfill"))
+    {
+        updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
+
+    }
+
+    if (isTaskStatus("Preliminary Sketch Review", "Inspection Required Prior to Install"))
+    {
+        updateTask("Inspections", "Inspection Required Prior to Install", "", "");
+    }
 }
 
 
