@@ -176,8 +176,7 @@ function latestCompletedInspection()
 	var inspections = aa.inspection.getInspections(capId);
 	var shortestdays = null;
 	var inspIdToUse;
-
-	logDebugLocal("Has Inspections: " + inspections.getSuccess());
+	
 	if (inspections.getSuccess()) 
 	{
 		insps = inspections.getOutput();
@@ -185,15 +184,11 @@ function latestCompletedInspection()
 		// Get the latest inspection
 		for (i in insps) 
 		{				
-			logDebugLocal("inspection comment: " + insps[i].getInspectionComments());
-			logDebugLocal("Inspection Date:" + insps[i].getInspectionDate());
-			logDebugLocal("getInspectionStatus: " + insps[i].getInspectionStatus());		
-			logDebugLocal("comment?: " + insps[i].inspection.getResultComment());
-
+			
 			if (insps[i].getInspectionDate() != null)
 			{
 				var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
-				logDebugLocal("inspDate: " + inspDate);			
+				logDebug("inspDate: " + inspDate);			
 	
 				var year = insps[i].getInspectionDate().getYear();
 				var month = insps[i].getInspectionDate().getMonth() - 1;
@@ -223,22 +218,22 @@ function latestCompletedInspection()
 			}	
 			if (shortestdays != null)
 			{	
-				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + insps[i].getInspectionStatus());								
+				logDebug("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + insps[i].getInspectionStatus());								
 			}
 		}	
 
 		// Only look at the most recent inspection with status "Incomplete"
 		var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
-		logDebugLocal("Inspection ID:" + inspIdToUse);		
+		logDebug("Inspection ID:" + inspIdToUse);		
 
 		if (inspResultObj.getSuccess()) 
 		{
 			var inspObj = inspResultObj.getOutput();
-			logDebugLocal("Inspection Status:" + inspObj.getInspectionStatus());	
+			logDebug("Inspection Status:" + inspObj.getInspectionStatus());	
 			if (inspObj && inspObj.getInspectionStatus() == "Complete")
 			{
 				inspCompleted = true;
-				logDebugLocal("Inspection ID is used:" + inspIdToUse);		
+				logDebug("Inspection ID is used:" + inspIdToUse);		
 			}
 		}
 	}
