@@ -7,6 +7,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {
 	// EHIMS-4832
 	// Check to see if new document has been updated by public user
+	/*
 	var readValue =  AInfo["New documents uploaded"]
 	// Use ASI instead of TSI
 	//var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
@@ -18,7 +19,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 		showMessage = true;
 		comment("A resubmission was made - verify that the latest documents or payment have been reviewed. Deactivate 'New documents uploaded' flag in custom fields to proceed.");		
 		
-	}
+	}*/
 
 	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
 
@@ -370,7 +371,7 @@ function latestCompletedInspection()
 			logDebugLocal("getInspectionStatus: " + insps[i].getInspectionStatus());		
 			logDebugLocal("comment?: " + insps[i].inspection.getResultComment());
 
-			if (insps[i].getInspectionDate() != null && insps[i].inspection.getResultComment() != null)
+			if (insps[i].getInspectionDate() != null)
 			{
 				var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
 				logDebugLocal("inspDate: " + inspDate);			

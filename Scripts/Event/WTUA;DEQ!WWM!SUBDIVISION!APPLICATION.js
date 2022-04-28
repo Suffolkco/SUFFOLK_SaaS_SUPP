@@ -26,8 +26,25 @@ if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 }
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 	{
+         // EHIMS-4832
+        // Check to see if new document has been updated by public user
+        /*
+        var readValue =  AInfo["New documents uploaded"]
+        // Use ASI instead of TSI
+        //var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
+        if (readValue != null && readValue == 'CHECKED')
+        {
+            //Reset the flag
+            //editAppSpecific("New documents uploaded", "UNCHECKED", capId);
+            cancel = true;
+            showMessage = true;
+            comment("A resubmission was made - verify that the latest documents or payment have been reviewed. Deactivate 'New documents uploaded' flag in custom fields to proceed.");		
+            
+        }*/
+
         //workflowApprovalToConstruct();
         workflowApprovalToConstructWithPin();
+       
 	}
 if (wfTask == "Inspections" && wfStatus == "Inspection Failure")
 {
@@ -46,7 +63,7 @@ if (wfTask == "Inspections" && wfStatus == "Inspection Failure")
 */
 if (wfTask == "Inspections" && wfStatus == "Complete")
 {
-    var completed = inspectionCompleted();
+    var completed = latestCompletedIInspection();
     if (completed)
     {
         workflowInspectionResultedWWM("Inspection Completion Notice", "RECORD_ID");
@@ -140,6 +157,81 @@ function dateDifference(date1, date2)
     return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
 }
 
+function latestCompletedInspection()
+{
+	var insps;
+	var inspCompleted = false;
+	var inspections = aa.inspection.getInspections(capId);
+	var shortestdays = null;
+	var inspIdToUse;
+
+	logDebugLocal("Has Inspections: " + inspections.getSuccess());
+	if (inspections.getSuccess()) 
+	{
+		insps = inspections.getOutput();
+		
+		// Get the latest inspection
+		for (i in insps) 
+		{				
+			logDebugLocal("inspection comment: " + insps[i].getInspectionComments());
+			logDebugLocal("Inspection Date:" + insps[i].getInspectionDate());
+			logDebugLocal("getInspectionStatus: " + insps[i].getInspectionStatus());		
+			logDebugLocal("comment?: " + insps[i].inspection.getResultComment());
+
+			if (insps[i].getInspectionDate() != null && insps[i].inspection.getResultComment() != null)
+			{
+				var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
+				logDebugLocal("inspDate: " + inspDate);			
+	
+				var year = insps[i].getInspectionDate().getYear();
+				var month = insps[i].getInspectionDate().getMonth() - 1;
+				var day = insps[i].getInspectionDate().getDayOfMonth();
+				var hr = insps[i].getInspectionDate().getHourOfDay();
+				var min = insps[i].getInspectionDate().getMinute();
+				var sec = insps[i].getInspectionDate().getSecond();
+				var todaysDate = new Date();			
+				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+				
+				var inspectionDateCon = month + "/" + day + "/" + year;
+				
+				logDebug("Today Date is: " + todDateCon + ". Inspection Date is: " + inspectionDateCon);					
+				var dateDiff = parseFloat(dateDifference(inspectionDateCon, todDateCon));
+				logDebug("Day difference is: " + dateDiff);
+				
+
+				if (shortestdays == null || (dateDiff < shortestdays))
+				{
+					inspIdToUse = insps[i].getIdNumber();
+					logDebug("getIDNumber: " + inspIdToUse);
+					logDebug("Date difference is: " + dateDiff + " which is shorter than: " + shortestdays);					
+					shortestdays = dateDiff;	
+				}				
+				
+							
+			}	
+			if (shortestdays != null)
+			{	
+				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + insps[i].getInspectionStatus());								
+			}
+		}	
+
+		// Only look at the most recent inspection with status "Incomplete"
+		var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
+		logDebugLocal("Inspection ID:" + inspIdToUse);		
+
+		if (inspResultObj.getSuccess()) 
+		{
+			var inspObj = inspResultObj.getOutput();
+			logDebugLocal("Inspection Status:" + inspObj.getInspectionStatus());	
+			if (inspObj && inspObj.getInspectionStatus() == "Complete")
+			{
+				inspCompleted = true;
+				logDebugLocal("Inspection ID is used:" + inspIdToUse);		
+			}
+		}
+	}
+	return inspCompleted;
+}
 
 function inspectionResultComments()
 {
@@ -193,6 +285,82 @@ function inspectionResultComments()
     }
     
     return inspResultComments;
+}
+
+function latestCompletedInspection()
+{
+	var insps;
+	var inspCompleted = false;
+	var inspections = aa.inspection.getInspections(capId);
+	var shortestdays = null;
+	var inspIdToUse;
+
+	logDebugLocal("Has Inspections: " + inspections.getSuccess());
+	if (inspections.getSuccess()) 
+	{
+		insps = inspections.getOutput();
+		
+		// Get the latest inspection
+		for (i in insps) 
+		{				
+			logDebugLocal("inspection comment: " + insps[i].getInspectionComments());
+			logDebugLocal("Inspection Date:" + insps[i].getInspectionDate());
+			logDebugLocal("getInspectionStatus: " + insps[i].getInspectionStatus());		
+			logDebugLocal("comment?: " + insps[i].inspection.getResultComment());
+
+			if (insps[i].getInspectionDate() != null)
+			{
+				var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
+				logDebugLocal("inspDate: " + inspDate);			
+	
+				var year = insps[i].getInspectionDate().getYear();
+				var month = insps[i].getInspectionDate().getMonth() - 1;
+				var day = insps[i].getInspectionDate().getDayOfMonth();
+				var hr = insps[i].getInspectionDate().getHourOfDay();
+				var min = insps[i].getInspectionDate().getMinute();
+				var sec = insps[i].getInspectionDate().getSecond();
+				var todaysDate = new Date();			
+				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+				
+				var inspectionDateCon = month + "/" + day + "/" + year;
+				
+				logDebug("Today Date is: " + todDateCon + ". Inspection Date is: " + inspectionDateCon);					
+				var dateDiff = parseFloat(dateDifference(inspectionDateCon, todDateCon));
+				logDebug("Day difference is: " + dateDiff);
+				
+
+				if (shortestdays == null || (dateDiff < shortestdays))
+				{
+					inspIdToUse = insps[i].getIdNumber();
+					logDebug("getIDNumber: " + inspIdToUse);
+					logDebug("Date difference is: " + dateDiff + " which is shorter than: " + shortestdays);					
+					shortestdays = dateDiff;	
+				}				
+				
+							
+			}	
+			if (shortestdays != null)
+			{	
+				logDebugLocal("Latest inspection ID is: " + inspIdToUse + ", Inspection date: " + shortestdays + " with status: " + insps[i].getInspectionStatus());								
+			}
+		}	
+
+		// Only look at the most recent inspection with status "Incomplete"
+		var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
+		logDebugLocal("Inspection ID:" + inspIdToUse);		
+
+		if (inspResultObj.getSuccess()) 
+		{
+			var inspObj = inspResultObj.getOutput();
+			logDebugLocal("Inspection Status:" + inspObj.getInspectionStatus());	
+			if (inspObj && inspObj.getInspectionStatus() == "Complete")
+			{
+				inspCompleted = true;
+				logDebugLocal("Inspection ID is used:" + inspIdToUse);		
+			}
+		}
+	}
+	return inspCompleted;
 }
 
 function inspectionCompleted()
