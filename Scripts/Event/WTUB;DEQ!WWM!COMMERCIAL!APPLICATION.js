@@ -181,6 +181,12 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
     
 }
 
+function dateDifference(date1, date2)
+{
+    return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
+}
+
+
 function latestCompletedInspection()
 {
 	var insps;
