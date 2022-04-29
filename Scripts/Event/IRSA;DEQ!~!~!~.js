@@ -32,6 +32,204 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 
 }
 
+// For OPC PBS/Non-PBS Site Inspection Types
+// Inspection Group: DEQ OPC Site
+/*OPC Non-PBS Site OP Inspection
+OPC Non-PBS Site Other Inspection
+OPC Non-PBS Site Re-Inspection
+OPC PBS Site GSR Inspection
+OPC PBS Site OP Inspection
+OPC PBS Site Other Inspection
+OPC PBS Site Re-Inspection*/
+var test = inspType.toUpperCase();
+logDebug("The upper case is: " + test);
+var inspResultObj = aa.inspection.getInspections(capId);
+
+if (inspResultObj.getSuccess()) {
+    var inspList = inspResultObj.getOutput();
+    if (inspList && inspList.length > 0) {
+        for (var xx in inspList) {
+            //  if (String(insp2Check).equals(inspList[xx].getInspectionType()) && inspList[xx].getInspection().getInspSequenceNumber() == inspSeqNum) {
+            if (inspList[xx].getInspection().getIdNumber() == inspId) {
+                if ((inspList[xx].getInspectionType().toUpperCase().contains("OPC NON-PBS") ||  inspList[xx].getInspectionType().toUpperCase().toUpperCase().contains("OPC PBS SITE")) && 
+                    (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Fail"))
+                {
+                    inspObj = inspList[xx];
+                    logDebug("Inspection number: " + inspList[xx].getInspection().getIdNumber());
+                    logDebug("Inspection type: " + inspList[xx].getInspectionType());
+                    logDebug("Inspection Status: " + inspList[xx].getInspectionStatus());
+
+                }
+            }
+        }
+    }
+}
+if (!inspObj) {
+    logDebug("No inspection found to update");
+}
+else
+{
+inspModel = inspObj.getInspection();
+gsList = inspModel.getGuideSheets();
+if (gsList) {
+    gsArr = gsList.toArray();
+    for (gsi in gsArr) {
+        gs = gsArr[gsi];
+        gsItemList = gs.getItems();
+        if (gsItemList) {
+            gsItemArr = gsItemList.toArray();
+            for (gsii in gsItemArr) {
+                gsItem = gsItemArr[gsii];
+                logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
+
+                if (gsItem.getGuideItemText().toUpperCase().contains("3 (UNREGISTERED TANK)")) {
+                                             
+                    logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
+                    logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
+                    logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
+                    logDebug("gguidesheetItemModel.getGuideItemComment(): " +  gsItem.getGuideItemComment());
+                    logDebug("gsItem.getGuideType(): " +  gsItem.getGuideType());
+
+                    if (gsItem.getGuideType() == "PBS Inspection Checklist" || gsItem.getGuideType() == "Non-PBS Inspection Checklist") 
+                    {
+                        logDebug("Guide Type is: " +  gsItem.getGuideType());
+                        logDebug("ASI Group Name is: " +  gsItem.getGuideItemASIGroupName());
+                        
+                        if(gsItem.getGuideItemASIGroupName() == "PBS_040" ||  gsItem.getGuideItemASIGroupName() == "NONPBS_010")
+                        {
+                            var ASISubGroups = gsItem.getItemASISubgroupList();
+
+                            logDebug("ASI subroups");
+
+                            if(ASISubGroups) 
+                            {
+                                logDebug("ASISubGroups.size(): " + ASISubGroups.size());
+                                for(var k = 0; k < ASISubGroups.size(); k++) 
+                                {
+                                    var ASISubGroup = ASISubGroups.get(k);
+                                    logDebug("ASISubGroup.getSubgroupCode():" + ASISubGroup.getSubgroupCode());
+
+                                    if(ASISubGroup && (ASISubGroup.getSubgroupCode() == "IS THE REGISTRATION INFORMA" ||
+                                    ASISubGroup.getSubgroupCode() == "IS THE PERMIT TO OPERATE CURRE")) 
+                                    {
+                                        var ASIModels =  ASISubGroup.getAsiList();
+                                        if(ASIModels) 
+                                        {
+                                            for( var m = 0; m < ASIModels.size(); m++) 
+                                            {
+                                                var ASIModel = ASIModels.get(m);
+                                                logDebug("ASIModel.getAsiName" + ASIModel.getAsiName() + "," + "ASI value: " + ASIModel.getAttributeValue());
+                                                
+                                                if(ASIModel && ASIModel.getAsiName() == "3") 
+                                                {
+                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                    asiValue = ASIModel.getAttributeValue();	
+                                                    if (asiValue == "CHECKED")	
+                                                    {
+                                                        // Create Tank
+                                                        gs0 = new guideSheetObjectLOCAL(gs, gsItem);
+
+                                                        gs0.loadInfoTables();                                  
+                                                        childTable = gs0.infoTables["UNREGISTERED TANK"];
+                                                        logDebug("childTable: " +  childTable);
+                                    
+                                                        if (childTable) {
+                                                            for (var rowIndex in childTable) {
+                                                                thisRow = childTable[rowIndex];
+                                                                tankNo = thisRow["SCDHS Tank #"];
+                                                                    product = thisRow["Product"];
+                                                                    capacity = thisRow["Capacity"];
+                                                                    location = thisRow["Location"];
+                                                                    constMaterial = thisRow["Construction Material"];
+                                                                    epa = thisRow["EPA"];
+                                                                    pbs = thisRow["PBS"];
+                                                                    comments = thisRow["Comments"];
+                                                                    if (tankNo && tankNo != "") {
+                                                                        logDebug("tankNo: " + tankNo);
+                                                                    }
+                                                                    if (product && product != "") {
+                                                                        logDebug("product: " + product);
+                                                                    }
+                                                                    if (capacity && capacity != "") {
+                                                                        logDebug("capacity: " + capacity);
+                                                                    }
+                                                                    if (location && location != "") {
+                                                                        logDebug("location: " + location);
+                                                                    }
+                                                                    if (constMaterial && constMaterial != "") {
+                                                                        logDebug("constMaterial: " + constMaterial);
+                                                                    }
+                                                                    if (epa && epa != "") {
+                                                                        logDebug("epa: " + epa);
+                                                                    }
+                                                                    if (pbs && pbs != "") {
+                                                                        logDebug("pbs: " + pbs);
+                                                                    }
+                                                                    if (comments && comments != "") {
+                                                                        logDebug("comments: " + comments);
+                                                                    }
+                                                                    logDebug("rowIndex: " + rowIndex);
+
+
+                                                                    if (!publicUser)
+                                                                    {
+                                                                        // Add child under SITE
+                                                                        var childTankCapId = createChild("DEQ", "OPC", "Hazardous Tank", "Permit", "UR TANK");
+                                                                        logDebug("Child cap ID is: " + childTankCapId);
+                                                                        logDebug("Child alt ID is: " + childTankCapId.getCustomID());
+                                                                            
+                                                                        logDebug("Update SCDHS Tank #" + tankNo);
+                                                                        editAppSpecific("SCDHS Tank #", tankNo, childTankCapId);
+                                                                        
+                                                                        logDebug("Update Official Use Code UR");
+                                                                        editAppSpecific("Official Use Code", "UR", childTankCapId);
+                                                                        
+                                                                        
+                                                                        logDebug("PBS Tank" + pbs);
+                                                                        editAppSpecific("PBS Tank", pbs, childTankCapId);
+
+                                                                      
+                                                                        logDebug("Update EPA Tank" + epa);
+                                                                        editAppSpecific("EPA Tank", epa, childTankCapId);
+                                                                        
+                                                                      
+                                                                        logDebug("Update Capacity" + capacity);
+                                                                        editAppSpecific("Capacity", capacity, childTankCapId);
+                                                                        
+                                                                     
+                                                                        logDebug("Update Tank Location" + location);
+                                                                        editAppSpecific("Tank Location", location, childTankCapId);
+
+                                                                        // Detailed Description: product + "Construction Material" + comments
+                                                                        var description = product + " Construction Material " + comments;
+                                                                        logDebug("Update description:" + description);
+                                                                    
+                                                                        updateWorkDesc(description, childTankCapId)
+                                                                        // Project Name
+                                                                        var name = "UR TANK"
+                                                                        updateShortNotes(name, childTankCapId);        
+                                                                        editAppName(name, childTankCapId);
+
+
+                                                                    }    
+                                                                }
+                                                            
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }      }          
+            }
+        }
+    }
+}
+ 
 //IA Record Creation from WWM Record 
 
 
@@ -850,3 +1048,68 @@ function getAddressInALine(capId)
     }
     return null;
 }
+   
+function guideSheetObjectLOCAL(gguidesheetModel, gguidesheetItemModel) {
+    this.gsType = gguidesheetModel.getGuideType();
+    this.gsSequence = gguidesheetModel.getGuidesheetSeqNbr();
+    this.gsDescription = gguidesheetModel.getGuideDesc();
+    this.gsIdentifier = gguidesheetModel.getIdentifier();
+    this.item = gguidesheetItemModel;
+    this.text = gguidesheetItemModel.getGuideItemText()
+    this.status = gguidesheetItemModel.getGuideItemStatus();
+    this.comment = gguidesheetItemModel.getGuideItemComment();
+    this.score = gguidesheetItemModel.getGuideItemScore();
+
+    this.info = new Array();
+    this.infoTables = new Array();
+    this.validTables = false;				//true if has ASIT info
+    this.validInfo = false;				//true if has ASI info
+
+
+    this.loadInfo = function () {
+        var itemASISubGroupList = this.item.getItemASISubgroupList();
+        //If there is no ASI subgroup, it will throw warning message.
+        if (itemASISubGroupList != null) {
+            this.validInfo = true;
+            var asiSubGroupIt = itemASISubGroupList.iterator();
+            while (asiSubGroupIt.hasNext()) {
+                var asiSubGroup = asiSubGroupIt.next();
+                var asiItemList = asiSubGroup.getAsiList();
+                if (asiItemList != null) {
+                    var asiItemListIt = asiItemList.iterator();
+                    while (asiItemListIt.hasNext()) {
+                        var asiItemModel = asiItemListIt.next();
+                        this.info[asiItemModel.getAsiName()] = asiItemModel.getAttributeValue();
+
+                    }
+                }
+            }
+        }
+    }
+
+    this.loadInfoTables = function () {
+        var guideItemASITs = this.item.getItemASITableSubgroupList();
+        if (guideItemASITs != null) {
+            logDebug(guideItemASITs.size());
+            for (var j = 0; j < guideItemASITs.size(); j++) {
+                var guideItemASIT = guideItemASITs.get(j);
+                var tableArr = new Array();
+                var columnList = guideItemASIT.getColumnList();
+                for (var k = 0; k < columnList.size(); k++) {
+                    var column = columnList.get(k);
+                    var values = column.getValueMap().values();
+                    var iteValues = values.iterator();
+                    while (iteValues.hasNext()) {
+                        var i = iteValues.next();
+                        var zeroBasedRowIndex = i.getRowIndex() - 1;
+                        if (tableArr[zeroBasedRowIndex] == null) tableArr[zeroBasedRowIndex] = new Array();
+                        tableArr[zeroBasedRowIndex][column.getColumnName()] = i.getAttributeValue();
+                    }
+                }
+                this.infoTables["" + guideItemASIT.getTableName()] = tableArr;
+                this.validTables = true;
+            }
+        }
+    }
+}
+
