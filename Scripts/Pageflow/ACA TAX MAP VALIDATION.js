@@ -198,7 +198,7 @@ try
 			logDebug("Data Entry - Parcel No: " + parcelNo.toString() + ", Length: " + parcelNo.length());
 			parcelTxt = parcelNo.toString();
 
-			noSpaceParcelNo = parcelTxt.replace(/\s+/g, '')				
+			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
 			var length = noSpaceParcelNo.length();
 			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
 			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
