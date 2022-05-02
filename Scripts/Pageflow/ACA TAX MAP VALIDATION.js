@@ -195,8 +195,9 @@ try
 		var parcelNo = parcelObj.getParcelNumber();
 		if (parcelNo != null)
 		{
-			logDebug("Data Entry - Parcel No: " + parcelNo.toString() + ", Length: " + parcelNo.length());
-			parcelTxt = parcelNo.toString();
+			logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());			
+			
+			var parcelTxt = new String(parcelNo);
 
 			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
 			var length = noSpaceParcelNo.length();
