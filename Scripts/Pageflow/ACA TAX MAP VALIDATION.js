@@ -17,8 +17,8 @@
 |     will no longer be considered a "Master" script and will not be supported in future releases.  If
 |     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = false;						// Set to true to see results in popup window
-var showDebug = false;							// Set to true to see debug messages in popup window
+var showMessage = true;						// Set to true to see results in popup window
+var showDebug = true;							// Set to true to see debug messages in popup window
 var preExecute = "PreExecuteForBeforeEvents"
 //var controlString = "";		// Standard choice for control
 var documentOnly = false;						// Document Only -- displays hierarchy of std choice steps
@@ -171,36 +171,50 @@ logGlobals(AInfo);
 |
 /-----------------------------------------------------------------------------------------------------*/
 
+var emailText = "";
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
-var parcelObj = cap.getParcelModel();
-if (!parcelObj)
-{ logDebug("No parcel to get attributes"); 
-}
-else
+try
 {
-    /*   logDebug("Parcel No: " + parcelObj.getParcelNo());
-        logDebug("Parcel Number: " + parcelObj.getParcelNumber());
-        logDebug("UID: " + parcelObj.getUID());
-        logDebug("getL1ParcelNo: " + parcelObj.getL1ParcelNo());
+	var parcelObj = cap.getParcelModel();
+	if (!parcelObj)
+	{ logDebug("No parcel to get attributes"); 
+	}
+	else
+	{
+		/*   logDebug("Parcel No: " + parcelObj.getParcelNo());
+			logDebug("Parcel Number: " + parcelObj.getParcelNumber());
+			logDebug("UID: " + parcelObj.getUID());
+			logDebug("getL1ParcelNo: " + parcelObj.getL1ParcelNo());
 
-    logDebug("Parcelobj:" + parcelObj);
-    for (property in parcelObj) {
-        logDebug("Property:" + parcelObj[property]);
-        
-    }*/
-    var parcelNo = parcelObj.getParcelNumber();
-    var length = parcelNo.length();
-    logDebug("ParcelNo: " + parcelNo + ", " + length);
-    if (length != 19)        
-    {            
-        cancel = true;
-        showMessage = true;
-        comment("You have entered the wrong Parcel (Tax Map) Number.");
-        comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
-        comment ("Pease see instructional note in Parcel Section.");
-    }
-
+		logDebug("Parcelobj:" + parcelObj);
+		for (property in parcelObj) {
+			logDebug("Property:" + parcelObj[property]);
+			
+		}*/
+		var parcelNo = parcelObj.getParcelNumber();
+		logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());
+		noSpaceParcelNo = parcelNo.replace(/\s+/g, '')		
+		var length = noSpaceParcelNo.length();
+		logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+		logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+		if (length != 19)        
+		{            
+			cancel = true;
+			showMessage = true;
+			comment("You have entered the wrong Parcel (Tax Map) Number.");
+			comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+			comment ("Pease see instructional note in Parcel Section.");
+		}
+		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA TAX MAP VALIDATION", emailText);
+	}
 }
+catch (ex)
+{
+	logDebug("**ERROR** runtime error " + ex.message);
+	aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA TAX MAP VALIDATION", emailText);
+}
+
  //push.   
 
 
@@ -237,6 +251,17 @@ else
 /*------------------------------------------------------------------------------------------------------/
 | Custom Functions (End)
 /------------------------------------------------------------------------------------------------------*/
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
 function parcelExistsOnCap()
 {
 	// Optional parameter, cap ID to load from
