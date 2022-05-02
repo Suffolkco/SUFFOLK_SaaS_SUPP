@@ -200,7 +200,7 @@ try
 			var parcelTxt = new String(parcelNo);
 
 			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
-			var length = noSpaceParcelNo.length();
+			var length = noSpaceParcelNo.length;
 			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
 			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
 			if (length != 19)        
