@@ -193,20 +193,24 @@ try
 			
 		}*/
 		var parcelNo = parcelObj.getParcelNumber();
-		logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());
-		noSpaceParcelNo = parcelNo.replace(/\s+/g, '')		
-		var length = noSpaceParcelNo.length();
-		logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
-		logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
-		if (length != 19)        
-		{            
-			cancel = true;
-			showMessage = true;
-			comment("You have entered the wrong Parcel (Tax Map) Number.");
-			comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
-			comment ("Pease see instructional note in Parcel Section.");
+		if (parcelNo != null)
+		{
+			logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());
+
+			noSpaceParcelNo = String(parcelNo).replace(/\s+/g, '')				
+			var length = noSpaceParcelNo.length();
+			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+			if (length != 19)        
+			{            
+				cancel = true;
+				showMessage = true;
+				comment("You have entered the wrong Parcel (Tax Map) Number.");
+				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+				comment ("Pease see instructional note in Parcel Section.");
+			}
+			aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA TAX MAP VALIDATION", emailText);
 		}
-		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA TAX MAP VALIDATION", emailText);
 	}
 }
 catch (ex)
