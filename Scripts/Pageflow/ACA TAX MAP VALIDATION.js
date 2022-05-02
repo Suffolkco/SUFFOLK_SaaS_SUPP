@@ -171,9 +171,6 @@ logGlobals(AInfo);
 |
 /-----------------------------------------------------------------------------------------------------*/
 
-var emailText = "";
-var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
-
 try
 {
 	var parcelObj = cap.getParcelModel();
@@ -210,15 +207,15 @@ try
 				comment("You have entered the wrong Parcel (Tax Map) Number.");
 				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
 				comment ("Pease see instructional note in Parcel Section.");
-			}
-			aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA TAX MAP VALIDATION", emailText);
+			}			
 		}
 	}
 }
 catch (ex)
 {
 	logDebug("**ERROR** runtime error " + ex.message);
-	aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ACA TAX MAP VALIDATION", emailText);
+	comment ("Pease see instructional note in Parcel Section." + message);
+	
 }
 
  //push.   
