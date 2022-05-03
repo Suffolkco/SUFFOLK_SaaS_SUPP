@@ -17,8 +17,8 @@
 |     will no longer be considered a "Master" script and will not be supported in future releases.  If
 |     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = true;						// Set to true to see results in popup window
-var showDebug = true;							// Set to true to see debug messages in popup window
+var showMessage = false;						// Set to true to see results in popup window
+var showDebug = false;							// Set to true to see debug messages in popup window
 var preExecute = "PreExecuteForBeforeEvents"
 //var controlString = "";		// Standard choice for control
 var documentOnly = false;						// Document Only -- displays hierarchy of std choice steps
@@ -206,14 +206,8 @@ try
 				showMessage = true;
 				comment("You have entered the wrong Parcel (Tax Map) Number.");
 				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
-				comment ("Pease see instructional note in Parcel Section.");
-			}	
-			else
-			{
-				cancel = false;
-				showMessage = false;
-				logDebug("Proceeding");			
-			}		
+				comment ("Please see instructional note in Parcel Section.");
+			}				
 		}
 	}
 	logDebug("Debug info: " + (debug.indexOf("**ERROR")));
