@@ -207,9 +207,16 @@ try
 				comment("You have entered the wrong Parcel (Tax Map) Number.");
 				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
 				comment ("Pease see instructional note in Parcel Section.");
-			}			
+			}	
+			else
+			{
+				cancel = false;
+				showMessage = false;
+				logDebug("Proceeding");			
+			}		
 		}
 	}
+	logDebug("Debug info: " + (debug.indexOf("**ERROR")));
 }
 catch (ex)
 {
