@@ -5,46 +5,45 @@ try{
 
 	var emailParams = aa.util.newHashtable();
 	var reportFile = new Array();
-	
-	if (!publicUser){ 
-		var contactType = "Complainant";
-		var contactInfo = getContactInfo(contactType, capId);
-		if(contactInfo == false){
-			logDebug("No complainant contact exists on this record");
-		}else{
-			
-			var vAddrLine1 = contactInfo[0];
-			var vCity = contactInfo[1];
-			var vState = contactInfo[2];
-			var vZip = contactInfo[3];
-			var vAddress = new Array();
-			vAddress.push(vAddrLine1);
-			vAddress.push(vCity);
-			vAddress.push(vState);
-			vAddress.push(vZip);
-					
-			// copy Vendor name, org name & phone to short notes
-			var fName = contactInfo[4];
-			var lName = contactInfo[5];					
-			var email = contactInfo[8];	
+		
+	var contactType = "Complainant";
+	var contactInfo = getContactInfo(contactType, capId);
+	if(contactInfo == false){
+		logDebug("No complainant contact exists on this record");
+	}else{
+		
+		var vAddrLine1 = contactInfo[0];
+		var vCity = contactInfo[1];
+		var vState = contactInfo[2];
+		var vZip = contactInfo[3];
+		var vAddress = new Array();
+		vAddress.push(vAddrLine1);
+		vAddress.push(vCity);
+		vAddress.push(vState);
+		vAddress.push(vZip);
+				
+		// copy Vendor name, org name & phone to short notes
+		var fName = contactInfo[4];
+		var lName = contactInfo[5];					
+		var email = contactInfo[8];	
 
-			var startDate = new Date();
-			var startTime = startDate.getTime(); // Start timer
-			var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+		var startDate = new Date();
+		var startTime = startDate.getTime(); // Start timer
+		var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
 
-			getRecordParams4Notification(emailParams);
-			addParameter(emailParams, "$$altID$$", capId.getCustomID());
-			addParameter(emailParams, "$$name$$", fName + " " + lName);
-			addParameter(emailParams, "$$address", vAddrLine1);
-			addParameter(emailParams, "$$city$$", vCity);
-			addParameter(emailParams, "$$state$$", capId.getCustomID());
-			addParameter(emailParams, "$$zip$$", vZip);
-			addParameter(emailParams, "$$date$$", todayDate);
+		getRecordParams4Notification(emailParams);
+		addParameter(emailParams, "$$altID$$", capId.getCustomID());
+		addParameter(emailParams, "$$name$$", fName + " " + lName);
+		addParameter(emailParams, "$$address", vAddrLine1);
+		addParameter(emailParams, "$$city$$", vCity);
+		addParameter(emailParams, "$$state$$", capId.getCustomID());
+		addParameter(emailParams, "$$zip$$", vZip);
+		addParameter(emailParams, "$$date$$", todayDate);
 
-			sendNotification("", email, "", "DCA_COMPLAINANTNOTIFICATION", emailParams, reportFile);
+		sendNotification("", email, "", "DCA_COMPLAINANTNOTIFICATION", emailParams, reportFile);
 
-		}
 	}
+	
 }catch(err){
 	logDebug("**WARN: Error in ASA updating short notes and address -  " + err.message);
 }
