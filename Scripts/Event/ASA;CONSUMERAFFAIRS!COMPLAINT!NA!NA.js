@@ -36,7 +36,7 @@ try{
 		addParameter(emailParams, "$$name$$", fName + " " + lName);
 		addParameter(emailParams, "$$address", vAddrLine1);
 		addParameter(emailParams, "$$city$$", vCity);
-		addParameter(emailParams, "$$state$$", capId.getCustomID());
+		addParameter(emailParams, "$$state$$", vState);
 		addParameter(emailParams, "$$zip$$", vZip);
 		addParameter(emailParams, "$$date$$", todayDate);
 
