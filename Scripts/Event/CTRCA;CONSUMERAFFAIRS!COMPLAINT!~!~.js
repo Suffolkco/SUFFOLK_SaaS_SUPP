@@ -1,3 +1,4 @@
 //CTRCA
 
 include("CA_SET_VENDOR_PRIMARY");
+include("CA_SEND_COMPLAINANT_EMAIL");
