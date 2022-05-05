@@ -19,7 +19,7 @@ try{
 		vAddress.push(vCity);
 		vAddress.push(vState);
 		vAddress.push(vZip);
-				
+		logDebug("Address: " + vAddressLine1 + "," +  vCity + "," +  vState + "," +  vZip);
 		// copy Vendor name, org name & phone to short notes
 		var fName = contactInfo[4];
 		var lName = contactInfo[5];					
