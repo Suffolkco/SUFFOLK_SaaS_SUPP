@@ -1,16 +1,39 @@
 if (publicUser)
 {
-var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
-if (capParcelResult.getSuccess())
-{ var Parcels = capParcelResult.getOutput().toArray(); } 
-else
-{ logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage()); }
+// var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+// if (capParcelResult.getSuccess())
+// { 
+//   //JG Commenting out to work around Accela 22.1 APO updates
+//   //var Parcels = capParcelResult.getOutput().toArray(); 
+//   var Parcels = capParcelResult.getOutput().toArray();
+// } 
+// else
+// { logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage()); }
 
-for (zz in Parcels)
-{
-  var ParcelValidatedNumber = Parcels[zz].getParcelNumber();
-  logDebug("There is a parcel number, we are checking for IAs now.");  
-}
+// for (zz in Parcels)
+// {
+  
+//    var ParcelValidatedNumber = Parcels[zz].getParcelNumber();
+//    logDebug("There is a parcel number, we are checking for IAs now."); 
+
+  
+// }
+
+    var parcelTest = aa.parcel.getParcelByCapId(capId, null)
+    logDebug("parcelTest = " + parcelTest);
+    logDebug("parcelTest output = " + parcelTest.getOutput());
+    var parcelTestOutput = parcelTest.getOutput().toArray();
+    var parcelOutputArray = [];
+    for (p in parcelTestOutput)
+    {
+        logDebug("value is: " + parcelTestOutput[p]);
+        var ParcelForArray = parcelTestOutput[p].toString().split(": ");
+        logDebug("parcelForArray = " + ParcelForArray);
+        parcelOutputArray.push(ParcelForArray[1]);
+    
+    }
+    logDebug("parcelOutputArray = " + parcelOutputArray);
+    var ParcelValidatedNumber = parcelOutputArray[0];
 
 var foundIA = false;
 var iaCap = "";
@@ -32,6 +55,7 @@ var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
     }
 
     var getCapResult = aa.cap.getCapID(iaNumber);
+    logDebug("getCapResult = " + getCapResult);
     if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
     {
         var wwmIA = getCapResult.getOutput().getCustomID();
