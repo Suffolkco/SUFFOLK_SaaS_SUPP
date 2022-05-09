@@ -1,4 +1,7 @@
 //DUA;DEQ!~!~!~!
+showDebug = true;
+showMessage = true;
+
 var skip = false;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
@@ -29,6 +32,12 @@ if (!skip)
         }
     }
  
+    logDebug("First Name: " +   cap.getFirstName())
+    logDebug("Email: " +     cap.getEmail());
+    logDebug("Last name: " + cap.getLastName());
+    
+
+
 if (publicUser)
 {
      // EHIMS-4832: Resubmission after user already submitted.
@@ -40,6 +49,8 @@ if (publicUser)
         if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
         {
             // Send email, set a flag
+          
+
             editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
             
         }
@@ -83,3 +94,13 @@ if (publicUser)
     
 }
 
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
