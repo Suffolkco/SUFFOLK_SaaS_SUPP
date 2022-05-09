@@ -1,6 +1,6 @@
 //DUA;DEQ!~!~!~!
-var showMessage = true;
-var showDebug = true;
+//var showMessage = true;
+//var showDebug = true;
 var emailText = "";
 
 var skip = false;
