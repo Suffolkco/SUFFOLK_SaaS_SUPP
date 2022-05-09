@@ -76,7 +76,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
     // EHIMS-4832
 	// Check to see if new document has been updated by public user
 	
-	var readValue =  AInfo["New documents uploaded"]
+	var readValue =  AInfo["New Documents Uploaded"]
 	// Use ASI instead of TSI
 	//var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
 	if (readValue != null && readValue == 'CHECKED')
