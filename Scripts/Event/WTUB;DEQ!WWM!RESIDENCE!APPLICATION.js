@@ -118,6 +118,21 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         showMessage = true;        
         comment("The custom field 'Permit Conditions Text' is blank, and the workflow was advanced without a notice or permit conditions document being generated, and no email was sent to the public.");
     }	
+    // EHIMS-4832
+	// Check to see if new document has been updated by public user
+	
+	var readValue =  AInfo["New documents uploaded"]
+	// Use ASI instead of TSI
+	//var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
+	if (readValue != null && readValue == 'CHECKED')
+	{
+		//Reset the flag. Instead user will manually do it.
+		//editAppSpecific("New documents uploaded", "UNCHECKED", capId);
+		cancel = true;
+		showMessage = true;
+		comment("A resubmission was made - verify that the latest documents or payment have been reviewed. Deactivate 'New documents uploaded' flag in custom fields to proceed.");		
+		
+	}
 }
 
 if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
