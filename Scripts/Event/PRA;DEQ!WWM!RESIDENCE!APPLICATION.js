@@ -1,6 +1,18 @@
 //PRA:DEQ/WR/Residence/Application
 if (publicUser)
 { 
+    // EHIMS-4832: Resubmission after user already submitted.
+    if  (itemCapType == "DEQ/WWM/Residence/Application" || 
+    itemCapType == "DEQ/WWM/Subdivision/Application" ||        
+    itemCapType == "DEQ/WWM/Commercial/Application")
+    {
+        if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
+        {
+            // Send email, set a flag
+            editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+            
+        }
+    }
     if (isTaskActive("Application Review") && isTaskStatus("Application Review","Awaiting Client Reply"))
     {
         updateTask("Application Review", "Resubmitted", "Additional payment submitted by Applicant", "Additional payment submitted by Applicant");        
