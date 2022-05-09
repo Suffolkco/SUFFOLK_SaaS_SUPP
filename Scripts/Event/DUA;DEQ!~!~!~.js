@@ -1,6 +1,7 @@
 //DUA;DEQ!~!~!~!
 showDebug = true;
 showMessage = true;
+var emailText = "";
 
 var skip = false;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
@@ -46,16 +47,11 @@ if (!skip)
 	cd = cdScriptObj.getCapDetailModel();
 
     // Record Assigned to
-    var staff = cd.getAsgnStaff();
-
-    var dept = cd.getAsgnDept();
-    logDebug("staff: " + staff);
-    logDebug("dept: " + dept);
-    
-    /*
-    iNameResult = aa.person.getUser(staff)
+    var assignedUserid = cd.getAsgnStaff();
+    if (assignedUserid !=  null)
+    {
+    iNameResult = aa.person.getUser(assignedUserid)
 	
-
 	if (!iNameResult.getSuccess())
 		{ logDebug("**ERROR retrieving  user model " + assignstaffId + " : " + iNameResult.getErrorMessage()) ;}
 
@@ -74,7 +70,8 @@ if (!skip)
             logDebug("Last name: " + userObj.getLastName());        
         }
 
-    } */
+    } 
+}
 if (publicUser)
 {
      // EHIMS-4832: Resubmission after user already submitted.
