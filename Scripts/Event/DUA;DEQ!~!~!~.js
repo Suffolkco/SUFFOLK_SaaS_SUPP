@@ -58,20 +58,16 @@ if (!skip)
 	iName = iNameResult.getOutput();
     logDebug("Dept of user: " + iName.getDeptOfUser());
 	
-    var sysObj = aa.cap.getSysUser();
-    if(sysObj)
-    {
-        var userResult = aa.person.getUser(sysObj.getFirstName(),sysObj.getMiddleName(),sysObj.getLastName());
-        if(userResult.getSuccess())
+   
+        if(iNameResult.getSuccess())
         {
             var userObj = userResult.getOutput();
             logDebug("First Name: " +   userObj.getFirstName())
             logDebug("Email: " +     userObj.getEmail());
             logDebug("Last name: " + userObj.getLastName());        
         }
-
     } 
-}
+
 if (publicUser)
 {
      // EHIMS-4832: Resubmission after user already submitted.
