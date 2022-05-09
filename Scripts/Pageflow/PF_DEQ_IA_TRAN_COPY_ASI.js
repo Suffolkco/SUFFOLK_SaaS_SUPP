@@ -112,7 +112,8 @@ try
     var installDate = getAppSpecific("Installation Date", parentCapId);
     var type = getAppSpecific("Type", parentCapId);
 
-    populateAmendmentAPOContacts(parentCapId);
+    copyAddressFromParent4ACA(cap, parentCapId);
+    copyParcelsFromParent4ACA(cap, parentCapId);
 
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
     editAppSpecific4ACA("Model", model, cap);
