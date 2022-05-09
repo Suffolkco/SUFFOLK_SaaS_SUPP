@@ -1,4 +1,6 @@
 //DUA;DEQ!~!~!~!
+var showMessage = true;
+var showDebug = true;
 var emailText = "";
 
 var skip = false;
@@ -30,7 +32,49 @@ if (!skip)
             updateTask("Plans Distribution", "Resubmitted", "Plan corrections submitted by Applicant.", "Plan corrections submitted by Applicant.");
         }
     }
-    
+
+// Testing
+// Send email to Record Assignee                       
+var cdScriptObjResult = aa.cap.getCapDetail(capId);
+if (!cdScriptObjResult.getSuccess())
+    { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+
+var cdScriptObj = cdScriptObjResult.getOutput();
+
+if (!cdScriptObj)
+    { logDebug("**ERROR: No cap detail script object") ; }
+
+cd = cdScriptObj.getCapDetailModel();
+
+// Record Assigned to
+var assignedUserid = cd.getAsgnStaff();
+if (assignedUserid !=  null)
+{
+iNameResult = aa.person.getUser(assignedUserid)
+
+if (!iNameResult.getSuccess())
+    { logDebug("**ERROR retrieving  user model " + assignstaffId + " : " + iNameResult.getErrorMessage()) ;}
+
+
+    if(iNameResult.getSuccess())
+    {
+        assignedUser = iNameResult.getOutput();
+        logDebug("Dept of user: " + assignedUser.getDeptOfUser());            
+        logDebug("First Name: " +   assignedUser.getFirstName())
+        logDebug("Email: " +     assignedUser.getEmail());
+        logDebug("Last name: " + assignedUser.getLastName());        
+        var emailParams = aa.util.newHashtable();
+        var reportFile = new Array();
+        getRecordParams4Notification(emailParams);   
+        addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+        addParameter(emailParams, "$$altID$$", capId.getCustomID());
+        if (assignedUser.getEmail() != null)
+        {
+            sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+        }
+        
+    }
+} 
 
 if (publicUser)
 {
@@ -42,47 +86,7 @@ if (publicUser)
     {
         if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
         {
-            // Send email to Record Assignee                       
-            var cdScriptObjResult = aa.cap.getCapDetail(capId);
-            if (!cdScriptObjResult.getSuccess())
-                { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
-
-            var cdScriptObj = cdScriptObjResult.getOutput();
-
-            if (!cdScriptObj)
-                { logDebug("**ERROR: No cap detail script object") ; }
-
-            cd = cdScriptObj.getCapDetailModel();
-
-            // Record Assigned to
-            var assignedUserid = cd.getAsgnStaff();
-            if (assignedUserid !=  null)
-            {
-            iNameResult = aa.person.getUser(assignedUserid)
             
-            if (!iNameResult.getSuccess())
-                { logDebug("**ERROR retrieving  user model " + assignstaffId + " : " + iNameResult.getErrorMessage()) ;}
-
-            
-                if(iNameResult.getSuccess())
-                {
-                    assignedUser = iNameResult.getOutput();
-                    logDebug("Dept of user: " + assignedUser.getDeptOfUser());            
-                    logDebug("First Name: " +   assignedUser.getFirstName())
-                    logDebug("Email: " +     assignedUser.getEmail());
-                    logDebug("Last name: " + assignedUser.getLastName());        
-                    var emailParams = aa.util.newHashtable();
-                    var reportFile = new Array();
-                    getRecordParams4Notification(emailParams);   
-                    addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
-                    addParameter(emailParams, "$$altID$$", capId.getCustomID());
-                    if (assignedUser.getEmail() != null)
-                    {
-                        sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
-                    }
-                    
-                }
-            } 
 
             //  set a flag
             editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
