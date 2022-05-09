@@ -114,7 +114,9 @@ try
 
     copyAddressFromParent4ACA(cap, parentCapId);
     copyParcelsFromParent4ACA(cap, parentCapId);
-
+    copyAddress(parentCapId, capId);
+    copyParcel(parentCapId, capId);
+    
     editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
     editAppSpecific4ACA("Model", model, cap);
     editAppSpecific4ACA("Installation Date", installDate, cap);
