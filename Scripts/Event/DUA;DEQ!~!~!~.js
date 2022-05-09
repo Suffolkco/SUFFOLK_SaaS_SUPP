@@ -31,12 +31,22 @@ if (!skip)
             updateTask("Plans Distribution", "Resubmitted", "Plan corrections submitted by Applicant.", "Plan corrections submitted by Applicant.");
         }
     }
- 
-    logDebug("First Name: " +   cap.getFirstName())
-    logDebug("Email: " +     cap.getEmail());
-    logDebug("Last name: " + cap.getLastName());
     
+ 
+    // Record Assigned?
+    var sysObj = aa.cap.getSysUser();
+    if(sysObj)
+    {
+        var userResult = aa.person.getUser(sysObj.getFirstName(),sysObj.getMiddleName(),sysObj.getLastName());
+        if(userResult.getSuccess())
+        {
+            var userObj = userResult.getOutput();
+            logDebug("First Name: " +   userObj.getFirstName())
+            logDebug("Email: " +     userObj.getEmail());
+            logDebug("Last name: " + userObj.getLastName());        
+        }
 
+    }
 if (publicUser)
 {
      // EHIMS-4832: Resubmission after user already submitted.
