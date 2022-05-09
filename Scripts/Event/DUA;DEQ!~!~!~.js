@@ -42,11 +42,11 @@ if (publicUser)
         itemCapType == "DEQ/WWM/Subdivision/Application" ||        
         itemCapType == "DEQ/WWM/Commercial/Application"))
     {
-        if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
+        if (isTaskActive("Plans Coordination") || 
+        getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
         {
             // 1. Set a flag
             editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-
             
             // 2. Send email to Record Assignee                       
             var cdScriptObjResult = aa.cap.getCapDetail(capId);
