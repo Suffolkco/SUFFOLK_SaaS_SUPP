@@ -151,15 +151,8 @@ else
 /*------------------------------------------------------------------------------------------------------/
 | <===========External Functions (used by Action entries)
 /------------------------------------------------------------------------------------------------------*/
-function populateAmendmentAPOContacts(parent)
-{
-  var capModel = aa.env.getValue("CapModel");
-  copyAddressFromParent4ACA(capModel, parent);
-  copyParcelsFromParent4ACA(capModel, parent);
-  //copyContactFromParent4ACA(capModel, parent);
-  aa.env.setValue('CapModel', capModel);
-}
-function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
+
+function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId, typesArray)
 {
 
   var capAddressResult = aa.address.getAddressWithAttributeByCapId(parentCapId).getOutput();
@@ -168,7 +161,7 @@ function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
     return;
   }
 
-  var adrr = getPrimaryOrAddressByType(capAddressResult);
+  var adrr = getPrimaryOrAddressByType(capAddressResult, typesArray);
   if (adrr != null)
   {
     currentRecordCapModel.setAddressModel(adrr);
