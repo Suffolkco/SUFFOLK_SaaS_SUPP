@@ -37,7 +37,6 @@ if (!skip)
     logDebug("Last name: " + cap.getLastName());
     
 
-
 if (publicUser)
 {
      // EHIMS-4832: Resubmission after user already submitted.
