@@ -55,16 +55,15 @@ if (!skip)
 	if (!iNameResult.getSuccess())
 		{ logDebug("**ERROR retrieving  user model " + assignstaffId + " : " + iNameResult.getErrorMessage()) ;}
 
-	iName = iNameResult.getOutput();
-    logDebug("Dept of user: " + iName.getDeptOfUser());
 	
-   
         if(iNameResult.getSuccess())
         {
-            var userObj = userResult.getOutput();
-            logDebug("First Name: " +   userObj.getFirstName())
-            logDebug("Email: " +     userObj.getEmail());
-            logDebug("Last name: " + userObj.getLastName());        
+            iName = iNameResult.getOutput();
+            logDebug("Dept of user: " + iName.getDeptOfUser());
+	
+            logDebug("First Name: " +   iName.getFirstName())
+            logDebug("Email: " +     iName.getEmail());
+            logDebug("Last name: " + iName.getLastName());        
         }
     } 
 
