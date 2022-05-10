@@ -29,7 +29,7 @@ if (publicUser)
 
     var appStatus = getAppStatus(capId);
     
-     
+     /*
     // EHIMS-4832: Resubmission after user already submitted.    
     if (isTaskActive("Plans Coordination") || 
     appStatus == "Resubmitted" 
@@ -72,7 +72,7 @@ if (publicUser)
             }
         }      
 
-    }
+    }*/
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - DEQ WWM", emailText);
     // Only if the application has been reviewed
     if(appStatus != "Received")
