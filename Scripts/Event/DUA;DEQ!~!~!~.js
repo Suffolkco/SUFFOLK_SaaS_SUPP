@@ -1,4 +1,8 @@
 //DUA;DEQ!~!~!~!
+var showMessage = true;
+var showDebug = true;
+var emailText = "";
+
 var skip = false;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
 // If record type is WWM and it's a backoffice user, we do not want to update the status
@@ -29,9 +33,60 @@ if (!skip)
         }
     }
 
-   
+    // Testing
+     // EHIMS-4832: Resubmission after user already submitted.
+     if (publicUser && 
+        (itemCapType == "DEQ/WWM/Residence/Application" || 
+        itemCapType == "DEQ/WWM/Subdivision/Application" ||        
+        itemCapType == "DEQ/WWM/Commercial/Application"))
+    {
+        if (isTaskActive("Plans Coordination") || 
+        getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
+        {
+            // 1. Set a flag
+            editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+            
+            // 2. Send email to Record Assignee                       
+            var cdScriptObjResult = aa.cap.getCapDetail(capId);
+            if (!cdScriptObjResult.getSuccess())
+                { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+
+            var cdScriptObj = cdScriptObjResult.getOutput();
+
+            if (!cdScriptObj)
+                { logDebug("**ERROR: No cap detail script object") ; }
+
+            cd = cdScriptObj.getCapDetailModel();
+
+            // Record Assigned to
+            var assignedUserid = cd.getAsgnStaff();
+            if (assignedUserid !=  null)
+            {
+                iNameResult = aa.person.getUser(assignedUserid)
+
+                if(iNameResult.getSuccess())
+                {
+                    assignedUser = iNameResult.getOutput();                   
+                    var emailParams = aa.util.newHashtable();
+                    var reportFile = new Array();
+                    getRecordParams4Notification(emailParams);   
+                    addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+                    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                    if (assignedUser.getEmail() != null)
+                    {
+                        sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+                        logDebug("Email Sent here***************");
+                        logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
+                    }                    
+                }
+            }             
+        }
+    }
+
 if (publicUser)
-{   
+{
+    
+
     if (isTaskActive("Application Review"))
     {
         if (isTaskStatus("Application Review", "Awaiting Client Reply")) 
@@ -69,4 +124,16 @@ if (publicUser)
 
     
 }
+
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
 
