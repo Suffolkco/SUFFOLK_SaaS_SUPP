@@ -2,50 +2,7 @@
 var showMessage = true;
 var showDebug = true;
 var emailText = "";
-
-// EHIMS-4832: Resubmission after user already submitted.    
-if (isTaskActive("Plans Coordination") || 
-getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process")
-{
-    // 1. Set a flag
-    editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-
-        
-    // 2. Send email to Record Assignee                       
-    var cdScriptObjResult = aa.cap.getCapDetail(capId);
-    if (!cdScriptObjResult.getSuccess())
-        { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
-
-    var cdScriptObj = cdScriptObjResult.getOutput();
-
-    if (!cdScriptObj)
-        { logDebug("**ERROR: No cap detail script object") ; }
-
-    cd = cdScriptObj.getCapDetailModel();
-
-    // Record Assigned to
-    var assignedUserid = cd.getAsgnStaff();
-    if (assignedUserid !=  null)
-    {
-        iNameResult = aa.person.getUser(assignedUserid)
-
-        if(iNameResult.getSuccess())
-        {
-            assignedUser = iNameResult.getOutput();                   
-            var emailParams = aa.util.newHashtable();
-            var reportFile = new Array();
-            getRecordParams4Notification(emailParams);   
-            addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
-            addParameter(emailParams, "$$altID$$", capId.getCustomID());
-            if (assignedUser.getEmail() != null)
-            {
-                sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
-                logDebug("Send notification." + isTaskActive("Plans Coordination") + "," + getAppStatus());
-            }                    
-        }
-    }      
-
-}
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
 if (publicUser)
 { 
@@ -72,11 +29,56 @@ if (publicUser)
 
     var appStatus = getAppStatus(capId);
     
+     
+    // EHIMS-4832: Resubmission after user already submitted.    
+    if (isTaskActive("Plans Coordination") || 
+    appStatus == "Resubmitted" 
+    || appStatus == "Review in Process")
+    {
+        // 1. Set a flag
+        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+            
+        // 2. Send email to Record Assignee                       
+        var cdScriptObjResult = aa.cap.getCapDetail(capId);
+        if (!cdScriptObjResult.getSuccess())
+            { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+
+        var cdScriptObj = cdScriptObjResult.getOutput();
+
+        if (!cdScriptObj)
+            { logDebug("**ERROR: No cap detail script object") ; }
+
+        cd = cdScriptObj.getCapDetailModel();
+
+        // Record Assigned to
+        var assignedUserid = cd.getAsgnStaff();
+        if (assignedUserid !=  null)
+        {
+            iNameResult = aa.person.getUser(assignedUserid)
+
+            if(iNameResult.getSuccess())
+            {
+                assignedUser = iNameResult.getOutput();                   
+                var emailParams = aa.util.newHashtable();
+                var reportFile = new Array();
+                getRecordParams4Notification(emailParams);   
+                addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                if (assignedUser.getEmail() != null)
+                {
+                    sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+                    logDebug("Send notification." + isTaskActive("Plans Coordination") + "," + getAppStatus());
+                }                    
+            }
+        }      
+
+    }
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - DEQ WWM", emailText);
     // Only if the application has been reviewed
     if(appStatus != "Received")
     {
         updateAppStatus("Resubmitted");
-    }
+    }   
 }
 
 
