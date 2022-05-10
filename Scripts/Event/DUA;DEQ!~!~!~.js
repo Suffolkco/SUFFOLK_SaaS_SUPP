@@ -1,6 +1,6 @@
 //DUA;DEQ!~!~!~!
-//var showMessage = true;
-//var showDebug = true;
+var showMessage = true;
+var showDebug = true;
 var emailText = "";
 
 var skip = false;
@@ -33,14 +33,12 @@ if (!skip)
         }
     }
 
-
-if (publicUser)
-{
+    // Testing
      // EHIMS-4832: Resubmission after user already submitted.
-     if (publicUser && 
-        (itemCapType == "DEQ/WWM/Residence/Application" || 
-        itemCapType == "DEQ/WWM/Subdivision/Application" ||        
-        itemCapType == "DEQ/WWM/Commercial/Application"))
+     //if (publicUser && 
+     //   (itemCapType == "DEQ/WWM/Residence/Application" || 
+     //   itemCapType == "DEQ/WWM/Subdivision/Application" ||        
+     //   itemCapType == "DEQ/WWM/Commercial/Application"))
     {
         if (isTaskActive("Plans Coordination") || 
         getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
@@ -77,11 +75,17 @@ if (publicUser)
                     if (assignedUser.getEmail() != null)
                     {
                         sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+                        logDebug("Email Sent here***************");
+                        logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
                     }                    
                 }
             }             
         }
     }
+
+if (publicUser)
+{
+    
 
     if (isTaskActive("Application Review"))
     {
@@ -120,4 +124,16 @@ if (publicUser)
 
     
 }
+
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
 
