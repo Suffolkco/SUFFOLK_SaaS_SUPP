@@ -33,15 +33,17 @@ if (!skip)
         }
     }
 
-    // Testing
+
+if (publicUser)
+{    
+   
      // EHIMS-4832: Resubmission after user already submitted.
      if (publicUser && 
         (itemCapType == "DEQ/WWM/Residence/Application" || 
         itemCapType == "DEQ/WWM/Subdivision/Application" ||        
         itemCapType == "DEQ/WWM/Commercial/Application"))
     {
-        if (isTaskActive("Plans Coordination") || 
-        getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" )
+        if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
         {
             // 1. Set a flag
             editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
@@ -82,10 +84,6 @@ if (!skip)
             }             
         }
     }
-
-if (publicUser)
-{
-    
 
     if (isTaskActive("Application Review"))
     {
