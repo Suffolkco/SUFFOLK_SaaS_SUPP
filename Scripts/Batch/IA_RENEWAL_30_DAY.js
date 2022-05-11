@@ -163,7 +163,7 @@ try
                         {
                             lpIASPBusType = capLPs[l].getBusinessName();
                             logDebug("business name = " + lpIASPBusType)
-                            lpIASPFirstName = capLPs[l].getLicenseProfessionalModel().getContactFirstName();
+                            lpIASPFirstName = capLPs[l].getLicenseProfessionalModel().getContactFirstName(); 
                             logDebug("first name = " + lpIASPFirstName);
                             lpIASPLastName = capLPs[l].getLicenseProfessionalModel().getContactLastName();
                             logDebug("last name = " + lpIASPLastName);
