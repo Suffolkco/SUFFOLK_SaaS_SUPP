@@ -120,6 +120,17 @@ try
                     var licProfResult = aa.licenseScript.getLicenseProf(capId);
                     var capLPs = licProfResult.getOutput();
                     logDebug("capLps = " + capLPs)
+                    var lpIAInstBusType = "";
+                    var lpIAInstFirstName = "";
+                    var lpIAInstLastName = "";
+                    var lpIAInstEmail = "";
+                    var lpIAInstPhone = "";
+
+                    var lpIASPBusType = "";
+                    var lpIASPFirstName = "";
+                    var lpIASPLastName = "";
+                    var lpIASPEmail = "";
+                    var lpIASPPhone = "";
                     for (l in capLPs)
                     {
                         if (capLPs[l].getLicenseType() == "IA Installer")
@@ -160,7 +171,7 @@ try
                     addParameter(params, "$$Email$$", lpIASPEmail);
                     addParameter(params, "$$Phone$$", lpIASPPhone);
                     addParameter(params, "$$PIN$$", pin);
-                    sendNotification("noreplyehims@suffolkcountyny.gov", conEmail, lpIASPEmail, "IARenewal30Days", params, null);
+                    sendNotification("noreplyehims@suffolkcountyny.gov", conEmail, lpIASPEmail, "IARenewal60Days", params, null);
                 }
             }
         }

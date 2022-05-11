@@ -78,7 +78,7 @@ try {
 
         for (var j in recArray)
         {
-            var conEmail = "";
+            var conEmail = [];
             capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput(); // reload since it's 	capId = aa.cap.getCapID();
             capIDString = capId.getCustomID();
             cap = aa.cap.getCap(capId).getOutput();
@@ -92,12 +92,13 @@ try {
                 {
                 
                 var dateDiffernce = parseFloat(dateDifference(todDateCon, expDateCon));
+                logDebug("dateDifference is: " + dateDiffernce);
                 } 
 
                 
 
                 // Due today	
-                if (expDateCon != null &&dateDiffernce == 0)                             
+                if (expDateCon != null && dateDiffernce == 0)                             
                 {
                     logDebug("Record: " + capId.getCustomID() + " Status: " + appStatus);
                     logDebug("ExpDateCon = " + expDateCon);
@@ -111,12 +112,19 @@ try {
                                     for(thisContact in contactArray) {			
                                         if((contactArray[thisContact].getPeople().contactType).toUpperCase() == "PROPERTY OWNER")
                                         {
+                                            if (contactArray[thisContact].getPeople().getAuditStatus() == 'A')
+                                            {
+                                                conEmail.push(contactArray[thisContact].getPeople().email);
+                                            }
                                             //var reportParams = aa.util.newHashtable();
                                            // var reportFile = new Array();
                                             var itemCap = aa.cap.getCap(capId).getOutput();
                                             appTypeResult = itemCap.getCapType();
                                             appTypeString = appTypeResult.toString(); 
                                             appTypeArray = appTypeString.split("/");
+                                        }
+                                    }
+                                }
                                                    
                                                 // reportParams.put("RECORD_ID", capId.getCustomID());
                                         
@@ -129,45 +137,95 @@ try {
                                                 var licProfResult = aa.licenseScript.getLicenseProf(capId);
                                                 var capLPs = licProfResult.getOutput();
                                                 logDebug ("capLps = " + capLPs)
-                                                for (l in capLPs)
-                                                {
-                                                    if (capLPs[l].getLicenseType() == "IA Installer")
-                                                    
-                                                {
-                                                    lpBusType = capLPs[l].getBusinessName();
-                                                    logDebug("business name = " + lpBusType)
-                                                    lpFirstName = capLPs[l].getLicenseProfessionalModel().getContactFirstName();
-                                                    logDebug("first name = " + lpFirstName);
-                                                    lpLastName = capLPs[l].getLicenseProfessionalModel().getContactLastName();
-                                                    logDebug("last name = " + lpLastName);
-                                                    lpemail = capLPs[l].getLicenseProfessionalModel().getEmail().toString();
-                                                    logDebug("email = " + lpemail);
-                                                    lpPhone = capLPs[l].getLicenseProfessionalModel().getPhone1();
-                                                    logDebug ("phone = " + lpPhone);
-                                                }
-                                                }    
+                    var lpIAInstBusType = "";
+                    var lpIAInstFirstName = "";
+                    var lpIAInstLastName = "";
+                    var lpIAInstEmail = "";
+                    var lpIAInstPhone = "";
 
-                                            var params = aa.util.newHashtable(); 
-                                            var PropertyOwnerEmail = contactArray[thisContact].getPeople().email;
+                    var lpIASPBusType = "";
+                    var lpIASPFirstName = "";
+                    var lpIASPLastName = "";
+                    var lpIASPEmail = "";
+                    var lpIASPPhone = "";
+                                            for (l in capLPs)
+                                            {
+                                                if (capLPs[l].getLicenseType() == "IA Installer")
+                                                {
+                                                    if (capLPs[l].getBusinessName() != null)
+                                                    {
+                                                    lpIAInstBusType = capLPs[l].getBusinessName();
+                                                    logDebug("business name = " + lpIAInstBusType)
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getContactFirstName() != null)
+                                                    {
+                                                    lpIAInstFirstName = capLPs[l].getLicenseProfessionalModel().getContactFirstName();
+                                                    logDebug("first name = " + lpIAInstFirstName);
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getContactLastName() != null)
+                                                {
+                                                    lpIAInstLastName = capLPs[l].getLicenseProfessionalModel().getContactLastName();
+                                                    logDebug("last name = " + lpIAInstLastName);
+                                                }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getEmail() != null)
+                                                    {
+                                                    lpIAInstEmail = capLPs[l].getLicenseProfessionalModel().getEmail().toString();
+                                                    logDebug("email = " + lpIAInstEmail);
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getPhone1() != null)
+                                                    {
+                                                    lpIAInstPhone = capLPs[l].getLicenseProfessionalModel().getPhone1();
+                                                    logDebug("phone = " + lpIAInstPhone);
+                                                    }
+                                                }
+                                                if (capLPs[l].getLicenseType() == "IA Service Provider")
+                                                {
+                                                    if (capLPs[l].getBusinessName() != null)
+                                                    {
+                                                    lpIASPBusType = capLPs[l].getBusinessName();
+                                                    logDebug("business name = " + lpIASPBusType)
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getContactFirstName() != null)
+                                                    {
+                                                    lpIASPFirstName = capLPs[l].getLicenseProfessionalModel().getContactFirstName();
+                                                    logDebug("first name = " + lpIASPFirstName);
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getContactLastName() != null)
+                                                    {
+                                                    lpIASPLastName = capLPs[l].getLicenseProfessionalModel().getContactLastName();
+                                                    logDebug("last name = " + lpIASPLastName);
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getEmail() != null)
+                                                    {
+                                                    lpIASPEmail = capLPs[l].getLicenseProfessionalModel().getEmail().toString();
+                                                    logDebug("email = " + lpIASPEmail);
+                                                    }
+                                                    if (capLPs[l].getLicenseProfessionalModel().getPhone1() != null)
+                                                    {
+                                                    lpIASPPhone = capLPs[l].getLicenseProfessionalModel().getPhone1();
+                                                    logDebug("phone = " + lpIASPPhone);
+                                                    }
+                                                }
+                                            }
+
+                                            var params = aa.util.newHashtable();
                                             var addrResult = getAddressInALine(capId);
                                             addParameter(params, "$$altId$$", capId.getCustomID());
                                             addParameter(params, "$$ADDRESS$$", addrResult);
-                                            addParameter(params, "$$BusinessName$$", lpBusType);
-                                            addParameter(params, "$$FirstName$$", lpFirstName);
-                                            addParameter(params, "$$LastName$$", lpLastName);
-                                            addParameter(params, "$$Email$$", lpemail);
-                                            addParameter(params, "$$Phone$$", lpPhone);
+                                            addParameter(params, "$$BusinessName$$", lpIASPBusType);
+                                            addParameter(params, "$$FirstName$$", lpIASPFirstName);
+                                            addParameter(params, "$$LastName$$", lpIASPLastName);
+                                            addParameter(params, "$$Email$$", lpIASPEmail);
+                                            addParameter(params, "$$Phone$$", lpIASPPhone);
                                             addParameter(params, "$$PIN$$", pin);
-                                            sendNotification("noreplyehims@suffolkcountyny.gov",PropertyOwnerEmail,"","IARENEWALEXPIRED",params,null);
+                                            sendNotification("noreplyehims@suffolkcountyny.gov", conEmail, lpIASPEmail, "IARENEWALEXPIRED", params, null);
                                         }
                             }
                         }
 
                 }       
             }
-        }
-    }
-} catch (err) {
+         catch (err) {
     logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
 }
 logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
