@@ -184,7 +184,7 @@ try
                     addParameter(params, "$$Email$$", lpIASPEmail);
                     addParameter(params, "$$Phone$$", lpIASPPhone);
                     addParameter(params, "$$PIN$$", pin);
-                    sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, lpIAInstEmail, "IARenewal30Days", params, null);
+                    sendNotification("noreplyehims@suffolkcountyny.gov", PropertyOwnerEmail, lpIASPEmail, "IARenewal30Days", params, null);
                 }
             }
         }
