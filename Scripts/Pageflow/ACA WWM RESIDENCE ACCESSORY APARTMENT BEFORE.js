@@ -18,8 +18,8 @@
 |     will no longer be considered a "Master" script and will not be supported in future releases.  If
 |     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = false; 
-var showDebug = false;							// Set to true to see debug messages in popup window
+var showMessage = true; 
+var showDebug = true;							// Set to true to see debug messages in popup window
 var preExecute = "PreExecuteForBeforeEvents"
 //var controlString = "";    
 var documentOnly = false;                                                               
