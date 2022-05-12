@@ -215,14 +215,23 @@ try
         }
 	}  
 	
+	borCheck = determineACADocumentAttached("Board of Review Application");
+
 	if (bor == "Yes")
-	{		 
-		borCheck = determineACADocumentAttached("Board of Review Application");
+	{	
 		if (!borCheck)
 		{
 			cancel = true;
 			showMessage = true;
 			comment("Section 2 indicates you're applying for a Board of Review hearing and a BOR Application is required - upload from WWM-061.");
+		}
+	}
+	else
+	{
+		if (borCheck)
+		{
+			showMessage = true;			
+			comment("A BOR application was attached; however, previous page(s) indicate that you are not applying for a BOR hearing at this time - your BOR application will not be processed unless you indicate on previous page(s) that you are applying for a BOR hearing.");
 		}
 	}
 

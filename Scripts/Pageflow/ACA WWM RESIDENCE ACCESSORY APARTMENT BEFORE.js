@@ -184,9 +184,9 @@ if(accApartment =="CHECKED")
             comment("Please submit completed form WWM-105 with the application.");
     }
 }
+form = determineACADocumentAttached("Board of Review Application");
 if (bor == "Yes")
-{
-    form = determineACADocumentAttached("Board of Review Application");
+{    
     if (!form)
 	{
             cancel = true;
@@ -194,7 +194,14 @@ if (bor == "Yes")
             comment("Section 2 indicates you're applying for a Board of Review hearing and a BOR Application is required - upload from WWM-061.");
     }
 }
-
+else
+{
+    if (borCheck)
+    {
+        showMessage = true;			
+        comment("A BOR application was attached; however, previous page(s) indicate that you are not applying for a BOR hearing at this time - your BOR application will not be processed unless you indicate on previous page(s) that you are applying for a BOR hearing.");
+    }
+}
 
 try
 {
