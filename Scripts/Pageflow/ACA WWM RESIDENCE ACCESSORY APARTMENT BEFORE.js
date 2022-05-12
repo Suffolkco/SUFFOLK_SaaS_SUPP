@@ -1,4 +1,3 @@
-
 /*------------------------------------------------------------------------------------------------------/
 | Program : ACA_Before_Sample_V1.6.js
 | Event   : ACA_Before
@@ -18,8 +17,8 @@
 |     will no longer be considered a "Master" script and will not be supported in future releases.  If
 |     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = true; 
-var showDebug = true;							// Set to true to see debug messages in popup window
+var showMessage = false; 
+var showDebug = false;							// Set to true to see debug messages in popup window
 var preExecute = "PreExecuteForBeforeEvents"
 //var controlString = "";    
 var documentOnly = false;                                                               
@@ -130,10 +129,10 @@ if (capDetailObjResult.getSuccess())
 
 var AInfo = new Array();
 loadAppSpecific4ACA(AInfo);                                                                              
-loadTaskSpecific(AInfo);                                                                                          
-loadParcelAttributes(AInfo);                                                                                 
-loadASITables4ACA();
-
+//loadTaskSpecific(AInfo);                                                                                          
+//loadParcelAttributes(AInfo);                                                                                 
+//loadASITables4ACA();
+/*
 logDebug("<B>EMSE Script Results for " + capIDString + "</B>");
 logDebug("capId = " + capId.getClass());
 logDebug("cap = " + cap.getClass());
@@ -153,7 +152,7 @@ logDebug("feeFactor = " + feeFactor);
 logDebug("houseCount = " + houseCount);
 logDebug("feesInvoicedTotal = " + feesInvoicedTotal);
 logDebug("balanceDue = " + balanceDue);
-
+*/
 /*------------------------------------------------------------------------------------------------------/
 | BEGIN Event Specific Variables
 /------------------------------------------------------------------------------------------------------*/
@@ -171,39 +170,22 @@ logGlobals(AInfo);
 /-----------------------------------------------------------------------------------------------------*/
 
 var accApartment = AInfo["Accessory Apartment"];
-var bor = AInfo["Are you applying for a Board of Review (BOR) hearing at this time? If yes, submit form WWM-061"]; 
 var form = false;
+
+if(accApartment =="CHECKED")
+{
+    form = determineACADocumentAttached("Accessory Apartment Form");
+    if (!form)
+	{
+            cancel = true;
+            showMessage = true;
+            comment("Please submit completed form WWM-105 with the application.");
+    }
+}
+
+
 try
 {
-    if(accApartment =="CHECKED")
-    {
-        form = determineACADocumentAttached("Accessory Apartment Form");
-        if (!form)
-        {
-                cancel = true;
-                showMessage = true;
-                comment("Please submit completed form WWM-105 with the application.");
-        }
-    }
-    form = determineACADocumentAttached("Board of Review Application");
-    if (bor == "Yes")
-    {    
-        if (!form)
-        {
-                cancel = true;
-                showMessage = true;
-                comment("Section 2 indicates you're applying for a Board of Review hearing and a BOR Application is required - upload from WWM-061.");
-        }
-    }
-    else
-    {
-        if (borCheck)
-        {
-            showMessage = true;			
-            comment("A BOR application was attached; however, previous page(s) indicate that you are not applying for a BOR hearing at this time - your BOR application will not be processed unless you indicate on previous page(s) that you are applying for a BOR hearing.");
-        }
-    }
-
 
     var conCheck = false;
     var servCheck = false;
