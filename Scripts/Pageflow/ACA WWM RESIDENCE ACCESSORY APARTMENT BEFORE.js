@@ -221,10 +221,7 @@ try
     }  
     
     var bor = AInfo["Are you applying for a Board of Review (BOR) hearing at this time? If yes, submit form WWM-061"];  
-    var form = determineACADocumentAttached("Board of Review Application");  
-    cancel = true;
-    showMessage = true;
-    comment("bor:" + bor + ", form: " + form);
+    var form = determineACADocumentAttached("Board of Review Application");      
     if (bor == 'Yes')
     {
         if (!form)
