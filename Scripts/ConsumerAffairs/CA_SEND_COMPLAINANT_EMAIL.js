@@ -1,6 +1,7 @@
 // Send email notification to Complainant 
 try{
-
+showDebug = true;
+var emailText = ""
 	var emailParams = aa.util.newHashtable();
 	var reportFile = new Array();
 		
@@ -38,13 +39,27 @@ try{
 		addParameter(emailParams, "$$zip$$", vZip);
 		addParameter(emailParams, "$$date$$", todayDate);
 
-		sendNotification("", email, "", "DCA_COMPLAINANTNOTIFICATION", emailParams, reportFile);
-
+		var success = sendNotification("", email, "", "DCA_COMPLAINANTNOTIFICATION", emailParams, reportFile);	
+		logDebug("success:" + success + ", to: " + email);
+		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "CA_SEND_COMPOAINANT_EMAIL", emailText);
     }
 	
 }catch(err){
 	logDebug("**WARN: Error in ASA updating short notes and address -  " + err.message);
 }
+
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
+
+
 function getContactInfo(cType, capId) {
 	var returnArray = new Array();
 	var haveCType = false;
