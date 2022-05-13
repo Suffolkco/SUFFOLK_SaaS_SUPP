@@ -231,7 +231,7 @@ try
             comment("Section 2 indicates you're applying for a Board of Review hearing and a BOR Application is required - upload from WWM-061.");
         }
     }
-    else
+    else if (bor == 'No')
     {
         if (form)
         {            
