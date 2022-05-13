@@ -106,7 +106,18 @@ if (publicUser)
                     // If BOR fee does not exist but BOR document has been attached, we need to add/invoice fee.
                     if (!feeExists("BOR"))
                     {
-                        addFee("COM-BOR", "DEQ_OSFR", "FINAL", 1, "Y");
+                        if (itemCapType == "DEQ/WWM/Residence/Application")
+                        {
+                            addFee("COM-BOR", "DEQ_SFR", "FINAL", 1, "Y");
+                        }  
+                        else if (itemCapType == "DEQ/WWM/Subdivision/Application")
+                        {
+                            addFee("COM-BOR", "DEQ_SUB", "FINAL", 1, "Y");
+                        }
+                        else if (itemCapType == "DEQ/WWM/Commercial/Application")
+                        {
+                            addFee("COM-BOR", "DEQ_OSFR", "FINAL", 1, "Y");
+                        }
                     }
                     
                 }
