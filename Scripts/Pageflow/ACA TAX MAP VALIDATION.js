@@ -173,6 +173,7 @@ logGlobals(AInfo);
 
 try
 {
+	var emailText ="";
 	var parcelObj = cap.getParcelModel();
 	if (!parcelObj)
 	{ logDebug("No parcel to get attributes"); 
@@ -190,6 +191,8 @@ try
 			
 		}*/
 		var parcelNo = parcelObj.getParcelNumber();
+		logDebug("parcelNo:" + parcelNo);
+		
 		if (parcelNo != null)
 		{
 			logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());			
@@ -211,6 +214,7 @@ try
 		}
 	}
 	logDebug("Debug info: " + (debug.indexOf("**ERROR")));
+	aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "ACA TAX MAP VALIDATION", emailText);
 }
 catch (ex)
 {
