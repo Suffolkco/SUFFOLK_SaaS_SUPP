@@ -108,18 +108,18 @@ if (publicUser)
                     {
                         if (itemCapType == "DEQ/WWM/Residence/Application")
                         {
-                            result = addFee("COM-BOR", "DEQ_SFR", "FINAL", 1, "Y");
+                            result = addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y");
                             logDebug("Add fee: DEQ_SFR" +  result);
                         }  
                         else if (itemCapType == "DEQ/WWM/Subdivision/Application")
                         {
-                            addFee("COM-BOR", "DEQ_SUB", "FINAL", 1, "Y");
+                            addFee("BOR", "DEQ_SUB", "FINAL", 1, "Y");
                             logDebug("Add fee: DEQ_SUB" +  result);
                         }
                         else if (itemCapType == "DEQ/WWM/Commercial/Application")
                         {
-                            addFee("COM-BOR", "DEQ_SFR", "FINAL", 1, "Y");
-                            logDebug("Add fee: DEQ_SFR" +  result);
+                            addFee("BOR", "DEQ_OSFR", "FINAL", 1, "Y");
+                            logDebug("Add fee: DEQ_OSFR" +  result);
                         }
                     }
                     
