@@ -181,7 +181,7 @@ try
     var appCheck = determineACADocumentAttached("Application Checklist");
 	var seaCheck = determineACADocumentAttached("Short Environmental Assessment Form");
 	var bor = AInfo["Are you applying for a Board of Review (BOR) hearing at this time? If yes, submit form WWM-061"];
-	var borCheck = false;
+	var borCheck = 	determineACADocumentAttached("Board of Review Application");
 
 	
     if(!mapCheck || !siteCheck || !certCheck || !appCheck || !seaCheck)
@@ -221,7 +221,7 @@ try
             comment("Short Environmental Assessment Form");
         }
 	}   
-	borCheck = determineACADocumentAttached("Board of Review Application");
+
 	if (bor == "Yes")
 	{		 	
 		if (!borCheck)
@@ -234,7 +234,7 @@ try
 	else
 	{
 		if (borCheck)
-		{
+		{		
 			showMessage = true;			
 			comment("A BOR application was attached; however, previous page(s) indicate that you are not applying for a BOR hearing at this time - your BOR application will not be processed unless you indicate on previous page(s) that you are applying for a BOR hearing.");
 		}
