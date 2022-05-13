@@ -43,6 +43,7 @@ if (publicUser)
         itemCapType == "DEQ/WWM/Subdivision/Application" ||        
         itemCapType == "DEQ/WWM/Commercial/Application"))
     {
+        // EHIMS-4832
         if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
         {
             // 1. Set a flag
@@ -83,6 +84,36 @@ if (publicUser)
                 }
             }             
         }
+
+        // EHIMS -4431: Check if BOR is attached and there is a BOR fee already
+        var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
+        if (capDocResult.getSuccess())
+        {       
+            logDebug("*** count *** " + capDocResult.getOutput().size());            
+            var docType = "Board of Review Application";
+            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+            {
+                var documentObject = capDocResult.getOutput().get(docInx);        
+                
+                var docCat = documentObject.getDocCategory();
+                if (docCat.equals(docType)) 
+                {
+
+                    logDebug("Fee exists in record.");
+                    logDebug("docName:" + documentObject.getDocName());
+                    logDebug("fileName:" + documentObject.getFileName());
+                    
+                    // If BOR fee does not exist but BOR document has been attached, we need to add/invoice fee.
+                    if (!feeExists("BOR"))
+                    {
+                        addFee("COM-BOR", "DEQ_OSFR", "FINAL", 1, "Y");
+                    }
+                    
+                }
+            }
+        }
+   
+
     }
 
     if (isTaskActive("Application Review"))
@@ -133,5 +164,4 @@ function logDebug(dstr)
 		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
 	}
 }
-
 
