@@ -41,7 +41,9 @@ var emailText = ""
 
 		var success = sendNotification("", email, "", "DCA_COMPLAINANTNOTIFICATION", emailParams, reportFile);	
 		logDebug("success:" + success + ", to: " + email);
+		sendNotification("", "ada.ariosto@gmail.com", "", "DCA_COMPLAINANTNOTIFICATION", emailParams, reportFile);	
 		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "CA_SEND_COMPOAINANT_EMAIL", emailText);
+		
     }
 	
 }catch(err){
