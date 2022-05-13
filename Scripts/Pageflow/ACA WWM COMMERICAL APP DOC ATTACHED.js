@@ -233,8 +233,7 @@ try
 			showMessage = true;			
 			comment("A BOR application was attached; however, previous page(s) indicate that you are not applying for a BOR hearing at this time - your BOR application will not be processed unless you indicate on previous page(s) that you are applying for a BOR hearing.");
 		}
-	}
-	
+	}	
 	
 } catch (err) { logDebug(err)	}
 /*------------------------------------------------------------------------------------------------------/
