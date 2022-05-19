@@ -1,4 +1,7 @@
-var showDebug = false;
+if (currentUserID == "RLITTLEFIELD")
+{
+	showDebug = true;
+}
 var parentId = getParent();
 var daysAdd;
 
@@ -67,6 +70,8 @@ editAppSpecificLOCAL("SYSTEM ACTIVITY.Use", use, parentCapId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
+	useAppSpecificGroupName = true;
+
 	var capContacts = aa.people.getCapContactByCapID(parentCapId);
     if (capContacts.getSuccess())
     {
@@ -118,8 +123,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 	// Service Date
     if(serviceReport == "CHECKED" || serviceReport == "YES")
     {
-        useAppSpecificGroupName = true;
-
         var nextServiceDate = new Date(getAppSpecific("SERVICE INFORMATION.Service Date"));
         nextServiceDate =  (nextServiceDate.getMonth() + 1) + "/" + (nextServiceDate.getDate()) + "/" + (nextServiceDate.getFullYear() + 1);
         logDebug("Next Service Date: " + nextServiceDate);
