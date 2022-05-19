@@ -63,7 +63,7 @@ for (var l in parentTable)
 }
 
 addASITable("LAB RESULTS", labResultsTable, parentCapId);
-editAppSpecific("Use", use, parentCapId);
+editAppSpecificLOCAL("SYSTEM ACTIVITY.Use", use, parentCapId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
@@ -92,21 +92,21 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 		if (conStartServ != 'null')
 		{
-			editAppSpecific("Contract Start Date", conStartServ, parentCapId); 
-    		editAppSpecific("Contract Term", contermServ, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", conStartServ, parentCapId); 
+    		editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Term", contermServ, parentCapId);
 			datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + (contractDate.getFullYear() + Number(contermServ));
-			editAppSpecific("Contract Expiration Date", datePlusCon, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", datePlusCon, parentCapId);
 		}
 
 		if (contractAnualCost != null)
 		{
-			editAppSpecific("Contract Annual Cost", contractAnualCost, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Annual Cost", contractAnualCost, parentCapId);
 		}
 
 		/* logDebug("conStartServ is: " + datePlusCon);
 		 //aa.print("datePlusCon is: " + datePlusCon);
 		 logDebug("Contract Expiration Date: " + datePlusCon);
-		 editAppSpecific("Contract Expiration Date", datePlusCon, parentId);
+		 editAppSpecificLOCAL("Contract Expiration Date", datePlusCon, parentId);
 					 	
 		 logDebug("Remove old one at parent id"); 
 		 copyLicenseProfessionalForLic(capId, parentId); 
@@ -116,18 +116,23 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 	}
 	// Service Date
-	if (serviceReport == "CHECKED")
-	{
-		var nextServiceDate = (serviceDate.getMonth() + 1) + "/" + serviceDate.getDate() + "/" + (serviceDate.getFullYear() + 1);
-		logDebug("Next Service Date: " + nextServiceDate);
-		editAppSpecific("Next Service Date", nextServiceDate, parentId);
+    if(serviceReport == "CHECKED" || serviceReport == "YES")
+    {
+        useAppSpecificGroupName = true;
+
+        var nextServiceDate = new Date(getAppSpecific("SERVICE INFORMATION.Service Date"));
+        nextServiceDate =  (nextServiceDate.getMonth() + 1) + "/" + (nextServiceDate.getDate()) + "/" + (nextServiceDate.getFullYear() + 1);
+        logDebug("Next Service Date: " + nextServiceDate);
+        editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate);
+        editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate);
+        editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentCapId);
 	}
 	// Sample Collection Date
 	if (sampleResults == "CHECKED")
 	{
 		var nextSampleDate = (sampleDate.getMonth() + 1) + "/" + sampleDate.getDate() + "/" + (sampleDate.getFullYear() + 3);
 		logDebug("Next Sample Date: " + nextSampleDate);
-		editAppSpecific("Next Sample Date", nextSampleDate, parentId);
+		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", nextSampleDate, parentId);
 	}
 
 }
@@ -424,3 +429,50 @@ function debugObject(object)
 	}
 	logDebug(output);
 } 
+function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+{
+    var itemCap = capId;
+    var itemGroup = null;
+    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
+
+    if (useAppSpecificGroupName)
+    {
+        if (itemName.indexOf(".") < 0) { logDebug("**WARNING: (editAppSpecificLOCAL) requires group name prefix when useAppSpecificGroupName is true"); return false }
+
+
+        itemGroup = itemName.substr(0, itemName.indexOf("."));
+        itemName = itemName.substr(itemName.indexOf(".") + 1);
+    }
+    // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
+    // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
+    // and replacing with the field name
+
+    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+    if (asiFieldResult.getSuccess())
+    {
+        var asiFieldArray = asiFieldResult.getOutput();
+        if (asiFieldArray.length > 0)
+        {
+            var asiField = asiFieldArray[0];
+            if (asiField)
+            {
+                var origAsiValue = asiField.getChecklistComment();
+                asiField.setChecklistComment(itemValue);
+
+                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                if (updateFieldResult.getSuccess())
+                {
+                    logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
+                    if (arguments.length < 3) //If no capId passed update the ASI Array
+                        AInfo[itemName] = itemValue;
+                }
+                else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
+            }
+            else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
+        }
+    }
+    else
+    {
+        logDebug("ERROR: (editAppSpecificLOCAL)" + asiFieldResult.getErrorMessage());
+    }
+}
