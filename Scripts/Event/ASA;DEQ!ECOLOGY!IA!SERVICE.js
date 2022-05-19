@@ -39,7 +39,7 @@
             editAppSpecific("Contract Expiration Date", dateContractExpDate);
         }
     }
-    var serviceReport = getAppSpecific("Service Report");
+    /*var serviceReport = getAppSpecific("Service Report");
     if(serviceReport == "CHECKED" || serviceReport == "YES")
     {
         useAppSpecificGroupName = true;
@@ -59,4 +59,4 @@
         var dateAddedSampleDueDate = (sampleDueDate.getMonth() + 1) + "/" + (sampleDueDate.getDate()) + "/" + (sampleDueDate.getFullYear() + 3);
         logDebug("Sample Due Date: " + dateAddedSampleDueDate);
         editAppSpecific("Next Sample Date", dateAddedSampleDueDate, parentId);
-    }
+    }*/
