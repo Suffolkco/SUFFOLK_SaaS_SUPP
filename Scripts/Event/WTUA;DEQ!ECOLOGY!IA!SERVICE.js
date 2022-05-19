@@ -66,20 +66,20 @@ for (var l in parentTable)
 	break;
 }
 
-addASITable("LAB RESULTS", labResultsTable, parentCapId);
-editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentCapId);
+addASITable("LAB RESULTS", labResultsTable, parentId);
+editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
 
-	var capContacts = aa.people.getCapContactByCapID(parentCapId);
+	var capContacts = aa.people.getCapContactByCapID(parentId);
 	if (capContacts.getSuccess())
 	{
 		capContacts = capContacts.getOutput();
 		logDebugLocal("capContacts: " + capContacts);
 		for (var yy in capContacts)
 			{
-				//aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+				//aa.people.removeCapContact(parentId, capContacts[yy].getPeople().getContactSeqNumber());
 
 				if (capContacts[yy].getPeople().getAuditStatus() == "A") {
 					capContacts[yy].getPeople().setAuditStatus("I"); 
@@ -98,17 +98,17 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 		if (conStartServ != 'null')
 		{
-			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", conStartServ, parentCapId); 
-			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Term", contermServ, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", conStartServ, parentId); 
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Term", contermServ, parentId);
 			datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + (contractDate.getFullYear() + Number(contermServ));
-			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", datePlusCon, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", datePlusCon, parentId);
 		}
 
 		logDebugLocal("contract annual cost is: " + contractAnualCost);
 
 		if (contractAnualCost != null)
 		{
-			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Annual Cost", contractAnualCost, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Annual Cost", contractAnualCost, parentId);
 		}
 
 		/* logDebug("conStartServ is: " + datePlusCon);
@@ -131,7 +131,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		logDebugLocal("Next Service Date: " + nextServiceDate);
 		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate);
 		editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate);
-		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentCapId);
+		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentId);
 	}
 	// Sample Collection Date
 	if (sampleResults == "CHECKED")
