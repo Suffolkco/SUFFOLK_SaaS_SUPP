@@ -66,11 +66,11 @@ for (var l in parentTable)
 }
 
 addASITable("LAB RESULTS", labResultsTable, parentCapId);
-editAppSpecificLOCAL("SYSTEM ACTIVITY.Use", use, parentCapId);
+useAppSpecificGroupName = true;
+editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentCapId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
-	useAppSpecificGroupName = true;
 
 	var capContacts = aa.people.getCapContactByCapID(parentCapId);
     if (capContacts.getSuccess())
