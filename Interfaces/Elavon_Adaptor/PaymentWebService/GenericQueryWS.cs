@@ -75,6 +75,7 @@ namespace InterfaceLib.Common.Service
             //log.Info(queryStringName.Replace("_", " ") + " " + msg.getValue("aa.success"))
             return sb.ToString();
         }
+
         public ReturnInfo QueryFromAA(Dictionary<string, string> map, string queryStringName, string sessionId)
         {
 
@@ -119,8 +120,7 @@ namespace InterfaceLib.Common.Service
 
             return rinfo;
         }
-
-
+        
         public ParameterModel[] PrepareParameters(Dictionary<string, string> parameters)
         {
             List<ParameterModel> result = new List<ParameterModel>();

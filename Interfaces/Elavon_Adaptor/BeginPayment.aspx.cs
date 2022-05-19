@@ -12,9 +12,7 @@ using Elavon_Adaptor.Connectivity;
 using Elavon_Adaptor.DataObjects;
 
 namespace Elavon_Adaptor
-{
-
- 
+{ 
     public partial class BeginPayment : System.Web.UI.Page {
 
         private static readonly log4net.ILog _logger = LogFactory.Instance.GetLogger(typeof(BeginPayment));
@@ -100,9 +98,21 @@ namespace Elavon_Adaptor
                 {
                     if (String.IsNullOrEmpty(conFee) || conFee == "0.00" || Double.Parse(conFee) == 0)
                     {
-                        Double calculatedConvFee = (Double.Parse(amount) * 0.0154) + 0.11;
+                        Double calculatedConvFee;
+
+                        if (payment_type == "CC")
+                        {
+                            // CC Fee calulation
+                            calculatedConvFee = (Double.Parse(amount) * 0.0154) + 0.11;                            
+                        }
+                        else
+                        {
+                            // ACH Fee calulation
+                            calculatedConvFee = 0.28;
+                        }
+
                         totalAmount = String.Format("{0:0.00}", Double.Parse(amount) + calculatedConvFee);
-                    }
+                    }                  
                     else
                     {
                         totalAmount = String.Format("{0:0.00}", Double.Parse(amount) + Double.Parse(conFee));
@@ -121,6 +131,7 @@ namespace Elavon_Adaptor
             //merchantResult.Result = "agency";
 
             merchantResult = AccelaRestHandler.GetMerchantDetails(transactionID);
+
             if (!merchantResult.Success)
             {
                 _logger.Debug($"Provided Transaction ID {transactionID} return error {merchantResult.Message} from the specified Accela environment.");

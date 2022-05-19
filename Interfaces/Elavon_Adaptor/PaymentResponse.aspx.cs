@@ -49,6 +49,7 @@ namespace Elavon_Adaptor  {
             _logger.DebugFormat("PaymentResponse - Query string is {0}", qString);
             string transactionID = ParameterHelper.GetParameterByKey("ssl_invoice_number");
             string convergeID = ParameterHelper.GetParameterByKey("ssl_txn_id");
+            string transType = ParameterHelper.GetParameterByKey("ssl_transaction_type");
 
              if (String.IsNullOrEmpty(qString)) {
                 _logger.Debug("Payment response message from Converge : The query string is null.");
@@ -59,7 +60,16 @@ namespace Elavon_Adaptor  {
             StringBuilder paramToACA;
             _logger.DebugFormat("Result {0}, result message {1}", result, resultMessage);
             if (result == "0") {
-                postBackData = postPayment(transactionID, PaymentConstant.PAY_METHOD_CREDIT_CARD, convergeID);
+
+                if (transType == "SALE")
+                {
+                    postBackData = postPayment(transactionID, PaymentConstant.PAY_METHOD_CREDIT_CARD, convergeID);
+                }
+                else
+                {
+                    postBackData = postPayment(transactionID, PaymentConstant.PAY_METHOD_CHECK, convergeID);
+                }
+                
                 string postbackResult = this.FormatPostbackData(postBackData, transactionID);
                 paramToACA = new StringBuilder();
                  paramToACA.AppendFormat("{0}={1}", PaymentConstant.RETURN_CODE, PaymentConstant.SUCCESS_CODE);
@@ -115,7 +125,7 @@ namespace Elavon_Adaptor  {
                 case "Credit Card":
                     paymentMethod = "Credit Card";
                     break; 
-                case "echeck" :
+                case "Check":
                     paymentMethod = "Check";
                     break;
                 default:
@@ -135,7 +145,10 @@ namespace Elavon_Adaptor  {
                 }
                 StringBuilder responseData = new StringBuilder();
                 responseData.AppendFormat("{0}={1}", PaymentConstant.TRANSACTION_ID, transactionID);
+
+
                 Double origAmt = (Double.Parse(amtPaid) - 0.11) / 1.0154;
+
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PAYMENT_AMOUNT, String.Format("{0:0.00}", origAmt));
                 //  if (ConfigurationManager.AppSettings["AddConvFee"].ToString() == "false")
                 //     responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE,"0.00");
@@ -158,9 +171,12 @@ namespace Elavon_Adaptor  {
             else {
                 _logger.Debug("Processing payment by check");
                 StringBuilder responseData = new StringBuilder();
+
+                Double origAmt = (Double.Parse(amtPaid) - 0.28);
+
                 responseData.AppendFormat("{0}={1}", PaymentConstant.TRANSACTION_ID, transactionID);
-                responseData.AppendFormat("&{0}={1}", PaymentConstant.PAYMENT_AMOUNT, amtPaid);
-                responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE, 0);
+                responseData.AppendFormat("&{0}={1}", PaymentConstant.PAYMENT_AMOUNT, String.Format("{0:0.00}", origAmt));
+                responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE, 0.28);
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_TYPE, paymentMethod);
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_ID, security_id);
                 _logger.DebugFormat("Posting payment of amount {0}, payment method {2}", amtPaid, paymentMethod);
