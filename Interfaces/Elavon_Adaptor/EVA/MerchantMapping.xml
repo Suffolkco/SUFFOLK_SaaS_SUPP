@@ -2,7 +2,7 @@
 <MerchantMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Adapter AdapterName="EVA">
     <!--<Merchant MerchantAccountName="agency"       MerchantID="007446"       UserID="webpage"     PIN="XCJN6N"></Merchant>-->
-    <Merchant MerchantAccountName="DEQ"       MerchantID="0022629"       UserID="apiuser"     PIN="DCIJASY9U481KJXGEZIG9EC4XQ6DFQZKU4NVLKT8QKWHA3OXDBE2W9KB3OXPJYUP"></Merchant>
-    <Merchant MerchantAccountName="CONSUMERAFFAIRS"       MerchantID="0022630"       UserID="apiuser"     PIN="1F3DOMBH1C0PA7DEQ1O0CV20FMTV6VV5UE5TRVTK53BY0OZKODEX024H1W8VH7MV"></Merchant>
+    <Merchant MerchantAccountName="DEQ"       MerchantID="0022542"       UserID="apiuser"     PIN="30SJMJVCRLLBY27RIS6KGM259A1QVPE0S9LKOB6SJOIW4I7A73F1CB1CBTAH8ADK"></Merchant>
+    <Merchant MerchantAccountName="CONSUMERAFFAIRS"       MerchantID="0022630"       UserID="apiuser167745"     PIN="A54J14S75VLXZC64ZS7JNPPO946H02SZDCLWYGP0W61IKOQQDLNIDX1KAA117K6J"></Merchant>
   </Adapter>
 </MerchantMapping>
