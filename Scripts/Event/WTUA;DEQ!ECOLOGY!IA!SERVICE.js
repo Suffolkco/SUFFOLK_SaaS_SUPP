@@ -4,31 +4,32 @@ if (currentUserID == "RLITTLEFIELD")
 }
 var parentId = getParent();
 var daysAdd;
+useAppSpecificGroupName = true;
 
-var conUpdate = getAppSpecific("Contract Update", capId);
-var serviceReport = getAppSpecific("Service Report", capId);
-var sampleResults = getAppSpecific("Sample Results", capId);
-var parConExp = getAppSpecific("Contract Expiration Date", parentId);
-var conStartServ = getAppSpecific("Contract Start Date", capId);
-var contermServ = getAppSpecific("Contract Term", capId);
+var conUpdate = getAppSpecific("SERVICE PERFORMED.Contract Update", capId);
+var serviceReport = getAppSpecific("SERVICE PERFORMED.Service Report", capId);
+var sampleResults = getAppSpecific("SERVICE PERFORMED.Sample Results", capId);
+var parConExp = getAppSpecific("CONTRACT INFORMATION.Contract Expiration Date", parentId);
+var conStartServ = getAppSpecific("CONTRACT INFORMATION.Contract Start Date", capId);
+var contermServ = getAppSpecific("CONTRACT INFORMATION.Contract Term", capId);
 var myCap = capId;
-var contractAnualCost = getAppSpecific("Contract Annual Cost", capId);
+var contractAnualCost = getAppSpecific("CONTRACT INFORMATION.Contract Annual Cost", capId);
 var myCustomCap = myCap.getCustomID();
-var use = getAppSpecific("Use", capId);
+var use = getAppSpecific("SYSTEM ACTIVITY.Use", capId);
 var serviceDate = new Date(AInfo["Service Date"]);
 var sampleDate = new Date(AInfo["Sample Collection Date"]); 
-var phase = getAppSpecific("Phase", capId);
-var process = getAppSpecific("Process", capId);
-var collection = getAppSpecific("Collection", capId);
-var collector = getAppSpecific("Collector", capId);
-var fieldId = getAppSpecific("Field ID", capId);
-var lab = getAppSpecific("Lab", capId);
+var phase = getAppSpecific("SCHEDULING INFORMATION.Phase", capId);
+var process = getAppSpecific("SCHEDULING INFORMATION.Process", capId);
+var collection = getAppSpecific("SCHEDULING INFORMATION.Collection", capId);
+var collector = getAppSpecific("SCHEDULING INFORMATION.Collector", capId);
+var fieldId = getAppSpecific("SCHEDULING INFORMATION.Field ID", capId);
+var lab = getAppSpecific("SCHEDULING INFORMATION.Lab", capId);
 
-logDebug("Actual parent ID: " + parentId);
-logDebug("wfTask: " + wfTask);
-logDebug("wfStatus: " + wfStatus);
+logDebugLocal("Actual parent ID: " + parentId);
+logDebugLocal("wfTask: " + wfTask);
+logDebugLocal("wfStatus: " + wfStatus);
 
-var collectionDate = getAppSpecific("Sample Collection Date", capId);
+var collectionDate = getAppSpecific("SERVICE INFORMATION.Sample Collection Date", capId);
 var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
 var labResultsTable = new Array();
 for (var l in parentTable)
@@ -49,9 +50,9 @@ for (var l in parentTable)
 	newRow["WW Temp"] = parentTable[l]["WW Temp"];
 	newRow["Air Temp"] = parentTable[l]["Air Temp"];
 	newRow["Process"] = parentTable[l]["Process"];
-    newRow["Collection"] = parentTable[l]["Collection"];
-    newRow["Lab"] = parentTable[l]["Lab"];
-    newRow["Comment"] = parentTable[l]["Comment"]
+	newRow["Collection"] = parentTable[l]["Collection"];
+	newRow["Lab"] = parentTable[l]["Lab"];
+	newRow["Comment"] = parentTable[l]["Comment"]
 	newRow["Status"] = wfStatus;
 	newRow["Sample Date"] = collectionDate;
 	newRow["Phase"] = phase;
@@ -66,31 +67,31 @@ for (var l in parentTable)
 }
 
 addASITable("LAB RESULTS", labResultsTable, parentCapId);
-useAppSpecificGroupName = true;
 editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentCapId);
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
 
 	var capContacts = aa.people.getCapContactByCapID(parentCapId);
-    if (capContacts.getSuccess())
-    {
-        capContacts = capContacts.getOutput();
-        logDebug("capContacts: " + capContacts);
-        for (var yy in capContacts)
-            {
-                //aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+	if (capContacts.getSuccess())
+	{
+		capContacts = capContacts.getOutput();
+		logDebugLocal("capContacts: " + capContacts);
+		for (var yy in capContacts)
+			{
+				//aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
 
-                if (capContacts[yy].getPeople().getAuditStatus() == "A") {
-                    capContacts[yy].getPeople().setAuditStatus("I"); 
-                    aa.people.editCapContact(capContacts[yy].getCapContactModel());
-                    logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
-                    logDebug("We Got in here");
-                }
-            }
-    }
+				if (capContacts[yy].getPeople().getAuditStatus() == "A") {
+					capContacts[yy].getPeople().setAuditStatus("I"); 
+					aa.people.editCapContact(capContacts[yy].getCapContactModel());
+					logDebugLocal("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
+					logDebugLocal("We Got in here");
+				}
+			}
+	}
 	if (conUpdate == "CHECKED")
 	{
+		logDebugLocal("conupdate is good");
 		var contractDate = new Date(conStartServ); 
 
 		var datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + contractDate.getFullYear();
@@ -98,10 +99,12 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		if (conStartServ != 'null')
 		{
 			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Start Date", conStartServ, parentCapId); 
-    		editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Term", contermServ, parentCapId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Term", contermServ, parentCapId);
 			datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + (contractDate.getFullYear() + Number(contermServ));
 			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", datePlusCon, parentCapId);
 		}
+
+		logDebugLocal("contract annual cost is: " + contractAnualCost);
 
 		if (contractAnualCost != null)
 		{
@@ -112,7 +115,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		 //aa.print("datePlusCon is: " + datePlusCon);
 		 logDebug("Contract Expiration Date: " + datePlusCon);
 		 editAppSpecificLOCAL("Contract Expiration Date", datePlusCon, parentId);
-					 	
+						 
 		 logDebug("Remove old one at parent id"); 
 		 copyLicenseProfessionalForLic(capId, parentId); 
 		 logDebug("Add new in parent");
@@ -121,20 +124,20 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 	}
 	// Service Date
-    if(serviceReport == "CHECKED" || serviceReport == "YES")
-    {
-        var nextServiceDate = new Date(getAppSpecific("SERVICE INFORMATION.Service Date"));
-        nextServiceDate =  (nextServiceDate.getMonth() + 1) + "/" + (nextServiceDate.getDate()) + "/" + (nextServiceDate.getFullYear() + 1);
-        logDebug("Next Service Date: " + nextServiceDate);
-        editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate);
-        editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate);
-        editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentCapId);
+	if(serviceReport == "CHECKED" || serviceReport == "YES")
+	{
+		var nextServiceDate = new Date(getAppSpecific("SERVICE INFORMATION.Service Date"));
+		nextServiceDate =  (nextServiceDate.getMonth() + 1) + "/" + (nextServiceDate.getDate()) + "/" + (nextServiceDate.getFullYear() + 1);
+		logDebugLocal("Next Service Date: " + nextServiceDate);
+		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate);
+		editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate);
+		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentCapId);
 	}
 	// Sample Collection Date
 	if (sampleResults == "CHECKED")
 	{
 		var nextSampleDate = (sampleDate.getMonth() + 1) + "/" + sampleDate.getDate() + "/" + (sampleDate.getFullYear() + 3);
-		logDebug("Next Sample Date: " + nextSampleDate);
+		logDebugLocal("Next Sample Date: " + nextSampleDate);
 		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", nextSampleDate, parentId);
 	}
 
@@ -434,48 +437,48 @@ function debugObject(object)
 } 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
-    var itemCap = capId;
-    var itemGroup = null;
-    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
+	var itemCap = capId;
+	var itemGroup = null;
+	if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
 
-    if (useAppSpecificGroupName)
-    {
-        if (itemName.indexOf(".") < 0) { logDebug("**WARNING: (editAppSpecificLOCAL) requires group name prefix when useAppSpecificGroupName is true"); return false }
+	if (useAppSpecificGroupName)
+	{
+		if (itemName.indexOf(".") < 0) { logDebug("**WARNING: (editAppSpecificLOCAL) requires group name prefix when useAppSpecificGroupName is true"); return false }
 
 
-        itemGroup = itemName.substr(0, itemName.indexOf("."));
-        itemName = itemName.substr(itemName.indexOf(".") + 1);
-    }
-    // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
-    // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
-    // and replacing with the field name
+		itemGroup = itemName.substr(0, itemName.indexOf("."));
+		itemName = itemName.substr(itemName.indexOf(".") + 1);
+	}
+	// change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
+	// to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
+	// and replacing with the field name
 
-    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
-    if (asiFieldResult.getSuccess())
-    {
-        var asiFieldArray = asiFieldResult.getOutput();
-        if (asiFieldArray.length > 0)
-        {
-            var asiField = asiFieldArray[0];
-            if (asiField)
-            {
-                var origAsiValue = asiField.getChecklistComment();
-                asiField.setChecklistComment(itemValue);
+	var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+	if (asiFieldResult.getSuccess())
+	{
+		var asiFieldArray = asiFieldResult.getOutput();
+		if (asiFieldArray.length > 0)
+		{
+			var asiField = asiFieldArray[0];
+			if (asiField)
+			{
+				var origAsiValue = asiField.getChecklistComment();
+				asiField.setChecklistComment(itemValue);
 
-                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
-                if (updateFieldResult.getSuccess())
-                {
-                    logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
-                    if (arguments.length < 3) //If no capId passed update the ASI Array
-                        AInfo[itemName] = itemValue;
-                }
-                else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
-            }
-            else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
-        }
-    }
-    else
-    {
-        logDebug("ERROR: (editAppSpecificLOCAL)" + asiFieldResult.getErrorMessage());
-    }
+				var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+				if (updateFieldResult.getSuccess())
+				{
+					logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
+					if (arguments.length < 3) //If no capId passed update the ASI Array
+						AInfo[itemName] = itemValue;
+				}
+				else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
+			}
+			else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
+		}
+	}
+	else
+	{
+		logDebug("ERROR: (editAppSpecificLOCAL)" + asiFieldResult.getErrorMessage());
+	}
 }
