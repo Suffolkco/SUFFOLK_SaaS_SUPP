@@ -129,8 +129,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		var nextServiceDate = new Date(getAppSpecific("SERVICE INFORMATION.Service Date"));
 		nextServiceDate =  (nextServiceDate.getMonth() + 1) + "/" + (nextServiceDate.getDate()) + "/" + (nextServiceDate.getFullYear() + 1);
 		logDebugLocal("Next Service Date: " + nextServiceDate);
-		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate);
-		editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate);
+		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, capId);
+		editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate, capId);
 		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentId);
 	}
 	// Sample Collection Date
@@ -435,50 +435,56 @@ function debugObject(object)
 	}
 	logDebug(output);
 } 
-function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+function editAppSpecificLOCAL(itemName,itemValue)  // optional: itemCap
 {
-	var itemCap = capId;
-	var itemGroup = null;
-	if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
-
-	if (useAppSpecificGroupName)
-	{
-		if (itemName.indexOf(".") < 0) { logDebug("**WARNING: (editAppSpecificLOCAL) requires group name prefix when useAppSpecificGroupName is true"); return false }
-
-
-		itemGroup = itemName.substr(0, itemName.indexOf("."));
-		itemName = itemName.substr(itemName.indexOf(".") + 1);
-	}
-	// change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
-	// to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
-	// and replacing with the field name
-
-	var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
-	if (asiFieldResult.getSuccess())
-	{
-		var asiFieldArray = asiFieldResult.getOutput();
-		if (asiFieldArray.length > 0)
-		{
-			var asiField = asiFieldArray[0];
-			if (asiField)
-			{
-				var origAsiValue = asiField.getChecklistComment();
-				asiField.setChecklistComment(itemValue);
-
-				var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
-				if (updateFieldResult.getSuccess())
-				{
-					logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
-					if (arguments.length < 3) //If no capId passed update the ASI Array
-						AInfo[itemName] = itemValue;
-				}
-				else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
-			}
-			else { logDebug("WARNING: (editAppSpecificLOCAL) " + itemName + " was not updated."); }
-		}
-	}
-	else
-	{
-		logDebug("ERROR: (editAppSpecificLOCAL)" + asiFieldResult.getErrorMessage());
-	}
+    var updated = false;
+    var i=0;
+    itemCap = capId;
+    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
+    if (useAppSpecificGroupName)
+    {
+        if (itemName.indexOf(".") < 0)
+            { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
+        var itemGroup = itemName.substr(0,itemName.indexOf("."));
+        var itemName = itemName.substr(itemName.indexOf(".")+1);
+    }
+    var appSpecInfoResult = aa.appSpecificInfo.getByCapID(itemCap);
+    if (appSpecInfoResult.getSuccess())
+    {
+        var appspecObj = appSpecInfoResult.getOutput();
+        if (itemName != "")
+        {
+            while (i < appspecObj.length && !updated)
+            {
+                if (appspecObj[i].getCheckboxDesc() == itemName && (!useAppSpecificGroupName || appspecObj[i].getCheckboxType() == itemGroup))
+                {
+                    appspecObj[i].setChecklistComment(itemValue);
+                    var actionResult = aa.appSpecificInfo.editAppSpecInfos(appspecObj);
+                    if (actionResult.getSuccess()) 
+                    {                           
+                        logDebug("app spec info item " + itemName + " has been given a value of " + itemValue);
+                    } 
+                    else 
+                    {
+                        logDebug("**ERROR: Setting the app spec info item " + itemName + " to " + itemValue + " .\nReason is: " +   actionResult.getErrorType() + ":" + actionResult.getErrorMessage());
+                    }
+                    updated = true;
+                    AInfo[itemName] = itemValue;  // Update array used by this script
+                }
+                i++;
+            } // while loop
+        } // item name blank
+    } // got app specific object    
+    else
+    { 
+        logDebug( "**ERROR: getting app specific info for Cap : " + appSpecInfoResult.getErrorMessage());
+    }
+}//End Function
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
 }
