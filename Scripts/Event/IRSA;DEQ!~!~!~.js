@@ -3,6 +3,7 @@
 var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
 var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
+var inspSchedDate = inspObj.getScheduledDate().getMonth() + "/" + inspObj.getScheduledDate().getDayOfMonth() + "/" + inspObj.getScheduledDate().getYear();
 
 if (insMonth.length == 1)
 {
@@ -402,7 +403,7 @@ if (appTypeArray[1] == "WWM")
                         copyAddress(capId, wwmIA);
                         copyParcel(capId, wwmIA);
                         copyDocumentsToCapID(capId, wwmIA);
-                        editAppSpecificLOCAL("Installation Date", insCon, wwmIA);
+                        editAppSpecificLOCAL("Installation Date", inspSchedDate, wwmIA);
                         editAppSpecificLOCAL("Manufacturer", iaManufacturer, wwmIA);
                         editAppSpecificLOCAL("Model", iaModel, wwmIA);
                         editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
