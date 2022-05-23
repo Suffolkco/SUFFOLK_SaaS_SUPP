@@ -386,7 +386,7 @@ if (appTypeArray[1] == "WWM")
                     if (iaNumber == null)
                     {
                         logDebug("Effluent Pump Pool = " + iaEffluentPumpPools);
-                        var desc = "Automated via:" + capIDString;
+                        var desc = "Installed: " + inspSchedDate;
                         var wwmIA = createChild('DEQ', 'Ecology', 'IA', 'Application', desc);
                         logDebug("wwmIA =" + wwmIA);
                         var iaCustom = wwmIA.getCustomID();
