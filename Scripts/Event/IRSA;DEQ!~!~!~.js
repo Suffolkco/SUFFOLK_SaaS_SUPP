@@ -433,7 +433,7 @@ if (appTypeArray[1] == "WWM")
                         editAppSpecificLOCAL("Next Service Date", insConServiceDate, wwmIA);
                         if (!matches(iaLeachOtherType, null, "", " ", undefined) && !matches(iaLeachProduct, null, "", " ", undefined))
                         {
-                            updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachOtherType + " " + iaLeachProduct), wwmIA;
+                            updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachOtherType + " " + iaLeachProduct, wwmIA);
                         }
                         else if (!matches(iaLeachPoolType, null, "", " ", undefined))
                         {
