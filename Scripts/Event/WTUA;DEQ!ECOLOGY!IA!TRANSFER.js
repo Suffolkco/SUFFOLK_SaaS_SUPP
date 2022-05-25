@@ -176,6 +176,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     contractStart = new Date(contractStart);
     var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
     editAppSpecific("Contract Expiration Date", newExpDate, parentCapId); 
+    updateShortNotes("Contract Expiration: " + newExpDate);
+
     }
 
     if (contractAnualCost != null)

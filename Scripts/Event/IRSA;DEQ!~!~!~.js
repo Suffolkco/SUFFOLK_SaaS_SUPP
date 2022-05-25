@@ -46,13 +46,17 @@ var test = inspType.toUpperCase();
 logDebug("The upper case is: " + test);
 var inspResultObj = aa.inspection.getInspections(capId);
 
-if (inspResultObj.getSuccess()) {
+if (inspResultObj.getSuccess())
+{
     var inspList = inspResultObj.getOutput();
-    if (inspList && inspList.length > 0) {
-        for (var xx in inspList) {
+    if (inspList && inspList.length > 0)
+    {
+        for (var xx in inspList)
+        {
             //  if (String(insp2Check).equals(inspList[xx].getInspectionType()) && inspList[xx].getInspection().getInspSequenceNumber() == inspSeqNum) {
-            if (inspList[xx].getInspection().getIdNumber() == inspId) {
-                if ((inspList[xx].getInspectionType().toUpperCase().contains("OPC NON-PBS") ||  inspList[xx].getInspectionType().toUpperCase().toUpperCase().contains("OPC PBS SITE")) && 
+            if (inspList[xx].getInspection().getIdNumber() == inspId)
+            {
+                if ((inspList[xx].getInspectionType().toUpperCase().contains("OPC NON-PBS") || inspList[xx].getInspectionType().toUpperCase().toUpperCase().contains("OPC PBS SITE")) &&
                     (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Fail"))
                 {
                     inspObj = inspList[xx];
@@ -65,79 +69,87 @@ if (inspResultObj.getSuccess()) {
         }
     }
 }
-if (!inspObj) {
+if (!inspObj)
+{
     logDebug("No inspection found to update");
 }
 else
 {
-inspModel = inspObj.getInspection();
-gsList = inspModel.getGuideSheets();
-if (gsList) {
-    gsArr = gsList.toArray();
-    for (gsi in gsArr) {
-        gs = gsArr[gsi];
-        gsItemList = gs.getItems();
-        if (gsItemList) {
-            gsItemArr = gsItemList.toArray();
-            for (gsii in gsItemArr) {
-                gsItem = gsItemArr[gsii];
-                logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
+    inspModel = inspObj.getInspection();
+    gsList = inspModel.getGuideSheets();
+    if (gsList)
+    {
+        gsArr = gsList.toArray();
+        for (gsi in gsArr)
+        {
+            gs = gsArr[gsi];
+            gsItemList = gs.getItems();
+            if (gsItemList)
+            {
+                gsItemArr = gsItemList.toArray();
+                for (gsii in gsItemArr)
+                {
+                    gsItem = gsItemArr[gsii];
+                    logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
 
-                if (gsItem.getGuideItemText().toUpperCase().contains("3 (UNREGISTERED TANK)")) {
-                                             
-                    logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
-                    logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
-                    logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
-                    logDebug("gguidesheetItemModel.getGuideItemComment(): " +  gsItem.getGuideItemComment());
-                    logDebug("gsItem.getGuideType(): " +  gsItem.getGuideType());
-
-                    if (gsItem.getGuideType() == "PBS Inspection Checklist" || gsItem.getGuideType() == "Non-PBS Inspection Checklist") 
+                    if (gsItem.getGuideItemText().toUpperCase().contains("3 (UNREGISTERED TANK)"))
                     {
-                        logDebug("Guide Type is: " +  gsItem.getGuideType());
-                        logDebug("ASI Group Name is: " +  gsItem.getGuideItemASIGroupName());
-                        
-                        if(gsItem.getGuideItemASIGroupName() == "PBS_040" ||  gsItem.getGuideItemASIGroupName() == "NONPBS_010")
+
+                        logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
+                        logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
+                        logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
+                        logDebug("gguidesheetItemModel.getGuideItemComment(): " + gsItem.getGuideItemComment());
+                        logDebug("gsItem.getGuideType(): " + gsItem.getGuideType());
+
+                        if (gsItem.getGuideType() == "PBS Inspection Checklist" || gsItem.getGuideType() == "Non-PBS Inspection Checklist") 
                         {
-                            var ASISubGroups = gsItem.getItemASISubgroupList();
+                            logDebug("Guide Type is: " + gsItem.getGuideType());
+                            logDebug("ASI Group Name is: " + gsItem.getGuideItemASIGroupName());
 
-                            logDebug("ASI subroups");
-
-                            if(ASISubGroups) 
+                            if (gsItem.getGuideItemASIGroupName() == "PBS_040" || gsItem.getGuideItemASIGroupName() == "NONPBS_010")
                             {
-                                logDebug("ASISubGroups.size(): " + ASISubGroups.size());
-                                for(var k = 0; k < ASISubGroups.size(); k++) 
+                                var ASISubGroups = gsItem.getItemASISubgroupList();
+
+                                logDebug("ASI subroups");
+
+                                if (ASISubGroups) 
                                 {
-                                    var ASISubGroup = ASISubGroups.get(k);
-                                    logDebug("ASISubGroup.getSubgroupCode():" + ASISubGroup.getSubgroupCode());
-
-                                    if(ASISubGroup && (ASISubGroup.getSubgroupCode() == "IS THE REGISTRATION INFORMA" ||
-                                    ASISubGroup.getSubgroupCode() == "IS THE PERMIT TO OPERATE CURRE")) 
+                                    logDebug("ASISubGroups.size(): " + ASISubGroups.size());
+                                    for (var k = 0; k < ASISubGroups.size(); k++) 
                                     {
-                                        var ASIModels =  ASISubGroup.getAsiList();
-                                        if(ASIModels) 
-                                        {
-                                            for( var m = 0; m < ASIModels.size(); m++) 
-                                            {
-                                                var ASIModel = ASIModels.get(m);
-                                                logDebug("ASIModel.getAsiName" + ASIModel.getAsiName() + "," + "ASI value: " + ASIModel.getAttributeValue());
-                                                
-                                                if(ASIModel && ASIModel.getAsiName() == "3") 
-                                                {
-                                                    logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                    asiValue = ASIModel.getAttributeValue();	
-                                                    if (asiValue == "CHECKED")	
-                                                    {
-                                                        // Create Tank
-                                                        gs0 = new guideSheetObjectLOCAL(gs, gsItem);
+                                        var ASISubGroup = ASISubGroups.get(k);
+                                        logDebug("ASISubGroup.getSubgroupCode():" + ASISubGroup.getSubgroupCode());
 
-                                                        gs0.loadInfoTables();                                  
-                                                        childTable = gs0.infoTables["UNREGISTERED TANK"];
-                                                        logDebug("childTable: " +  childTable);
-                                    
-                                                        if (childTable) {
-                                                            for (var rowIndex in childTable) {
-                                                                thisRow = childTable[rowIndex];
-                                                                tankNo = thisRow["SCDHS Tank #"];
+                                        if (ASISubGroup && (ASISubGroup.getSubgroupCode() == "IS THE REGISTRATION INFORMA" ||
+                                            ASISubGroup.getSubgroupCode() == "IS THE PERMIT TO OPERATE CURRE")) 
+                                        {
+                                            var ASIModels = ASISubGroup.getAsiList();
+                                            if (ASIModels) 
+                                            {
+                                                for (var m = 0; m < ASIModels.size(); m++) 
+                                                {
+                                                    var ASIModel = ASIModels.get(m);
+                                                    logDebug("ASIModel.getAsiName" + ASIModel.getAsiName() + "," + "ASI value: " + ASIModel.getAttributeValue());
+
+                                                    if (ASIModel && ASIModel.getAsiName() == "3") 
+                                                    {
+                                                        logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                        asiValue = ASIModel.getAttributeValue();
+                                                        if (asiValue == "CHECKED")	
+                                                        {
+                                                            // Create Tank
+                                                            gs0 = new guideSheetObjectLOCAL(gs, gsItem);
+
+                                                            gs0.loadInfoTables();
+                                                            childTable = gs0.infoTables["UNREGISTERED TANK"];
+                                                            logDebug("childTable: " + childTable);
+
+                                                            if (childTable)
+                                                            {
+                                                                for (var rowIndex in childTable)
+                                                                {
+                                                                    thisRow = childTable[rowIndex];
+                                                                    tankNo = thisRow["SCDHS Tank #"];
                                                                     product = thisRow["Product"];
                                                                     capacity = thisRow["Capacity"];
                                                                     location = thisRow["Location"];
@@ -145,28 +157,36 @@ if (gsList) {
                                                                     epa = thisRow["EPA"];
                                                                     pbs = thisRow["PBS"];
                                                                     comments = thisRow["Comments"];
-                                                                    if (tankNo && tankNo != "") {
+                                                                    if (tankNo && tankNo != "")
+                                                                    {
                                                                         logDebug("tankNo: " + tankNo);
                                                                     }
-                                                                    if (product && product != "") {
+                                                                    if (product && product != "")
+                                                                    {
                                                                         logDebug("product: " + product);
                                                                     }
-                                                                    if (capacity && capacity != "") {
+                                                                    if (capacity && capacity != "")
+                                                                    {
                                                                         logDebug("capacity: " + capacity);
                                                                     }
-                                                                    if (location && location != "") {
+                                                                    if (location && location != "")
+                                                                    {
                                                                         logDebug("location: " + location);
                                                                     }
-                                                                    if (constMaterial && constMaterial != "") {
+                                                                    if (constMaterial && constMaterial != "")
+                                                                    {
                                                                         logDebug("constMaterial: " + constMaterial);
                                                                     }
-                                                                    if (epa && epa != "") {
+                                                                    if (epa && epa != "")
+                                                                    {
                                                                         logDebug("epa: " + epa);
                                                                     }
-                                                                    if (pbs && pbs != "") {
+                                                                    if (pbs && pbs != "")
+                                                                    {
                                                                         logDebug("pbs: " + pbs);
                                                                     }
-                                                                    if (comments && comments != "") {
+                                                                    if (comments && comments != "")
+                                                                    {
                                                                         logDebug("comments: " + comments);
                                                                     }
                                                                     logDebug("rowIndex: " + rowIndex);
@@ -178,43 +198,44 @@ if (gsList) {
                                                                         var childTankCapId = createChild("DEQ", "OPC", "Hazardous Tank", "Permit", "UR TANK");
                                                                         logDebug("Child cap ID is: " + childTankCapId);
                                                                         logDebug("Child alt ID is: " + childTankCapId.getCustomID());
-                                                                            
+
                                                                         logDebug("Update SCDHS Tank #" + tankNo);
                                                                         editAppSpecific("SCDHS Tank #", tankNo, childTankCapId);
-                                                                        
+
                                                                         logDebug("Update Official Use Code UR");
                                                                         editAppSpecific("Official Use Code", "UR", childTankCapId);
-                                                                        
-                                                                        
+
+
                                                                         logDebug("PBS Tank" + pbs);
                                                                         editAppSpecific("PBS Tank", pbs, childTankCapId);
 
-                                                                      
+
                                                                         logDebug("Update EPA Tank" + epa);
                                                                         editAppSpecific("EPA Tank", epa, childTankCapId);
-                                                                        
-                                                                      
+
+
                                                                         logDebug("Update Capacity" + capacity);
                                                                         editAppSpecific("Capacity", capacity, childTankCapId);
-                                                                        
-                                                                     
+
+
                                                                         logDebug("Update Tank Location" + location);
                                                                         editAppSpecific("Tank Location", location, childTankCapId);
 
                                                                         // Detailed Description: product + "Construction Material" + comments
                                                                         var description = product + " Construction Material " + comments;
                                                                         logDebug("Update description:" + description);
-                                                                    
+
                                                                         updateWorkDesc(description, childTankCapId)
                                                                         // Project Name
                                                                         var name = "UR TANK"
-                                                                        updateShortNotes(name, childTankCapId);        
+                                                                        updateShortNotes(name, childTankCapId);
                                                                         editAppName(name, childTankCapId);
 
 
-                                                                    }    
+                                                                    }
                                                                 }
-                                                            
+
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -225,12 +246,12 @@ if (gsList) {
                             }
                         }
                     }
-                }      }          
+                }
             }
         }
     }
 }
- 
+
 //IA Record Creation from WWM Record 
 
 
@@ -410,7 +431,18 @@ if (appTypeArray[1] == "WWM")
                         editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
                         editAppSpecificLOCAL("Next Sample Date", insConSampleDate, wwmIA);
                         editAppSpecificLOCAL("Next Service Date", insConServiceDate, wwmIA);
-
+                        if (!matches(iaLeachOtherType, null, "", " ", undefined) && !matches(iaLeachProduct, null, "", " ", undefined))
+                        {
+                            updateWorkDesc(manu + " " + model + " " + iaLeachOtherType + " " + iaLeachProduct);
+                        }
+                        else if (!matches(iaLeachPoolType, null, "", " ", undefined))
+                        {
+                            updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachPoolType);
+                        }
+                        else
+                        {
+                            updateShortNotes(iaManufacturer + " " + iaModel);
+                        }
                         if (iaLeachPoolType != null)
                         {
                             editAppSpecificLOCAL("Leaching", iaLeachPoolType, wwmIA);
@@ -482,64 +514,64 @@ if (appTypeArray[1] == "WWM")
                         }
 
 
-                            //gathering LPs from parent
-                            var licProfResult = aa.licenseScript.getLicenseProf(capId);
-                            var capLPs = licProfResult.getOutput();
-                            logDebug("CapLPs = " + capLPs);
-                            for (l in capLPs)
+                        //gathering LPs from parent
+                        var licProfResult = aa.licenseScript.getLicenseProf(capId);
+                        var capLPs = licProfResult.getOutput();
+                        logDebug("CapLPs = " + capLPs);
+                        for (l in capLPs)
+                        {
+                            logDebug("capLPs = " + capLPs[l]);
+                            if (!matches(capLPs[l].email, null, undefined, ""))
                             {
-                                logDebug("capLPs = " + capLPs[l]);
-                                if (!matches(capLPs[l].email, null, undefined, ""))
-                                {
-                                    logDebug("LP emails = " + capLPs[l].email);
-                                    conEmail += capLPs[l].email + ";"
-                                    logDebug("conEmail = " + conEmail);
-                                }
+                                logDebug("LP emails = " + capLPs[l].email);
+                                conEmail += capLPs[l].email + ";"
+                                logDebug("conEmail = " + conEmail);
                             }
+                        }
 
-                            // //gathering IA Vendor LP
-                            // var wwmIALicProfResult = aa.licenseScript.getLicenseProf(wwmIA);
-                            // var iaVendorLPs = wwmIALicProfResult.getOutput();
-                            // for (v in iaVendorLPs)
-                            // {
-                            //     if (iaVendorLPs[v].getLicenseType() == "IA Vendor")
-                            //     {
-                            //         conEmail += iaVendorLPs[v].email + ";"
-                            //     }
-                            // }
+                        // //gathering IA Vendor LP
+                        // var wwmIALicProfResult = aa.licenseScript.getLicenseProf(wwmIA);
+                        // var iaVendorLPs = wwmIALicProfResult.getOutput();
+                        // for (v in iaVendorLPs)
+                        // {
+                        //     if (iaVendorLPs[v].getLicenseType() == "IA Vendor")
+                        //     {
+                        //         conEmail += iaVendorLPs[v].email + ";"
+                        //     }
+                        // }
 
 
 
-                            
 
-                            //gathering contacts from parent
-                            var contactResult = aa.people.getCapContactByCapID(capId);
-                            var capContacts = contactResult.getOutput();
-                            for (c in capContacts)
+
+                        //gathering contacts from parent
+                        var contactResult = aa.people.getCapContactByCapID(capId);
+                        var capContacts = contactResult.getOutput();
+                        for (c in capContacts)
+                        {
+                            logDebug("capContacts = " + capContacts[c]);
+                            if (!matches(capContacts[c].email, null, undefined, ""))
                             {
-                                logDebug("capContacts = " + capContacts[c]);
-                                if (!matches(capContacts[c].email, null, undefined, ""))
-                                {
-                                    logDebug("contact emails = " + capContacts[c].email);
-                                    conEmail += capContacts[c].email + ";"
-                                    logDebug("conEmail post contacts = " + conEmail);
-                                }
+                                logDebug("contact emails = " + capContacts[c].email);
+                                conEmail += capContacts[c].email + ";"
+                                logDebug("conEmail post contacts = " + conEmail);
                             }
+                        }
 
 
-                            //Sending Notification
+                        //Sending Notification
 
-                            var vEParams = aa.util.newHashtable();
-                            var addrResult = getAddressInALine(capId);
-                            addParameter(vEParams, "$$altID$$", iaCustom);
-                            addParameter(vEParams, "$$address$$", addrResult);
-                            addParameter(vEParams, "$$pin$$", pin);
-                            addParameter(vEParams, "$$wwmAltID$$", altId);
-                            addParameter(vEParams, "$$Parcel$$", parcelNumber);
+                        var vEParams = aa.util.newHashtable();
+                        var addrResult = getAddressInALine(capId);
+                        addParameter(vEParams, "$$altID$$", iaCustom);
+                        addParameter(vEParams, "$$address$$", addrResult);
+                        addParameter(vEParams, "$$pin$$", pin);
+                        addParameter(vEParams, "$$wwmAltID$$", altId);
+                        addParameter(vEParams, "$$Parcel$$", parcelNumber);
 
 
-                            sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-                        
+                        sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+
                     }
 
                     else
@@ -571,7 +603,7 @@ if (appTypeArray[1] == "WWM")
                             }
                         }
                         else
-                        { logDebug("**ERROR: getting cap id (" + iaNumber + "): " + getCapResult.getErrorMessage()) }
+                        {logDebug("**ERROR: getting cap id (" + iaNumber + "): " + getCapResult.getErrorMessage())}
 
 
                     }
@@ -592,8 +624,7 @@ if (appTypeArray[1] == "WWM")
 
 }
 
-function copyLicenseProfessional(srcCapId, targetCapId)
-{
+function copyLicenseProfessional(srcCapId, targetCapId) {
     //1. Get license professionals with source CAPID.
     var capLicenses = getLicenseProfessional(srcCapId);
     if (capLicenses == null || capLicenses.length == 0)
@@ -638,8 +669,7 @@ function copyLicenseProfessional(srcCapId, targetCapId)
     }
 }
 
-function copyDocumentsToCapID(fromCapID, toCapID)
-{
+function copyDocumentsToCapID(fromCapID, toCapID) {
     var opDocArray = aa.document.getDocumentListByEntity(fromCapID.toString(), "CAP").getOutput();
     var vDocArray = opDocArray.toArray();
     for (var vCounter in vDocArray)
@@ -649,8 +679,7 @@ function copyDocumentsToCapID(fromCapID, toCapID)
     }
 }
 
-function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel)
-{
+function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel) {
     var vInspId = parseFloat(pInspId);
     var vInspectionActivity;
     var asiValue = "";
@@ -735,7 +764,7 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 
     if (useAppSpecificGroupName)
     {
-        if (itemName.indexOf(".") < 0) { logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false }
+        if (itemName.indexOf(".") < 0) {logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false}
 
 
         itemGroup = itemName.substr(0, itemName.indexOf("."));
@@ -764,9 +793,9 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
                     if (arguments.length < 3) //If no capId passed update the ASI Array
                         AInfo[itemName] = itemValue;
                 }
-                else { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+                else {logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated.");}
             }
-            else { logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated."); }
+            else {logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated.");}
         }
     }
     else
@@ -774,8 +803,7 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
 }
-function makePIN(length)
-{
+function makePIN(length) {
     var result = '';
     var characters = 'ABCDEFGHJKMNPQRTWXY2346789';
     var charactersLength = characters.length;
@@ -869,8 +897,7 @@ function createChild(grp, typ, stype, cat, desc) // optional parent capId
         logDebug("**ERROR: adding child App: " + appCreateResult.getErrorMessage());
     }
 }
-function copyContactsByType(srcCapId, targetCapId, ContactTypeArr)
-{
+function copyContactsByType(srcCapId, targetCapId, ContactTypeArr) {
     //1. Get people with source CAPID.
     var capPeoples = getPeople3_0(srcCapId);
     if (capPeoples == null || capPeoples.length == 0)
@@ -929,8 +956,7 @@ function copyContactsByType(srcCapId, targetCapId, ContactTypeArr)
         }
     }
 }
-function getPeople3_0(capId)
-{
+function getPeople3_0(capId) {
     capPeopleArr = null;
     var s_result = aa.people.getCapContactByCapID(capId);
     if (s_result.getSuccess())
@@ -964,8 +990,7 @@ function getPeople3_0(capId)
     }
     return capPeopleArr;
 }
-function copyLicensedProfByType(capIdFrom, capIdTo, typesArray)
-{
+function copyLicensedProfByType(capIdFrom, capIdTo, typesArray) {
     var n = aa.licenseProfessional.getLicensedProfessionalsByCapID(capIdFrom).getOutput();
     var isByType = typesArray != null && typesArray.length > 0;
     if (n != null)
@@ -982,8 +1007,7 @@ function copyLicensedProfByType(capIdFrom, capIdTo, typesArray)
         logDebug("No licensed professional on source");
     return true;
 }
-function arrayContainsValue(ary, value)
-{
+function arrayContainsValue(ary, value) {
     if (ary != null)
     {
         //if not array, convert to array
@@ -1001,8 +1025,7 @@ function arrayContainsValue(ary, value)
     }
     return false;
 }
-function getAddressInALine(capId)
-{
+function getAddressInALine(capId) {
 
     var capAddrResult = aa.address.getAddressByCapId(capId);
     var addressToUse = null;
@@ -1049,7 +1072,7 @@ function getAddressInALine(capId)
     }
     return null;
 }
-   
+
 function guideSheetObjectLOCAL(gguidesheetModel, gguidesheetItemModel) {
     this.gsType = gguidesheetModel.getGuideType();
     this.gsSequence = gguidesheetModel.getGuidesheetSeqNbr();
@@ -1070,15 +1093,19 @@ function guideSheetObjectLOCAL(gguidesheetModel, gguidesheetItemModel) {
     this.loadInfo = function () {
         var itemASISubGroupList = this.item.getItemASISubgroupList();
         //If there is no ASI subgroup, it will throw warning message.
-        if (itemASISubGroupList != null) {
+        if (itemASISubGroupList != null)
+        {
             this.validInfo = true;
             var asiSubGroupIt = itemASISubGroupList.iterator();
-            while (asiSubGroupIt.hasNext()) {
+            while (asiSubGroupIt.hasNext())
+            {
                 var asiSubGroup = asiSubGroupIt.next();
                 var asiItemList = asiSubGroup.getAsiList();
-                if (asiItemList != null) {
+                if (asiItemList != null)
+                {
                     var asiItemListIt = asiItemList.iterator();
-                    while (asiItemListIt.hasNext()) {
+                    while (asiItemListIt.hasNext())
+                    {
                         var asiItemModel = asiItemListIt.next();
                         this.info[asiItemModel.getAsiName()] = asiItemModel.getAttributeValue();
 
@@ -1090,17 +1117,21 @@ function guideSheetObjectLOCAL(gguidesheetModel, gguidesheetItemModel) {
 
     this.loadInfoTables = function () {
         var guideItemASITs = this.item.getItemASITableSubgroupList();
-        if (guideItemASITs != null) {
+        if (guideItemASITs != null)
+        {
             logDebug(guideItemASITs.size());
-            for (var j = 0; j < guideItemASITs.size(); j++) {
+            for (var j = 0; j < guideItemASITs.size(); j++)
+            {
                 var guideItemASIT = guideItemASITs.get(j);
                 var tableArr = new Array();
                 var columnList = guideItemASIT.getColumnList();
-                for (var k = 0; k < columnList.size(); k++) {
+                for (var k = 0; k < columnList.size(); k++)
+                {
                     var column = columnList.get(k);
                     var values = column.getValueMap().values();
                     var iteValues = values.iterator();
-                    while (iteValues.hasNext()) {
+                    while (iteValues.hasNext())
+                    {
                         var i = iteValues.next();
                         var zeroBasedRowIndex = i.getRowIndex() - 1;
                         if (tableArr[zeroBasedRowIndex] == null) tableArr[zeroBasedRowIndex] = new Array();
