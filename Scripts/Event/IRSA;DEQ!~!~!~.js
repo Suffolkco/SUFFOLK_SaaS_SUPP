@@ -603,7 +603,7 @@ if (appTypeArray[1] == "WWM")
                             //updating workdesc
                             if (!matches(iaLeachOtherType, null, "", " ", undefined) && !matches(iaLeachProduct, null, "", " ", undefined))
                             {
-                                updateWorkDesc(manu + " " + model + " " + iaLeachOtherType + " " + iaLeachProduct, wwmIA);
+                                updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachOtherType + " " + iaLeachProduct, wwmIA);
                             }
                             else if (!matches(iaLeachPoolType, null, "", " ", undefined))
                             {
