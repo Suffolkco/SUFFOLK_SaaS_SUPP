@@ -9,6 +9,7 @@ var contractAnualCost = getAppSpecific("Contract Annual Cost", capId);
 var serviceDate = getAppSpecific("Service Date", capId);
 var sampleDates = [];
 var maxDate;
+var sampleResults = getAppSpecific("Sample Results", capId);
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
 for (var p in labResultFieldDataTable)
 {
@@ -25,6 +26,10 @@ if (sampleDates)
 	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear()
 	logDebug("maxdate is: " + maxDate);
     editAppSpecific("Next Sample Date", maxDate, parentCapId);
+    if (sampleResults == "CHECKED")
+    {
+        editAppSpecific("Most Recent MFR Sample", maxDate, parentCapId)
+    }
 }
 //here
 var use = getAppSpecific("Use", capId);
@@ -171,7 +176,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         newRow["Lab"] = tableForParent[l]["Lab"];
         newRow["Comment"] = tableForParent[l]["Comment"]
         newRow["Status"] = wfStatus;
-        newRow["Sample Date"] = collectionDate;
         newRow["Source"] = myCustomCap;
         newRow["Phase"] = phase;
         // newRow["Process"] = process;

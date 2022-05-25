@@ -34,6 +34,10 @@ if (sampleDates)
 	maxDate = new Date(maxDate);
 	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear()
 	logDebug("maxdate is: " + maxDate);
+	if (sampleResults == "CHECKED")
+    {
+        editAppSpecific("Most Recent MFR Sample", maxDate, parentCapId)
+    }
 }
 var phase = getAppSpecific("SCHEDULING INFORMATION.Phase", capId);
 var process = getAppSpecific("SCHEDULING INFORMATION.Process", capId);
