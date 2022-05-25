@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: DEQ_IA_SERVICE_PROVIDER_LP.js  Trigger: Batch|  
+| Program: DEQ_WWM_LIQUID_WASTE_LP.js  Trigger: Batch|  
 | This batch script will run once
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
@@ -57,7 +57,7 @@ var rtArray = ["ConsumerAffairs/Licenses/Liquid Waste/NA"];
 var paramsOK = true;
 
 if (paramsOK) 
-{            
+{
     var endorsementCats;
     logDebug("Start Date: " + startDate + br);
     logDebug("Starting the timer for this job.  If it takes longer than 5 minutes an error will be listed at the bottom of the email." + br);
@@ -170,82 +170,87 @@ function createUpdateRefLicProfWWMLW(capId) {
                 {
                     //grab endorsements and store them here to update address line 3 later  ex: LW12, LW9, LW3
                     var tempCatArray = category.split(" - ");
-                    logDebug(tempCatArray[0]);
+                    logDebug("trimmed category is: " + tempCatArray[0]);
                     catArray.push(tempCatArray[0] + ", ");
 
                     for (end in catArray)
                     {
                         endorsementCats += catArray[end];
                     }
-                    logDebug("endorsement cats in the middle is: " + endorsementCats);
+                }
+                //LW, LW1, LW2, LW3, LW4, LW5, LW6, LW7, LW8, LW9, LW10, LW11, LW12
+                if (String(endorsementCats.length) > 66)
+                {
+                    logDebug("LOWKEY ERROR: " + capId.getCustomID() + " " + endorsementCats);
+                }
+            }
+            if (endorsementCats.charAt(endorsementCats.length - 2) == "," && endorsementCats.charAt(endorsementCats.length - 1) == " ")
+            {
+                endorsementCats = endorsementCats.slice(0, -2);
+            }
+            logDebug("endorsement cats at the end is: " + endorsementCats);
+            var capContResult = aa.people.getCapContactByCapID(capId);
 
-                    var capContResult = aa.people.getCapContactByCapID(capId);
+            if (capContResult.getSuccess()) 
+            {
+                conArray = capContResult.getOutput();
+                for (con in conArray)
+                {
+                    contactType = conArray[con].getCapContactModel().getPeople().getContactType();
 
-                    if (capContResult.getSuccess()) 
+                    if (contactType == "Vendor")
                     {
-                        conArray = capContResult.getOutput();
-                        for (con in conArray)
+                        var licenType = "WWM Liquid Waste";
+
+                        /* logDebug(capIDString + ":" + licenType + ":First Name: " +
+                         conArray[con].getCapContactModel().getPeople().getFirstName() + " Middle Name: " +
+                         conArray[con].getCapContactModel().getPeople().getMiddleName() + " Last Name: " +
+                         conArray[con].getCapContactModel().getPeople().getLastName() + ". Business Name: " +
+                         conArray[con].getCapContactModel().getPeople().getBusinessName() + ". SSN: " +
+                         conArray[con].getCapContactModel().getPeople().getSocialSecurityNumber());      */
+
+                        // Find existing LP with the same first and last name first
+                        logDebug("<b>*** Look for: ***" + capIDString + ". License Type: " + licenType + "</b>");
+                        var lp = findExistingRefLicenseProfByName(capIDString, conArray[con].getCapContactModel().getPeople().getFirstName(), conArray[con].getCapContactModel().getPeople().getMiddleName(),
+                            conArray[con].getCapContactModel().getPeople().getLastName(), licenType, conArray[con].getCapContactModel().getPeople().getBusinessName(), conArray[con].getCapContactModel().getPeople().getSocialSecurityNumber());
+
+                        var licStateNum = -1;
+                        //logDebug("<b>Capid is: " + capIDString + "</br>");
+
+                        // If found existing LP 
+                        if (lp != null)
                         {
-                            contactType = conArray[con].getCapContactModel().getPeople().getContactType();
-
-                            if (contactType == "Vendor")
-                            {
-                                var licenType = "WWM Liquid Waste";
-
-                                /* logDebug(capIDString + ":" + licenType + ":First Name: " +
-                                 conArray[con].getCapContactModel().getPeople().getFirstName() + " Middle Name: " +
-                                 conArray[con].getCapContactModel().getPeople().getMiddleName() + " Last Name: " +
-                                 conArray[con].getCapContactModel().getPeople().getLastName() + ". Business Name: " +
-                                 conArray[con].getCapContactModel().getPeople().getBusinessName() + ". SSN: " +
-                                 conArray[con].getCapContactModel().getPeople().getSocialSecurityNumber());      */
-
-                                // Find existing LP with the same first and last name first
-                                logDebug("<b>*** Look for: ***" + capIDString + ". License Type: " + licenType + "</b>");
-                                var lp = findExistingRefLicenseProfByName(capIDString, conArray[con].getCapContactModel().getPeople().getFirstName(), conArray[con].getCapContactModel().getPeople().getMiddleName(),
-                                    conArray[con].getCapContactModel().getPeople().getLastName(), licenType, conArray[con].getCapContactModel().getPeople().getBusinessName(), conArray[con].getCapContactModel().getPeople().getSocialSecurityNumber());
-
-                                var licStateNum = -1;
-                                //logDebug("<b>Capid is: " + capIDString + "</br>");
-
-                                // If found existing LP 
-                                if (lp != null)
-                                {
-                                    licStateNum = lp.getStateLicense();
-                                    logDebug("6. Found existing LP with license number: " + licStateNum);
-                                }
-                                else
-                                {
-                                    logDebug("6. LP found is NULL: " + capIDString);
-                                }
-
-                                // 1. Cannot find a matched LP, we will create a new LP OR
-                                // 2. We found the matched LP and the Liquid Waste Record ID matches with the LP state license number, 
-                                // we need to update the existing the License Professional Information.
-                                if (lp == null || licStateNum == capIDString)
-                                {
-                                    logDebug("7. Create/Update existing LP: " + capIDString + ", Name: " + conArray[con].getCapContactModel().getPeople().getFirstName());
-                                    createUpdateRefLicProfWWMLiquidWaste(capId, false, licenType);
-
-                                }
-                                // If existing LP is found but the license number and record ID doesn't match. The business license # however matches with
-                                // the LW record ID, this means we need to add the latest number in the business license # as information.
-                                else if (lp != null && licStateNum != capIDString)                                                
-                                {
-                                    logDebug("7. Update state license " + capIDString + " business license number custom field to: " + licStateNum);
-                                    // licStateNum is the old/existing LW LP we found a match in the system.       
-                                    // capId is the new capid # we want to put in the business license # field on the existing LP.                                                                         
-                                    updateRefLicProfBusinessNumber(capId, licStateNum, licenType);
-
-                                }
-                                logDebug("*** End ***" + capIDString);
-                            }
+                            licStateNum = lp.getStateLicense();
+                            logDebug("6. Found existing LP with license number: " + licStateNum);
+                        }
+                        else
+                        {
+                            logDebug("6. LP found is NULL: " + capIDString);
                         }
 
+                        // 1. Cannot find a matched LP, we will create a new LP OR
+                        // 2. We found the matched LP and the Liquid Waste Record ID matches with the LP state license number, 
+                        // we need to update the existing the License Professional Information.
+                        if (lp == null || licStateNum == capIDString)
+                        {
+                            logDebug("7. Create/Update existing LP: " + capIDString + ", Name: " + conArray[con].getCapContactModel().getPeople().getFirstName());
+                            createUpdateRefLicProfWWMLiquidWaste(capId, false, licenType);
+
+                        }
+                        // If existing LP is found but the license number and record ID doesn't match. The business license # however matches with
+                        // the LW record ID, this means we need to add the latest number in the business license # as information.
+                        else if (lp != null && licStateNum != capIDString)                                                
+                        {
+                            logDebug("7. Update state license " + capIDString + " business license number custom field to: " + licStateNum);
+                            // licStateNum is the old/existing LW LP we found a match in the system.       
+                            // capId is the new capid # we want to put in the business license # field on the existing LP.                                                                         
+                            updateRefLicProfBusinessNumber(capId, licStateNum, licenType);
+
+                        }
+                        logDebug("*** End ***" + capIDString);
                     }
                 }
             }
-            endorsementCats = endorsementCats.slice(0, -2);
-            logDebug("endorsement cats at the end is: " + endorsementCats);
         }
     }
     return true;
@@ -275,8 +280,8 @@ function findExistingRefLicenseProfByName(refstlic, firstName, middleName, lastN
             //logDebug("licenseType: " + licenseType.toUpperCase() + " VS. " + newLicArray[thisLic].getLicenseType().toUpperCase());
             // logDebug("Business Name: " + businessName.toUpperCase() + " VS. " + newLicArray[thisLic].getBusinessName().toUpperCase());
             //logDebug("State License ID: " + newLicArray[thisLic].getStateLicense().toUpperCase());
-            logDebug("2. LP Status: " + newLicArray[thisLic].getAuditStatus());
-            logDebug("LP License Type: " + newLicArray[thisLic].getLicenseType());
+            //logDebug("2. LP Status: " + newLicArray[thisLic].getAuditStatus());
+            //logDebug("LP License Type: " + newLicArray[thisLic].getLicenseType());
             if (newLicArray[thisLic].getAuditStatus() == "A")
             {
                 if (!matches(licenseType, null, undefined, ""))
@@ -423,6 +428,7 @@ function updateRefLicProfBusinessNumber(capId, originalLpAltId, rlpType) {
             newLic.setAddress1(compAddr.getAddressLine1());
             newLic.setAddress2(compAddr.getAddressLine2());
             newLic.setAddress3(endorsementCats);
+            logDebug("address 3 in update biznumber is: " + newLic.getAddress3());
             newLic.setCity(compAddr.getCity());
             newLic.setState(compAddr.getState());
             newLic.setZip(compAddr.getZip());
@@ -799,7 +805,13 @@ function createUpdateRefLicProfWWMLiquidWaste(capId, relate, rlpType) {
     newLic.setAddress1(compAddr.getAddressLine1());
     logDebug("8.1 Address 1: " + compAddr.getAddressLine1());
     newLic.setAddress2(compAddr.getAddressLine2());
+    if (endorsementCats.charAt(endorsementCats.length - 2) == "," && endorsementCats.charAt(endorsementCats.length - 1) == " ")
+    {
+        endorsementCats = endorsementCats.slice(0, -2);
+    }
+    logDebug("endorsement cats at the end is: " + endorsementCats);
     newLic.setAddress3(endorsementCats);
+    logDebug("address 3 in createupdate is: " + newLic.getAddress3());
     newLic.setCity(compAddr.getCity());
     newLic.setState(compAddr.getState());
     newLic.setZip(compAddr.getZip());
