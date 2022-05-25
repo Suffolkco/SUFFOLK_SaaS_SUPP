@@ -75,8 +75,6 @@ if (inspResult == "Lab Results Returned")
                                             logDebug("labresults Lab ID entry is: " + labTable[labEntry]["Lab ID"]);
                                             if (matches(labTable[labEntry]["Lab ID"], "", " ", null, undefined))
                                             {
-                                                cancel = true;
-                                                showMessage = true;
                                                 stopMessage += "Lab ID must be filled out in the LAB RESULTS AND FIELD DATA table." + "<br>";
                                             }
                                         }
@@ -85,8 +83,7 @@ if (inspResult == "Lab Results Returned")
                                     else
                                     {
                                         logDebug("labtable doesn't have length");
-                                        cancel = true;
-                                        showMessage = true;
+
                                         stopMessage += "At least one row must be entered into the Lab Results table before the inspection can be resulted." + "<br>";
                                     }
                                 }
@@ -108,6 +105,8 @@ if (inspResult == "Lab Results Returned")
     }
     if (stopMessage != "")
     {
+        cancel = true;
+        showMessage = true;
         comment(stopMessage);
     }
 }
