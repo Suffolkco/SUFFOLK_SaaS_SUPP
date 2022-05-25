@@ -433,15 +433,15 @@ if (appTypeArray[1] == "WWM")
                         editAppSpecificLOCAL("Next Service Date", insConServiceDate, wwmIA);
                         if (!matches(iaLeachOtherType, null, "", " ", undefined) && !matches(iaLeachProduct, null, "", " ", undefined))
                         {
-                            updateWorkDesc(manu + " " + model + " " + iaLeachOtherType + " " + iaLeachProduct);
+                            updateWorkDesc(manu + " " + model + " " + iaLeachOtherType + " " + iaLeachProduct), wwmIA;
                         }
                         else if (!matches(iaLeachPoolType, null, "", " ", undefined))
                         {
-                            updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachPoolType);
+                            updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachPoolType, wwmIA);
                         }
-                        else
+                        else if (matches(iaLeachOtherType, null, "", " ", undefined) && matches(iaLeachProduct, null, "", " ", undefined) && matches(iaLeachPoolType, null, "", " ", undefined))
                         {
-                            updateShortNotes(iaManufacturer + " " + iaModel);
+                            updateWorkDesc(iaManufacturer + " " + iaModel, wwmIA);
                         }
                         if (iaLeachPoolType != null)
                         {
@@ -569,7 +569,6 @@ if (appTypeArray[1] == "WWM")
                         addParameter(vEParams, "$$wwmAltID$$", altId);
                         addParameter(vEParams, "$$Parcel$$", parcelNumber);
 
-
                         sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 
                     }
@@ -600,6 +599,19 @@ if (appTypeArray[1] == "WWM")
                             else if (iaEffluentPumpPools == null)
                             {
                                 editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
+                            }
+                            //updating workdesc
+                            if (!matches(iaLeachOtherType, null, "", " ", undefined) && !matches(iaLeachProduct, null, "", " ", undefined))
+                            {
+                                updateWorkDesc(manu + " " + model + " " + iaLeachOtherType + " " + iaLeachProduct, wwmIA);
+                            }
+                            else if (!matches(iaLeachPoolType, null, "", " ", undefined))
+                            {
+                                updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachPoolType, wwmIA);
+                            }
+                            else if (matches(iaLeachOtherType, null, "", " ", undefined) && matches(iaLeachProduct, null, "", " ", undefined) && matches(iaLeachPoolType, null, "", " ", undefined))
+                            {
+                                updateWorkDesc(iaManufacturer + " " + iaModel, wwmIA);
                             }
                         }
                         else
