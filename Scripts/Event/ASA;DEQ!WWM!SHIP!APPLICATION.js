@@ -1,14 +1,16 @@
-    //EHIMS2-35
+//EHIMS2-35
 
-    var greaseTrap = AInfo["In-Kind Grease Trap Replacement"];
-    var septicInstall = AInfo["Septic Tank Installation"];
-    var iaOwts = AInfo["I/A OWTS Installation"];
-    var leachingPool = AInfo["Leaching Pool(s)/Galley(s) Installation"];
-    var shallowDrainfield = AInfo["Pressurized Shallow Drainfield Installation"];
-    var gravity = AInfo["Gravity (Trench or Bed) Drainfield Installation"];
-    var other = AInfo["Other"];
-    var saniDecommission = AInfo["Existing Sanitary System Decommissioning ONLY"];
-    var pumpOutOnly = AInfo["Pump Out ONLY"];
+if (!publicUser)
+{
+    var greaseTrap = getAppSpecific("In-Kind Grease Trap Replacement");
+    var septicInstall = getAppSpecific("Septic Tank Installation");
+    var iaOwts = getAppSpecific("I/A OWTS Installation");
+    var leachingPool = getAppSpecific("Leaching Pool(s)/Galley(s) Installation");
+    var shallowDrainfield = getAppSpecific("Pressurized Shallow Drainfield Installation");
+    var gravity = getAppSpecific("Gravity (Trench or Bed) Drainfield Installation");
+    var other = getAppSpecific("Other");
+    var saniDecommission = getAppSpecific("Existing Sanitary System Decommissioning ONLY");
+    var pumpOutOnly = getAppSpecific("Pump Out ONLY");
     var lw9Req = false;
     var lw9Found = false;
     var lw10Req = false;
@@ -47,12 +49,14 @@
                     logDebug("license type is: " + lpArray[i].getLicenseType());
                     logDebug("Professional types are: " + lpArray[i].getAddress3());
                     endorsementArray = lpArray[i].getAddress3().split(", ");
+                    logDebug("endorsementArray is: " + endorsementArray);
                     var lpRecord = aa.cap.getCapID(lpArray[i].getLicenseNbr()).getOutput();
                     logDebug("lpRecord is: " + lpRecord);
                     logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
 
                     for (endors in endorsementArray)
                     {
+                        logDebug("endorsement array entry is: " + endorsementArray[endors]);
                         if (endorsementArray[endors] == "LW9")
                         {
                             lw9Found = true;
@@ -67,10 +71,6 @@
                         }
                     }
                 }
-                else
-                {
-                    //debug that only a liquid waste lp is allowed here
-                }
             }
         }
         if ((lw9Req && !lw9Found) || (lw10Req && !lw10Found) || (lw127Req && !lw127Found))
@@ -84,10 +84,10 @@
         addStdCondition("DEQ", "Check WWM Liquid Waste LP Endorsement", capId);
         var emailParams = aa.util.newHashtable();
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
-        addParameter(emailParams, "$$lpRecord$$", lpRecord);
-        sendNotification("", "licensing@suffolkcountyny.gov", "", "DEQ_WWM_APPROVAL_TO_CONSTRUCT", emailParams, null);
+        addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
     }
-
+}
 // var contactResult = aa.people.getCapContactByCapID(capId);
 // var capContacts = contactResult.getOutput();
 // var conEmail = "";
