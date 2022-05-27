@@ -1,6 +1,6 @@
 showDebug = true;
 
-
+/* deprecated on 5/23/22 - possible use forthcoming when the renewal/fee process is re-developed - Ryan Littlefield
 if (wfTask == "Tracking" && wfStatus == "System Valid")
 {
     var workflowResult = aa.workflow.getTasks(capId);
@@ -34,12 +34,11 @@ if (wfTask == "Tracking" && wfStatus == "System Valid")
                 b1Exp.setExpStatus("Pending");
                 aa.expiration.editB1Expiration(b1Exp.getB1Expiration());  
             }
-            
-        }            
-                    
+        }                     
     }
 }
-
+*/
+/*
 if (wfTask == "Registration Submitted" && wfStatus == "System Valid")
 {
 //Start Notification to Parent Contacts/LPs
@@ -83,8 +82,8 @@ addParameter(vEParams, "$$address$$", addrResult);
 addParameter (vEParams, "$$pin$$", pin);
 
 sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-}*/
 }
+}*/
 
 function getAddressInALine(capId)
 {

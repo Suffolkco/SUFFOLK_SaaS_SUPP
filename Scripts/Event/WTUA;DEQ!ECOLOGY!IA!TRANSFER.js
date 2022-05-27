@@ -7,7 +7,31 @@ var contractStart = getAppSpecific("Contract Start Date", capId);
 var term = getAppSpecific("Term", capId);
 var contractAnualCost = getAppSpecific("Contract Annual Cost", capId);
 var serviceDate = getAppSpecific("Service Date", capId);
-var sampleCollectionDate = getAppSpecific("Sample Collection Date", capId);
+var sampleDates = [];
+var maxDate;
+var sampleResults = getAppSpecific("Sample Results", capId);
+var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
+for (var p in labResultFieldDataTable)
+{
+	var sampleDate = new Date(labResultFieldDataTable[p]["Sample Collection Date"]);
+	logDebug("date is: " + sampleDate);
+	sampleDates.push(sampleDate);
+	var collectionDate = labResultFieldDataTable[p]["Sample Collection Date"];
+}
+if (sampleDates)
+{
+	logDebug("sampledates is: " + sampleDates);
+	maxDate = Math.max.apply(null, sampleDates);
+	maxDate = new Date(maxDate);
+	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear()
+	logDebug("maxdate is: " + maxDate);
+    editAppSpecific("Next Sample Date", maxDate, parentCapId);
+    if (sampleResults == "CHECKED")
+    {
+        editAppSpecific("Most Recent MFR Sample", maxDate, parentCapId)
+    }
+}
+//here
 var use = getAppSpecific("Use", capId);
 var myCap = capId;
 var myCustomCap = myCap.getCustomID();
@@ -126,32 +150,32 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     }
 
 
-
+//here
     var collectionDate = getAppSpecific("Sample Collection Date", capId);
-    var parentTable = loadASITable("LAB RESULTS AND FIELD DATA", capId);
+    var tableForParent = loadASITable("LAB RESULTS AND FIELD DATA", capId);
     var labResultsTable = new Array();
-    for (var l in parentTable)
+    for (var l in tableForParent)
     {
         var newRow = new Array();
-        newRow["Lab ID"] = parentTable[l]["Lab ID"];
-        newRow["TN"] = parentTable[l]["TN"];
-        newRow["NO3 Nitrate"] = parentTable[l]["NO3 Nitrate"];
-        newRow["NO2 Nitrite"] = parentTable[l]["NO2 Nitrite"];
-        newRow["TKN"] = parentTable[l]["TKN"];
-        newRow["NH4 Ammonia"] = parentTable[l]["NH4 Ammonia"];
-        newRow["BOD"] = parentTable[l]["BOD"];
-        newRow["TSS"] = parentTable[l]["TSS"];
-        newRow["ALK"] = parentTable[l]["ALK"];
-        newRow["DO"] = parentTable[l]["DO"];
-        newRow["PH"] = parentTable[l]["PH"];
-        newRow["WW Temp"] = parentTable[l]["WW Temp"]; 
-        newRow["Air Temp"] = parentTable[l]["Air Temp"];
-        newRow["Process"] = parentTable[l]["Process"];
-        newRow["Collection"] = parentTable[l]["Collection"];
-        newRow["Lab"] = parentTable[l]["Lab"];
-        newRow["Comment"] = parentTable[l]["Comment"]
+        newRow["Sample Date"] = tableForParent[l]["Sample Collection Date"];
+        newRow["Lab ID"] = tableForParent[l]["Lab ID"];
+        newRow["TN"] = tableForParent[l]["TN"];
+        newRow["NO3 Nitrate"] = tableForParent[l]["NO3 Nitrate"];
+        newRow["NO2 Nitrite"] = tableForParent[l]["NO2 Nitrite"];
+        newRow["TKN"] = tableForParent[l]["TKN"];
+        newRow["NH4 Ammonia"] = tableForParent[l]["NH4 Ammonia"];
+        newRow["BOD"] = tableForParent[l]["BOD"];
+        newRow["TSS"] = tableForParent[l]["TSS"];
+        newRow["ALK"] = tableForParent[l]["ALK"];
+        newRow["DO"] = tableForParent[l]["DO"];
+        newRow["PH"] = tableForParent[l]["PH"];
+        newRow["WW Temp"] = tableForParent[l]["WW Temp"]; 
+        newRow["Air Temp"] = tableForParent[l]["Air Temp"];
+        newRow["Process"] = tableForParent[l]["Process"];
+        newRow["Collection"] = tableForParent[l]["Collection"];
+        newRow["Lab"] = tableForParent[l]["Lab"];
+        newRow["Comment"] = tableForParent[l]["Comment"]
         newRow["Status"] = wfStatus;
-        newRow["Sample Date"] = collectionDate;
         newRow["Source"] = myCustomCap;
         newRow["Phase"] = phase;
         // newRow["Process"] = process;
@@ -176,6 +200,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     contractStart = new Date(contractStart);
     var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
     editAppSpecific("Contract Expiration Date", newExpDate, parentCapId); 
+    updateShortNotes("Contract Expiration: " + newExpDate);
+
     }
 
     if (contractAnualCost != null)
@@ -190,12 +216,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         editAppSpecific("Next Service Date", newServiceDate, parentCapId);
     }
 
-    if (sampleCollectionDate != null)
-    {
-        sampleCollectionDate = new Date(sampleCollectionDate);
-        var newSampleDate = (sampleCollectionDate.getMonth() + 1 + "/" + (sampleCollectionDate.getDate()) + "/" + (sampleCollectionDate.getFullYear() + 3)); 
-        editAppSpecific("Next Sample Date", newSampleDate, parentCapId);
-    }
+
 }
 
 
