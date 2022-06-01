@@ -1,5 +1,11 @@
 if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || "QAQC Split Sample" || "Investigation") 
 {
+    var insYear = inspObj.getInspectionStatusDate().getYear().toString();
+    var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
+    var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
+
+    var insCon = insMonth + "/" + insDay + "/" + insYear;
+    
     if (inspResult == "Lab Results Returned")
     {
         logDebug("capId = " + capId);
@@ -14,13 +20,6 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
         var collector = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collector");
         var fieldId = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Field ID");
         var lab = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Lab");
-        
-
-        var insYear = inspObj.getInspectionStatusDate().getYear().toString();
-        var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
-        var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
-
-        var insCon = insMonth + "/" + insDay + "/" + insYear;
 
         editAppSpecificLOCAL("Most Recent Sample Date", date, capId)
     
@@ -122,6 +121,7 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
     }
     if (inspResult == "Sent to Lab")
     {
+        var date =  getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "Date");
         editAppSpecificLOCAL("Most Recent SCDH Request", date, capId)
     }
 }
