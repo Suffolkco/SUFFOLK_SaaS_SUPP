@@ -1,4 +1,4 @@
-if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation") 
+if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || "QAQC Split Sample" || "Investigation") 
 {
     if (inspResult == "Lab Results Returned")
     {
