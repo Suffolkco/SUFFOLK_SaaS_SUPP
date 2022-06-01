@@ -22,7 +22,7 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
 
         var insCon = insMonth + "/" + insDay + "/" + insYear;
 
-        editAppSpecificLOCAL("Most Recent Sample Date", insCon, capId)
+        editAppSpecificLOCAL("Most Recent Sample Date", date, capId)
     
         var insp = aa.inspection.getInspection(capId, inspId).getOutput();
         var vInspectionActivity = insp.getInspection().getActivity();
@@ -119,6 +119,10 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
     if (inspResult == "Unable to collect sample")
     {
         editAppSpecificLOCAL("Most Recent SCDH Request", insCon, capId)
+    }
+    if (inspResult == "Sent to Lab")
+    {
+        editAppSpecificLOCAL("Most Recent SCDH Request", date, capId)
     }
 }
 function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel)
