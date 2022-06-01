@@ -8,6 +8,7 @@ if (vInspection.getSuccess())
     var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
     var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
 
+    editAppSpecific("Most Recent SCDHS Request", inspSchedDate, capId);
     //Inspection Type of Experimental Composite
 
     if (inspType == "Experimental Composite")
