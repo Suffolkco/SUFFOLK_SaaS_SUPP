@@ -3,7 +3,8 @@
     var parentId = getParent();
     if (parentId)
     {
-        copyContacts(parentId, capId);
+        //we are copying contacts from the parent when the workflow of the service record is updated, so no need to do it here
+        //copyContacts(parentId, capId);
         copyParcel(parentId, capId);
         copyAddress(parentId, capId);
 

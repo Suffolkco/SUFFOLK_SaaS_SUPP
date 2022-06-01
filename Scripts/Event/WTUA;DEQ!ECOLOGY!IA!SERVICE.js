@@ -19,6 +19,7 @@ var myCustomCap = myCap.getCustomID();
 var use = getAppSpecific("SYSTEM ACTIVITY.Use", capId);
 var serviceDate = new Date(AInfo["Service Date"]);
 var maxDate;
+var maxDatePlusThree;
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
 for (var p in labResultFieldDataTable)
 {
@@ -32,11 +33,14 @@ if (sampleDates)
 	logDebug("sampledates is: " + sampleDates);
 	maxDate = Math.max.apply(null, sampleDates);
 	maxDate = new Date(maxDate);
-	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear()
+	maxDatePlusThree = new Date(maxDate);
+	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear();
+	maxDatePlusThree = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + (maxDate.getFullYear() + 3);
+
 	logDebug("maxdate is: " + maxDate);
 	if (sampleResults == "CHECKED")
     {
-        editAppSpecific("Most Recent MFR Sample", maxDate, parentCapId)
+        editAppSpecificLOCAL("CONTRACT INFORMATION.Most Recent MFR Sample", maxDate, parentCapId)
     }
 }
 var phase = getAppSpecific("SCHEDULING INFORMATION.Phase", capId);
@@ -44,7 +48,8 @@ var process = getAppSpecific("SCHEDULING INFORMATION.Process", capId);
 var collection = getAppSpecific("SCHEDULING INFORMATION.Collection", capId);
 var collector = getAppSpecific("SCHEDULING INFORMATION.Collector", capId);
 var fieldId = getAppSpecific("SCHEDULING INFORMATION.Field ID", capId);
-var lab = getAppSpecific("SCHEDULING INFORMATION.Lab", capId);
+//I believe this used to populate up to the parent, but we changed away from using the ASI method, and instead we're using the ASIT.
+//var lab = getAppSpecific("SCHEDULING INFORMATION.Lab", capId);
 
 logDebugLocal("Actual parent ID: " + parentId);
 logDebugLocal("wfTask: " + wfTask);
@@ -82,7 +87,6 @@ for (var l in tableForParent)
 	// newRow["Collection"] = collection;
 	newRow["Collector"] = collector;
 	newRow["Field ID"] = fieldId;
-	newRow["Lab"] = lab;
 
 	labResultsTable.push(newRow);
 	break;
@@ -163,9 +167,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 	// Sample Collection Date
 	if (sampleResults == "CHECKED")
 	{
-		var nextSampleDate = (sampleDate.getMonth() + 1) + "/" + sampleDate.getDate() + "/" + (sampleDate.getFullYear() + 3);
-		logDebugLocal("Next Sample Date: " + nextSampleDate);
-		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", maxDate, parentId);
+		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", maxDatePlusThree, parentId);
 	}
 
 }
