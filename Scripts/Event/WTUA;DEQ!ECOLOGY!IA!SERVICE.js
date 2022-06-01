@@ -134,7 +134,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 			datePlusCon = (contractDate.getMonth() + 1) + "/" + contractDate.getDate() + "/" + (contractDate.getFullYear() + Number(contermServ));
 			editAppSpecificLOCAL("CONTRACT INFORMATION.Contract Expiration Date", datePlusCon, parentId);
 		}
-		updateShortNotes("Contract Expiration: " + datePlusCon);
+		updateShortNotes("Contract Expiration: " + datePlusCon, parentCapId);
 		logDebugLocal("contract annual cost is: " + contractAnualCost);
 
 		if (contractAnualCost != null)
