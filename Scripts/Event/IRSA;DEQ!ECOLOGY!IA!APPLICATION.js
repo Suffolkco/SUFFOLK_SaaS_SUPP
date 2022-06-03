@@ -20,6 +20,7 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
         var collector = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collector");
         var fieldId = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Field ID");
         var lab = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Lab");
+        var comment = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Comment");
 
         editAppSpecificLOCAL("Most Recent Sample Date", date, capId)
     
@@ -71,6 +72,8 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
                                 newRow["Collector"] = collector;
                                 newRow["Field ID"] = fieldId;
                                 newRow["Lab"] = lab;
+                                newRow["Comment"] = comment;
+
 
 
                                 newLabResultsTable.push(newRow);
