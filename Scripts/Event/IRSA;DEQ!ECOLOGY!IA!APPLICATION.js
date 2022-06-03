@@ -119,11 +119,6 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
     {
         editAppSpecificLOCAL("Most Recent SCDH Request", insCon, capId)
     }
-    if (inspResult == "Sent to Lab")
-    {
-        var date =  getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "Date");
-        editAppSpecificLOCAL("Most Recent SCDH Request", date, capId)
-    }
 }
 function getGuidesheetASIField(pInspId, gName, gItem, asiGroup, asiSubGroup, asiLabel)
     {
