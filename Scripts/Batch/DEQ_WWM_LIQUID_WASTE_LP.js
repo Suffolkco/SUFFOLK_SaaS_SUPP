@@ -169,7 +169,7 @@ function createUpdateRefLicProfWWMLW(capId) {
                 if (String(category).indexOf("LW") > -1)
                 {
                     //grab endorsements and store them here to update address line 3 later  ex: LW12, LW9, LW3
-                    var tempCatArray = category.split(" - ");
+                    var tempCatArray = category.split(" ");
                     logDebug("trimmed category is: " + tempCatArray[0]);
                     catArray.push(tempCatArray[0] + ", ");
 
