@@ -63,7 +63,7 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
                                 newRow["PH"] = phValue;
                                 newRow["WW Temp"] = wwTemp;
                                 newRow["Air Temp"] = airTemp;
-                                newRow["Status"] = inspResult;
+                                newRow["Status"] = "Complete";
                                 newRow["Source"] = inspId;
                                 newRow["Phase"] = phase;
                                 newRow["Process"] = process;
