@@ -4,6 +4,8 @@ var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
 var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
 var inspSchedDate = inspObj.getScheduledDate().getMonth() + "/" + inspObj.getScheduledDate().getDayOfMonth() + "/" + inspObj.getScheduledDate().getYear();
+var inspSchedDatePlusOne = inspObj.getScheduledDate().getMonth() + "/" + inspObj.getScheduledDate().getDayOfMonth() + "/" + inspObj.getScheduledDate().getYear() + 1;
+var inspSchedDatePlusThree = inspObj.getScheduledDate().getMonth() + "/" + inspObj.getScheduledDate().getDayOfMonth() + "/" + inspObj.getScheduledDate().getYear() + 3;
 
 if (insMonth.length == 1)
 {
@@ -429,8 +431,8 @@ if (appTypeArray[1] == "WWM")
                         editAppSpecificLOCAL("Model", iaModel, wwmIA);
                         editAppSpecificLOCAL("WWM Application Number", capIDString, wwmIA);
                         editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, wwmIA);
-                        editAppSpecificLOCAL("Next Sample Date", insConSampleDate, wwmIA);
-                        editAppSpecificLOCAL("Next Service Date", insConServiceDate, wwmIA);
+                        editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, wwmIA);
+                        editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, wwmIA);
                         if (!matches(iaLeachOtherType, null, "", " ", undefined) && !matches(iaLeachProduct, null, "", " ", undefined))
                         {
                             updateWorkDesc(iaManufacturer + " " + iaModel + " " + iaLeachOtherType + " " + iaLeachProduct, wwmIA);
