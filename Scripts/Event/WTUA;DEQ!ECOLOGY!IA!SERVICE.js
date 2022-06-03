@@ -34,8 +34,10 @@ if (sampleDates)
 	maxDate = Math.max.apply(null, sampleDates);
 	maxDate = new Date(maxDate);
 	maxDatePlusThree = new Date(maxDate);
+	logDebug("maxdate before getmonth is: " + maxDate);
 	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear();
-	maxDatePlusThree = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + (maxDate.getFullYear() + 3);
+	logDebug("maxdateplusthree is: " + maxDatePlusThree);
+	maxDatePlusThree = (maxDatePlusThree.getMonth() + 1) + "/" + maxDatePlusThree.getDate() + "/" + (maxDatePlusThree.getFullYear() + 3);
 
 	logDebug("maxdate is: " + maxDate);
 	if (sampleResults == "CHECKED")
