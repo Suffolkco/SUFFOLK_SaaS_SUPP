@@ -14,7 +14,6 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
         var wwTemp = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "WW TEMP");
         var airTemp = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "Air Temp");
         var date =  getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "Date");
-        var comment = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Sample Collection", "DEQ_IA_LAB", "FIELD RESULTS", "Comment");
         var phase = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Phase");
         var process = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Process");
         var collection = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collection");
@@ -72,7 +71,8 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
                                 newRow["Collector"] = collector;
                                 newRow["Field ID"] = fieldId;
                                 newRow["Lab"] = lab;
-                                newRow["Comment"] = comment;
+                                newRow["Comment"] = labResultsTable[l]["Comment"];
+                                logDebug("comment is: " + labResultsTable[l]["Comment"]);
 
 
 
