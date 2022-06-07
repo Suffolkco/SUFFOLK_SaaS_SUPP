@@ -20,6 +20,8 @@ if (!publicUser)
     var conditionAddAndEmail = false;
     var endorsementArray = new Array();
     var lpList = aa.licenseScript.getLicenseProf(capId);
+    var emailParams = aa.util.newHashtable();
+
     logDebug("lplist is: " + lpList);
 
     if (greaseTrap == "CHECKED" || septicInstall == "CHECKED" || leachingPool == "CHECKED" || gravity == "CHECKED")
@@ -51,9 +53,17 @@ if (!publicUser)
                     endorsementArray = lpArray[i].getAddress3().split(", ");
                     logDebug("endorsementArray is: " + endorsementArray);
                     var lpRecord = aa.cap.getCapID(lpArray[i].getLicenseNbr()).getOutput();
-                    logDebug("lpRecord is: " + lpRecord);
-                    logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
-
+                    if (!matches(lpRecord, "", null, undefined))
+                    {
+                        logDebug("lpRecord is: " + lpRecord);
+                        logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
+                        addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
+                    }
+                    else
+                    {
+                        var licNoText = "Professional number: " + licNo + " (not linked to a record.)";
+                        addParameter(emailParams, "$$lpRecord$$", licNoText);
+                    }
                     for (endors in endorsementArray)
                     {
                         logDebug("endorsement array entry is: " + endorsementArray[endors]);
@@ -81,10 +91,8 @@ if (!publicUser)
 
     if (conditionAddAndEmail)
     {
-        addStdCondition("DEQ", "Check WWM Liquid Waste LP Endorsement", capId);
-        var emailParams = aa.util.newHashtable();
+        addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
-        addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
     }
 }

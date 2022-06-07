@@ -127,7 +127,7 @@
     
     if (conditionAddAndEmail)
     {
-        addStdCondition("DEQ", "Check WWM Liquid Waste LP Endorsement", capId);
+        addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
     }
