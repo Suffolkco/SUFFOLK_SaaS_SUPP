@@ -21,107 +21,108 @@ var serviceDate = new Date(AInfo["Service Date"]);
 var maxDate;
 var maxDatePlusThree;
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
-for (var p in labResultFieldDataTable)
-{
-	var sampleDate = new Date(labResultFieldDataTable[p]["Sample Collection Date"]);
-	logDebug("date is: " + sampleDate);
-	sampleDates.push(sampleDate);
-	var collectionDate = labResultFieldDataTable[p]["Sample Collection Date"];
-}
-if (sampleDates)
-{
-	logDebug("sampledates is: " + sampleDates);
-	maxDate = Math.max.apply(null, sampleDates);
-	maxDate = new Date(maxDate);
-	maxDatePlusThree = new Date(maxDate);
-	logDebug("maxdate before getmonth is: " + maxDate);
-	maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear();
-	logDebug("maxdateplusthree is: " + maxDatePlusThree);
-	maxDatePlusThree = (maxDatePlusThree.getMonth() + 1) + "/" + maxDatePlusThree.getDate() + "/" + (maxDatePlusThree.getFullYear() + 3);
-
-	logDebug("maxdate is: " + maxDate);
-	if (sampleResults == "CHECKED")
-    {
-        editAppSpecificLOCAL("CONTRACT INFORMATION.Most Recent MFR Sample", maxDate, parentCapId)
-    }
-}
-var phase = getAppSpecific("SCHEDULING INFORMATION.Phase", capId);
-var process = getAppSpecific("SCHEDULING INFORMATION.Process", capId);
-var collection = getAppSpecific("SCHEDULING INFORMATION.Collection", capId);
-var collector = getAppSpecific("SCHEDULING INFORMATION.Collector", capId);
-var fieldId = getAppSpecific("SCHEDULING INFORMATION.Field ID", capId);
-//I believe this used to populate up to the parent, but we changed away from using the ASI method, and instead we're using the ASIT.
-//var lab = getAppSpecific("SCHEDULING INFORMATION.Lab", capId);
-
-logDebugLocal("Actual parent ID: " + parentId);
-logDebugLocal("wfTask: " + wfTask);
-logDebugLocal("wfStatus: " + wfStatus);
-
-//here
-var tableForParent = loadASITable("LAB RESULTS AND FIELD DATA", capId);
-var labResultsTable = new Array();
-for (var l in tableForParent)
-{
-	var newRow = new Array();
-	newRow["Sample Date"] = tableForParent[l]["Sample Collection Date"];
-	newRow["Lab ID"] = tableForParent[l]["Lab ID"];
-	newRow["Source"] = myCustomCap;
-	newRow["TN"] = tableForParent[l]["TN"];
-	newRow["NO3 Nitrate"] = tableForParent[l]["NO3 Nitrate"];
-	newRow["NO2 Nitrite"] = tableForParent[l]["NO2 Nitrite"];
-	newRow["TKN"] = tableForParent[l]["TKN"];
-	newRow["NH4 Ammonia"] = tableForParent[l]["NH4 Ammonia"];
-	newRow["BOD"] = tableForParent[l]["BOD"];
-	newRow["TSS"] = tableForParent[l]["TSS"];
-	newRow["ALK"] = tableForParent[l]["ALK"];
-	newRow["DO"] = tableForParent[l]["DO"];
-	newRow["PH"] = tableForParent[l]["PH"];
-	newRow["WW Temp"] = tableForParent[l]["WW Temp"];
-	newRow["Air Temp"] = tableForParent[l]["Air Temp"];
-	newRow["Process"] = tableForParent[l]["Process"];
-	newRow["Collection"] = tableForParent[l]["Collection"];
-	newRow["Lab"] = tableForParent[l]["Lab"];
-	newRow["Comment"] = tableForParent[l]["Comment"]
-	newRow["Status"] = wfStatus;
-	newRow["Sample Date"] = collectionDate;
-	newRow["Phase"] = phase;
-	// newRow["Process"] = process;
-	// newRow["Collection"] = collection;
-	newRow["Collector"] = collector;
-	newRow["Field ID"] = fieldId;
-
-	labResultsTable.push(newRow);
-	break;
-}
-
-addASITable("LAB RESULTS", labResultsTable, parentId);
-editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentId);
-
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
 {
-
-	var capContacts = aa.people.getCapContactByCapID(parentCapId);
-	if (capContacts.getSuccess())
+	if (sampleResults == "CHECKED")
 	{
-		capContacts = capContacts.getOutput();
-		logDebug("capContacts: " + capContacts);
-
-		for (var yy in capContacts)
+		if (labResultFieldDataTable)
 		{
-			//aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
-
-			if (capContacts[yy].getPeople().getAuditStatus() == "A")
+			if (labResultFieldDataTable.length >= 1)
 			{
-				capContacts[yy].getPeople().setAuditStatus("I");
-				aa.people.editCapContact(capContacts[yy].getCapContactModel());
-				logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
-				logDebug("We Got in here");
+				for (var p in labResultFieldDataTable)
+				{
+					var sampleDate = new Date(labResultFieldDataTable[p]["Sample Collection Date"]);
+					logDebug("date is: " + sampleDate);
+					sampleDates.push(sampleDate);
+					var collectionDate = labResultFieldDataTable[p]["Sample Collection Date"];
+				}
 			}
 		}
+		if (sampleDates)
+		{
+			logDebug("sampledates is: " + sampleDates);
+			maxDate = Math.max.apply(null, sampleDates);
+			maxDate = new Date(maxDate);
+			maxDatePlusThree = new Date(maxDate);
+			maxDate = (maxDate.getMonth() + 1) + "/" + maxDate.getDate() + "/" + maxDate.getFullYear();
+			maxDatePlusThree = (maxDatePlusThree.getMonth() + 1) + "/" + maxDatePlusThree.getDate() + "/" + (maxDatePlusThree.getFullYear() + 3);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", maxDatePlusThree, parentId);
+			editAppSpecificLOCAL("CONTRACT INFORMATION.Most Recent MFR Sample", maxDate, parentCapId)
+		}
 
+		var phase = getAppSpecific("SCHEDULING INFORMATION.Phase", capId);
+		var process = getAppSpecific("SCHEDULING INFORMATION.Process", capId);
+		var collection = getAppSpecific("SCHEDULING INFORMATION.Collection", capId);
+		var collector = getAppSpecific("SCHEDULING INFORMATION.Collector", capId);
+		var fieldId = getAppSpecific("SCHEDULING INFORMATION.Field ID", capId);
+		//I believe this used to populate up to the parent, but we changed away from using the ASI method, and instead we're using the ASIT.
+		//var lab = getAppSpecific("SCHEDULING INFORMATION.Lab", capId);
+
+		logDebugLocal("Actual parent ID: " + parentId);
+		logDebugLocal("wfTask: " + wfTask);
+		logDebugLocal("wfStatus: " + wfStatus);
+
+		//here
+		var tableForParent = loadASITable("LAB RESULTS AND FIELD DATA", capId);
+		var labResultsTable = new Array();
+		for (var l in tableForParent)
+		{
+			var newRow = new Array();
+			newRow["Sample Date"] = tableForParent[l]["Sample Collection Date"];
+			newRow["Lab ID"] = tableForParent[l]["Lab ID"];
+			newRow["Source"] = myCustomCap;
+			newRow["TN"] = tableForParent[l]["TN"];
+			newRow["NO3 Nitrate"] = tableForParent[l]["NO3 Nitrate"];
+			newRow["NO2 Nitrite"] = tableForParent[l]["NO2 Nitrite"];
+			newRow["TKN"] = tableForParent[l]["TKN"];
+			newRow["NH4 Ammonia"] = tableForParent[l]["NH4 Ammonia"];
+			newRow["BOD"] = tableForParent[l]["BOD"];
+			newRow["TSS"] = tableForParent[l]["TSS"];
+			newRow["ALK"] = tableForParent[l]["ALK"];
+			newRow["DO"] = tableForParent[l]["DO"];
+			newRow["PH"] = tableForParent[l]["PH"];
+			newRow["WW Temp"] = tableForParent[l]["WW Temp"];
+			newRow["Air Temp"] = tableForParent[l]["Air Temp"];
+			newRow["Process"] = tableForParent[l]["Process"];
+			newRow["Collection"] = tableForParent[l]["Collection"];
+			newRow["Lab"] = tableForParent[l]["Lab"];
+			newRow["Comment"] = tableForParent[l]["Comment"]
+			newRow["Status"] = wfStatus;
+			newRow["Sample Date"] = collectionDate;
+			newRow["Phase"] = phase;
+			// newRow["Process"] = process;
+			// newRow["Collection"] = collection;
+			newRow["Collector"] = collector;
+			newRow["Field ID"] = fieldId;
+
+			labResultsTable.push(newRow);
+			break;
+		}
+
+		addASITable("LAB RESULTS", labResultsTable, parentId);
+		editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentId);
+
+		var capContacts = aa.people.getCapContactByCapID(parentCapId);
+		if (capContacts.getSuccess())
+		{
+			capContacts = capContacts.getOutput();
+			logDebug("capContacts: " + capContacts);
+
+			for (var yy in capContacts)
+			{
+				//aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
+
+				if (capContacts[yy].getPeople().getAuditStatus() == "A")
+				{
+					capContacts[yy].getPeople().setAuditStatus("I");
+					aa.people.editCapContact(capContacts[yy].getCapContactModel());
+					logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
+					logDebug("We Got in here");
+				}
+			}
+		}
+		copyContacts(capId, parentCapId);
 	}
-
-	copyContacts(capId, parentCapId);
 	if (conUpdate == "CHECKED")
 	{
 		logDebugLocal("conupdate is good");
@@ -166,12 +167,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate, capId);
 		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentId);
 	}
-	// Sample Collection Date
-	if (sampleResults == "CHECKED")
-	{
-		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Sample Date", maxDatePlusThree, parentId);
-	}
-
 }
 
 function addDays(date, days) {
