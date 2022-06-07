@@ -7,7 +7,6 @@
     var addrResult = getAddressInALine(capId);
     addParameter(vEParams, "$$altID$$", capId.getCustomID());
     addParameter(vEParams, "$$address$$", addrResult);
-    addParameter(vEParams, "$$Parcel$$", parcelNumber);
     addParameter(vEParams, "$$wfComment$$", wfComment);
     var propOwnerEmail = "";
     for (c in capContacts)
@@ -272,10 +271,10 @@
             {
                 otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams);
                 logDebug("This is the rFile: " + otpReportFile);
+                var otpRFiles = new Array();
 
                 if (otpReportFile)
                 {
-                    var otpRFiles = new Array();
                     var docList = getDocumentList();
                     var docDates = [];
                     var maxDate;
@@ -434,6 +433,7 @@
                 {
                     var parcelNumber = Parcels[zz].getParcelNumber();
                     logDebug("parcelNumber = " + parcelNumber);
+                    addParameter(vEParams, "$$Parcel$$", parcelNumber);
                 }
             }
             sendNotification("", propOwnerEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
