@@ -4,7 +4,7 @@ var conEmail = "";
 for (c in capContacts)
 {
     if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
-{
+    {
         if (!matches(capContacts[c].email, null, undefined, ""))
         {
             conEmail += capContacts[c].email + ";"
@@ -80,14 +80,22 @@ if (lpList && lpList != null)
             if (lpArray[i].getLicenseType() == "WWM Liquid Waste")
             {
                 logDebug("license number is: " + lpArray[i].getLicenseNbr());
+                var licNo = lpArray[i].getLicenseNbr();
                 logDebug("license type is: " + lpArray[i].getLicenseType());
                 logDebug("Professional types are: " + lpArray[i].getAddress3());
                 endorsementArray = lpArray[i].getAddress3().split(", ");
                 logDebug("endorsementArray is: " + endorsementArray);
                 var lpRecord = aa.cap.getCapID(lpArray[i].getLicenseNbr()).getOutput();
-                logDebug("lpRecord is: " + lpRecord);
-                logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
-
+                if (!matches(lpRecord, "", null, undefined))
+                {
+                    logDebug("lpRecord is: " + lpRecord);
+                    logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
+                    addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
+                }
+                else
+                {
+                    addParameter(emailParams, "$$lpRecord$$", "Professional number: " + licNo + " (not linked to a record.)");
+                }
                 for (endors in endorsementArray)
                 {
                     logDebug("endorsement array entry is: " + endorsementArray[endors]);
@@ -118,7 +126,6 @@ if (conditionAddAndEmail)
     addStdCondition("DEQ", "Check WWM Liquid Waste LP Endorsement", capId);
     var emailParams = aa.util.newHashtable();
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
-    addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
     sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
 }
 
