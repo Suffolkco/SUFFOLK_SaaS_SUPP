@@ -135,6 +135,13 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         }
         emailTemplate = "CA_LICENSE_RENEWAL_APPLICANT_NOTICE";
         var pid = aa.cap.getCapID(parentCapId);
+    
+        if (pid.getSuccess())
+        {
+            logDebug("Parent pid output: " + pid.getOutput());
+
+
+        }
         logDebug("Parent cap id: " + pid.getCustomID())
         addParameter(vEParams, '$$altID$$', pid.getCustomID());
         conEmail += conArray.email + "; ";
