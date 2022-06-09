@@ -4,7 +4,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     var parentCapId = getParentCapID4Renewal();
     var expDateASI = getAppSpecific("Expiration Date", parentCapId);
 
-    var parentCap = getParent(capId);
+
 
     //Updating Expiration Date of License
 
@@ -133,8 +133,9 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
             addParameter(vEParams, "$$expDate$$", tlcExpDate);
 
         }
-        emailTemplate = "CA_LICENSE_RENEWAL_APPLICANT_NOTICE";       
-        addParameter(vEParams, '$$altID$$', parentCap.getCustomID());
+        emailTemplate = "CA_LICENSE_RENEWAL_APPLICANT_NOTICE";
+        
+        addParameter(vEParams, '$$altID$$', parentCapId);
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", emailTemplate, vEParams, null);
