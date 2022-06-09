@@ -15,6 +15,12 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         expDateASI = new Date(expDateASI);
         logDebug("New Date Exp Date is: " + expDateASI)
         var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
+
+        if (appTypeArray[1] == "TLC")
+        {
+            newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 1);
+        }
+        
         logDebug("New Exp Date is: " + newExpDate);
         editAppSpecific("Expiration Date", newExpDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
