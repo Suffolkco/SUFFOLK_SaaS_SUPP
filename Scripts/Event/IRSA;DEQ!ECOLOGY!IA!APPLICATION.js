@@ -1,5 +1,11 @@
-if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || " QAQC Split Sample" || " Investigation") 
+if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Composite" || "Pilot Grab" || "QAQC 1" || "QAQC 2" || "QAQC Split Sample" || "Investigation") 
 {
+    var insYear = inspObj.getInspectionStatusDate().getYear().toString();
+    var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
+    var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
+
+    var insCon = insMonth + "/" + insDay + "/" + insYear;
+    
     if (inspResult == "Lab Results Returned")
     {
         logDebug("capId = " + capId);
@@ -14,15 +20,8 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
         var collector = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Collector");
         var fieldId = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Field ID");
         var lab = getGuidesheetASIField(inspId, "I/A OWTS Sample", "Scheduling Information", "DEQ_INSP_SCH", "SCHEDULING INSPECTION", "Lab");
-        
 
-        var insYear = inspObj.getInspectionStatusDate().getYear().toString();
-        var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
-        var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
-
-        var insCon = insMonth + "/" + insDay + "/" + insYear;
-
-        editAppSpecificLOCAL("Most Recent Sample Date", insCon, capId)
+        editAppSpecificLOCAL("Most Recent Sample Date", date, capId)
     
         var insp = aa.inspection.getInspection(capId, inspId).getOutput();
         var vInspectionActivity = insp.getInspection().getActivity();
@@ -64,7 +63,7 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
                                 newRow["PH"] = phValue;
                                 newRow["WW Temp"] = wwTemp;
                                 newRow["Air Temp"] = airTemp;
-                                newRow["Status"] = inspResult;
+                                newRow["Status"] = "Complete";
                                 newRow["Source"] = inspId;
                                 newRow["Phase"] = phase;
                                 newRow["Process"] = process;
@@ -72,6 +71,9 @@ if (inspType == "Experimental Composite" || "Experimental Grab" || "Pilot Compos
                                 newRow["Collector"] = collector;
                                 newRow["Field ID"] = fieldId;
                                 newRow["Lab"] = lab;
+                                newRow["Comment"] = labResultsTable[l]["Comment"];
+                                logDebug("comment is: " + labResultsTable[l]["Comment"]);
+
 
 
                                 newLabResultsTable.push(newRow);
