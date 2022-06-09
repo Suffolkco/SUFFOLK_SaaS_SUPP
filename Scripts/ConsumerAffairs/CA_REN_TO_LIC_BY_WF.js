@@ -20,7 +20,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         {
             newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 1);
         }
-        
+
         logDebug("New Exp Date is: " + newExpDate);
         editAppSpecific("Expiration Date", newExpDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
@@ -54,8 +54,16 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         var today = new Date();
         logDebug("today's date is " + today);
         var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
-        logDebug("null date is " + nullExpDate);
+
+        if (appTypeArray[1] == "TLC")
+        {
+            nullExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 1);
+        }
+     
         editAppSpecific("Expiration Date", nullExpDate, parentCapId);
+     
+        logDebug("null date is " + nullExpDate);
+       
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
         if (b1ExpResult.getSuccess())
         {
