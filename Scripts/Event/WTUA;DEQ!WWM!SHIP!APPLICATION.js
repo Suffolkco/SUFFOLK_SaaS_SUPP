@@ -265,46 +265,6 @@
         {
             sendNotification("", appEmail, "", "DEQ_SHIP_14_DAY_DOC_REQUESTED", vEParams, null);
         }
-        if (wfStatus == "OK to Proceed")
-        {
-            if (AInfo["I/A OWTS Installation"] == "CHECKED")
-            {
-                otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams);
-                logDebug("This is the rFile: " + otpReportFile);
-                var otpRFiles = new Array();
-
-                if (otpReportFile)
-                {
-                    var docList = getDocumentList();
-                    var docDates = [];
-                    var maxDate;
-
-                    for (doc in docList)
-                    {
-                        if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
-                        {
-                            logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                            docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                            maxDate = Math.max.apply(null, docDates);
-                            logDebug("maxdate is: " + maxDate);
-
-                            if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                            {
-                                var docType = docList[doc].getDocCategory();
-                                var docFileName = docList[doc].getFileName();
-                            }
-                        }
-                    }
-                    var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
-
-                    logDebug("docToSend" + docToSend);
-                    docToSend = docToSend === null ? [] : [docToSend];
-                    otpRFiles.push(docToSend);
-                    otpRFiles.push(otpReportFile);
-                }
-                sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
-            }
-        }
         if (matches(wfStatus, "No Application Received", "Not Eligible", "OK to Proceed"))
         {
             var wfHist = aa.workflow.getWorkflowHistory(capId, null);
@@ -357,6 +317,46 @@
         if (matches(wfStatus, "No Application Received", "Not Eligible"))
         {
             editAppSpecific("Part of Septic Improvement Program(SIP)", "No")
+        }
+        if (wfStatus == "OK to Proceed")
+        {
+            if (AInfo["I/A OWTS Installation"] == "CHECKED")
+            {
+                otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams);
+                logDebug("This is the rFile: " + otpReportFile);
+                var otpRFiles = new Array();
+
+                if (otpReportFile)
+                {
+                    var docList = getDocumentList();
+                    var docDates = [];
+                    var maxDate;
+
+                    for (doc in docList)
+                    {
+                        if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
+                        {
+                            logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                            docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                            maxDate = Math.max.apply(null, docDates);
+                            logDebug("maxdate is: " + maxDate);
+
+                            if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                            {
+                                var docType = docList[doc].getDocCategory();
+                                var docFileName = docList[doc].getFileName();
+                            }
+                        }
+                    }
+                    var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
+
+                    logDebug("docToSend" + docToSend);
+                    docToSend = docToSend === null ? [] : [docToSend];
+                    otpRFiles.push(docToSend);
+                    otpRFiles.push(otpReportFile);
+                }
+                sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+            }
         }
     }
 
