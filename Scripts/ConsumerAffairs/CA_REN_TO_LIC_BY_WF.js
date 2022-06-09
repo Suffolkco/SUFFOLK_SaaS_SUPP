@@ -134,16 +134,23 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
         }
         emailTemplate = "CA_LICENSE_RENEWAL_APPLICANT_NOTICE";
-        var pid = aa.cap.getCapID(parentCapId);
-    
-        if (pid.getSuccess())
+
+
+       getCapResult = aa.cap.getProjectParents(parentCapId,1);
+	if (getCapResult.getSuccess())
+		{
+		parentArray = getCapResult.getOutput();
+		if (parentArray.length)
         {
-            logDebug("Parent pid output: " + pid.getOutput());
+        logDebug("Parent pid output: "+ parentArray[0].getCapID());
+    
+            logDebug("Parent pid output: " +parentArray[0].getCapID().getCustomID());
 
 
         }
-        logDebug("Parent cap id: " + pid.getCustomID())
-        addParameter(vEParams, '$$altID$$', pid.getCustomID());
+    }
+       
+        addParameter(vEParams, '$$altID$$', parentArray[0].getCapID().getCustomID());
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", emailTemplate, vEParams, null);
