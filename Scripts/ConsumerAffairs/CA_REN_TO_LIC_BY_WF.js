@@ -57,7 +57,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
         if (appTypeArray[1] == "TLC")
         {
-            nullExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 1);
+            nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 1);
         }
      
         editAppSpecific("Expiration Date", nullExpDate, parentCapId);
