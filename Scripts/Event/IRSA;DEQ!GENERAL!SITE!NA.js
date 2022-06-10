@@ -89,6 +89,8 @@ if (inspResult == "Violations Found")
     var fileRefNumber = getAppSpecific("File Reference Number", capId);
         //waiting until this field exists before i leave it in
 //    editAppSpecific("File Reference Number", fileRefNumber, enfChild);
+
+//need to also re-edit the altid with the mask decisions once the mask information is set up on the record
 }
 }
 

@@ -100,6 +100,9 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
     var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
         //waiting until this field exists before i leave it in
 //    editAppSpecific("File Reference Number", fileRefNumber, enfChild);
+
+//need to also re-edit the altid with the mask decisions once the mask information is set up on the record
+
 }
 }
 
