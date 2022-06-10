@@ -6,12 +6,12 @@ showDebug = true;
 if (inspResult == "Completed" || inspResult == "Fail")
 {
     if (inspType == "OPC Non-PBS Site OP Inspection" ||
-    inspType == "OPC Non-PBS Site Other Inspection" ||
-    inspType == "OPC Non-PBS Site Re-Inspection" ||
-    inspType == "OPC PBS Site GSR Inspection" ||
-    inspType == "OPC PBS Site OP Inspection" ||
-    inspType == "OPC PBS Site Other Inspection" ||
-    inspType == "OPC PBS Site Re-Inspection")
+        inspType == "OPC Non-PBS Site Other Inspection" ||
+        inspType == "OPC Non-PBS Site Re-Inspection" ||
+        inspType == "OPC PBS Site GSR Inspection" ||
+        inspType == "OPC PBS Site OP Inspection" ||
+        inspType == "OPC PBS Site Other Inspection" ||
+        inspType == "OPC PBS Site Re-Inspection")
     {
 
         /*inspId 566672
@@ -26,84 +26,102 @@ if (inspResult == "Completed" || inspResult == "Fail")
         var reportParams = aa.util.newHashtable();
         var reportFile = new Array();
         var alternateID = capId.getCustomID();
-      
+
         //insps[i].getInspectionDate()
-        inspModel = inspObj.getInspection();            
-       
+        inspModel = inspObj.getInspection();
+
         //reportParams.put("InspectionDate",  inspObj.getInspectionDate());
         //inspDate = inspObj.getInspectionDate();
 
-        logDebug("inspResultDate: " + inspResultDate);       
-        logDebug("inspection object date: " + inspObj.getInspectionDate());       
-        logDebug("inspection object date: " + inspObj.getInspectionDate());       
-        logDebug("alternateID: " + alternateID.toString());        
-        logDebug("inspSchedDate: " + inspSchedDate);            
+        logDebug("inspResultDate: " + inspResultDate);
+        logDebug("inspection object date: " + inspObj.getInspectionDate());
+        logDebug("inspection object date: " + inspObj.getInspectionDate());
+        logDebug("alternateID: " + alternateID.toString());
+        logDebug("inspSchedDate: " + inspSchedDate);
         var year = inspObj.getInspectionDate().getYear();
         var month = inspObj.getInspectionDate().getMonth();
         var day = inspObj.getInspectionDate().getDayOfMonth();
-        var hr = inspObj.getInspectionDate().getHourOfDay()-1;
+        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
-             
+
         //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
-		logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0");
-	
-		var inspectionDateCon = year + "-" + month + "-" + day + " " +  hr + ':' + min + ":" + sec + ".0";
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+
+        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
 
         logDebug("capId: " + capId);
-		logDebug("inspectionDateCon: " + inspectionDateCon);
+        logDebug("inspectionDateCon: " + inspectionDateCon);
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
         addParameter(reportParams, "SiteRecordID", alternateID.toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
         addParameter(reportParams, "InspectionType", inspType);
 
-		rFile = generateReportBatch(capId, "Facility Inspection Summary Report", 'DEQ', reportParams)
-        logDebug("This is the rFile: " + rFile);           
-        
+        rFile = generateReportBatch(capId, "Facility Inspection Summary Report", 'DEQ', reportParams)
+        logDebug("This is the rFile: " + rFile);
+
         if (rFile)
         {
-           var rFiles = new Array();
-           rFiles.push(rFile);
+            var rFiles = new Array();
+            rFiles.push(rFile);
 
-           getRecordParams4Notification(emailParams);                 
-           addParameter(emailParams, "$$altID$$", capId.getCustomID());     
-           sendNotification("", "Michael.Seaman@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
-        }        
+            getRecordParams4Notification(emailParams);
+            addParameter(emailParams, "$$altID$$", capId.getCustomID());
+            sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);
+        }
     }
-} 
+}
 
-function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
+//EHIMS2-77
+//Code Enforcement Scripting
+if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspection", "OPC PBS Site GSR Inspection", "OPC PBS Site Re-Inspection", "OPC Non-PBS Site OP Inspection", "OPC Non-PBS Site Other Inspection", "OPC Non-PBS Site Re-Inspection"))
 {
-	var itemCap = capId;
-	if (arguments.length == 7) itemCap = arguments[6]; // use cap ID specified in args
-	var id1 = itemCap.ID1;
- 	var id2 = itemCap.ID2;
- 	var id3 = itemCap.ID3;
-	var capIDScriptModel = aa.cap.createCapIDScriptModel(id1, id2, id3);
-	var result = null;
-	result = aa.document.sendEmailAndSaveAsDocument(emailFrom, emailTo, emailCC, templateName, params, capIDScriptModel, reportFile);
-	if(result.getSuccess())
-	{
-		logDebug("Sent email successfully!");
-		return true;
-	}
-	else
-	{
-		logDebug("Failed to send mail. - " + result.getErrorType());
-		return false;
-	}
+if (inspResult == "Violations Found")
+{
+    var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA");
+    copyContacts(capId, enfChild);
+    copyParcel(capId, enfChild);
+    copyAddress(capId, enfChild);
+    var siteAltId = capId.getCustomID();
+    //waiting until this field exists before i leave it in
+    //editAppSpecific("Site Record ID", siteAltId, enfChild);
+    var fileRefNumber = getAppSpecific("File Reference Number", capId);
+        //waiting until this field exists before i leave it in
+//    editAppSpecific("File Reference Number", fileRefNumber, enfChild);
+}
+}
+
+function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile) {
+    var itemCap = capId;
+    if (arguments.length == 7) itemCap = arguments[6]; // use cap ID specified in args
+    var id1 = itemCap.ID1;
+    var id2 = itemCap.ID2;
+    var id3 = itemCap.ID3;
+    var capIDScriptModel = aa.cap.createCapIDScriptModel(id1, id2, id3);
+    var result = null;
+    result = aa.document.sendEmailAndSaveAsDocument(emailFrom, emailTo, emailCC, templateName, params, capIDScriptModel, reportFile);
+    if (result.getSuccess())
+    {
+        logDebug("Sent email successfully!");
+        return true;
+    }
+    else
+    {
+        logDebug("Failed to send mail. - " + result.getErrorType());
+        return false;
+    }
 }
 
 function debugObject(object) {
     var output = '';
-    for (property in object) {
+    for (property in object)
+    {
         output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
     }
     logDebug(output);
 }
-function generateReportBatch(itemCap, reportName, module, parameters)
-{
+function generateReportBatch(itemCap, reportName, module, parameters) {
     //returns the report file which can be attached to an email.
     var user = currentUserID; // Setting the User Name
     logDebug("user: " + user);

@@ -86,6 +86,23 @@ if (inspResult == "Completed" || inspResult == "Fail")
     }
 } 
 
+if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspection", "Non-PBS Tank Re-Inspection", "PBS Tank GSR Inspection", "PBS Tank OP Inspection", "PBS Tank Other Inspection", "PBS Tank Re-Inspection"))
+{
+    if (inspResult == "Violations Found")
+{
+    var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
+    copyContacts(capId, enfChild);
+    copyParcel(capId, enfChild);
+    copyAddress(capId, enfChild);
+    var siteAltId = parentCap.getCustomID();
+    //waiting until this field exists before i leave it in
+    //editAppSpecific("Site Record ID", siteAltId, enfChild);
+    var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
+        //waiting until this field exists before i leave it in
+//    editAppSpecific("File Reference Number", fileRefNumber, enfChild);
+}
+}
+
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
 {
 	var itemCap = capId;
