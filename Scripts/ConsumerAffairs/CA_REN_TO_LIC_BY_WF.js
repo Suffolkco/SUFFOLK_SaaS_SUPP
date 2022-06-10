@@ -7,8 +7,6 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
 
     //Updating Expiration Date of License
-
-
     if (expDateASI != null)
     {
         logDebug("ASI Expdate is: " + expDateASI);
@@ -16,11 +14,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("New Date Exp Date is: " + expDateASI)
         var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
 
-        if (appTypeArray[1] == "TLC")
-        {
-            newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 1);
-        }
-
+     
         logDebug("New Exp Date is: " + newExpDate);
         editAppSpecific("Expiration Date", newExpDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
@@ -53,14 +47,17 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         var today = new Date();
         logDebug("today's date is " + today);
+        // 2 years for licenses
         var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
 
-        if (appTypeArray[1] == "TLC")
+        if (appTypeArray[1] == "TLC") // 1 year for TLC
         {
             nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 1);
         }
-     
-        editAppSpecific("Expiration Date", nullExpDate, parentCapId);
+        else
+        {
+            ditAppSpecific("Expiration Date", nullExpDate, parentCapId);
+        }
      
         logDebug("null date is " + nullExpDate);
        
