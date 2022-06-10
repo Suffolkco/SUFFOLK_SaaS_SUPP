@@ -67,7 +67,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
             rFiles.push(rFile);
 
             getRecordParams4Notification(emailParams);
-            addParameter(emailParams, "$$altID$$", capId.getCustomID());
+            addParameter(emailParams, "$$altID$$", capId.getCustomID()); 
             sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);
         }
     }

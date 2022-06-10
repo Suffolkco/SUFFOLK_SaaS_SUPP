@@ -71,7 +71,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
         addParameter(reportParams, "InspectionType", inspType);
 
-		rFile = generateReportBatch(capId, "Inspection result Tank Operator", 'DEQ', reportParams)
+		rFile = generateReportBatch(capId, "Inspection result Tank Operator", 'DEQ', reportParams);
         logDebug("This is the rFile: " + rFile);           
         
         if (rFile)
