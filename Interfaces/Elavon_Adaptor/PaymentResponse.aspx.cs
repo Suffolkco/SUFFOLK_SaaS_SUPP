@@ -114,7 +114,7 @@ namespace Elavon_Adaptor  {
                     convFee = "0.00";
             }
             catch (Exception ec) { };
-            _logger.DebugFormat("COnv fee switch {0} conv fee amount = {1}", ConfigurationManager.AppSettings["AddConvFee"].ToString(), convFee);
+            _logger.DebugFormat("Conv fee switch {0} conv fee amount = {1}", ConfigurationManager.AppSettings["AddConvFee"].ToString(), convFee);
             if (ConfigurationManager.AppSettings["AddConvFee"].ToString() == "false")
                 amtPaid = (Double.Parse(transAmt) + Double.Parse(convFee)).ToString();
             else
@@ -126,7 +126,7 @@ namespace Elavon_Adaptor  {
                     paymentMethod = "Credit Card";
                     break; 
                 case "Check":
-                    paymentMethod = "Check";
+                    paymentMethod = "ACH Payment";
                     break;
                 default:
                     _logger.DebugFormat("Unknown payment type {0}", payType);
@@ -149,6 +149,8 @@ namespace Elavon_Adaptor  {
 
                 Double origAmt = (Double.Parse(amtPaid) - 0.11) / 1.0154;
 
+                _logger.DebugFormat("Calulated original amount = {0}", origAmt);
+
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PAYMENT_AMOUNT, String.Format("{0:0.00}", origAmt));
                 //  if (ConfigurationManager.AppSettings["AddConvFee"].ToString() == "false")
                 //     responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE,"0.00");
@@ -169,7 +171,7 @@ namespace Elavon_Adaptor  {
                 return data;
             }
             else {
-                _logger.Debug("Processing payment by check");
+                _logger.Debug("Processing payment by ACH Payment");
                 StringBuilder responseData = new StringBuilder();
 
                 Double origAmt = (Double.Parse(amtPaid) - 0.28);
