@@ -102,6 +102,11 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		addASITable("LAB RESULTS", labResultsTable, parentId);
 		editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentId);
 
+		
+	}
+	if (conUpdate == "CHECKED")
+	{
+
 		var capContacts = aa.people.getCapContactByCapID(parentCapId);
 		if (capContacts.getSuccess())
 		{
@@ -122,9 +127,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 			}
 		}
 		copyContacts(capId, parentCapId);
-	}
-	if (conUpdate == "CHECKED")
-	{
 		logDebugLocal("conupdate is good");
 		var contractDate = new Date(conStartServ);
 
