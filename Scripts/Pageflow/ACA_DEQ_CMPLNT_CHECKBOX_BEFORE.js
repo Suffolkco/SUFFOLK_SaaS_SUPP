@@ -32,10 +32,11 @@ loadAppSpecific4ACA(AInfo);
 try
 {
 if (AInfo["Office of Pollution Control"] == "UNCHECKED" && AInfo["Office of Ecology"] == "UNCHECKED" && AInfo["Office of Wastewater Management"] == "UNCHECKED" && AInfo["Office of Water Resources"] == "UNCHECKED" && AInfo["None of the above"] == "UNCHECKED")
-   
+ {  
         cancel = true;
         showMessage = true;
         comment("This submission requires you to complete a checkbox selection regarding your complaint type.");
+ }
 }
 catch (error)
 {
