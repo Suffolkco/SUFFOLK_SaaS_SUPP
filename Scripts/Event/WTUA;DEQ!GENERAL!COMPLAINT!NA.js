@@ -17,9 +17,9 @@ if (matches(wfTask, "Complaint Received", "Investigation Review"))
 
 if (wfTask == "Investigation Review" && wfStatus == "Referred to Other Office")
 {
-  var assignedUser = wfTaskObj.getAssignedStaff();
+  var userId = getUserIDAssignedToTask(capId, wfTask)
   activateTask("Complaint Received");
-  assignTask("Complaint Received", assignedUser);
+  assignTask("Complaint Received", userId);
   updateTask("Complaint Received", "In Review", "", "");
   //    sendNotification("", emailAddress, "", templateName, emailParams, null);
 }
