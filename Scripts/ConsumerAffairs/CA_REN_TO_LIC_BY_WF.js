@@ -57,8 +57,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         else
         {
             editAppSpecific("Expiration Date", nullExpDate, parentCapId);
-        }
-     
+        }     
         logDebug("null date is " + nullExpDate);
        
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
