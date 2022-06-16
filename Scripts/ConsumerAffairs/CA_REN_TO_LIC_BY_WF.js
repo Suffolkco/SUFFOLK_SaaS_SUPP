@@ -56,7 +56,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         }
         else
         {
-            ditAppSpecific("Expiration Date", nullExpDate, parentCapId);
+            editAppSpecific("Expiration Date", nullExpDate, parentCapId);
         }
      
         logDebug("null date is " + nullExpDate);
