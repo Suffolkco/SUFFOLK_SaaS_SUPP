@@ -19,13 +19,13 @@
         <DataSourceName>DataSource1</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@Manufacturer">
-            <Value>=code.ConvertStringtoArray(Parameters!ManufacturerID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!ManufacturerID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Type">
-            <Value>=code.ConvertStringtoArray(Parameters!TypeID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!TypeID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Phase">
-            <Value>=code.ConvertStringtoArray(Parameters!PhaseID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!PhaseID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@StartDate">
             <Value>=Parameters!StartDate.Value</Value>
@@ -37,16 +37,16 @@
             <Value>=Parameters!RecordId.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@Status">
-            <Value>=code.ConvertStringtoArray(Parameters!StatusID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!StatusID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Determination">
-            <Value>=code.ConvertStringtoArray(Parameters!DeterminationID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!DeterminationID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Use">
-            <Value>=code.ConvertStringtoArray(Parameters!UseID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!UseID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Model">
-            <Value>=code.ConvertStringtoArray(Parameters!ModelID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!ModelID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@InstallStartDate">
             <Value>=Parameters!InstallStartDate.Value</Value>
@@ -58,19 +58,19 @@
             <Value>=Parameters!ParcelId.Value</Value>
           </QueryParameter>
           <QueryParameter Name="@Leach">
-            <Value>=code.ConvertStringtoArray(Parameters!LeachID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!LeachID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@LeachManu">
-            <Value>=code.ConvertStringtoArray(Parameters!LeachManuID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!LeachManuID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Process">
-            <Value>=code.ConvertStringtoArray(Parameters!ProcessID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!ProcessID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Collection">
-            <Value>=code.ConvertStringtoArray(Parameters!CollectionID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!CollectionID.Value)</Value>
           </QueryParameter>
           <QueryParameter Name="@Collector">
-            <Value>=code.ConvertStringtoArray(Parameters!CollectorID.Value(0))</Value>
+            <Value>=code.ConvertStringtoArray(Parameters!CollectorID.Value)</Value>
           </QueryParameter>
         </QueryParameters>
         <CommandText>/*DECLARE @Manufacturer VARCHAR(100)
@@ -706,7 +706,7 @@ AND LTRIM(RTRIM(COALESCE(OQRY.COLLECTOR,''))) IN (CASE WHEN 'ALL' IN (COALESCE(@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>IA Lab Results Master</Value>
+                                  <Value> IA Lab Results Master</Value>
                                   <Style>
                                     <FontStyle>Normal</FontStyle>
                                     <FontFamily>Calibri</FontFamily>
@@ -3181,7 +3181,7 @@ AND LTRIM(RTRIM(COALESCE(OQRY.COLLECTOR,''))) IN (CASE WHEN 'ALL' IN (COALESCE(@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.93056in</Height>
+        <Height>0.905in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -3201,21 +3201,33 @@ AND LTRIM(RTRIM(COALESCE(OQRY.COLLECTOR,''))) IN (CASE WHEN 'ALL' IN (COALESCE(@
   <ReportParameters>
     <ReportParameter Name="ManufacturerID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>ManufacturerID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="TypeID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>TypeID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="PhaseID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>PhaseID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="StartDate">
       <DataType>DateTime</DataType>
@@ -3235,27 +3247,43 @@ AND LTRIM(RTRIM(COALESCE(OQRY.COLLECTOR,''))) IN (CASE WHEN 'ALL' IN (COALESCE(@
     </ReportParameter>
     <ReportParameter Name="StatusID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>StatusID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="DeterminationID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>DeterminationID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="UseID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>UseID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="ModelID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>ModelID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="InstallStartDate">
       <DataType>DateTime</DataType>
@@ -3275,33 +3303,53 @@ AND LTRIM(RTRIM(COALESCE(OQRY.COLLECTOR,''))) IN (CASE WHEN 'ALL' IN (COALESCE(@
     </ReportParameter>
     <ReportParameter Name="LeachID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>LeachID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="LeachManuID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>LeachManuID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="ProcessID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>ProcessID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="CollectionID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>CollectionID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="CollectorID">
       <DataType>String</DataType>
-      <AllowBlank>true</AllowBlank>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>ALL</Value>
+        </Values>
+      </DefaultValue>
       <Prompt>CollectorID</Prompt>
-      <MultiValue>true</MultiValue>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>

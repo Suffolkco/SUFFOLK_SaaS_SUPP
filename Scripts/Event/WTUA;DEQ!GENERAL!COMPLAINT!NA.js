@@ -2,14 +2,30 @@
 var emailParams = aa.util.newHashtable();
 var templateName = "";
 
-if (matches(wfTask, "Complaint Received", "Investigation Review"))
+
+if (matches(wfTask, "Complaint Investigation"))
+{
+  if (matches(wfStatus, "Assign to OPC", "Assign to WR", "Assign to WWM", "Assign to Ecology", "Assign to STP"))
+  {
+    var userId = getUserIDAssignedToTask(capId, wfTask)
+    var userToSend = aa.person.getUser(userId).getOutput();
+    var userName = userId.getFirstName() + " " + userId.getLastName();
+    addParameter(emailParams, "$$FullNameBusName$$", userName);
+    logDebug("sending email to " + userToSend.getEmail());
+    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_ASSIGNMENT", emailParams, null);
+  }
+}
+
+if (matches(wfTask, "Investigation Review"))
 {
   if (wfStatus == "Reassign")
   {
     var userId = getUserIDAssignedToTask(capId, wfTask)
     var userToSend = aa.person.getUser(userId).getOutput();
+    var userName = userId.getFirstName() + " " + userId.getLastName();
+    addParameter(emailParams, "$$FullNameBusName$$", userName);
     logDebug("sending email to " + userToSend.getEmail());
-    sendNotification("", userToSend.getEmail(), "", templateName, emailParams, null);
+    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_ASSIGNMENT", emailParams, null);
   }
 }
 

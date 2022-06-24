@@ -204,7 +204,7 @@ try
         {
             cancel = true;
             showMessage = true;
-            comment("Your proposal requires the submission of a ‘Preliminary Sketch’ or a ‘Design Professional Sketch’ for review");
+            comment("Your proposal requires the submission of a ‘Preliminary Sketch’ or a ‘Design Professional Sketch’ for review - document type ‘Preliminary Sketch’ or ‘Design Professional Sketch’ is required.");
         }
     }
 
@@ -215,7 +215,7 @@ try
         {
             cancel = true;
             showMessage = true;
-            comment("The installation of an I/A OWTS through the SHIP registration process requires the submission of adequate ‘Proof of Failure’ photos and/or documentation.");
+            comment("The installation of an I/A OWTS through the SHIP registration process requires the submission of adequate ‘Proof of Failure’ photos and/or documentation - document type ‘Proof of Failure’ is required.");
         }
     }
 
