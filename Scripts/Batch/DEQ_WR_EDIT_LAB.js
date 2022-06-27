@@ -238,7 +238,7 @@ function mainProcess()
 											labTable[r]["Analyte Name"].columnName.toString() == newAnalyteMethod) 
 											{
 												
-												logDebugLocal("At row : " + r + " and column: " + col);
+												//logDebugLocal("At row : " + r + " and column: " + col);
 													
 											
 												// CHLORINATED PESTICIDES
@@ -315,7 +315,7 @@ function mainProcess()
 													if (tVal.fieldValue == null || tVal.fieldValue == "null")		
 													{
 														debugMsg(r, col, tVal.fieldValue);		
-														tVal.fieldValue = ' 57-74-9';
+														tVal.fieldValue = '57-74-9';
 														logDebugLocal("Set value of " + col + " to be: " + tVal.fieldValue);
 														count++;
 													}
