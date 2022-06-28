@@ -176,24 +176,28 @@ function mainProcess()
 		var nysdecValue = false;
         logDebug("Batch script will run");        
 		// New analyte Method
+		// Script cannot do so many per day, we need to split them up
 		var vSQL = "select b.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BAPPSPECTABLE_VALUE ASIT ON B.SERV_PROV_CODE = ASIT.SERV_PROV_CODE AND B.B1_PER_ID1 = ASIT.B1_PER_ID1 AND B.B1_PER_ID2 = ASIT.B1_PER_ID2 AND B.B1_PER_ID3 = ASIT.B1_PER_ID3 AND B.REC_STATUS = ASIT.REC_STATUS AND ASIT.TABLE_NAME = 'SAMPLE RESULTS' AND ASIT.COLUMN_NAME = 'Analyte & Method' and ASIT.ATTRIBUTE_VALUE = 'Total Chlordane|EPA 505' where b.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' and b.B1_PER_TYPE = 'General' and b.REC_STATUS = 'A'";		
+		
 		// Old analyte Method 	//L-1912-00790, L-1912-00793, L-1912-01164, L-1912-01163
 		//var vSQL = "select b.B1_ALT_ID as recordNumber FROM B1PERMIT B JOIN BAPPSPECTABLE_VALUE ASIT ON B.SERV_PROV_CODE = ASIT.SERV_PROV_CODE AND B.B1_PER_ID1 = ASIT.B1_PER_ID1 AND B.B1_PER_ID2 = ASIT.B1_PER_ID2 AND B.B1_PER_ID3 = ASIT.B1_PER_ID3 AND B.REC_STATUS = ASIT.REC_STATUS AND ASIT.TABLE_NAME = 'SAMPLE RESULTS' AND ASIT.COLUMN_NAME = 'Analyte & Method' and ASIT.ATTRIBUTE_VALUE = 'Chlordane|EPA 505' where b.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP = 'DEQ' and b.B1_PER_TYPE = 'General' and b.REC_STATUS = 'A'";		
 		//var vSQL = "select b.B1_ALT_ID as recordNumber FROM B1PERMIT B where B.B1_ALT_ID = 'L-1912-01163'";
-	
+		//var vSQL = "select b.B1_ALT_ID as recordNumber FROM B1PERMIT B where B.B1_ALT_ID in ('L-2205-02287')";
+		
 		var output = "Record ID\n";  		
         var newAnalyteMethod = "Total Chlordane|EPA 505";
 		var oldAnalyteMethod = "Chlordane|EPA 505";
 		var vResult = doSQLSelect_local(vSQL);  	     
 		logDebugLocal("********Scanning lab records : " + vResult.length + "*********\n");
 		var sites = "";
+		var labCount = 0;
 		for (r in vResult)
         {
             recordID = vResult[r]["recordNumber"];      
             //output += recordID + "\n";
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
-			logDebugLocal("Record ID: " + capIDString);
+			//logDebugLocal("Record ID: " + capIDString);
             cap = aa.cap.getCap(capId).getOutput();
             if (cap)
             {
@@ -201,23 +205,27 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {					
 					var tableNameArray = getTableName(capId);
-					logDebugLocal("Get all custom list table: " + tableNameArray.length);
+					//logDebugLocal("Get all custom list table: " + tableNameArray.length);
 				
 					var groupName;
-				
+					if (labCount == 3)
+					{
+						// Process 3 at a time
+						break;
+					}
 					if (tableNameArray != null)
 					{
 						for (loopk in tableNameArray)
 						{
 							var tableName = tableNameArray[loopk];
-							logDebugLocal(tableName);
+							//logDebugLocal(tableName);
 
 							if (tableName == "SAMPLE RESULTS")
 							{			
 							
-								var labTable = loadASITable(tableName);      
-								var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,capId,"ADMIN");
-								
+								var labTable = loadASITable(tableName);     
+							
+								var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,capId,"ADMIN");								
 								logDebugLocal(tssmResult.getSuccess());
 
 								if (labTable) {
@@ -245,11 +253,14 @@ function mainProcess()
 												if (col == "Group Name")
 												{
 													if (tVal.fieldValue == null || tVal.fieldValue == "null")		
-													{										
+													{				
+														logDebugLocal("Record ID: " + capIDString);						
 														debugMsg(r, col, tVal.fieldValue);		
 														tVal.fieldValue = 'CHLORINATED PESTICIDES';														
 														logDebugLocal("Set value of " + col + " to be: " + tVal.fieldValue);
 														count++;
+														labCount++;
+														
 													}
 												}
 												// |<|0.2|2|=|ug/L|57-74-9|$CLPEST
@@ -329,7 +340,7 @@ function mainProcess()
 
 										}
 							
-										rowArr.push(tempArr); 										
+										rowArr.push(tempArr); 																				
 										addASITable(tableName,rowArr,capId);
 									}
 								}	
@@ -341,7 +352,7 @@ function mainProcess()
 			}
 		}
 		logDebugLocal("Total of fields updating: " + count);
-	
+		logDebugLocal("Total of lab count: " + labCount);
 	}
     catch (err) 
     {
