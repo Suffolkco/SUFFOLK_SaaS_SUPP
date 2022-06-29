@@ -30,7 +30,7 @@ var revisedFineAmount = AInfo["Revised Fine Amount"];
 //getting contacts by type, and then all
 for (con in conArray)
 {
-    if (matches(conArray[con].getCapContactModel().getPeople().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+    if (matches(conArray[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
     {
         if (!matches(conArray[con].email, null, undefined, ""))
         {
