@@ -67,7 +67,9 @@ if (wfTask == "Violation Review")
 
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         updateTaskDueDate("Violation Review", dateSixtyDaysOut);
-        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+
     }
     if (wfStatus == "NOV Letter Sent")
     {
@@ -119,7 +121,9 @@ if (wfTask == "Enforcement Request Review")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+
     }
     if (wfStatus == "NOPH Sent")
     {
@@ -150,7 +154,9 @@ if (wfTask == "Preliminary Hearing")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+
     }
     if (wfStatus == "Adjourned")
     {
@@ -221,7 +227,9 @@ if (wfTask == "Formal Hearing")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+
     }
     if (wfStatus == "Adjourned")
     {
@@ -267,7 +275,9 @@ if (wfTask == "Commissioner's Order")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+
     }
 }
 
@@ -277,7 +287,9 @@ if (wfTask == "Collection")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+
     }
 }
 
@@ -381,4 +393,48 @@ function updateAltID(newId)
             }
         }
     }
+}
+
+function getAddressInALine() {
+
+	var capAddrResult = aa.address.getAddressByCapId(capId);
+	var addressToUse = null;
+	var strAddress = "";
+		
+	if (capAddrResult.getSuccess()) {
+		var addresses = capAddrResult.getOutput();
+		if (addresses) {
+			for (zz in addresses) {
+  				capAddress = addresses[zz];
+				if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y")) 
+					addressToUse = capAddress;
+			}
+			if (addressToUse == null)
+				addressToUse = addresses[0];
+
+			if (addressToUse) {
+			    strAddress = addressToUse.getHouseNumberStart();
+			    var addPart = addressToUse.getStreetDirection();
+			    if (addPart && addPart != "") 
+			    	strAddress += " " + addPart;
+			    var addPart = addressToUse.getStreetName();
+			    if (addPart && addPart != "") 
+			    	strAddress += " " + addPart;	
+			    var addPart = addressToUse.getStreetSuffix();
+			    if (addPart && addPart != "") 
+			    	strAddress += " " + addPart;	
+			    var addPart = addressToUse.getCity();
+			    if (addPart && addPart != "") 
+			    	strAddress += " " + addPart + ",";
+			    var addPart = addressToUse.getState();
+			    if (addPart && addPart != "") 
+			    	strAddress += " " + addPart;	
+			    var addPart = addressToUse.getZip();
+			    if (addPart && addPart != "") 
+			    	strAddress += " " + addPart;	
+				return strAddress
+			}
+		}
+	}
+	return null;
 }
