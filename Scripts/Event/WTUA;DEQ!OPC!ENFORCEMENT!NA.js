@@ -1,4 +1,10 @@
 //WTUA:DEQ/OPC/ENFORCEMENT/NA
+
+if (currentUserID == "RLITTLEFIELD")
+{
+    showDebug = true;
+}
+
 var emailParams = aa.util.newHashtable();
 
 var conArray = getContactArray();
