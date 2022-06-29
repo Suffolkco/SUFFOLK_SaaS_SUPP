@@ -251,6 +251,7 @@ if (wfTask == "Formal Hearing")
     if (wfStatus == "Revised Waiver")
     {
         var formalHearingUserId = getUserIDAssignedToTask(capId, "Formal Hearing")
+        logDebug("formal hearing user id is: " + formalHearingUserId);
         var userToSend = aa.person.getUser(formalHearingUserId).getOutput();
         var formalHearingUserName = formalHearingUserId.getFirstName() + " " + formalHearingUserId.getLastName();
         var formalHearingUserPhone = formalHearingUserId.getPhoneNumber();
