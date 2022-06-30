@@ -45,7 +45,7 @@ for (con in conArray)
 }
 
 //grabbing the due date of the Enforcement Request Review task in the current workflow, for use in multiple other task/statuses
-var workflowResult = aa.workflow.getTask(capId, wfTask);
+var workflowResult = aa.workflow.getTasks(capId);
 var wfObj = workflowResult.getOutput();
 
 for (i in wfObj)
@@ -164,13 +164,16 @@ if (wfTask == "Preliminary Hearing")
     {
         var prelimHearingUserId = getUserIDAssignedToTask(capId, "Preliminary Hearing")
         var userToSend = aa.person.getUser(prelimHearingUserId).getOutput();
-        var prelimHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-        var prelimHearingUserPhone = userToSend.getPhoneNumber();
-        var prelimHearingUserEmail = userToSend.getEmail();
+        if (userToSend != null)
+        {
+            var prelimHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+            var prelimHearingUserPhone = userToSend.getPhoneNumber();
+            var prelimHearingUserEmail = userToSend.getEmail();
 
-        addParameter(emailParams, "$$assignUser$$", prelimHearingUserName);
-        addParameter(emailParams, "$$userPhoneNum$$", prelimHearingUserPhone);
-        addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
+            addParameter(emailParams, "$$assignUser$$", prelimHearingUserName);
+            addParameter(emailParams, "$$userPhoneNum$$", prelimHearingUserPhone);
+            addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
+        }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
         addParameter(emailParams, "$$hearingTime$$", hearingTime);
 
@@ -179,9 +182,9 @@ if (wfTask == "Preliminary Hearing")
         //set task due date to the date found in the TSI Hearing Date on this task
         if (workflowResult.getSuccess())
         {
-            var taskObj = workflowResult.getOutput();
+            var workflowResultTsi = aa.workflow.getTask(capId, wfTask);
+            var taskObj = workflowResultTsi.getOutput();
             var tsiResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, taskObj.getProcessID(), taskObj.getStepNumber());
-            var tsiResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask();
 
             if (tsiResult.getSuccess())
             {
@@ -191,7 +194,7 @@ if (wfTask == "Preliminary Hearing")
                 for (t in tsiOut)
                 {
                     var tsiInfoModel = tsiOut[t].getTaskSpecificInfoModel();
-                    if (tsiOut[t].getCheckboxDesc() == "Preliminary Hearing Time")
+                    if (tsiOut[t].getCheckboxDesc() == "Preliminary Hearing Date")
                     {
                         if (!matches(tsiOut[t].getChecklistComment(), null, undefined, ""))
                         {
@@ -208,20 +211,23 @@ if (wfTask == "Preliminary Hearing")
 
         var prelimHearingUserId = getUserIDAssignedToTask(capId, "Preliminary Hearing")
         var userToSend = aa.person.getUser(prelimHearingUserId).getOutput();
-        var prelimHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-        var prelimHearingUserPhone = userToSend.getPhoneNumber();
-        var prelimHearingUserEmail = userToSend.getEmail();
+        if (userToSend != null)
+        {
+            var prelimHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+            var prelimHearingUserPhone = userToSend.getPhoneNumber();
+            var prelimHearingUserEmail = userToSend.getEmail();
 
+            addParameter(emailParams, "$$assignUser$$", prelimHearingUserName);
+            addParameter(emailParams, "$$userPhoneNum$$", prelimHearingUserPhone);
+            addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
+        }
         addParameter(emailParams, "$$dateSent$$", todayDateConverted);
-        addParameter(emailParams, "$$assignUser$$", prelimHearingUserName);
-        addParameter(emailParams, "$$userPhoneNum$$", prelimHearingUserPhone);
-        addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$revisedFineAmount$$", revisedFineAmount);
         addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
 
 
-        sendNotification("", conEmailListAll, "", templateName, emailParams, null);
+        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, null);
     }
 }
 
@@ -239,13 +245,16 @@ if (wfTask == "Formal Hearing")
     {
         var formalHearingUserId = getUserIDAssignedToTask(capId, "Formal Hearing")
         var userToSend = aa.person.getUser(formalHearingUserId).getOutput();
-        var formalHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-        var formalHearingUserPhone = userToSend.getPhoneNumber();
-        var formalHearingUserEmail = userToSend.getEmail();
+        if (userToSend != null)
+        {
+            var formalHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+            var formalHearingUserPhone = userToSend.getPhoneNumber();
+            var formalHearingUserEmail = userToSend.getEmail();
 
-        addParameter(emailParams, "$$assignUser$$", formalHearingUserName);
-        addParameter(emailParams, "$$userPhoneNum$$", formalHearingUserPhone);
-        addParameter(emailParams, "$$userEmail$$", formalHearingUserEmail);
+            addParameter(emailParams, "$$assignUser$$", formalHearingUserName);
+            addParameter(emailParams, "$$userPhoneNum$$", formalHearingUserPhone);
+            addParameter(emailParams, "$$userEmail$$", formalHearingUserEmail);
+        }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
         addParameter(emailParams, "$$hearingTime$$", hearingTime);
 
@@ -257,14 +266,17 @@ if (wfTask == "Formal Hearing")
         var formalHearingUserId = getUserIDAssignedToTask(capId, "Formal Hearing")
         logDebug("formal hearing user id is: " + formalHearingUserId);
         var userToSend = aa.person.getUser(formalHearingUserId).getOutput();
-        var formalHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-        var formalHearingUserPhone = userToSend.getPhoneNumber();
-        var formalHearingUserEmail = userToSend.getEmail();
+        if (userToSend != null)
+        {
+            var formalHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+            var formalHearingUserPhone = userToSend.getPhoneNumber();
+            var formalHearingUserEmail = userToSend.getEmail();
 
+            addParameter(emailParams, "$$assignUser$$", formalHearingUserName);
+            addParameter(emailParams, "$$userPhoneNum$$", formalHearingUserPhone);
+            addParameter(emailParams, "$$userEmail$$", formalHearingUserEmail);
+        }
         addParameter(emailParams, "$$dateSent$$", todayDateConverted);
-        addParameter(emailParams, "$$assignUser$$", formalHearingUserName);
-        addParameter(emailParams, "$$userPhoneNum$$", formalHearingUserPhone);
-        addParameter(emailParams, "$$userEmail$$", formalHearingUserEmail);
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
         addParameter(emailParams, "$$revisedFineAmount$$", revisedFineAmount);
@@ -299,13 +311,17 @@ if (wfTask == "Collection")
 }
 
 //Inspection Request
-if (wfTask == "Inspection Request")
+if (wfTask == "Request Inspection")
 {
     if (wfStatus == "Inspection Review")
     {
         //recipient needs to be the user assigned to the Enforcement Request Review task
         var eRRUserId = getUserIDAssignedToTask(capId, "Enforcement Request Review")
-        var eRRUserEmail = eRRUserId.getEmail();
+        var userToSend = aa.person.getUser(eRRUserId).getOutput();
+        if (userToSend != null)
+        {
+            var eRRUserEmail = userToSend.getEmail();
+        }
 
         sendNotification("", eRRUserEmail, "", "DEQ_OPC_ENF_INSP_REQ_COMPLETE", emailParams, null);
 
@@ -341,15 +357,18 @@ if (wfTask == "Inspection Request")
 }
 if (wfStatus == "Case Closed")
 {
-    var ccUserId = getUserIDAssignedToTask(capId, "Case Closed")
+    var ccUserId = getUserIDAssignedToTask(capId, wfTask)
     var userToSend = aa.person.getUser(ccUserId).getOutput();
-    var ccHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-    var ccHearingUserPhone = userToSend.getPhoneNumber();
-    var ccHearingUserEmail = userToSend.getEmail();
+    if (userToSend != null)
+    {
+        var ccHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+        var ccHearingUserPhone = userToSend.getPhoneNumber();
+        var ccHearingUserEmail = userToSend.getEmail();
 
-    addParameter(emailParams, "$$assignUser$$", ccHearingUserName);
-    addParameter(emailParams, "$$userPhoneNum$$", ccHearingUserPhone);
-    addParameter(emailParams, "$$userEmail$$", ccHearingUserEmail);
+        addParameter(emailParams, "$$assignUser$$", ccHearingUserName);
+        addParameter(emailParams, "$$userPhoneNum$$", ccHearingUserPhone);
+        addParameter(emailParams, "$$userEmail$$", ccHearingUserEmail);
+    }
 
     sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_CASE_CLOSED", emailParams, null);
 }
@@ -378,8 +397,7 @@ function updateTaskDueDate(taskName, dueDate) {
         }
     }
 }
-function updateAltID(newId)
-{
+function updateAltID(newId) {
     var itemCap = capId;
     if (arguments.length > 1 && arguments[1])
         itemCap = arguments[1];
@@ -391,11 +409,14 @@ function updateAltID(newId)
         logDebug("Problem updating alt Id: " + result.getErrorMessage());
 
 
-    if (!"undefined".equals(typeof Dpr) && Dpr.isProject(itemCap)) {
-        if (Dpr.projectExists(Dpr.getAdminUser(), itemCap)) {
+    if (!"undefined".equals(typeof Dpr) && Dpr.isProject(itemCap))
+    {
+        if (Dpr.projectExists(Dpr.getAdminUser(), itemCap))
+        {
             var project = {};
             var newCapId = aa.cap.getCapID(itemCap.getID1(), itemCap.getID2(), itemCap.getID3()).getOutput();
-            if (newCapId) {
+            if (newCapId)
+            {
                 Dpr.updateProject(Dpr.getAdminUser(), newCapId, {number: newCapId.getCustomID() + ""});
             }
         }
@@ -404,49 +425,52 @@ function updateAltID(newId)
 
 function getAddressInALine() {
 
-	var capAddrResult = aa.address.getAddressByCapId(capId);
-	var addressToUse = null;
-	var strAddress = "";
-		
-	if (capAddrResult.getSuccess()) {
-		var addresses = capAddrResult.getOutput();
-		if (addresses) {
-			for (zz in addresses) {
-  				capAddress = addresses[zz];
-				if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y")) 
-					addressToUse = capAddress;
-			}
-			if (addressToUse == null)
-				addressToUse = addresses[0];
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
 
-			if (addressToUse) {
-			    strAddress = addressToUse.getHouseNumberStart();
-			    var addPart = addressToUse.getStreetDirection();
-			    if (addPart && addPart != "") 
-			    	strAddress += " " + addPart;
-			    var addPart = addressToUse.getStreetName();
-			    if (addPart && addPart != "") 
-			    	strAddress += " " + addPart;	
-			    var addPart = addressToUse.getStreetSuffix();
-			    if (addPart && addPart != "") 
-			    	strAddress += " " + addPart;	
-			    var addPart = addressToUse.getCity();
-			    if (addPart && addPart != "") 
-			    	strAddress += " " + addPart + ",";
-			    var addPart = addressToUse.getState();
-			    if (addPart && addPart != "") 
-			    	strAddress += " " + addPart;	
-			    var addPart = addressToUse.getZip();
-			    if (addPart && addPart != "") 
-			    	strAddress += " " + addPart;	
-				return strAddress
-			}
-		}
-	}
-	return null;
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
 }
-function getUserIDAssignedToTask(vCapId, taskName)
-{
+function getUserIDAssignedToTask(vCapId, taskName) {
     currentUsrVar = null;
     var taskResult1 = aa.workflow.getTask(vCapId, taskName);
     if (taskResult1.getSuccess())
