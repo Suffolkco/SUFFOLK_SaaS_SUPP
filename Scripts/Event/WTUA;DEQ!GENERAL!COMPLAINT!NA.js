@@ -8,12 +8,13 @@ if (matches(wfTask, "Complaint Received"))
 {
   if (matches(wfStatus, "Assign to OPC", "Assign to WR", "Assign to WWM", "Assign to Ecology", "Assign to STP"))
   {
-    var userId = currentUserID;
-    var userToSend = aa.person.getUser(userId).getOutput();
-    var userName = userToSend.getFirstName() + " " + userToSend.getLastName();
-    var userDept = getDepartmentName(userId);
-    addParameter(emailParams, "$$userId$$", userName);
-    addParameter(emailParams, "$$userDept$$", userDept);
+    var userSendFrom = aa.person.getUser(currentUserID).getOutput();
+    var userFromDept = getDepartmentName(currentUserID);
+    var userNameFrom = userSendFrom.getFirstName() + " " + userSendFrom.getLastName();
+    var userIdAssigned = getUserIDAssignedToTask(capId, wfTask);
+    var userToSend = aa.person.getUser(userIdAssigned).getOutput();
+    addParameter(emailParams, "$$userId$$", userNameFrom);
+    addParameter(emailParams, "$$userDept$$", userFromDept);
     logDebug("sending email to " + userToSend.getEmail());
     sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
@@ -23,12 +24,14 @@ if (matches(wfTask, "Investigation Review"))
 {
   if (wfStatus == "Reassign")
   {
-    var userId = getUserIDAssignedToTask(capId, wfTask)
-    var userToSend = aa.person.getUser(userId).getOutput();
-    var userName = userToSend.getFirstName() + " " + userToSend.getLastName();
-    var userDept = userToSend.getDepartment();
-    addParameter(emailParams, "$$userId$$", userName);
-    addParameter(emailParams, "$$userDept$$", userDept);    logDebug("sending email to " + userToSend.getEmail());
+    var userSendFrom = aa.person.getUser(currentUserID).getOutput();
+    var userFromDept = getDepartmentName(currentUserID);
+    var userNameFrom = userSendFrom.getFirstName() + " " + userSendFrom.getLastName();
+    var userIdAssigned = getUserIDAssignedToTask(capId, wfTask);
+    var userToSend = aa.person.getUser(userIdAssigned).getOutput();
+    addParameter(emailParams, "$$userId$$", userNameFrom);
+    addParameter(emailParams, "$$userDept$$", userFromDept);
+    logDebug("sending email to " + userToSend.getEmail());
     sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
 }
