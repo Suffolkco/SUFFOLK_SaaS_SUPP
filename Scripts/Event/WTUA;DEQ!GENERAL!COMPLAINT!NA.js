@@ -11,7 +11,7 @@ if (matches(wfTask, "Complaint Received"))
     var userId = getUserIDAssignedToTask(capId, wfTask)
     var userToSend = aa.person.getUser(userId).getOutput();
     var userName = userToSend.getFirstName() + " " + userToSend.getLastName();
-    var userDept = userToSend.getDepartment();
+    var userDept = getDepartmentName(userId);
     addParameter(emailParams, "$$userId$$", userName);
     addParameter(emailParams, "$$userDept$$", userDept);
     logDebug("sending email to " + userToSend.getEmail());
