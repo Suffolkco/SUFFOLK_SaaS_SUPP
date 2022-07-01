@@ -8,7 +8,7 @@ if (matches(wfTask, "Complaint Received"))
 {
   if (matches(wfStatus, "Assign to OPC", "Assign to WR", "Assign to WWM", "Assign to Ecology", "Assign to STP"))
   {
-    var userId = getUserIDAssignedToTask(capId, wfTask)
+    var userId = currentUserID;
     var userToSend = aa.person.getUser(userId).getOutput();
     var userName = userToSend.getFirstName() + " " + userToSend.getLastName();
     var userDept = getDepartmentName(userId);
