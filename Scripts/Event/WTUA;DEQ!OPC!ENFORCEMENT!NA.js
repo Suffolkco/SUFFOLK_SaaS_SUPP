@@ -83,7 +83,7 @@ if (wfTask == "Violation Review")
                 {
                     if (!matches(aTwelveSite[ats]["Inspection Date"], "", null, " "))
                     {
-                        inspDates.push(aTwelveSite[ats]["Inspection Date"])
+                        inspDates.push(new Date(aTwelveSite[ats]["Inspection Date"]));
                     }
                 }
             }
@@ -97,7 +97,7 @@ if (wfTask == "Violation Review")
                 {
                     if (!matches(aEighteenSite[aes]["Inspection Date"], "", null, " "))
                     {
-                        inspDates.push(aEighteenSite[aes]["Inspection Date"]);
+                        inspDates.push(new Date(aEighteenSite[aes]["Inspection Date"]));
                     }
                 }
             }
