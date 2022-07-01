@@ -1,6 +1,7 @@
 //WTUA:DEQ/GENERAL/COMPLAINT/NA
 var emailParams = aa.util.newHashtable();
 var templateName = "";
+addParameter(emailParams, "$$altID$$", capId.getCustomID());
 
 
 if (matches(wfTask, "Complaint Investigation"))
@@ -9,10 +10,12 @@ if (matches(wfTask, "Complaint Investigation"))
   {
     var userId = getUserIDAssignedToTask(capId, wfTask)
     var userToSend = aa.person.getUser(userId).getOutput();
-    var userName = userId.getFirstName() + " " + userId.getLastName();
-    addParameter(emailParams, "$$FullNameBusName$$", userName);
+    var userName = userToSend.getFirstName() + " " + userToSend.getLastName();
+    var userDept = userToSend.getDepartment();
+    addParameter(emailParams, "$$userId$$", userName);
+    addParameter(emailParams, "$$userDept$$", userDept);
     logDebug("sending email to " + userToSend.getEmail());
-    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_ASSIGNMENT", emailParams, null);
+    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
 }
 
@@ -22,10 +25,11 @@ if (matches(wfTask, "Investigation Review"))
   {
     var userId = getUserIDAssignedToTask(capId, wfTask)
     var userToSend = aa.person.getUser(userId).getOutput();
-    var userName = userId.getFirstName() + " " + userId.getLastName();
-    addParameter(emailParams, "$$FullNameBusName$$", userName);
-    logDebug("sending email to " + userToSend.getEmail());
-    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_ASSIGNMENT", emailParams, null);
+    var userName = userToSend.getFirstName() + " " + userToSend.getLastName();
+    var userDept = userToSend.getDepartment();
+    addParameter(emailParams, "$$userId$$", userName);
+    addParameter(emailParams, "$$userDept$$", userDept);    logDebug("sending email to " + userToSend.getEmail());
+    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
 }
 
