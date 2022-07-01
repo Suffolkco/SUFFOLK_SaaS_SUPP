@@ -43,7 +43,7 @@ if (!publicUser)
         suffcoOffice = "Office of Water Resources";
     }
 
-    var staffEmailsToSend = lookup("ACA_CONFIGS", suffcoOffice);
+    var staffEmailsToSend = lookup("DEQ_CMPLNT_OFFICE_EMAILS", suffcoOffice);
 
 
     sendNotification("", staffEmailsToSend, "", "DEQ_CMPLNT_ASSIGNED", emailParams, null);
