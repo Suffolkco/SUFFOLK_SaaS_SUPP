@@ -4,7 +4,7 @@ var templateName = "";
 addParameter(emailParams, "$$altID$$", capId.getCustomID());
 
 
-if (matches(wfTask, "Complaint Investigation"))
+if (matches(wfTask, "Complaint Received"))
 {
   if (matches(wfStatus, "Assign to OPC", "Assign to WR", "Assign to WWM", "Assign to Ecology", "Assign to STP"))
   {
