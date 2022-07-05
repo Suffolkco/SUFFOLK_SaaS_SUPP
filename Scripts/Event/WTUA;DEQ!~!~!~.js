@@ -118,7 +118,7 @@ else if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
     else
     {
         var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
-        if(!matches(itemCapType, "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application"))
+        if(!matches(itemCapType, "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application", "DEQ/WWM/SHIP/Application"))
         {
             workflowAwaitingClientDEQ();
         }
@@ -160,7 +160,7 @@ else if(wfStatus == "Awaiting Client Reply")
             }        
         }
     }
-    else if(!matches(itemCapType, "DEQ/WR/Water Modification/Application", "DEQ/WR/Backflow/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application", "DEQ/WWM/Subdivision/Application")) 
+    else if(!matches(itemCapType, "DEQ/WR/Water Modification/Application", "DEQ/WR/Backflow/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application", "DEQ/WWM/Subdivision/Application", "DEQ/WWM/SHIP/Application")) 
     {            
         workflowAwaitingClientDEQ();
     }
