@@ -50,7 +50,10 @@ if (!publicUser)
                     logDebug("license number is: " + lpArray[i].getLicenseNbr());
                     logDebug("license type is: " + lpArray[i].getLicenseType());
                     logDebug("Professional types are: " + lpArray[i].getAddress3());
-                    endorsementArray = lpArray[i].getAddress3().split(", ");
+                    if (lpArray[i].getAddress3() != null)
+                    {
+                        endorsementArray = lpArray[i].getAddress3().split(", ");
+                    }
                     logDebug("endorsementArray is: " + endorsementArray);
                     var lpRecord = aa.cap.getCapID(lpArray[i].getLicenseNbr()).getOutput();
                     if (!matches(lpRecord, "", null, undefined))
@@ -64,21 +67,28 @@ if (!publicUser)
                         var licNoText = "Professional number: " + licNo + " (not linked to a record.)";
                         addParameter(emailParams, "$$lpRecord$$", licNoText);
                     }
-                    for (endors in endorsementArray)
+                    if (endorsementArray != null)
                     {
-                        logDebug("endorsement array entry is: " + endorsementArray[endors]);
-                        if (endorsementArray[endors] == "LW9")
+                        for (endors in endorsementArray)
                         {
-                            lw9Found = true;
+                            logDebug("endorsement array entry is: " + endorsementArray[endors]);
+                            if (endorsementArray[endors] == "LW9")
+                            {
+                                lw9Found = true;
+                            }
+                            if (endorsementArray[endors] == "LW10")
+                            {
+                                lw10Found = true;
+                            }
+                            if (matches(endorsementArray[endors], "LW1", "LW2", "LW7"))
+                            {
+                                lw127Found = true;
+                            }
                         }
-                        if (endorsementArray[endors] == "LW10")
-                        {
-                            lw10Found = true;
-                        }
-                        if (matches(endorsementArray[endors], "LW1", "LW2", "LW7"))
-                        {
-                            lw127Found = true;
-                        }
+                    }
+                    else
+                    {
+                        addParameter(emailParams, "$$noLpRecord$$", "This LP does not have an endorsement code associated with them, but the record that they have submitted is " + capId.getCustomID());
                     }
                 }
             }

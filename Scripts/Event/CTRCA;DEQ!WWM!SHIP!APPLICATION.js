@@ -1,105 +1,109 @@
 
-    var contactResult = aa.people.getCapContactByCapID(capId);
-    var capContacts = contactResult.getOutput();
-    var emailParams = aa.util.newHashtable();
-    var conEmail = "";
-    for (c in capContacts)
+var contactResult = aa.people.getCapContactByCapID(capId);
+var capContacts = contactResult.getOutput();
+var emailParams = aa.util.newHashtable();
+var conEmail = "";
+for (c in capContacts)
+{
+    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
     {
-        if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
+        if (!matches(capContacts[c].email, null, undefined, ""))
         {
-            if (!matches(capContacts[c].email, null, undefined, ""))
-            {
-                conEmail += capContacts[c].email + ";"
-            }
+            conEmail += capContacts[c].email + ";"
         }
     }
-    
-    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
-    if (capParcelResult.getSuccess())
+}
+
+var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+if (capParcelResult.getSuccess())
+{
+    var Parcels = capParcelResult.getOutput().toArray();
+    for (zz in Parcels)
     {
-        var Parcels = capParcelResult.getOutput().toArray();
-        for (zz in Parcels)
+        var parcelNumber = Parcels[zz].getParcelNumber();
+        logDebug("parcelNumber = " + parcelNumber);
+    }
+}
+
+var addrResult = getAddressInALine(capId);
+
+var vEParams = aa.util.newHashtable();
+var addrResult = getAddressInALine(capId);
+addParameter(vEParams, "$$altID$$", capId.getCustomID());
+addParameter(vEParams, "$$address$$", addrResult);
+addParameter(vEParams, "$$Parcel$$", parcelNumber);
+addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
+
+sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
+
+//EHIMS2-35 - WWM Liquid Waste LP check
+
+var greaseTrap = getAppSpecific("In-Kind Grease Trap Replacement");
+var septicInstall = getAppSpecific("Septic Tank Installation");
+var iaOwts = getAppSpecific("I/A OWTS Installation");
+var leachingPool = getAppSpecific("Leaching Pool(s)/Galley(s) Installation");
+var shallowDrainfield = getAppSpecific("Pressurized Shallow Drainfield Installation");
+var gravity = getAppSpecific("Gravity (Trench or Bed) Drainfield Installation");
+var other = getAppSpecific("Other");
+var saniDecommission = getAppSpecific("Existing Sanitary System Decommissioning ONLY");
+var pumpOutOnly = getAppSpecific("Pump Out ONLY");
+var lw9Req = false;
+var lw9Found = false;
+var lw10Req = false;
+var lw10Found = false;
+var lw127Req = false;
+var lw127Found = false;
+var conditionAddAndEmail = false;
+var endorsementArray = new Array();
+var lpList = aa.licenseScript.getLicenseProf(capId);
+logDebug("lplist is: " + lpList);
+
+if (greaseTrap == "CHECKED" || septicInstall == "CHECKED" || leachingPool == "CHECKED" || gravity == "CHECKED")
+{
+    lw9Req = true;
+}
+if (iaOwts == "CHECKED" || shallowDrainfield == "CHECKED")
+{
+    lw10Req = true;
+}
+if (pumpOutOnly == "CHECKED")
+{
+    lw127Req = true;
+}
+if (lpList && lpList != null)
+{
+    var lpArray = lpList.getOutput();
+    logDebug("lparray is: " + lpArray);
+
+    for (i in lpArray)
+    {
+        if (!matches(lpArray[i].getLicenseNbr(), "", null) && !matches(lpArray[i].getLicenseType(), "", null))
         {
-            var parcelNumber = Parcels[zz].getParcelNumber();
-            logDebug("parcelNumber = " + parcelNumber);
-        }
-    }
-    
-    var addrResult = getAddressInALine(capId);
-    
-    var vEParams = aa.util.newHashtable();
-    var addrResult = getAddressInALine(capId);
-    addParameter(vEParams, "$$altID$$", capId.getCustomID());
-    addParameter(vEParams, "$$address$$", addrResult);
-    addParameter(vEParams, "$$Parcel$$", parcelNumber);
-    addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
-    
-    sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
-    
-    //EHIMS2-35 - WWM Liquid Waste LP check
-    
-    var greaseTrap = getAppSpecific("In-Kind Grease Trap Replacement");
-    var septicInstall = getAppSpecific("Septic Tank Installation");
-    var iaOwts = getAppSpecific("I/A OWTS Installation");
-    var leachingPool = getAppSpecific("Leaching Pool(s)/Galley(s) Installation");
-    var shallowDrainfield = getAppSpecific("Pressurized Shallow Drainfield Installation");
-    var gravity = getAppSpecific("Gravity (Trench or Bed) Drainfield Installation");
-    var other = getAppSpecific("Other");
-    var saniDecommission = getAppSpecific("Existing Sanitary System Decommissioning ONLY");
-    var pumpOutOnly = getAppSpecific("Pump Out ONLY");
-    var lw9Req = false;
-    var lw9Found = false;
-    var lw10Req = false;
-    var lw10Found = false;
-    var lw127Req = false;
-    var lw127Found = false;
-    var conditionAddAndEmail = false;
-    var endorsementArray = new Array();
-    var lpList = aa.licenseScript.getLicenseProf(capId);
-    logDebug("lplist is: " + lpList);
-    
-    if (greaseTrap == "CHECKED" || septicInstall == "CHECKED" || leachingPool == "CHECKED" || gravity == "CHECKED")
-    {
-        lw9Req = true;
-    }
-    if (iaOwts == "CHECKED" || shallowDrainfield == "CHECKED")
-    {
-        lw10Req = true;
-    }
-    if (pumpOutOnly == "CHECKED")
-    {
-        lw127Req = true;
-    }
-    if (lpList && lpList != null)
-    {
-        var lpArray = lpList.getOutput();
-        logDebug("lparray is: " + lpArray);
-    
-        for (i in lpArray)
-        {
-            if (!matches(lpArray[i].getLicenseNbr(), "", null) && !matches(lpArray[i].getLicenseType(), "", null))
+            if (lpArray[i].getLicenseType() == "WWM Liquid Waste")
             {
-                if (lpArray[i].getLicenseType() == "WWM Liquid Waste")
+                logDebug("license number is: " + lpArray[i].getLicenseNbr());
+                var licNo = lpArray[i].getLicenseNbr();
+                logDebug("licno is: " + licNo);
+                logDebug("license type is: " + lpArray[i].getLicenseType());
+                logDebug("Professional types are: " + lpArray[i].getAddress3());
+                if (lpArray[i].getAddress3() != null)
                 {
-                    logDebug("license number is: " + lpArray[i].getLicenseNbr());
-                    var licNo = lpArray[i].getLicenseNbr();
-                    logDebug("licno is: " + licNo);
-                    logDebug("license type is: " + lpArray[i].getLicenseType());
-                    logDebug("Professional types are: " + lpArray[i].getAddress3());
                     endorsementArray = lpArray[i].getAddress3().split(", ");
-                    //logDebug("endorsementArray is: " + endorsementArray);
-                    var lpRecord = aa.cap.getCapID(lpArray[i].getLicenseNbr()).getOutput();
-                    if (!matches(lpRecord, "", null, undefined))
-                    {
-                        logDebug("lpRecord is: " + lpRecord);
-                        logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
-                        addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
-                    }
-                    else
-                    {
-                        var licNoText = "Professional number: " + licNo + " (not linked to a record.)";
-                        addParameter(emailParams, "$$lpRecord$$", licNoText);
-                    }
+                }
+                var lpRecord = aa.cap.getCapID(lpArray[i].getLicenseNbr()).getOutput();
+                if (!matches(lpRecord, "", null, undefined))
+                {
+                    logDebug("lpRecord is: " + lpRecord);
+                    logDebug("lpRecord AltID is: " + lpRecord.getCustomID());
+                    addParameter(emailParams, "$$lpRecord$$", lpRecord.getCustomID());
+                }
+                else
+                {
+                    var licNoText = "Professional number: " + licNo + " (not linked to a record.)";
+                    addParameter(emailParams, "$$lpRecord$$", licNoText);
+                }
+                if (endorsementArray != null)
+                {
                     for (endors in endorsementArray)
                     {
                         logDebug("endorsement array entry is: " + endorsementArray[endors]);
@@ -117,20 +121,25 @@
                         }
                     }
                 }
+                else
+                {
+                    addParameter(emailParams, "$$noLpRecord$$", "This LP does not have an endorsement code associated with them, but the record that they have submitted is " + capId.getCustomID());
+                }
             }
         }
-        if ((lw9Req && !lw9Found) || (lw10Req && !lw10Found) || (lw127Req && !lw127Found))
-        {
-            conditionAddAndEmail = true;
-        }
     }
-    
-    if (conditionAddAndEmail)
+    if ((lw9Req && !lw9Found) || (lw10Req && !lw10Found) || (lw127Req && !lw127Found))
     {
-        addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
-        addParameter(emailParams, "$$altID$$", capId.getCustomID());
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
+        conditionAddAndEmail = true;
     }
+}
+
+if (conditionAddAndEmail)
+{
+    addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
+    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+    sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
+}
 
 function getContactName(vConObj) {
     if (vConObj.people.getContactTypeFlag() == "organization")
