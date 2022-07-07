@@ -188,7 +188,6 @@ if (wfTask == "Preliminary Hearing")
 
             if (tsiResult.getSuccess())
             {
-                var tsiArray = [];
                 var tsiOut = tsiResult.getOutput();
                 var hearingDateTsi = "";
                 for (t in tsiOut)
