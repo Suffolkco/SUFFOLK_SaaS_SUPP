@@ -25,6 +25,28 @@ if ((iaInstall == "CHECKED" || ikGrease == "CHECKED" || stInstall == "CHECKED" |
 
     }
 }
+if (wfTask == "Final Review" && wfStatus == "Registration Complete")
+{
+    loadASITables();
+    var ssd = SHIPSYSTEMDETAILS.length;
+
+    if (typeof (SHIPSYSTEMDETAILS) == "object")
+    {
+        if (ssd < 1)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("Complete the SHIP SYSTEM DETAILS Custom List prior to finalizing this registration.");
+        }
+    }
+    else
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Complete the SHIP SYSTEM DETAILS Custom List prior to finalizing this registration.");
+    }
+}
+
 
 function getChildren(pCapType, pParentCapId) 
 {
