@@ -16,7 +16,30 @@ if (matches(wfTask, "Complaint Received"))
     addParameter(emailParams, "$$userId$$", userNameFrom);
     addParameter(emailParams, "$$userDept$$", userFromDept);
     logDebug("sending email to " + userToSend.getEmail());
-    sendNotification("", userToSend.getEmail(), "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
+    if (wfStatus == "Assign to Ecology")
+    {
+        suffcoOffice = "Office of Ecology";
+    }
+    else if (wfStatus == "Assign to OPC")
+    {
+        suffcoOffice = "Office of Pollution Control";
+    }
+    else if (wfStatus == "Assign to WWM")
+    {
+        suffcoOffice = "Office of Wastewater Management";
+    }
+    else if (wfStatus == "Assign to WR")
+    {
+        suffcoOffice = "Office of Water Resources";
+    }
+    else if (wfStatus == "Assign to STP")
+    {
+        suffcoOffice = "Sewage Treatment Plants";
+    }
+
+    var staffEmailsToSend = lookup("DEQ_CMPLNT_OFFICE_EMAILS", suffcoOffice);
+
+    sendNotification("", staffEmailsToSend, "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
 }
 
