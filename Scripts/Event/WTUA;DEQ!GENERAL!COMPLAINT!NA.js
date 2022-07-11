@@ -38,7 +38,7 @@ if (matches(wfTask, "Complaint Received"))
 
     var staffEmailsToSend = lookup("DEQ_CMPLNT_OFFICE_EMAILS", suffcoOffice);
     logDebug("sending email to " + staffEmailsToSend);
-    sendNotification("", staffEmailsToSend, "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
+    sendNotification("", String(staffEmailsToSend), "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
 }
 

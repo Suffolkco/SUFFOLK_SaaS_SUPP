@@ -46,6 +46,6 @@ if (!publicUser)
     var staffEmailsToSend = lookup("DEQ_CMPLNT_OFFICE_EMAILS", suffcoOffice);
 
 
-    sendNotification("", staffEmailsToSend, "", "DEQ_CMPLNT_ASSIGNED", emailParams, null);
+    sendNotification("", String(staffEmailsToSend), "", "DEQ_CMPLNT_ASSIGNED", emailParams, null);
 
 }
