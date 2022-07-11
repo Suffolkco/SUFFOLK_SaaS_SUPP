@@ -15,7 +15,6 @@ if (matches(wfTask, "Complaint Received"))
     var userToSend = aa.person.getUser(userIdAssigned).getOutput();
     addParameter(emailParams, "$$userId$$", userNameFrom);
     addParameter(emailParams, "$$userDept$$", userFromDept);
-    logDebug("sending email to " + userToSend.getEmail());
     if (wfStatus == "Assign to Ecology")
     {
         suffcoOffice = "Office of Ecology";
@@ -38,7 +37,7 @@ if (matches(wfTask, "Complaint Received"))
     }
 
     var staffEmailsToSend = lookup("DEQ_CMPLNT_OFFICE_EMAILS", suffcoOffice);
-
+    logDebug("sending email to " + staffEmailsToSend);
     sendNotification("", staffEmailsToSend, "", "DEQ_CMPLNT_REASSIGNED", emailParams, null);
   }
 }
