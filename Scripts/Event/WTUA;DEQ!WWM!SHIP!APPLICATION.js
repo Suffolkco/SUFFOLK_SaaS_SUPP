@@ -190,20 +190,21 @@
     //Preliminary Sketch Review
     if (wfTask == "Preliminary Sketch Review")
     {
-        if (wfStatus == "OK to Proceed") 
-        {
-            sendNotification("", appEmail, "", "DEQ_SHIP_OK_PENDING_GRANT_REVIEW", vEParams, null);
-        }
-        if (wfStatus == "Inspection Required Prior to Install") 
-        {
-            sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
-        }
-        if (wfStatus == "Inspection Required Prior to Backfill")
-        {
-            sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
-        }
         if (matches(wfStatus, "OK to Proceed", "Inspection Required Prior to Install", "Inspection Required Prior to Backfill"))
         {
+            if (wfStatus == "OK to Proceed") 
+            {
+                sendNotification("", appEmail, "", "DEQ_SHIP_OK_PENDING_GRANT_REVIEW", vEParams, null);
+            }
+            if (wfStatus == "Inspection Required Prior to Install") 
+            {
+                sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
+            }
+            if (wfStatus == "Inspection Required Prior to Backfill")
+            {
+                sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
+            }
+
             var wfHist = aa.workflow.getWorkflowHistory(capId, null);
             var wfDates = [];
             var maxWfDate;
