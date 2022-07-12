@@ -68,12 +68,6 @@
     //Application Review
     if (wfTask == "Application Review")
     {
-        if (wfStatus == "Pending Review")
-        {
-            //sendNotification("", conEmail, "", "DEQ_SHIP_APPLICATION_RECEIVED", vEParams, null);
-            //sendNotification("", conEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
-            //may not be needed if these are sending on submittal
-        }
         if (wfStatus == "I/A OWTS")
         {
             sendNotification("", appEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
@@ -178,6 +172,11 @@
                 }
                 sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
             }
+            if (wfStatus == "Full Permit Required")
+            {
+                closeTask("Field Consult Required", "Full Permit Required", "", "");
+                deactivateTask("Grant Review");
+            }
         }
 
         if (wfStatus == "Waived")
@@ -250,11 +249,10 @@
                 }
             }
         }
-        if (matches(wfStatus, "Full Permit Required", "Withdrawn"))
+        if (matches(wfStatus, "Full Permit Required"))
         {
             closeTask("Preliminary Sketch Review", "Full Permit Required", "", "");
-            deactivateTask("Inspections");
-            deactivateTask("Final Review");
+            deactivateAllActiveTasks(capId);
         }
     }
 
@@ -497,6 +495,7 @@
     if (wfStatus == "Withdrawn")
     {
         sendNotification("", appEmail, "", "DEQ_SHIP_WITHDRAWN", vEParams, null);
+        deactivateAllActiveTasks(capId);
     }
 
     /*
@@ -654,4 +653,23 @@
             logDebug("You have no permission.");
             return false;
         }
+    }
+    function deactivateAllActiveTasks(targetCapId) {
+        var t = aa.workflow.getTasks(targetCapId);
+        if (t.getSuccess())
+            wfObj = t.getOutput();
+        else {
+            logDebug("**INFO: deactivateAllActiveTasks() Failed to get workflow Tasks: " + t.getErrorMessage());
+            return false;
+        }
+        for (i in wfObj) {
+            fTask = wfObj[i];
+            if (fTask.getActiveFlag().equals("Y")) {
+                var deact = aa.workflow.adjustTask(targetCapId, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
+                if (!deact.getSuccess()) {
+                    logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
+                }
+            }
+        }
+        return true;
     }
