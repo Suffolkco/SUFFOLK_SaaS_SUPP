@@ -1,5 +1,6 @@
     //WTUA:DEQ/WWM/SHIP/APPLICATION
 
+    showDebug = true;
     var contactResult = aa.people.getCapContactByCapID(capId);
     var capContacts = contactResult.getOutput();
     var addrResult = getAddressInALine(capId);
