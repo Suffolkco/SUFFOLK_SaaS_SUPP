@@ -164,7 +164,10 @@ else if(wfStatus == "Awaiting Client Reply")
     {            
         workflowAwaitingClientDEQ();
     }
+    if (itemCapType != "DEQ/WWM/SHIP/Application")
+    {
     updateAppStatus("Awaiting Client Reply");
+    }
 }
 if (wfTask == 'Plans Coordination' && wfStatus == 'Plan Revisions Needed') 
     {

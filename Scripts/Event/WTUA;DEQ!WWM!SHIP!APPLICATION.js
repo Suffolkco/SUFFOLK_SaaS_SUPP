@@ -122,7 +122,7 @@
                 sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
             }
         }
-        if (wfStatus == "Full Permit Required" || wfStatus == "Withdrawn")
+        if (wfStatus == "Full Permit Required")
         {
             closeTask("Application Review", "Full Permit Required", "", "");
             deactivateTask("Field Consult Required");
