@@ -66,7 +66,7 @@ if (wfTask == "Violation Review")
 
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         updateTaskDueDate("Violation Review", dateSixtyDaysOut);
-        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
     }
     if (wfStatus == "NOV Letter Sent")
@@ -124,7 +124,7 @@ if (wfTask == "Enforcement Request Review")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
@@ -161,7 +161,7 @@ if (wfTask == "Preliminary Hearing")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
@@ -241,7 +241,7 @@ if (wfTask == "Formal Hearing")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
@@ -296,7 +296,7 @@ if (wfTask == "Commissioner's Order")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
@@ -308,7 +308,7 @@ if (wfTask == "Collection")
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
-        //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
