@@ -6,7 +6,7 @@ if (currentUserID == "RLITTLEFIELD")
     showDebug = true;
 }
 
-if (conditionType == "Notice of Hearing" && conditionStatus == "Met")
+if (conditionComment == "Notice of Hearing" && conditionStatus == "Met")
 {
     editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", parentCapId);
     var childRecords = getChildren("DEQ/OPC/*/*", parentCapId);
