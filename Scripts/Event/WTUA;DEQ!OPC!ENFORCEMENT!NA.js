@@ -133,7 +133,9 @@ if (wfTask == "Enforcement Request Review")
         //generateReportBatch(capId, "NOPH", 'DEQ', null);
 
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
-        addStdCondition("DEQ", "Notice of Hearing");
+        addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+        addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
+
     }
     if (wfStatus == "NOFH Sent")
     {
@@ -141,7 +143,9 @@ if (wfTask == "Enforcement Request Review")
         //generateReportBatch(capId, "NOFH", 'DEQ', null);
 
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
-        addStdCondition("DEQ", "Notice of Hearing");
+        addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+        addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
+
     }
     if (wfStatus == "Warning Letter Sent")
     {
@@ -493,5 +497,29 @@ function getUserIDAssignedToTask(vCapId, taskName) {
     } else
     {
         return false;
+    }
+}
+function addStdConditionStrict(cType, cDesc) {
+    var itemCap = capId;
+    if (arguments.length == 3) {
+        itemCap = arguments[2]; // use cap ID specified in args
+    }
+    if (!aa.capCondition.getStandardConditions) {
+        logDebug("addStdConditionStrict function is not available in this version of Accela Automation.");
+    } else {
+        standardConditions = aa.capCondition.getStandardConditions(cType, cDesc).getOutput();
+        for (i = 0; i < standardConditions.length; i++) {
+            // Activate strict match
+            if (standardConditions[i].getConditionType().toUpperCase() == cType.toUpperCase() && standardConditions[i].getConditionDesc().toUpperCase() == cDesc.toUpperCase()) {
+                standardCondition = standardConditions[i];
+                var addCapCondResult = aa.capCondition.addCapCondition(itemCap, standardCondition.getConditionType(), standardCondition.getConditionDesc(), standardCondition.getConditionComment(), sysDate, null, sysDate, null, null, standardCondition.getImpactCode(), systemUserObj, systemUserObj, "Applied", currentUserID, "A", null, standardCondition.getDisplayConditionNotice(), standardCondition.getIncludeInConditionName(), standardCondition.getIncludeInShortDescription(), standardCondition.getInheritable(), standardCondition.getLongDescripton(), standardCondition.getPublicDisplayMessage(), standardCondition.getResolutionAction(), null, null, standardCondition.getConditionNbr(), standardCondition.getConditionGroup(), standardCondition.getDisplayNoticeOnACA(), standardCondition.getDisplayNoticeOnACAFee(), standardCondition.getPriority(), standardCondition.getConditionOfApproval());
+
+                if (addCapCondResult.getSuccess()) {
+                    logDebug("Successfully added condition (" + standardCondition.getConditionDesc() + ")");
+                } else {
+                    logDebug("**ERROR: adding condition (" + standardCondition.getConditionDesc() + "): " + addCapCondResult.getErrorMessage());
+                }
+            }
+        }
     }
 }
