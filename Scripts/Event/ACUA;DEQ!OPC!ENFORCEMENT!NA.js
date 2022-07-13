@@ -19,7 +19,7 @@ if (conditionComment == "Notice of Hearing" && conditionStatus == "Met")
 
     for (unmetCond in unmetCondsArray)
     {
-        logDebug("unmetconds is: " + unmetCondsArray[unmetCond]);
+        logDebug("unmetconds is: " + unmetCondsArray[unmetCond].getOutput());
     }
 }
 function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse) {
