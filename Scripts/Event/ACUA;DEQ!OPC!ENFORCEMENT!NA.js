@@ -11,40 +11,14 @@ if (conditionComment == "Notice of Hearing" && conditionStatus == "Met")
     editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", parentCapId);
     var childRecords = getChildren("DEQ/OPC/*/*", parentCapId);
 
-    var unmetCondsArray = [];
     for (child in childRecords)
     {
-        unmetCondsArray.push(getUnmetConditions(childRecords[child]));
-    }
-
-    for (unmetCond in unmetCondsArray)
-    {
-        logDebug("unmetconds is: " + unmetCondsArray[unmetCond]);
-        exploreObject(unmetCondsArray[unmetCond]);
-    }
-}
-
-function exploreObject(objExplore) {
-
-    logDebug("Methods:")
-    for (x in objExplore)
-    {
-        if (typeof (objExplore[x]) == "function")
-        {
-            logDebug("<font color=blue><u><b>" + x + "</b></u></font> ");
-            logDebug("   " + objExplore[x] + "<br>");
-        }
-    }
-
-    logDebug("");
-    logDebug("Properties:")
-    for (x in objExplore)
-    {
-        if (typeof (objExplore[x]) != "function")
-            logDebug("  <b> " + x + ": </b> " + objExplore[x]);
+        logDebug("inside my array and child cap id is: " + childRecords[child].getCustomID());
+        editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", childRecords[child]);
     }
 
 }
+
 function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse) {
     if (pType == null)
     {
