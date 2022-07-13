@@ -13,10 +13,12 @@ if (conditionComment == "Notice of Hearing" && conditionStatus == "Met")
 
     for (child in childRecords)
     {
-        logDebug("inside my array and child cap id is: " + childRecords[child].getCustomID());
-        editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", childRecords[child]);
+        if (childRecords[child].getCustomID() != capId.getCustomID())
+        {
+            logDebug("inside my array and child cap id is: " + childRecords[child].getCustomID());
+            editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", childRecords[child]);
+        }
     }
-
 }
 
 function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse) {
@@ -62,22 +64,4 @@ function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse) 
 
     logDebug("ERROR: no matching condition found");
     return false;
-}
-
-function getUnmetConditions() {
-    var itemCap = capId;
-    if (arguments.length > 0)
-        itemCap = arguments[0];
-    var condResult = aa.capCondition.getCapConditions(itemCap);
-    var condArray = new Array();
-    if (condResult.getSuccess())
-    {
-        var capConds = condResult.getOutput();
-        for (cc in capConds)
-        {
-            if (capConds[cc].getConditionStatus() != "Met") //"Y".equals(capConds[cc].getConditionOfApproval())
-                condArray.push(capConds[cc]);
-        }
-    }
-    return condArray;
 }
