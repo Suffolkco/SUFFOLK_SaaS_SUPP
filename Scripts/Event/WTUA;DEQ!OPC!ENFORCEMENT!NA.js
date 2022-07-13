@@ -133,7 +133,7 @@ if (wfTask == "Enforcement Request Review")
         //generateReportBatch(capId, "NOPH", 'DEQ', null);
 
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
-        //add a condition to this record and parent SITE record
+        addStdCondition("DEQ", "Notice of Hearing");
     }
     if (wfStatus == "NOFH Sent")
     {
@@ -141,7 +141,7 @@ if (wfTask == "Enforcement Request Review")
         //generateReportBatch(capId, "NOFH", 'DEQ', null);
 
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
-        //add a condition to this record and parent SITE record
+        addStdCondition("DEQ", "Notice of Hearing");
     }
     if (wfStatus == "Warning Letter Sent")
     {

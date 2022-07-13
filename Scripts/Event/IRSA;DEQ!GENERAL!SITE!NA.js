@@ -67,7 +67,7 @@ if (inspResult == "Completed" || inspResult == "Fail")
             rFiles.push(rFile);
 
             getRecordParams4Notification(emailParams);
-            addParameter(emailParams, "$$altID$$", capId.getCustomID()); 
+            addParameter(emailParams, "$$altID$$", capId.getCustomID());
             sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);
         }
     }
@@ -77,21 +77,17 @@ if (inspResult == "Completed" || inspResult == "Fail")
 //Code Enforcement Scripting
 if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspection", "OPC PBS Site GSR Inspection", "OPC PBS Site Re-Inspection", "OPC Non-PBS Site OP Inspection", "OPC Non-PBS Site Other Inspection", "OPC Non-PBS Site Re-Inspection"))
 {
-if (inspResult == "Violations Found")
-{
-    var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA");
-    copyContacts(capId, enfChild);
-    copyParcel(capId, enfChild);
-    copyAddress(capId, enfChild);
-    var siteAltId = capId.getCustomID();
-    //waiting until this field exists before i leave it in
-    //editAppSpecific("Site Record ID", siteAltId, enfChild);
-    var fileRefNumber = getAppSpecific("File Reference Number", capId);
-        //waiting until this field exists before i leave it in
-//    editAppSpecific("File Reference Number", fileRefNumber, enfChild);
-
-//need to also re-edit the altid with the mask decisions once the mask information is set up on the record
-}
+    if (inspResult == "Violations Found")
+    {
+        var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA");
+        copyContacts(capId, enfChild);
+        copyParcel(capId, enfChild);
+        copyAddress(capId, enfChild);
+        var siteAltId = capId.getCustomID();
+        editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+        var fileRefNumber = getAppSpecific("File Reference Number", capId);
+        editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+    }
 }
 
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile) {
