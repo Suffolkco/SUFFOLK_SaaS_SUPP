@@ -120,6 +120,7 @@ if (wfTask == "Violation Review")
 //Enforcement Request Review
 if (wfTask == "Enforcement Request Review")
 {
+    var parentCapId = getParent(capId);
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);

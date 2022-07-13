@@ -6,22 +6,23 @@ if (currentUserID == "RLITTLEFIELD")
     showDebug = true;
 }
 
-editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", parentCapId);
-var childRecords = getChildren("DEQ/OPC/*/*", parentCapId);
-
-var unmetCondsArray = [];
-for (child in childRecords)
+if (conditionType == "Notice of Hearing" && conditionStatus == "Met")
 {
-    unmetCondsArray.push(getUnmetConditions(childRecords[child]));
+    editCapConditionWithStatus("DEQ", "Notice of Hearing", "Applied", "Met", parentCapId);
+    var childRecords = getChildren("DEQ/OPC/*/*", parentCapId);
+
+    var unmetCondsArray = [];
+    for (child in childRecords)
+    {
+        unmetCondsArray.push(getUnmetConditions(childRecords[child]));
+    }
+
+    for (unmetCond in unmetCondsArray)
+    {
+        logDebug("unmetconds is: " + unmetCondsArray[unmetCond]);
+    }
 }
-
-for (unmetCond in unmetCondsArray)
-{
-    logDebug("unmetconds is: " + unmetCondsArray[unmetCond]);
-}
-
-function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse)
-{
+function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse) {
     if (pType == null)
     {
         var condResult = aa.capCondition.getCapConditions(capIdToUse);
@@ -66,8 +67,7 @@ function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse)
     return false;
 }
 
-function getUnmetConditions()
-{
+function getUnmetConditions() {
     var itemCap = capId;
     if (arguments.length > 0)
         itemCap = arguments[0];
