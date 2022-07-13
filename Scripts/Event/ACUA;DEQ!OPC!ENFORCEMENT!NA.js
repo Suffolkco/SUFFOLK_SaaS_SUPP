@@ -19,8 +19,31 @@ if (conditionComment == "Notice of Hearing" && conditionStatus == "Met")
 
     for (unmetCond in unmetCondsArray)
     {
-        logDebug("unmetconds is: " + unmetCondsArray[unmetCond].getOutput());
+        logDebug("unmetconds is: " + unmetCondsArray[unmetCond]);
+        exploreObject(unmetCondsArray[unmetCond]);
     }
+}
+
+function exploreObject(objExplore) {
+
+    logDebug("Methods:")
+    for (x in objExplore)
+    {
+        if (typeof (objExplore[x]) == "function")
+        {
+            logDebug("<font color=blue><u><b>" + x + "</b></u></font> ");
+            logDebug("   " + objExplore[x] + "<br>");
+        }
+    }
+
+    logDebug("");
+    logDebug("Properties:")
+    for (x in objExplore)
+    {
+        if (typeof (objExplore[x]) != "function")
+            logDebug("  <b> " + x + ": </b> " + objExplore[x]);
+    }
+
 }
 function editCapConditionWithStatus(pType, pDesc, oStatus, pStatus, capIdToUse) {
     if (pType == null)
