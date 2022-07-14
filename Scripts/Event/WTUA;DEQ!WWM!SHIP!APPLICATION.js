@@ -181,7 +181,8 @@ if (wfTask == "Field Consult Required")
         if (wfStatus == "Full Permit Required")
         {
             closeTask("Field Consult Required", "Full Permit Required", "", "");
-            deactivateTask("Grant Review");
+            deactivateAllActiveTasks(capId);
+            updateAppStatus("Full OWM Application Required");
         }
     }
 
@@ -505,6 +506,7 @@ if (wfStatus == "Withdrawn")
 {
     sendNotification("", appEmail, "", "DEQ_SHIP_WITHDRAWN", vEParams, null);
     deactivateAllActiveTasks(capId);
+    updateAppStatus("Withdrawn");
 }
 
 /*
