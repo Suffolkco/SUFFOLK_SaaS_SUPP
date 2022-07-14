@@ -153,6 +153,33 @@ if (wfTask == "Enforcement Request Review")
         //need to confirm that this report information is correct, below:
         //generateReportBatch(capId, "Warning Letter", 'DEQ', null);
     }
+    //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
+    var enfType = AInfo["Enforcement Type"];
+    logDebug("enftype is: " + enfType);
+    var altIdString = String(capId.getCustomID());
+    var altIdLastTwo = capId.getCustomID().slice(-2);
+    logDebug("last two of alt id is " + altIdLastTwo);
+    if (altIdLastTwo != enfType)
+    {
+        //ENF-22-00002-EE
+        if (altIdString.charAt(-3) == "-")
+        {
+            //change last two digits of mask
+            altIdString = altIdString.replace(altIdLastTwo, enfType)
+            logDebug("Updating Alt ID to: " + altIdString);
+            updateAltID(altIdString, capId);
+        }
+        else
+        //ENF-22-00002
+        {
+            //add last two digits to existing altid
+            var altSplit = capId.getCustomID().split("-");
+            altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
+            logDebug("Updating Alt ID to: " + altIdString);
+            updateAltID(altIdString, capId);
+        }
+
+    }
 }
 
 //Preliminary Hearing
@@ -328,35 +355,6 @@ if (wfTask == "Request Inspection")
         }
 
         sendNotification("", eRRUserEmail, "", "DEQ_OPC_ENF_INSP_REQ_COMPLETE", emailParams, null);
-
-
-        //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
-        var enfType = AInfo["Enforcement Type"];
-        logDebug("enftype is: " + enfType);
-        var altIdString = String(capId.getCustomID());
-        var altIdLastTwo = capId.getCustomID().slice(-2);
-        logDebug("last two of alt id is " + altIdLastTwo);
-        if (altIdLastTwo != enfType)
-        {
-            //ENF-22-00002-EE
-            if (altIdString.charAt(-3) == "-")
-            {
-                //change last two digits of mask
-                altIdString = altIdString.replace(altIdLastTwo, enfType)
-                logDebug("Updating Alt ID to: " + altIdString);
-                updateAltID(altIdString, capId);
-            }
-            else
-            //ENF-22-00002
-            {
-                //add last two digits to existing altid
-                var altSplit = capId.getCustomID().split("-");
-                altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
-                logDebug("Updating Alt ID to: " + altIdString);
-                updateAltID(altIdString, capId);
-            }
-
-        }
     }
 }
 if (wfStatus == "Case Closed")
