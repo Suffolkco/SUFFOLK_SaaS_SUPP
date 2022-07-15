@@ -19,7 +19,7 @@
 |    
 /------------------------------------------------------------------------------------------------------*/
 var triggerEvent = aa.env.getValue("EventName");
-var controlString = "AddLicenseValidationToPublicUserAfter4ACA";
+var controlString = "AddLicenseValidation4ACA";
 var documentOnly = false;						// Document Only -- displays hierarchy of std choice steps
 
 
