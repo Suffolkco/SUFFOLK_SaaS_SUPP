@@ -2,5 +2,9 @@
 
 if (publicUser)
 {
-    updateAppStatus("Resubmitted");
+    logDebug("capId is: " + capId);
+    if (capId.isCompleteCap())
+    {
+        updateAppStatus("Resubmitted");
+    }
 }
