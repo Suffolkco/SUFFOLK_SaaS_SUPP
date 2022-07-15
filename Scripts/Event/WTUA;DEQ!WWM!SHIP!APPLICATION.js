@@ -178,13 +178,14 @@ if (wfTask == "Field Consult Required")
             }
             sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
         }
-        if (wfStatus == "Full Permit Required")
-        {
-            closeTask("Field Consult Required", "Full Permit Required", "", "");
-            deactivateAllActiveTasks(capId);
-            updateAppStatus("Full OWM Application Required");
-        }
     }
+    if (wfStatus == "Full Permit Required")
+    {
+        closeTask("Field Consult Required", "Full Permit Required", "", "");
+        deactivateAllActiveTasks(capId);
+        updateAppStatus("Full OWM Application Required");
+    }
+
 
     if (wfStatus == "Waived")
     {
@@ -247,6 +248,7 @@ if (wfTask == "Preliminary Sketch Review")
             {
                 closeTask("Inspections", "No Inspections Needed", "", "");
                 activateTask("Final Review");
+                updateAppStatus("OK to Proceed");
             }
             if (wfStatus == "Inspection Required Prior to Install")
             {
@@ -316,6 +318,10 @@ if (wfTask == "Grant Review")
                     }
                 }
             }
+        }
+        if (isTaskActive("Field Consult Required"))
+        {
+            deactivateTask("Inspections", capId);
         }
     }
     if (matches(wfStatus, "OK to Proceed", "Awaiting Client Reply", "Awaiting Grant Issuance"))
