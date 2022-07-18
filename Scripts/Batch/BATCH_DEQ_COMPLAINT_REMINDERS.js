@@ -249,12 +249,13 @@ function mainProcess(thisType) {
                                 if (statDate != null)
                                 {
                                     logDebug("statdate is: " + statDate.getMonth() + "/" + statDate.getDayOfMonth() + "/" + statDate.getYear());
+                                    var statDateToPrint = statDate.getMonth() + "/" + statDate.getDayOfMonth() + "/" + statDate.getYear();
                                     var currWfTask = "";
                                     var currWfStatus = "";
                                     var emailParams = aa.util.newHashtable();
                                     var dateDif = parseFloat(dateDiff(todayDate, statDate));
                                     var dateDifRound = Math.floor(dateDif);
-                                    if (dateDifRound <= -2)
+                                    if (dateDifRound = -2)
                                     {
                                         var workflowResult = aa.workflow.getTasks(capId);
                                         if (workflowResult.getSuccess())
@@ -268,7 +269,7 @@ function mainProcess(thisType) {
                                                     var userIdAssigned = getUserIDAssignedToTask(capId, currWfTask);
                                                     var userToSend = aa.person.getUser(userIdAssigned).getOutput();
                                                     addParameter(emailParams, "$$altID$$", capIDString);
-                                                    addParameter(emailParams, "$$openDate$$", statDate);
+                                                    addParameter(emailParams, "$$openDate$$", statDateToPrint);
                                                     if (!matches(userToSend, null, undefined, "", " ") && !matches(userIdAssigned, null, undefined, "", " ") && !matches(userToSend.getEmail(), null, undefined, "", " "))
                                                     {
                                                         logDebug("sending email to " + userToSend.getEmail());
@@ -278,7 +279,7 @@ function mainProcess(thisType) {
                                             }
                                         }
                                     }
-                                    if (dateDifRound <= -5)
+                                    if (dateDifRound = -5)
                                     {
                                         var workflowResult = aa.workflow.getTasks(capId);
                                         if (workflowResult.getSuccess())
