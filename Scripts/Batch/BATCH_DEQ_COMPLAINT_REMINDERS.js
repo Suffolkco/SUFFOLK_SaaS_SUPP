@@ -248,14 +248,14 @@ function mainProcess(thisType) {
                                 var statDate = cap.getFileDate();
                                 if (statDate != null)
                                 {
-                                    logDebug("statdatetoprint is: " + statDateToPrint);
                                     var statDateToPrint = statDate.getMonth() + "/" + statDate.getDayOfMonth() + "/" + statDate.getYear();
+                                    logDebug("statdatetoprint is: " + statDateToPrint);
                                     var currWfTask = "";
                                     var currWfStatus = "";
                                     var emailParams = aa.util.newHashtable();
                                     var dateDif = parseFloat(dateDiff(todayDate, statDate));
                                     var dateDifRound = Math.floor(dateDif);
-                                    if (dateDifRound = -2)
+                                    if (dateDifRound == -2)
                                     {
                                         var workflowResult = aa.workflow.getTasks(capId);
                                         if (workflowResult.getSuccess())
@@ -279,7 +279,7 @@ function mainProcess(thisType) {
                                             }
                                         }
                                     }
-                                    if (dateDifRound = -5)
+                                    if (dateDifRound == -5)
                                     {
                                         var workflowResult = aa.workflow.getTasks(capId);
                                         if (workflowResult.getSuccess())
