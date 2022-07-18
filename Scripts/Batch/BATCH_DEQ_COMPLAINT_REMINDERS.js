@@ -248,7 +248,7 @@ function mainProcess(thisType) {
                                 var statDate = cap.getFileDate();
                                 if (statDate != null)
                                 {
-                                    logDebug("statdate is: " + statDate.getMonth() + "/" + statDate.getDayOfMonth() + "/" + statDate.getYear());
+                                    logDebug("statdatetoprint is: " + statDateToPrint);
                                     var statDateToPrint = statDate.getMonth() + "/" + statDate.getDayOfMonth() + "/" + statDate.getYear();
                                     var currWfTask = "";
                                     var currWfStatus = "";
