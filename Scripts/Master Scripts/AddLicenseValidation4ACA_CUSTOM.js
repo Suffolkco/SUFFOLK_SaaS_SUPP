@@ -21,7 +21,7 @@
 var controlString = "AddLicenseValidation4ACA";
 var preExecute = "PreExecuteForAfterEvents";  		//Assume after event unless before decected
 var documentOnly = false;						// Document Only -- displays hierarchy of std choice steps
-
+showDebug = true;
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
