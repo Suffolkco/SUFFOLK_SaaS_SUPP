@@ -1,10 +1,8 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program : UniversalMasterScriptV.js
-| Event   : UniversalMasterScript
+| Program : AddLicenseValidation4ACA_Custom.js
+| Event   : AddLicenseValidation4ACA 
 |
-| Usage   : Designed to work with most events and generate a generic framework to expose standard master scirpt functionality
-|			To utilize associate UniversalMasterScript to event and create a standard choice with same name as event
-|			universal master script will execute and attempt to call standard choice with same name as associate event. 
+| Usage   : Master Script by Accela.  See accompanying documentation and release notes.
 |
 | Client  : N/A
 | Action# : N/A
@@ -15,12 +13,15 @@
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
 | START User Configurable Parameters
-|    
+|
+|     Only variables in the following section may be changed.  If any other section is modified, this
+|     will no longer be considered a "Master" script and will not be supported in future releases.  If
+|     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var controlString = "AddLicenseValidation4ACA";
-var preExecute = "PreExecuteForAfterEvents";  		//Assume after event unless before decected
-var documentOnly = false;						// Document Only -- displays hierarchy of std choice steps
-showDebug = true;
+var controlString = "AddLicenseValidation4ACA "; // Standard choice for control
+var preExecute = "PreExecuteForAfterEvents"; // Standard choice to execute first (for globals, etc)
+var documentOnly = false; // Document Only -- displays hierarchy of std choice steps
+
 /*------------------------------------------------------------------------------------------------------/
 | END User Configurable Parameters
 /------------------------------------------------------------------------------------------------------*/
@@ -49,7 +50,7 @@ if (bzr) {
 	var bvr1 = aa.bizDomain.getBizDomainByValue(controlFlagStdChoice, "SCRIPT");
 	doScripts = bvr1.getSuccess() && bvr1.getOutput().getAuditStatus() != "I";
 	var bvr3 = aa.bizDomain.getBizDomainByValue(controlFlagStdChoice, "USE_MASTER_INCLUDES");
-	if (bvr3.getSuccess()) {if(bvr3.getOutput().getDescription() == "No") useCustomScriptFile = false};
+	if (bvr3.getSuccess()) {if(bvr3.getOutput().getDescription() == "No") useCustomScriptFile = false}; 
 }
 
 if (SA) {
@@ -61,7 +62,7 @@ if (SA) {
 	eval(getScriptText("INCLUDES_ACCELA_GLOBALS",null,useCustomScriptFile));
 }
 
-eval(getScriptText("INCLUDES_CUSTOM",null,useCustomScriptFile));
+eval(getScriptText("INCLUDES_CUSTOM",null,useCustomScriptFile));  
 
 if (documentOnly) {
 	doStandardChoiceActions(controlString, false, 0);
@@ -91,15 +92,7 @@ function getScriptText(vScriptName, servProvCode, useProductScripts) {
 /*------------------------------------------------------------------------------------------------------/
 | BEGIN Event Specific Variables
 /------------------------------------------------------------------------------------------------------*/
-var params = aa.env.getParamValues();
-var keys = params.keys();
-var key = null;
-while (keys.hasMoreElements())
-{
-	key = keys.nextElement();
-	eval("var " + key + " = aa.env.getValue(\"" + key + "\");");
-	logDebug("Loaded Env Variable: " + key + " = " + aa.env.getValue(key));
-}
+
 
 /*------------------------------------------------------------------------------------------------------/
 | END Event Specific Variables
@@ -143,9 +136,9 @@ if (debug.indexOf("**ERROR") > 0) {
 	aa.env.setValue("ScriptReturnCode", "1");
 	aa.env.setValue("ScriptReturnMessage", debug);
 } else {
-		aa.env.setValue("ScriptReturnCode", "0");
-		if (showMessage)
+	aa.env.setValue("ScriptReturnCode", "0");
+	if (showMessage)
 		aa.env.setValue("ScriptReturnMessage", message);
-		if (showDebug)
+	if (showDebug)
 		aa.env.setValue("ScriptReturnMessage", debug);
 }
