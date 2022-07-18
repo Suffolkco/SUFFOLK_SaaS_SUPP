@@ -2,6 +2,7 @@
     var conArray = getContactArray();
     var emailParams = aa.util.newHashtable();
     var complainantList = "";
+    addParameter(emailParams, "$$altID$$", capId.getCustomID());
 
     for (con in conArray)
     {
