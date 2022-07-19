@@ -279,9 +279,17 @@ if (wfTask == "Grant Review")
         if (matches(wfStatus, "No Application Received", "Not Eligible"))
         {
             editAppSpecific("Part of Septic Improvement Program(SIP)", "No")
+            if (isTaskActive("Field Consult Required"))
+            {
+                deactivateTask("Inspections");
+            }
         }
         if (wfStatus == "OK to Proceed")
         {
+            if (isTaskActive("Field Consult Required"))
+            {
+                deactivateTask("Inspections");
+            }
             editAppSpecific("Part of Septic Improvement Program(SIP)", "Yes")
 
             if (AInfo["I/A OWTS Installation"] == "CHECKED")
@@ -364,10 +372,6 @@ if (wfTask == "Grant Review")
                     }
                 }
             }
-        }
-        if (isTaskActive("Field Consult Required"))
-        {
-            deactivateTask("Inspections", capId);
         }
     }
     if (matches(wfStatus, "Awaiting Client Reply", "Awaiting Grant Issuance"))
