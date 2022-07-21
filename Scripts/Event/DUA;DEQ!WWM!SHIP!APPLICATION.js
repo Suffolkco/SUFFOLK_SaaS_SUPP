@@ -7,13 +7,13 @@ if (publicUser)
     if (cap.isCompleteCap())
     {
         var fileDateObj = cap.getFileDate();
-        var fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();
-        logDebug("Filedate is: " + fileDate);
+        logDebug("filedateobj epoch is: " + fileDateObj.getEpochMilliseconds());
         var currentDate = new Date();
-        var currentDateParsed = (currentDate.getMonth() + 1) + "/" + currentDate.getDate() + "/" + (currentDate.getYear() + 1900);
-        logDebug("currentdateparsed is: " + currentDateParsed);
-
-        if (fileDate != currentDateParsed)
+         var currentDateBefore = currentDate.setMinutes(currentDate.getMinutes());
+         currentDateBefore = currentDate.setSeconds(currentDate.getSeconds() - 15);
+        logDebug("currentdatebefore is: " + currentDateBefore);
+        logDebug("filedateobj is: " + fileDateObj.getEpochMilliseconds() + " and currentdatebefore is " + currentDateBefore);
+        if (fileDateObj.getEpochMilliseconds() < currentDateBefore)
         {
             updateAppStatus("Resubmitted");
         }
