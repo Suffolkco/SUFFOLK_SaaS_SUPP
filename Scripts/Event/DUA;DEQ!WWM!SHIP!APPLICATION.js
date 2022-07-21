@@ -9,8 +9,8 @@ if (publicUser)
         var fileDateObj = cap.getFileDate();
         logDebug("filedateobj epoch is: " + fileDateObj.getEpochMilliseconds());
         var currentDate = new Date();
-         var currentDateBefore = currentDate.setMinutes(currentDate.getMinutes());
-         currentDateBefore = currentDate.setSeconds(currentDate.getSeconds() - 15);
+         var currentDateBefore = currentDate.setMinutes(currentDate.getMinutes() - 30);
+         currentDateBefore = currentDate.setSeconds(currentDate.getSeconds());
         logDebug("currentdatebefore is: " + currentDateBefore);
         logDebug("filedateobj is: " + fileDateObj.getEpochMilliseconds() + " and currentdatebefore is " + currentDateBefore);
         if (fileDateObj.getEpochMilliseconds() < currentDateBefore)
