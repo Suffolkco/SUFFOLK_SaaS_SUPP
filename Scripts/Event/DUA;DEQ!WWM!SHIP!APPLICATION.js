@@ -6,14 +6,23 @@ if (publicUser)
 {
     if (cap.isCompleteCap())
     {
-        var fileDateObj = cap.getFileDate();
-        logDebug("filedateobj epoch is: " + fileDateObj.getEpochMilliseconds());
-        var currentDate = new Date();
-         var currentDateBefore = currentDate.setMinutes(currentDate.getMinutes() - 30);
-         currentDateBefore = currentDate.setSeconds(currentDate.getSeconds());
-        logDebug("currentdatebefore is: " + currentDateBefore);
-        logDebug("filedateobj is: " + fileDateObj.getEpochMilliseconds() + " and currentdatebefore is " + currentDateBefore);
-        if (fileDateObj.getEpochMilliseconds() < currentDateBefore)
+        var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+        var wfHistArray = [];
+        if (wfHist.getSuccess())
+        {
+            wfHist = wfHist.getOutput();
+            for (var h in wfHist)
+            {
+                wfHist[h].push(wfHistArray);
+            }
+            logDebug("wfhist array length is " + wfHistArray.length);
+        } else
+        {
+            logDebug("not success");
+        }
+
+
+        if (wfHistArray.length != 0)
         {
             updateAppStatus("Resubmitted");
         }
