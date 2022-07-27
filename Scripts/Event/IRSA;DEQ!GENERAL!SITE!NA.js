@@ -79,14 +79,47 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
 {
     if (inspResult == "Violations Found")
     {
-        var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA");
-        copyContacts(capId, enfChild);
-        copyParcel(capId, enfChild);
-        copyAddress(capId, enfChild);
-        var siteAltId = capId.getCustomID();
-        editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-        var fileRefNumber = getAppSpecific("File Reference Number", capId);
-        editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+        var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA")
+        logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
+        if (childEnfRecordArray.length == 0)
+        {
+            var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA");
+            //copyContacts(capId, enfChild);
+            copyParcel(capId, enfChild);
+            copyAddress(capId, enfChild);
+            var siteAltId = capId.getCustomID();
+            editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+            var fileRefNumber = getAppSpecific("File Reference Number", capId);
+            editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+            var appName = getAppName();
+            var projDesc = workDescGet(capId);
+            editAppName(appName, enfChild);
+            updateWorkDesc(projDesc, enfChild);
+        }
+        else
+        {
+            for (cr in childEnfRecordArray)
+            {
+                var childEnfRecord = childEnfRecordArray[cr];
+                logDebug("child enf record is: " + childEnfRecord);
+                var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
+                logDebug("childreccaptype is: " + childRecCapType);
+                if (childRecCapType == "DEQ/OPC/Enforcement/NA")
+                {
+                    //copyContacts(capId, childEnfRecord);
+                    copyParcel(capId, childEnfRecord);
+                    copyAddress(capId, childEnfRecord);
+                    var siteAltId = capId.getCustomID();
+                    editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, childEnfRecord);
+                    var fileRefNumber = getAppSpecific("File Reference Number", capId);
+                    editAppSpecific("File Reference Number/Facility ID", fileRefNumber, childEnfRecord);
+                    var appName = getAppName();
+                    var projDesc = workDescGet(capId);
+                    editAppName(appName, childEnfRecord);
+                    updateWorkDesc(projDesc, childEnfRecord);
+                }
+            }
+        }
     }
 }
 
