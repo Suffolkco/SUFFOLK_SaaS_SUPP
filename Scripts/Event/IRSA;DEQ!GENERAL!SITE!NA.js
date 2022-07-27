@@ -83,7 +83,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
         logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
         if (childEnfRecordArray.length == 0)
         {
-            var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA");
+            var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
             //copyContacts(capId, enfChild);
             copyParcel(capId, enfChild);
             copyAddress(capId, enfChild);
@@ -191,3 +191,85 @@ function generateReportBatch(itemCap, reportName, module, parameters) {
     }
 }
 
+function getAppName() {
+    var itemCap = capId;
+    if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
+
+    capResult = aa.cap.getCap(itemCap)
+
+    if (!capResult.getSuccess())
+    { logDebug("**WARNING: error getting cap : " + capResult.getErrorMessage()); return false }
+
+    capModel = capResult.getOutput().getCapModel()
+
+    return capModel.getSpecialText()
+}
+
+function createChildLocal(grp,typ,stype,cat,desc) // optional parent capId
+{
+	//
+	// creates the new application and returns the capID object
+	//
+
+	var itemCap = capId
+	if (arguments.length > 5) itemCap = arguments[5]; // use cap ID specified in args
+	
+	var appCreateResult = aa.cap.createApp(grp,typ,stype,cat,desc);
+	logDebug("creating cap " + grp + "/" + typ + "/" + stype + "/" + cat);
+	if (appCreateResult.getSuccess())
+		{
+		var newId = appCreateResult.getOutput();
+		logDebug("cap " + grp + "/" + typ + "/" + stype + "/" + cat + " created successfully ");
+		
+		// create Detail Record
+		capModel = aa.cap.newCapScriptModel().getOutput();
+		capDetailModel = capModel.getCapModel().getCapDetailModel();
+		capDetailModel.setCapID(newId);
+		aa.cap.createCapDetail(capDetailModel);
+
+		var newObj = aa.cap.getCap(newId).getOutput();	//Cap object
+		var result = aa.cap.createAppHierarchy(itemCap, newId); 
+		if (result.getSuccess())
+			logDebug("Child application successfully linked");
+		else
+			logDebug("Could not link applications");
+
+		// Copy Parcels
+
+		var capParcelResult = aa.parcel.getParcelandAttribute(itemCap,null);
+		if (capParcelResult.getSuccess())
+			{
+			var Parcels = capParcelResult.getOutput().toArray();
+			for (zz in Parcels)
+				{
+				logDebug("adding parcel #" + zz + " = " + Parcels[zz].getParcelNumber());
+				var newCapParcel = aa.parcel.getCapParcelModel().getOutput();
+				newCapParcel.setParcelModel(Parcels[zz]);
+				newCapParcel.setCapIDModel(newId);
+				newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
+				newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
+				aa.parcel.createCapParcel(newCapParcel);
+				}
+			}	
+
+		// Copy Addresses
+		capAddressResult = aa.address.getAddressByCapId(itemCap);
+		if (capAddressResult.getSuccess())
+			{
+			Address = capAddressResult.getOutput();
+			for (yy in Address)
+				{
+				newAddress = Address[yy];
+				newAddress.setCapID(newId);
+				aa.address.createAddress(newAddress);
+				logDebug("added address");
+				}
+			}
+		
+		return newId;
+		}
+	else
+		{
+		logDebug( "**ERROR: adding child App: " + appCreateResult.getErrorMessage());
+		}
+}
