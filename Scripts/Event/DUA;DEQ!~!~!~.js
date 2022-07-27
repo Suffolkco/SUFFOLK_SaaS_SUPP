@@ -96,6 +96,8 @@ if (publicUser)
                 var documentObject = capDocResult.getOutput().get(docInx);        
                 
                 var docCat = documentObject.getDocCategory();
+                logDebug("docCat:" + docCat);
+                
                 if (docCat.equals(docType)) 
                 {
 
