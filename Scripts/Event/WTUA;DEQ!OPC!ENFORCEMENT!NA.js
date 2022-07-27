@@ -54,6 +54,7 @@ for (i in wfObj)
     if (fTask.getTaskDescription() == "Enforcement Request Review")
     {
         var enfReqRevDue = fTask.getDueDate();
+        enfReqRevDue = enfReqRevDue.getMonth() + "/" + enfReqRevDue.getDayOfMonth() + "/" + enfReqRevDue.getYear();
         logDebug("enforcement request review date is: " + enfReqRevDue);
     }
 }

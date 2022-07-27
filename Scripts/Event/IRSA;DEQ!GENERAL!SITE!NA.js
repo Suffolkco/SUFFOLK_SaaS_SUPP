@@ -106,17 +106,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                 logDebug("childreccaptype is: " + childRecCapType);
                 if (childRecCapType == "DEQ/OPC/Enforcement/NA")
                 {
-                    //copyContacts(capId, childEnfRecord);
-                    copyParcel(capId, childEnfRecord);
-                    copyAddress(capId, childEnfRecord);
-                    var siteAltId = capId.getCustomID();
-                    editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, childEnfRecord);
-                    var fileRefNumber = getAppSpecific("File Reference Number", capId);
-                    editAppSpecific("File Reference Number/Facility ID", fileRefNumber, childEnfRecord);
-                    var appName = getAppName();
-                    var projDesc = workDescGet(capId);
-                    editAppName(appName, childEnfRecord);
-                    updateWorkDesc(projDesc, childEnfRecord);
+                    //update violations ASITs only
                 }
             }
         }
