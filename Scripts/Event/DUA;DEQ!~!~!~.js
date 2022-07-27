@@ -97,7 +97,7 @@ if (publicUser)
                 
                 var docCat = documentObject.getDocCategory();
                 logDebug("docCat:" + docCat);
-                
+                logDebug("docType:" + docType);
                 if (docCat.equals(docType)) 
                 {
 
