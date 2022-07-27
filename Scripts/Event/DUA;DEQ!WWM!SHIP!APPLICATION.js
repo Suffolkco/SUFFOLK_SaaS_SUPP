@@ -13,14 +13,15 @@ if (publicUser)
             wfHist = wfHist.getOutput();
             for (var h in wfHist)
             {
-                wfHist[h].push(wfHistArray);
+                logDebug("wfhist[h] taskdesc is: " + wfHist[h].getTaskDescription());
+
+                wfHistArray.push(wfHist[h].getTaskDescription());
             }
             logDebug("wfhist array length is " + wfHistArray.length);
         } else
         {
             logDebug("not success");
         }
-
 
         if (wfHistArray.length != 0)
         {
