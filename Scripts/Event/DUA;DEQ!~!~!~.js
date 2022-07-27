@@ -96,36 +96,39 @@ if (publicUser)
                 var documentObject = capDocResult.getOutput().get(docInx);        
                 
                 var docCat = documentObject.getDocCategory();
-                logDebug("docCat:" + docCat);
-                logDebug("docType:" + docType);
-                if (docCat.equals(docType)) 
+                if (docCat != null)
                 {
-
-                    logDebug("Fee exists in record.");
-                    logDebug("docName:" + documentObject.getDocName());
-                    logDebug("fileName:" + documentObject.getFileName());
-                    
-                    // If BOR fee does not exist but BOR document has been attached, we need to add/invoice fee.
-                    if (!feeExists("BOR"))
+                    logDebug("docCat:" + docCat);
+                    logDebug("docType:" + docType);
+                    if (docCat.equals(docType)) 
                     {
-                        if (itemCapType == "DEQ/WWM/Residence/Application")
+
+                        logDebug("Fee exists in record.");
+                        logDebug("docName:" + documentObject.getDocName());
+                        logDebug("fileName:" + documentObject.getFileName());
+                        
+                        // If BOR fee does not exist but BOR document has been attached, we need to add/invoice fee.
+                        if (!feeExists("BOR"))
                         {
-                            result = addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y");
-                            logDebug("Add fee: DEQ_SFR" +  result);
-                        }  
-                        else if (itemCapType == "DEQ/WWM/Subdivision/Application")
-                        {
-                            addFee("BOR", "DEQ_SUB", "FINAL", 1, "Y");
-                            logDebug("Add fee: DEQ_SUB" +  result);
+                            if (itemCapType == "DEQ/WWM/Residence/Application")
+                            {
+                                result = addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y");
+                                logDebug("Add fee: DEQ_SFR" +  result);
+                            }  
+                            else if (itemCapType == "DEQ/WWM/Subdivision/Application")
+                            {
+                                addFee("BOR", "DEQ_SUB", "FINAL", 1, "Y");
+                                logDebug("Add fee: DEQ_SUB" +  result);
+                            }
+                            else if (itemCapType == "DEQ/WWM/Commercial/Application")
+                            {
+                                addFee("BOR", "DEQ_OSFR", "FINAL", 1, "Y");
+                                logDebug("Add fee: DEQ_OSFR" +  result);
+                            }
                         }
-                        else if (itemCapType == "DEQ/WWM/Commercial/Application")
-                        {
-                            addFee("BOR", "DEQ_OSFR", "FINAL", 1, "Y");
-                            logDebug("Add fee: DEQ_OSFR" +  result);
-                        }
+                        
+                        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA", emailText);
                     }
-                    
-                    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA", emailText);
                 }
             }
         }
