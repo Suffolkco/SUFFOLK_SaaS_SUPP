@@ -25,6 +25,7 @@ var todayDate = new Date();
 var todayDateConverted = dateFormatted(todayDate.getMonth() + 1, todayDate.getDate(), todayDate.getYear() + 1901, "MM/DD/YYYY");
 var fineAmount = AInfo["Fine Amount"];
 var revisedFineAmount = AInfo["Revised Fine Amount"];
+var enfReqRevDue;
 
 //getting contacts by type, and then all
 for (con in conArray)
@@ -53,9 +54,12 @@ for (i in wfObj)
     var fTask = wfObj[i];
     if (fTask.getTaskDescription() == "Enforcement Request Review")
     {
-        var enfReqRevDue = fTask.getDueDate();
-        enfReqRevDue = enfReqRevDue.getMonth() + "/" + enfReqRevDue.getDayOfMonth() + "/" + enfReqRevDue.getYear();
-        logDebug("enforcement request review date is: " + enfReqRevDue);
+        if (fTask.getDueDate() != null)
+        {
+            enfReqRevDue = fTask.getDueDate();
+            enfReqRevDue = enfReqRevDue.getMonth() + "/" + enfReqRevDue.getDayOfMonth() + "/" + enfReqRevDue.getYear();
+            logDebug("enforcement request review date is: " + enfReqRevDue);
+        }
     }
 }
 
@@ -501,22 +505,29 @@ function getUserIDAssignedToTask(vCapId, taskName) {
 }
 function addStdConditionStrict(cType, cDesc) {
     var itemCap = capId;
-    if (arguments.length == 3) {
+    if (arguments.length == 3)
+    {
         itemCap = arguments[2]; // use cap ID specified in args
     }
-    if (!aa.capCondition.getStandardConditions) {
+    if (!aa.capCondition.getStandardConditions)
+    {
         logDebug("addStdConditionStrict function is not available in this version of Accela Automation.");
-    } else {
+    } else
+    {
         standardConditions = aa.capCondition.getStandardConditions(cType, cDesc).getOutput();
-        for (i = 0; i < standardConditions.length; i++) {
+        for (i = 0; i < standardConditions.length; i++)
+        {
             // Activate strict match
-            if (standardConditions[i].getConditionType().toUpperCase() == cType.toUpperCase() && standardConditions[i].getConditionDesc().toUpperCase() == cDesc.toUpperCase()) {
+            if (standardConditions[i].getConditionType().toUpperCase() == cType.toUpperCase() && standardConditions[i].getConditionDesc().toUpperCase() == cDesc.toUpperCase())
+            {
                 standardCondition = standardConditions[i];
                 var addCapCondResult = aa.capCondition.addCapCondition(itemCap, standardCondition.getConditionType(), standardCondition.getConditionDesc(), standardCondition.getConditionComment(), sysDate, null, sysDate, null, null, standardCondition.getImpactCode(), systemUserObj, systemUserObj, "Applied", currentUserID, "A", null, standardCondition.getDisplayConditionNotice(), standardCondition.getIncludeInConditionName(), standardCondition.getIncludeInShortDescription(), standardCondition.getInheritable(), standardCondition.getLongDescripton(), standardCondition.getPublicDisplayMessage(), standardCondition.getResolutionAction(), null, null, standardCondition.getConditionNbr(), standardCondition.getConditionGroup(), standardCondition.getDisplayNoticeOnACA(), standardCondition.getDisplayNoticeOnACAFee(), standardCondition.getPriority(), standardCondition.getConditionOfApproval());
 
-                if (addCapCondResult.getSuccess()) {
+                if (addCapCondResult.getSuccess())
+                {
                     logDebug("Successfully added condition (" + standardCondition.getConditionDesc() + ")");
-                } else {
+                } else
+                {
                     logDebug("**ERROR: adding condition (" + standardCondition.getConditionDesc() + "): " + addCapCondResult.getErrorMessage());
                 }
             }
