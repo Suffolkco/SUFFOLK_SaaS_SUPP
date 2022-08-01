@@ -6,7 +6,8 @@ if (currentUserID == "RLITTLEFIELD")
 }
 
 var emailParams = aa.util.newHashtable();
-var conArray = getContactArray();
+var parentCapId = getParent(capId);
+var conArrayParent = getContactArray(parentCapId);
 var conEmailList = "";
 var conEmailListAll = "";
 var appName = cap.getSpecialText();
@@ -28,20 +29,20 @@ var revisedFineAmount = AInfo["Revised Fine Amount"];
 var enfReqRevDue;
 
 //getting contacts by type, and then all
-for (con in conArray)
+for (con in conArrayParent)
 {
-    if (matches(conArray[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
+    if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
     {
-        if (!matches(conArray[con].email, null, undefined, ""))
+        if (!matches(conArrayParent[con].email, null, undefined, ""))
         {
-            logDebug("Contact email: " + conArray[con].email);
-            conEmailList += conArray[con].email + "; ";
+            logDebug("Contact email: " + conArrayParent[con].email);
+            conEmailList += conArrayParent[con].email + "; ";
         }
     }
-    if (!matches(conArray[con].email, null, undefined, ""))
+    if (!matches(conArrayParent[con].email, null, undefined, ""))
     {
-        logDebug("Contact email: " + conArray[con].email);
-        conEmailListAll += conArray[con].email + "; ";
+        logDebug("Contact email: " + conArrayParent[con].email);
+        conEmailListAll += conArrayParent[con].email + "; ";
     }
 }
 
@@ -125,7 +126,6 @@ if (wfTask == "Violation Review")
 //Enforcement Request Review
 if (wfTask == "Enforcement Request Review")
 {
-    var parentCapId = getParent(capId);
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
