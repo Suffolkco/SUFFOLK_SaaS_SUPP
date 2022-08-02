@@ -120,7 +120,7 @@ function checkWordFilter(text)
 {
     var wordList = lookup("ACA_WORD_FILTER","RESTRICTED_WORD_LIST").split(',');
     
-    var badWord = valse;
+    var badWord = false;
     
     for (wL in wordList){
         badWord = wordList[wL].toUpperCase();
