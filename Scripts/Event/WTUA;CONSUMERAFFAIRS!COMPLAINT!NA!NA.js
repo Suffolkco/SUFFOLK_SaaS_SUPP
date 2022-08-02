@@ -3,7 +3,8 @@
 showMessage=true;
 showDebug=true;
 
-if (matches(appTypeArray[1], "Complaint")) {
+if (matches(appTypeArray[1], "Complaint")) 
+{
 	//if ( wfTask == "Case Disposition-Notification" && wfStatus == "Complete" ){
 	if ( wfTask == "Intake" && wfStatus == "Complete" ){
         try{
@@ -134,16 +135,101 @@ if (matches(appTypeArray[1], "Complaint")) {
             logDebug("ERROR: " + ex.message);
         }
 	}
-    else if (wfTask == "Assignment" && wfStatus == "Assigned")
-    {
-        // Retrieve values from custom fields        
-        amtContract = getAppSpecific("Total Dollar Amount of the Contract", capId);
-        amountDisputed = getAppSpecific("Amount Disputed", capId);
+    else if (wfTask == "Assignment" && wfStatus == "Assigned"){
+    // Retrieve values from custom fields        
+    amtContract = getAppSpecific("Total Dollar Amount of the Contract", capId);
+    amountDisputed = getAppSpecific("Amount Disputed", capId);
 
-        // Set TSI in Complaint Review to the same values as custom fields.
-        editTaskSpecific("Complaint Review","Complaint Dispute Value",amountDisputed)
-        editTaskSpecific("Complaint Review","Total Job Cost",amtContract)
-    }     
+    // Set TSI in Complaint Review to the same values as custom fields.
+    editTaskSpecific("Complaint Review","Complaint Dispute Value",amountDisputed)
+    editTaskSpecific("Complaint Review","Total Job Cost",amtContract)
+
+        // DAP-508: When Greg changes the workflow Assignment -> Assigned task in the workflow, 
+    // email to the complainant with attachment
+    if (currentUserID == 'GSPENCER' || currentUserID == 'ACHAN')
+    {
+        logDebug("Current ID:" + currentUserID);
+        }
+        var emailText = ""
+        var emailParams = aa.util.newHashtable();
+        var reportFile = new Array();
+        var reportParams = aa.util.newHashtable();   
+        var contactType = "Complainant";
+        var contactInfo = getContactInfo(contactType, capId);
+        if(contactInfo == false){
+            logDebug("No complainant contact exists on this record");
+        }
+        else
+        {
+            getRecordParams4Notification(emailParams);
+            alternateID = capId.getCustomID();
+            addParameter(emailParams, "$$altID$$", alternateID.toString());               
+
+            var vAddrLine1 = contactInfo[0];
+            var vCity = contactInfo[1];
+            var vState = contactInfo[2];
+            var vZip = contactInfo[3];
+            
+            // copy Vendor name, org name & phone to short notes
+            var fName = contactInfo[4];
+            var lName = contactInfo[5];					
+            var email = contactInfo[8];	
+            
+            
+            addParameter(emailParams, "$$fName$$", fName);
+            addParameter(emailParams, "$$lName$$", lName);
+
+            
+            reportParams.put("RecordID", alternateID.toString());
+            
+            var itemCap = aa.cap.getCap(capId).getOutput();
+            appTypeResult = itemCap.getCapType();
+            appTypeString = appTypeResult.toString(); 
+            appTypeArray = appTypeString.split("/");
+
+            rFile = generateReport("ACA Registration Pins-WWM", reportParams, appTypeArray[0]);
+            
+            logDebug("This is the consumer file: " + rFile);           
+        
+            if (rFile) {
+                reportFile.push(rFile);
+            }
+
+                //1. Check if the record has been assigned
+            var cdScriptObjResult = aa.cap.getCapDetail(capId);
+            if (!cdScriptObjResult.getSuccess())
+                { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+
+            var cdScriptObj = cdScriptObjResult.getOutput();
+
+            if (!cdScriptObj)
+                { logDebug("**ERROR: No cap detail script object") ; }
+
+            cd = cdScriptObj.getCapDetailModel();
+
+            // Record Assigned to
+            var assignedUserid = cd.getAsgnStaff();
+            if (assignedUserid !=  null)
+            {
+                iNameResult = aa.person.getUser(assignedUserid) 
+                if(iNameResult.getSuccess())
+                {
+                    assignedUser = iNameResult.getOutput();     
+                    logDebug("Assigned user: " + assignedUser.getFirstName() + " " + assignedUser.getLastName());
+                    assigneeEmail = assignedUser.getEmail();
+                    sendNotification("Consumer.Affairs@suffolkcountyny.gov", assigneeEmail, "", "DCA_CMP_CONSUMER_ASSIGNED", emailParams, reportFile);	
+                }
+            }
+
+
+            var success = sendNotification("", email, "", "DCA_CMP_CONSUMER_ASSIGNED", emailParams, reportFile);	                               
+            logDebug("success:" + success + ", to: " + email);
+
+            //aa.sendMail("Consumer.Affairs@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "CA_SEND_COMPOAINANT_EMAIL", emailText);
+                    
+        }
+    }    
+        
     
 } 
 
