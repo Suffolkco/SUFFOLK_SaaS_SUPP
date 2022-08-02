@@ -1,6 +1,6 @@
 
 // WTUB;CONSUMERAFFAIRS!COMPLAINT!NA!NA.js
-showMessage=true;
+showMessage=false;
 showDebug=true;
 
 if (wfTask == "Assignment" && wfStatus == "Assigned")
