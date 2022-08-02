@@ -50,17 +50,17 @@ try
                     cancel = true;
                     showMessage = true;
                 }
-                if (!validFirst)
+                if (validFirst)
                 {              
                     comment("BAD WORD ENTERED IN FIRST NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
                 }
-                if (!validLast)
+                if (validLast)
                 {               
-                    comment("BAD WORD ENTERED IN FIRST NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
+                    comment("BAD WORD ENTERED IN LAST NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
                 }            
-                if (!validBusiness)
+                if (validBusiness)
                 {              
-                    comment("BAD WORD ENTERED IN FIRST NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
+                    comment("BAD WORD ENTERED IN ORGANIZATION NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
                 }                  
 
             }
@@ -123,9 +123,9 @@ function checkWordFilter(text)
     var badWord = false;
     
     for (wL in wordList){
-        badWord = wordList[wL].toUpperCase();
+        word = wordList[wL].toUpperCase();
 
-        if (text.toUpperCase().indexOf(badWord) > -1){          
+        if (text.toUpperCase().indexOf(word) > -1){          
             badWord = true;
         }
      
