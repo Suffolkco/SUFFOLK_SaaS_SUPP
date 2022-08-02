@@ -38,7 +38,8 @@ try
         {
             logDebug("contact is " + contactsArray[po].getContactType());
 
-            if (contactsArray[po].getContactType() == "Complainant")
+            if (contactsArray[po].getContactType() == "Complainant" ||
+                contactsArray[po].getContactType() == "Vendor")
             {
                 logDebug("First Name is " + contactsArray[po].getFirstName());
                 validFirst = checkWordFilter(contactsArray[po].getFirstName());           
@@ -52,15 +53,15 @@ try
                 }
                 if (validFirst)
                 {              
-                    comment("BAD WORD ENTERED IN FIRST NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
+                    comment("Bad word entered in First Name. Please reenter using responsible language.");
                 }
                 if (validLast)
                 {               
-                    comment("BAD WORD ENTERED IN LAST NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
+                    comment("Bad word entered in Last Name. Please reenter using responsible language.");
                 }            
                 if (validBusiness)
                 {              
-                    comment("BAD WORD ENTERED IN ORGANIZATION NAME. PLEASE REENTER USING RESPONSIBLE LANGUAGE");
+                    comment("Bad word entered in Business Name. Please reenter using responsible language.");
                 }                  
 
             }
