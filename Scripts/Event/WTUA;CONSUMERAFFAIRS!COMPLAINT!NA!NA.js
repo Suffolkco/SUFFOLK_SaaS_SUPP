@@ -187,7 +187,7 @@ if (matches(appTypeArray[1], "Complaint"))
             appTypeString = appTypeResult.toString(); 
             appTypeArray = appTypeString.split("/");
 
-            rFile = generateReport("ACA Registration Pins-WWM", reportParams, appTypeArray[0]);
+            rFile = generateReport("Complaint Consumer Report", reportParams, appTypeArray[0]);
             
             logDebug("This is the consumer file: " + rFile);           
         
