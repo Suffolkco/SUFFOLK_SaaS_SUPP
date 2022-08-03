@@ -506,7 +506,7 @@ if (wfTask == "Final Review")
                 var inspSchedDate = shipSystemTable[sstrow]["Installation Date"];
                 var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
                 var iaModel = shipSystemTable[sstrow]["I/A Model"];
-                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product"];
+                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product/Material"];
                 var iaLeachOtherType = shipSystemTable[sstrow]["Leaching Type"];
                 var iaEffluentPumpPools = shipSystemTable[sstrow]["Effluent Pump"];
 
@@ -670,7 +670,7 @@ if (wfTask == "Final Review")
                 var inspSchedDate = shipSystemTable[sstrow]["Installation Date"];
                 var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
                 var iaModel = shipSystemTable[sstrow]["I/A Model"];
-                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product"];
+                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product/Material"];
                 var iaLeachOtherType = shipSystemTable[sstrow]["Leaching Type"];
                 var iaEffluentPumpPools = shipSystemTable[sstrow]["Effluent Pump"];
 
