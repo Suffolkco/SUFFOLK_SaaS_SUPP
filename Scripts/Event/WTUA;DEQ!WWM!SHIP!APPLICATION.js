@@ -499,7 +499,7 @@ if (wfTask == "Final Review")
         //begin SHIP SYSTEM DETAILS check
         var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
         var checkIANumber = false;
-        if (shipSystemTable.length < 0)
+        if (shipSystemTable.length > 0)
         {
             for (sstrow in shipSystemTable)
             {
@@ -663,7 +663,7 @@ if (wfTask == "Final Review")
     {
         var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
         var checkIANumber = false;
-        if (shipSystemTable.length < 0)
+        if (shipSystemTable.length > 0)
         {
             for (sstrow in shipSystemTable)
             {
