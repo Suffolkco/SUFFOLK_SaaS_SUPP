@@ -518,8 +518,8 @@ if (wfTask == "Final Review")
             if (checkIANumber)
             {
                 var newInspSchedDate = new Date(inspSchedDate);
-                var inspSchedDatePlusOne = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 1);
-                var inspSchedDatePlusThree = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 3);
+                var inspSchedDatePlusOne = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1);
+                var inspSchedDatePlusThree = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 3);
 
                 if (matches(getAppSpecific("IA Number"), null, undefined, ""))
                 {
@@ -682,8 +682,8 @@ if (wfTask == "Final Review")
             if (checkIANumber)
             {
                 var newInspSchedDate = new Date(inspSchedDate);
-                var inspSchedDatePlusOne = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 1);
-                var inspSchedDatePlusThree = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 3);
+                var inspSchedDatePlusOne = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1);
+                var inspSchedDatePlusThree = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 3);
 
                 if (matches(getAppSpecific("IA Number"), null, undefined, ""))
                 {
