@@ -14,6 +14,7 @@ var conUpdate = getAppSpecific("Contract Update", capId);
 var serviceReport = getAppSpecific("Service Report", capId);
 var sampleResults = getAppSpecific("Sample Results", capId);
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
+
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete") 
 {
     if (sampleResults == "CHECKED")
@@ -43,6 +44,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
             maxDatePlusThree = (maxDatePlusThree.getMonth() + 1) + "/" + maxDatePlusThree.getDate() + "/" + (maxDatePlusThree.getFullYear() + 3);
             editAppSpecific("Next Sample Date", maxDatePlusThree, parentCapId);
             editAppSpecific("Most Recent MFR Sample", maxDate, parentCapId)
+            editAppSpecific("O&M Contract Approved", sysDateMMDDYYYY, parentCapId);
         }
         var phase = getAppSpecific("Phase", capId);
         var collector = getAppSpecific("Collector", capId);

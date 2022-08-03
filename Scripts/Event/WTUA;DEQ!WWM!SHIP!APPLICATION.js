@@ -495,6 +495,333 @@ if (wfTask == "Final Review")
             }
             sendNotification("", appEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
         }
+
+        //begin SHIP SYSTEM DETAILS check
+        var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
+        var checkIANumber = false;
+        if (shipSystemTable.length < 0)
+        {
+            for (sstrow in shipSystemTable)
+            {
+                var inspSchedDate = shipSystemTable[sstrow]["Installation Date"];
+                var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
+                var iaModel = shipSystemTable[sstrow]["I/A Model"];
+                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product"];
+                var iaLeachOtherType = shipSystemTable[sstrow]["Leaching Type"];
+                var iaEffluentPumpPools = shipSystemTable[sstrow]["Effluent Pump"];
+
+                if (iaManufacturer != "N/A") 
+                {
+                    checkIANumber = true;
+                }
+            }
+            if (checkIANumber)
+            {
+                var newInspSchedDate = new Date(inspSchedDate);
+                var inspSchedDatePlusOne = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 1);
+                var inspSchedDatePlusThree = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 3);
+
+                if (matches(getAppSpecific("IA Number"), null, undefined, ""))
+                {
+                    var iaNew = createChild("DEQ", "Ecology", "IA", "Application");
+                    var iaCustom = iaNew.getCustomID();
+                    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+                    if (getCapResult.getSuccess())
+                    {
+                        var apsArray = getCapResult.getOutput();
+                        for (aps in apsArray)
+                        {
+                            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+                            logDebug("apsArray = " + apsArray);
+                            var relCap = myCap.getCapID();
+                            logDebug("relCapID = " + relCap.getCustomID());
+                            var relCapID = relCap.getCustomID();
+                        }
+                    }
+                    if (relCap != null)
+                    {
+                        copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
+                        copyLicensedProfByType(relCap, iaNew, ["IA Vendor"]);
+                    }
+                    else
+                    {
+                        copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
+                    }
+                    copyContactsByType(capId, iaNew, ["Property Owner"]);
+                    copyAddress(capId, iaNew);
+                    copyParcel(capId, iaNew);
+                    copyDocumentsToCapID(capId, iaNew);
+
+                    editAppSpecificLOCAL("Installation Date", inspSchedDate, iaNew);
+                    editAppSpecificLOCAL("Manufacturer", iaManufacturer, iaNew);
+                    editAppSpecificLOCAL("Model", iaModel, iaNew);
+                    editAppSpecificLOCAL("WWM Application Number", capIDString, iaNew);
+                    editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
+                    editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
+                    editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+
+                    var newWorkDesc = "";
+                    if (!matches(iaManufacturer, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaManufacturer + " ";
+                    }
+                    if (!matches(iaModel, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaModel + " ";
+                    }
+                    if (!matches(iaLeachOtherType, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaLeachOtherType + " ";
+                    }
+                    if (!matches(iaLeachProduct, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaLeachProduct + " ";
+                    }
+                    logDebug("newworkdesc is: " + newWorkDesc);
+                    updateWorkDesc(newWorkDesc, iaNew);
+
+                    if (iaLeachOtherType != null)
+                    {
+                        editAppSpecificLOCAL("Leaching", iaLeachOtherType, iaNew);
+                    }
+                    if (iaEffluentPumpPools != null)
+                    {
+                        editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
+                    }
+
+                    var pinNumber = makePIN(8);
+                    editAppSpecific('IA PIN Number', pinNumber, iaNew)
+
+
+
+                    //Start Notification to Parent Contacts/LPs
+                    logDebug("capId = " + capId);
+                    var AInfo = new Array();
+                    logDebug("parentCapId = " + parentCapId);
+                    var conEmail = "";
+                    logDebug("iaNew =" + iaNew);
+                    var pin = getAppSpecific('IA PIN Number', iaNew);
+                    logDebug("pin = " + pin);
+                    var altId = capId.getCustomID();
+                    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+                    if (capParcelResult.getSuccess())
+                    {
+                        var Parcels = capParcelResult.getOutput().toArray();
+                        for (zz in Parcels)
+                        {
+                            var parcelNumber = Parcels[zz].getParcelNumber();
+                            logDebug("parcelNumber = " + parcelNumber);
+                        }
+                    }
+
+                    //gathering LPs from parent
+                    var licProfResult = aa.licenseScript.getLicenseProf(capId);
+                    var capLPs = licProfResult.getOutput();
+                    logDebug("CapLPs = " + capLPs);
+                    for (l in capLPs)
+                    {
+                        logDebug("capLPs = " + capLPs[l]);
+                        if (!matches(capLPs[l].email, null, undefined, ""))
+                        {
+                            logDebug("LP emails = " + capLPs[l].email);
+                            conEmail += capLPs[l].email + ";"
+                            logDebug("conEmail = " + conEmail);
+                        }
+                    }
+                    //gathering contacts from parent
+                    var contactResult = aa.people.getCapContactByCapID(capId);
+                    var capContacts = contactResult.getOutput();
+                    for (c in capContacts)
+                    {
+                        logDebug("capContacts = " + capContacts[c]);
+                        if (!matches(capContacts[c].email, null, undefined, ""))
+                        {
+                            logDebug("contact emails = " + capContacts[c].email);
+                            conEmail += capContacts[c].email + ";"
+                            logDebug("conEmail post contacts = " + conEmail);
+                        }
+                    }
+
+
+                    //Sending Notification
+
+                    var vEParams = aa.util.newHashtable();
+                    var addrResult = getAddressInALine(capId);
+                    addParameter(vEParams, "$$altID$$", iaCustom);
+                    addParameter(vEParams, "$$address$$", addrResult);
+                    addParameter(vEParams, "$$pin$$", pin);
+                    addParameter(vEParams, "$$wwmAltID$$", altId);
+                    addParameter(vEParams, "$$Parcel$$", parcelNumber);
+
+                    sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+
+                }
+            }
+        }
+    }
+    if (wfStatus == "Awaiting Client Reply")
+    {
+        var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
+        var checkIANumber = false;
+        if (shipSystemTable.length < 0)
+        {
+            for (sstrow in shipSystemTable)
+            {
+                var inspSchedDate = shipSystemTable[sstrow]["Installation Date"];
+                var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
+                var iaModel = shipSystemTable[sstrow]["I/A Model"];
+                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product"];
+                var iaLeachOtherType = shipSystemTable[sstrow]["Leaching Type"];
+                var iaEffluentPumpPools = shipSystemTable[sstrow]["Effluent Pump"];
+
+                if (iaManufacturer != "N/A") 
+                {
+                    checkIANumber = true;
+                }
+            }
+            if (checkIANumber)
+            {
+                var newInspSchedDate = new Date(inspSchedDate);
+                var inspSchedDatePlusOne = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 1);
+                var inspSchedDatePlusThree = newInspSchedDate.getMonth() + "/" + newInspSchedDate.getDayOfMonth() + "/" + (newInspSchedDate.getYear() + 3);
+
+                if (matches(getAppSpecific("IA Number"), null, undefined, ""))
+                {
+                    var iaNew = createChild("DEQ", "Ecology", "IA", "Application");
+                    var iaCustom = iaNew.getCustomID();
+                    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+                    if (getCapResult.getSuccess())
+                    {
+                        var apsArray = getCapResult.getOutput();
+                        for (aps in apsArray)
+                        {
+                            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+                            logDebug("apsArray = " + apsArray);
+                            var relCap = myCap.getCapID();
+                            logDebug("relCapID = " + relCap.getCustomID());
+                            var relCapID = relCap.getCustomID();
+                        }
+                    }
+                    if (relCap != null)
+                    {
+                        copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
+                        copyLicensedProfByType(relCap, iaNew, ["IA Vendor"]);
+                    }
+                    else
+                    {
+                        copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
+                    }
+                    copyContactsByType(capId, iaNew, ["Property Owner"]);
+                    copyAddress(capId, iaNew);
+                    copyParcel(capId, iaNew);
+                    copyDocumentsToCapID(capId, iaNew);
+
+                    editAppSpecificLOCAL("Installation Date", inspSchedDate, iaNew);
+                    editAppSpecificLOCAL("Manufacturer", iaManufacturer, iaNew);
+                    editAppSpecificLOCAL("Model", iaModel, iaNew);
+                    editAppSpecificLOCAL("WWM Application Number", capIDString, iaNew);
+                    editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
+                    editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
+                    editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+
+                    var newWorkDesc = "";
+                    if (!matches(iaManufacturer, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaManufacturer + " ";
+                    }
+                    if (!matches(iaModel, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaModel + " ";
+                    }
+                    if (!matches(iaLeachOtherType, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaLeachOtherType + " ";
+                    }
+                    if (!matches(iaLeachProduct, "N/A", undefined, null, " "))
+                    {
+                        newWorkDesc += iaLeachProduct + " ";
+                    }
+                    logDebug("newworkdesc is: " + newWorkDesc);
+                    updateWorkDesc(newWorkDesc, iaNew);
+
+                    if (iaLeachOtherType != null)
+                    {
+                        editAppSpecificLOCAL("Leaching", iaLeachOtherType, iaNew);
+                    }
+                    if (iaEffluentPumpPools != null)
+                    {
+                        editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
+                    }
+
+                    var pinNumber = makePIN(8);
+                    editAppSpecific('IA PIN Number', pinNumber, iaNew)
+
+
+
+                    //Start Notification to Parent Contacts/LPs
+                    logDebug("capId = " + capId);
+                    var AInfo = new Array();
+                    logDebug("parentCapId = " + parentCapId);
+                    var conEmail = "";
+                    logDebug("iaNew =" + iaNew);
+                    var pin = getAppSpecific('IA PIN Number', iaNew);
+                    logDebug("pin = " + pin);
+                    var altId = capId.getCustomID();
+                    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+                    if (capParcelResult.getSuccess())
+                    {
+                        var Parcels = capParcelResult.getOutput().toArray();
+                        for (zz in Parcels)
+                        {
+                            var parcelNumber = Parcels[zz].getParcelNumber();
+                            logDebug("parcelNumber = " + parcelNumber);
+                        }
+                    }
+
+                    //gathering LPs from parent
+                    var licProfResult = aa.licenseScript.getLicenseProf(capId);
+                    var capLPs = licProfResult.getOutput();
+                    logDebug("CapLPs = " + capLPs);
+                    for (l in capLPs)
+                    {
+                        logDebug("capLPs = " + capLPs[l]);
+                        if (!matches(capLPs[l].email, null, undefined, ""))
+                        {
+                            logDebug("LP emails = " + capLPs[l].email);
+                            conEmail += capLPs[l].email + ";"
+                            logDebug("conEmail = " + conEmail);
+                        }
+                    }
+                    //gathering contacts from parent
+                    var contactResult = aa.people.getCapContactByCapID(capId);
+                    var capContacts = contactResult.getOutput();
+                    for (c in capContacts)
+                    {
+                        logDebug("capContacts = " + capContacts[c]);
+                        if (!matches(capContacts[c].email, null, undefined, ""))
+                        {
+                            logDebug("contact emails = " + capContacts[c].email);
+                            conEmail += capContacts[c].email + ";"
+                            logDebug("conEmail post contacts = " + conEmail);
+                        }
+                    }
+
+
+                    //Sending Notification
+
+                    var vEParams = aa.util.newHashtable();
+                    var addrResult = getAddressInALine(capId);
+                    addParameter(vEParams, "$$altID$$", iaCustom);
+                    addParameter(vEParams, "$$address$$", addrResult);
+                    addParameter(vEParams, "$$pin$$", pin);
+                    addParameter(vEParams, "$$wwmAltID$$", altId);
+                    addParameter(vEParams, "$$Parcel$$", parcelNumber);
+
+                    sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+
+                }
+            }
+        }
     }
 }
 

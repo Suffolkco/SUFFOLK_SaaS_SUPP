@@ -38,6 +38,18 @@ if (wfTask == "Final Review" && wfStatus == "Registration Complete")
             showMessage = true;
             comment("Complete the SHIP SYSTEM DETAILS Custom List prior to finalizing this registration.");
         }
+        else
+        {
+            if (!matches(getAppSpecific("IA Number"), "", null, undefined))
+            {
+                if (matches(getAppSpecific("O&M Contract Approved"), "", null, undefined))
+                {
+                    cancel = true;
+                    showMessage = true;
+                    comment("Awaiting approvable O&M Contract/Registration in Ecology.");
+                }   
+            }
+        }
     }
     else
     {
