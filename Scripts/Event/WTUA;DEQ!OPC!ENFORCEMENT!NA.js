@@ -238,7 +238,7 @@ if (wfTask == "Preliminary Hearing")
             addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
-        addParameter(emailParams, "$$hearingTime$$", hearingTime);
+        addParameter(emailParams, "$$hearingTime$$", hearingTime); 
 
         sendNotification("", conEmailList, "", "DEQ_OPC_ENF_PRELIM_HEARING_ADJ", emailParams, null);
 
