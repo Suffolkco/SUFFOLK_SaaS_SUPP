@@ -77,8 +77,34 @@ if (wfTask == "Violation Review")
     }
     if (wfStatus == "NOV Letter Sent")
     {
-        //possibly go back and fix this
-        //getting inspection date field from these two tables
+        //preparing inspection report either from the tank or site (whichever copied to this record) for sending along with the notification here
+        var docList = getDocumentList();
+        var docDates = [];
+        var maxDate;
+
+        for (doc in docList)
+        {
+            if (matches(docList[doc].getDocCategory(), "Inspection Report"))
+            {
+                logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                maxDate = Math.max.apply(null, docDates);
+                logDebug("maxdate is: " + maxDate);
+
+                if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                {
+                    var docType = docList[doc].getDocCategory();
+                    var docFileName = docList[doc].getFileName();
+                }
+            }
+        }
+        var docToSend = prepareDocumentForEmailAttachment(capId, "Inspection Report", docFileName);
+
+        logDebug("docToSend" + docToSend);
+        docToSend = docToSend === null ? [] : [docToSend];
+        otpRFiles.push(docToSend);
+
+        //gathering inspection date information to push into the parameter in the email
         var inspDates = [];
         var aTwelveSite = loadASITable("ARTICLE 12 SITE VIOLATIONS", capId);
         if (aTwelveSite)
@@ -118,7 +144,7 @@ if (wfTask == "Violation Review")
 
         addParameter(emailParams, "$$violationDueDate$$", dateSixtyDaysOut);
         addParameter(emailParams, "$$inspDate$$", maxDate);
-        sendNotification("", conEmailList, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, null);
+        sendNotification("", conEmailList, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
         updateTaskDueDate("Violation Review", dateThirtyDaysOut);
     }
 }
