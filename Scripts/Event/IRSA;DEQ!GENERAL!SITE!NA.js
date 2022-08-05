@@ -95,6 +95,25 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
             var projDesc = workDescGet(capId);
             editAppName(appName, enfChild);
             updateWorkDesc(projDesc, enfChild);
+            var reportParams = aa.util.newHashtable();
+            var alternateID = capId.getCustomID();
+            var year = inspObj.getInspectionDate().getYear();
+            var month = inspObj.getInspectionDate().getMonth();
+            var day = inspObj.getInspectionDate().getDayOfMonth();
+            var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+            var min = inspObj.getInspectionDate().getMinute();
+            var sec = inspObj.getInspectionDate().getSecond();
+
+            //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
+            logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+
+            var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+
+            addParameter(reportParams, "SiteRecordID", alternateID.toString());
+            addParameter(reportParams, "InspectionDate", inspectionDateCon);
+            addParameter(reportParams, "InspectionType", inspType);
+            generateReport(enfChild, "Facility Inspection Summary Report Script", "DEQ", reportParams)
+
         }
         else
         {
@@ -188,78 +207,78 @@ function getAppName() {
     capResult = aa.cap.getCap(itemCap)
 
     if (!capResult.getSuccess())
-    { logDebug("**WARNING: error getting cap : " + capResult.getErrorMessage()); return false }
+    {logDebug("**WARNING: error getting cap : " + capResult.getErrorMessage()); return false}
 
     capModel = capResult.getOutput().getCapModel()
 
     return capModel.getSpecialText()
 }
 
-function createChildLocal(grp,typ,stype,cat,desc) // optional parent capId
+function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
 {
-	//
-	// creates the new application and returns the capID object
-	//
+    //
+    // creates the new application and returns the capID object
+    //
 
-	var itemCap = capId
-	if (arguments.length > 5) itemCap = arguments[5]; // use cap ID specified in args
-	
-	var appCreateResult = aa.cap.createApp(grp,typ,stype,cat,desc);
-	logDebug("creating cap " + grp + "/" + typ + "/" + stype + "/" + cat);
-	if (appCreateResult.getSuccess())
-		{
-		var newId = appCreateResult.getOutput();
-		logDebug("cap " + grp + "/" + typ + "/" + stype + "/" + cat + " created successfully ");
-		
-		// create Detail Record
-		capModel = aa.cap.newCapScriptModel().getOutput();
-		capDetailModel = capModel.getCapModel().getCapDetailModel();
-		capDetailModel.setCapID(newId);
-		aa.cap.createCapDetail(capDetailModel);
+    var itemCap = capId
+    if (arguments.length > 5) itemCap = arguments[5]; // use cap ID specified in args
 
-		var newObj = aa.cap.getCap(newId).getOutput();	//Cap object
-		var result = aa.cap.createAppHierarchy(itemCap, newId); 
-		if (result.getSuccess())
-			logDebug("Child application successfully linked");
-		else
-			logDebug("Could not link applications");
+    var appCreateResult = aa.cap.createApp(grp, typ, stype, cat, desc);
+    logDebug("creating cap " + grp + "/" + typ + "/" + stype + "/" + cat);
+    if (appCreateResult.getSuccess())
+    {
+        var newId = appCreateResult.getOutput();
+        logDebug("cap " + grp + "/" + typ + "/" + stype + "/" + cat + " created successfully ");
 
-		// Copy Parcels
+        // create Detail Record
+        capModel = aa.cap.newCapScriptModel().getOutput();
+        capDetailModel = capModel.getCapModel().getCapDetailModel();
+        capDetailModel.setCapID(newId);
+        aa.cap.createCapDetail(capDetailModel);
 
-		var capParcelResult = aa.parcel.getParcelandAttribute(itemCap,null);
-		if (capParcelResult.getSuccess())
-			{
-			var Parcels = capParcelResult.getOutput().toArray();
-			for (zz in Parcels)
-				{
-				logDebug("adding parcel #" + zz + " = " + Parcels[zz].getParcelNumber());
-				var newCapParcel = aa.parcel.getCapParcelModel().getOutput();
-				newCapParcel.setParcelModel(Parcels[zz]);
-				newCapParcel.setCapIDModel(newId);
-				newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
-				newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
-				aa.parcel.createCapParcel(newCapParcel);
-				}
-			}	
+        var newObj = aa.cap.getCap(newId).getOutput();	//Cap object
+        var result = aa.cap.createAppHierarchy(itemCap, newId);
+        if (result.getSuccess())
+            logDebug("Child application successfully linked");
+        else
+            logDebug("Could not link applications");
 
-		// Copy Addresses
-		capAddressResult = aa.address.getAddressByCapId(itemCap);
-		if (capAddressResult.getSuccess())
-			{
-			Address = capAddressResult.getOutput();
-			for (yy in Address)
-				{
-				newAddress = Address[yy];
-				newAddress.setCapID(newId);
-				aa.address.createAddress(newAddress);
-				logDebug("added address");
-				}
-			}
-		
-		return newId;
-		}
-	else
-		{
-		logDebug( "**ERROR: adding child App: " + appCreateResult.getErrorMessage());
-		}
+        // Copy Parcels
+
+        var capParcelResult = aa.parcel.getParcelandAttribute(itemCap, null);
+        if (capParcelResult.getSuccess())
+        {
+            var Parcels = capParcelResult.getOutput().toArray();
+            for (zz in Parcels)
+            {
+                logDebug("adding parcel #" + zz + " = " + Parcels[zz].getParcelNumber());
+                var newCapParcel = aa.parcel.getCapParcelModel().getOutput();
+                newCapParcel.setParcelModel(Parcels[zz]);
+                newCapParcel.setCapIDModel(newId);
+                newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
+                newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
+                aa.parcel.createCapParcel(newCapParcel);
+            }
+        }
+
+        // Copy Addresses
+        capAddressResult = aa.address.getAddressByCapId(itemCap);
+        if (capAddressResult.getSuccess())
+        {
+            Address = capAddressResult.getOutput();
+            for (yy in Address)
+            {
+                newAddress = Address[yy];
+                newAddress.setCapID(newId);
+                aa.address.createAddress(newAddress);
+                logDebug("added address");
+            }
+        }
+
+        return newId;
+    }
+    else
+    {
+        logDebug("**ERROR: adding child App: " + appCreateResult.getErrorMessage());
+    }
 }

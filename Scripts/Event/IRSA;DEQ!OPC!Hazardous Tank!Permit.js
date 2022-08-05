@@ -98,6 +98,28 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
         editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
         var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
         editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+        var alternateID = capId.getCustomID();
+        var year = inspObj.getInspectionDate().getYear();
+        var month = inspObj.getInspectionDate().getMonth();
+        var day = inspObj.getInspectionDate().getDayOfMonth();
+        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+        var min = inspObj.getInspectionDate().getMinute();
+        var sec = inspObj.getInspectionDate().getSecond();
+
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+
+        logDebug("capId: " + capId);
+        logDebug("inspectionDateCon: " + inspectionDateCon);
+
+        //var retVal = new Date(String(inspectionDateCon));
+        //logDebug("retVal Date: " + retVal);
+        addParameter(reportParams, "TankRecordID", alternateID.toString());
+        //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
+        addParameter(reportParams, "InspectionDate", inspectionDateCon);
+        addParameter(reportParams, "InspectionType", inspType);
+
+        generateReportBatch(enfChild, "Inspection result Tank Operator", 'DEQ', reportParams);
 
     }
 }
