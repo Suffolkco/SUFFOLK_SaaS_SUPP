@@ -112,7 +112,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
             addParameter(reportParams, "SiteRecordID", alternateID.toString());
             addParameter(reportParams, "InspectionDate", inspectionDateCon);
             addParameter(reportParams, "InspectionType", inspType);
-            generateReportBatch(enfChild, "Facility Inspection Summary Report", 'DEQ', reportParams)
+            generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
         }
         else
         {
