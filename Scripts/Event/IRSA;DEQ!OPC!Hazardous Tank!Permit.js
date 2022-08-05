@@ -119,7 +119,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
         addParameter(reportParams, "InspectionType", inspType);
 
-        generateReportBatch(enfChild, "Inspection result Tank Operator", 'DEQ', reportParams);
+        generateReportBatch(enfChild, "Inspection result Tank Operator Script", 'DEQ', reportParams);
 
     }
 }
