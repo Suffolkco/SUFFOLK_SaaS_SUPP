@@ -30,12 +30,13 @@ var AInfo = new Array();
 loadAppSpecific4ACA(AInfo);
 try
 {
-if (AInfo["Total Number of Lots Proposed"] < 2)
- {  
-        cancel = true;
-        showMessage = true;
-        comment("Number of lots must be 2 or greater.");
- }
+    if (AInfo["Total Number of Lots Proposed"] < 2)
+    {  
+            cancel = true;
+            showMessage = true;
+            comment("Number of lots must be 2 or greater.");
+    }
+    
 }
 catch (error)
 {
