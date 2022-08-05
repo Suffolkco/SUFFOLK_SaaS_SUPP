@@ -78,6 +78,7 @@ if (wfTask == "Violation Review")
     if (wfStatus == "NOV Letter Sent")
     {
         //preparing inspection report either from the tank or site (whichever copied to this record) for sending along with the notification here
+        var otpRFiles = new Array();
         var docList = getDocumentList();
         var docDates = [];
         var maxDate;
