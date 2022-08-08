@@ -4,7 +4,7 @@ var altId = capId.getCustomID();
 // EHIMS-4806
 if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
 {		
-	var multiTaxMap = AInfo["Multiple Tax Map Number"];
+	var multiTaxMap = AInfo["Tax Map Numbers"];
 	if (multiTaxMap != null)
     {
         cancel = true;
