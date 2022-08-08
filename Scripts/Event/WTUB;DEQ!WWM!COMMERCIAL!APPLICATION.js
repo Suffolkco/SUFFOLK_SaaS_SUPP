@@ -12,33 +12,36 @@ if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
         comment("There are multiple tax map numbers for this application - make sure all tax map numbers are entered into the Parcel portlet. Workflow cannot be advanced until custom field “multiple tax map numbers” is emptied.");
     }
 
-    var parcelObj = cap.getParcelModel();
-	if (!parcelObj)
-	{ 
-        logDebug("No parcel to get attributes"); 
-	}
-	else
-	{
-		var parcelNo = parcelObj.getParcelNumber();
-		logDebug("parcelNo:" + parcelNo);
-		
-		if (parcelNo != null)
-		{
-			logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());						
-			var parcelTxt = new String(parcelNo);
-			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
-			var length = noSpaceParcelNo.length;
-			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
-			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
-			if (length != 19)        
-			{            
-				cancel = true;
-				showMessage = true;
-				comment("One or more tax map numbers (in parcel portlet) are incorrect - verify all tax map numbers are exactly 19 digits long.");
-				//comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");				
-			}				
-		}
-	}
+    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[zz].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+                           
+            if (parcelNumber != null)
+            {
+                logDebug("Data Entry - Parcel No: " + parcelNumber + ", Length: " + parcelNumber.length());						
+                var parcelTxt = new String(parcelNumber);
+                noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
+                var length = noSpaceParcelNo.length;
+                logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+                logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+                if (length != 19)        
+                {            
+                    cancel = true;
+                    showMessage = true;
+                    comment("One or more tax map numbers (in parcel portlet) are incorrect - verify all tax map numbers are exactly 19 digits long.");
+                    //comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");				
+                }				
+            }
+            
+        }
+    }
+
+  
 
 }
 
