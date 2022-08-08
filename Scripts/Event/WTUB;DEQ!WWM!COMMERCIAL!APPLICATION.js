@@ -36,13 +36,9 @@ if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
                     comment("One or more tax map numbers (in parcel portlet) are incorrect - verify all tax map numbers are exactly 19 digits long.");
                     //comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");				
                 }				
-            }
-            
+            }            
         }
     }
-
-  
-
 }
 
 // EHIMS-4754

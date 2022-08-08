@@ -4,6 +4,46 @@ var altId = capId.getCustomID();
 showDebug = false;
 logDebug("Here's the result of altID to string: " + altId.toString());
 
+// EHIMS-4806
+if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
+{		
+	var multiTaxMap = AInfo["Tax Map Numbers"];
+	if (multiTaxMap != null)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("There are multiple tax map numbers for this application - make sure all tax map numbers are entered into the Parcel portlet. Workflow cannot be advanced until custom field “multiple tax map numbers” is emptied.");
+    }
+
+    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[zz].getParcelNumber();
+            //logDebug("parcelNumber = " + parcelNumber);
+                           
+            if (parcelNumber != null)
+            {
+                //logDebug("Data Entry - Parcel No: " + parcelNumber + ", Length: " + parcelNumber.length());						
+                var parcelTxt = new String(parcelNumber);
+                noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
+                var length = noSpaceParcelNo.length;
+                //logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+                //logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+                if (length != 19)        
+                {            
+                    cancel = true;
+                    showMessage = true;
+                    comment("One or more tax map numbers (in parcel portlet) are incorrect - verify all tax map numbers are exactly 19 digits long.");
+                    //comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");				
+                }				
+            }            
+        }
+    }
+}
+
 // EHIMS-4754
 if (wfTask == "Inspections" && wfStatus == "Complete")
 {		
