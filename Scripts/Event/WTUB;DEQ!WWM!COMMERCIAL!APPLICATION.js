@@ -1,6 +1,47 @@
 //WTUB:DEQ/WWM/Commercial/Application
 var altId = capId.getCustomID();
 
+// EHIMS-4806
+if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
+{		
+	var multiTaxMap = AInfo["Multiple Tax Map Number"];
+	if (multiTaxMap != null)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("There are multiple tax map numbers for this application - make sure all tax map numbers are entered into the Parcel portlet. Workflow cannot be advanced until custom field “multiple tax map numbers” is emptied.");
+    }
+
+    var parcelObj = cap.getParcelModel();
+	if (!parcelObj)
+	{ 
+        logDebug("No parcel to get attributes"); 
+	}
+	else
+	{
+		var parcelNo = parcelObj.getParcelNumber();
+		logDebug("parcelNo:" + parcelNo);
+		
+		if (parcelNo != null)
+		{
+			logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());						
+			var parcelTxt = new String(parcelNo);
+			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
+			var length = noSpaceParcelNo.length;
+			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+			if (length != 19)        
+			{            
+				cancel = true;
+				showMessage = true;
+				comment("One or more tax map numbers (in parcel portlet) are incorrect - verify all tax map numbers are exactly 19 digits long.");
+				//comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");				
+			}				
+		}
+	}
+
+}
+
 // EHIMS-4754
 if (wfTask == "Inspections" && wfStatus == "Complete")
 {		
