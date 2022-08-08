@@ -5,6 +5,104 @@ var emailText = "";
 
 var skip = false;
 var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+
+ // EHIMS-4832: Resubmission after user already submitted.
+ if (publicUser && 
+    (itemCapType == "DEQ/WWM/Residence/Application" || 
+    itemCapType == "DEQ/WWM/Subdivision/Application" ||        
+    itemCapType == "DEQ/WWM/Commercial/Application"))
+{
+    // EHIMS-4832
+    if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
+    {
+        // 1. Set a flag
+        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+        
+        // 2. Send email to Record Assignee                       
+        var cdScriptObjResult = aa.cap.getCapDetail(capId);
+        if (!cdScriptObjResult.getSuccess())
+            { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+
+        var cdScriptObj = cdScriptObjResult.getOutput();
+
+        if (!cdScriptObj)
+            { logDebug("**ERROR: No cap detail script object") ; }
+
+        cd = cdScriptObj.getCapDetailModel();
+
+        // Record Assigned to
+        var assignedUserid = cd.getAsgnStaff();
+        if (assignedUserid !=  null)
+        {
+            iNameResult = aa.person.getUser(assignedUserid)
+
+            if(iNameResult.getSuccess())
+            {
+                assignedUser = iNameResult.getOutput();                   
+                var emailParams = aa.util.newHashtable();
+                var reportFile = new Array();
+                getRecordParams4Notification(emailParams);   
+                addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                if (assignedUser.getEmail() != null)
+                {
+                    sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+                    logDebug("Email Sent here***************");
+                    logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
+                }                    
+            }
+        }             
+    }
+
+    // EHIMS -4431: Check if BOR is attached and there is a BOR fee already
+    var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
+    if (capDocResult.getSuccess())
+    {       
+        logDebug("*** count *** " + capDocResult.getOutput().size());            
+        var docType = "Board of Review Application";
+        for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+        {
+            var documentObject = capDocResult.getOutput().get(docInx);        
+            
+            var docCat = documentObject.getDocCategory();
+            if (docCat != null)
+            {
+                logDebug("docCat:" + docCat);
+                logDebug("docType:" + docType);
+                if (docCat.equals(docType)) 
+                {
+
+                    logDebug("Fee exists in record.");
+                    logDebug("docName:" + documentObject.getDocName());
+                    logDebug("fileName:" + documentObject.getFileName());
+                    
+                    // If BOR fee does not exist but BOR document has been attached, we need to add/invoice fee.
+                    if (!feeExists("BOR"))
+                    {
+                        if (itemCapType == "DEQ/WWM/Residence/Application")
+                        {
+                            result = addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y");
+                            logDebug("Add fee: DEQ_SFR" +  result);
+                        }  
+                        else if (itemCapType == "DEQ/WWM/Subdivision/Application")
+                        {
+                            addFee("BOR", "DEQ_SUB", "FINAL", 1, "Y");
+                            logDebug("Add fee: DEQ_SUB" +  result);
+                        }
+                        else if (itemCapType == "DEQ/WWM/Commercial/Application")
+                        {
+                            addFee("BOR", "DEQ_OSFR", "FINAL", 1, "Y");
+                            logDebug("Add fee: DEQ_OSFR" +  result);
+                        }
+                    }
+                    
+                    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA", emailText);
+                }
+            }
+        }
+    }
+}
+
 // If record type is WWM and it's a backoffice user, we do not want to update the status
 if (!publicUser && 
     (itemCapType == "DEQ/WWM/Residence/Application" || 
@@ -36,106 +134,6 @@ if (!skip)
 
 if (publicUser)
 {    
-   
-     // EHIMS-4832: Resubmission after user already submitted.
-     if (publicUser && 
-        (itemCapType == "DEQ/WWM/Residence/Application" || 
-        itemCapType == "DEQ/WWM/Subdivision/Application" ||        
-        itemCapType == "DEQ/WWM/Commercial/Application"))
-    {
-        // EHIMS-4832
-        if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
-        {
-            // 1. Set a flag
-            editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-            
-            // 2. Send email to Record Assignee                       
-            var cdScriptObjResult = aa.cap.getCapDetail(capId);
-            if (!cdScriptObjResult.getSuccess())
-                { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
-
-            var cdScriptObj = cdScriptObjResult.getOutput();
-
-            if (!cdScriptObj)
-                { logDebug("**ERROR: No cap detail script object") ; }
-
-            cd = cdScriptObj.getCapDetailModel();
-
-            // Record Assigned to
-            var assignedUserid = cd.getAsgnStaff();
-            if (assignedUserid !=  null)
-            {
-                iNameResult = aa.person.getUser(assignedUserid)
-
-                if(iNameResult.getSuccess())
-                {
-                    assignedUser = iNameResult.getOutput();                   
-                    var emailParams = aa.util.newHashtable();
-                    var reportFile = new Array();
-                    getRecordParams4Notification(emailParams);   
-                    addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
-                    addParameter(emailParams, "$$altID$$", capId.getCustomID());
-                    if (assignedUser.getEmail() != null)
-                    {
-                        sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
-                        logDebug("Email Sent here***************");
-                        logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
-                    }                    
-                }
-            }             
-        }
-
-        // EHIMS -4431: Check if BOR is attached and there is a BOR fee already
-        var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
-        if (capDocResult.getSuccess())
-        {       
-            logDebug("*** count *** " + capDocResult.getOutput().size());            
-            var docType = "Board of Review Application";
-            for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
-            {
-                var documentObject = capDocResult.getOutput().get(docInx);        
-                
-                var docCat = documentObject.getDocCategory();
-                if (docCat != null)
-                {
-                    logDebug("docCat:" + docCat);
-                    logDebug("docType:" + docType);
-                    if (docCat.equals(docType)) 
-                    {
-
-                        logDebug("Fee exists in record.");
-                        logDebug("docName:" + documentObject.getDocName());
-                        logDebug("fileName:" + documentObject.getFileName());
-                        
-                        // If BOR fee does not exist but BOR document has been attached, we need to add/invoice fee.
-                        if (!feeExists("BOR"))
-                        {
-                            if (itemCapType == "DEQ/WWM/Residence/Application")
-                            {
-                                result = addFee("BOR", "DEQ_SFR", "FINAL", 1, "Y");
-                                logDebug("Add fee: DEQ_SFR" +  result);
-                            }  
-                            else if (itemCapType == "DEQ/WWM/Subdivision/Application")
-                            {
-                                addFee("BOR", "DEQ_SUB", "FINAL", 1, "Y");
-                                logDebug("Add fee: DEQ_SUB" +  result);
-                            }
-                            else if (itemCapType == "DEQ/WWM/Commercial/Application")
-                            {
-                                addFee("BOR", "DEQ_OSFR", "FINAL", 1, "Y");
-                                logDebug("Add fee: DEQ_OSFR" +  result);
-                            }
-                        }
-                        
-                        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "DUA", emailText);
-                    }
-                }
-            }
-        }
-   
-
-    }
-
     if (isTaskActive("Application Review"))
     {
         if (isTaskStatus("Application Review", "Awaiting Client Reply")) 
@@ -170,8 +168,6 @@ if (publicUser)
         }
     }
    
-
-    
 }
 
 function logDebug(dstr)
