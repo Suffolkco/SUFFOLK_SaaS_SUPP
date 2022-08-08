@@ -19,16 +19,16 @@ if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
         for (zz in Parcels)
         {
             var parcelNumber = Parcels[zz].getParcelNumber();
-            logDebug("parcelNumber = " + parcelNumber);
+            //logDebug("parcelNumber = " + parcelNumber);
                            
             if (parcelNumber != null)
             {
-                logDebug("Data Entry - Parcel No: " + parcelNumber + ", Length: " + parcelNumber.length());						
+                //logDebug("Data Entry - Parcel No: " + parcelNumber + ", Length: " + parcelNumber.length());						
                 var parcelTxt = new String(parcelNumber);
                 noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
                 var length = noSpaceParcelNo.length;
-                logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
-                logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+                //logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+                //logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
                 if (length != 19)        
                 {            
                     cancel = true;
