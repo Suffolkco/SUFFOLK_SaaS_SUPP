@@ -43,6 +43,9 @@ var warningLog = [];
 var errorLog = [];
 var content = "";
 const GROUP_NAME = "PERFLUORINATED COMPOUNDS";
+const GROUP_NAME_1 = "PFAS 533";
+const GROUP_NAME_2 = "PFAS 537.1";
+const GROUP_NAME_3 = "PFAS SCWA";
 
 //test data
 //var resultsRecords = [
@@ -487,7 +490,10 @@ function makeTable(labResults, resId, inspEmail) {
         t["Analysis Time"] = r[2];
 
         // If there is value, use the value for lab name
-        if (r[3] == GROUP_NAME) {
+        if (r[3] == GROUP_NAME || 
+            r[3] == GROUP_NAME_1 ||
+            r[3] == GROUP_NAME_2 ||
+            r[3] == GROUP_NAME_3) {
 
             if (r[18]) {
                 logInfo("A lab name has been found in the PFAS EDT file: " + r[18]);
@@ -519,9 +525,9 @@ function makeTable(labResults, resId, inspEmail) {
         if (analysisCode == "$VITEK") {
             key = "Vitek";
         }
-
-        if (r[3] == GROUP_NAME) {
-            t["Group Name"] = GROUP_NAME;
+        
+        if (r[3] == GROUP_NAME || r[3] == GROUP_NAME_1 || r[3] == GROUP_NAME_2 || r[3] == GROUP_NAME_3) {
+            t["Group Name"] = r[3];
         }
         else {
             t["Group Name"] = getGroupNameValue(key);
@@ -589,7 +595,7 @@ function makeTable(labResults, resId, inspEmail) {
                 t["Result Notation"] = "<";
             }
         }
-        if (analysisCode == GROUP_NAME) {
+        if (analysisCode == GROUP_NAME || analysisCode == GROUP_NAME_1 || analysisCode == GROUP_NAME_2 || analysisCode == GROUP_NAME_3) {
             if (textResult == "") {
                 t["Text Results"] = "Not detected";
             }

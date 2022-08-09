@@ -52,7 +52,8 @@ namespace suffolk.lims
                                 continue;
                             }
                             dataName = x[3];                           
-                            if (x[3] == "$HERBMET" || x[3]== "PERFLUORINATED COMPOUNDS") {                                
+                            if (x[3] == "$HERBMET" || x[3]== "PERFLUORINATED COMPOUNDS" ||
+                                 x[3] == "PFAS 533" || x[3] == "PFAS 537.1" || x[3] == "PFAS SCWA") {                                
                                 if (x[1] == "-0-") {
                                     
                                     // herbmet or PFAS incomplete data - do not process
