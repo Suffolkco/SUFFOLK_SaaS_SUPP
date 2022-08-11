@@ -559,7 +559,16 @@ if (wfTask == "Final Review")
                     editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
                     editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
                     editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+                    var currentIANumber = getAppSpecific("IA Number", capId);
 
+                    if (matches(currentIANumber, undefined, null, "", " "))
+                    {
+                        editAppSpecificLOCAL("IA Number", iaCustom, capId)
+                    }
+                    else
+                    {
+                        editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
+                    }
                     var newWorkDesc = "";
                     if (!matches(iaManufacturer, "N/A", undefined, null, " "))
                     {
@@ -579,6 +588,8 @@ if (wfTask == "Final Review")
                     }
                     logDebug("newworkdesc is: " + newWorkDesc);
                     updateWorkDesc(newWorkDesc, iaNew);
+                    editAppName("Installed: " + inspSchedDate, iaNew);
+
 
                     if (iaLeachOtherType != null)
                     {
@@ -588,7 +599,11 @@ if (wfTask == "Final Review")
                     {
                         editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
                     }
-
+                    var propertyType = getAppSpecific("Select Property Type", capId);
+                    if (!matches(propertyType, null, undefined, ""))
+                    {
+                        editAppSpecificLOCAL("Type", propertyType, iaNew)
+                    }
                     var pinNumber = makePIN(8);
                     editAppSpecific('IA PIN Number', pinNumber, iaNew)
 
@@ -723,7 +738,16 @@ if (wfTask == "Final Review")
                     editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
                     editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
                     editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+                    var currentIANumber = getAppSpecific("IA Number", capId);
 
+                    if (matches(currentIANumber, undefined, null, "", " "))
+                    {
+                        editAppSpecificLOCAL("IA Number", iaCustom, capId)
+                    }
+                    else
+                    {
+                        editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
+                    }
                     var newWorkDesc = "";
                     if (!matches(iaManufacturer, "N/A", undefined, null, " "))
                     {
@@ -743,6 +767,8 @@ if (wfTask == "Final Review")
                     }
                     logDebug("newworkdesc is: " + newWorkDesc);
                     updateWorkDesc(newWorkDesc, iaNew);
+                    editAppName("Installed: " + inspSchedDate, iaNew);
+
 
                     if (iaLeachOtherType != null)
                     {
@@ -752,7 +778,11 @@ if (wfTask == "Final Review")
                     {
                         editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
                     }
-
+                    var propertyType = getAppSpecific("Select Property Type", capId);
+                    if (!matches(propertyType, null, undefined, ""))
+                    {
+                        editAppSpecificLOCAL("Type", propertyType, iaNew)
+                    }
                     var pinNumber = makePIN(8);
                     editAppSpecific('IA PIN Number', pinNumber, iaNew)
 
