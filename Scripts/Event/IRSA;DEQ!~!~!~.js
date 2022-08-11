@@ -461,7 +461,16 @@ if (appTypeArray[1] == "WWM")
                         {
                             editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpOther, wwmIA);
                         }
+                        var currentIANumber = getAppSpecific("IA Number", capId);
 
+                        if (matches(currentIANumber, undefined, null, "", " "))
+                        {
+                            editAppSpecificLOCAL("IA Number", iaCustom, capId)
+                        }
+                        else
+                        {
+                            editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
+                        }
                         var pinNumber = makePIN(8);
                         editAppSpecific('IA PIN Number', pinNumber, wwmIA)
 
