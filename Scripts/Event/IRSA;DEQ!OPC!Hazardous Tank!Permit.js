@@ -90,6 +90,10 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 {
     if (inspResult == "Violations Found")
     {
+        var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA", parentCap);
+        logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
+        if (childEnfRecordArray.length == 0)
+        {
         var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
         copyContacts(capId, enfChild);
         copyParcel(capId, enfChild);
@@ -120,7 +124,28 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
         addParameter(reportParams, "InspectionType", inspType);
 
         generateReportBatch(enfChild, "Inspection result Tank Operator Script", 'DEQ', reportParams);
+        }
+        else
+        {
+            for (cr in childEnfRecordArray)
+            {
+                var childEnfRecord = childEnfRecordArray[cr];
+                logDebug("child enf record is: " + childEnfRecord);
+                var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
+                logDebug("childreccaptype is: " + childRecCapType);
+                if (childRecCapType == "DEQ/OPC/Enforcement/NA")
+                {
+                    //update violations ASITs only
+                }
+                var alternateID = capId.getCustomID();
+                var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+                addParameter(reportParams, "SiteRecordID", alternateID.toString());
+                addParameter(reportParams, "InspectionDate", inspectionDateCon);
+                addParameter(reportParams, "InspectionType", inspType);
+                generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
 
+            }
+        }
     }
 }
 
