@@ -79,7 +79,7 @@ if (wfTask == "Application Review")
     }
     if (wfStatus == "Conventional - OK to Proceed")
     {
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
@@ -136,7 +136,7 @@ if (wfTask == "Field Consult Required")
 
     if (wfStatus == "Complete")
     {
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
@@ -296,7 +296,7 @@ if (wfTask == "Grant Review")
             }
             editAppSpecific("Part of Septic Improvement Program(SIP)", "Yes")
 
-            if (AInfo["I/A OWTS Installation"] == "CHECKED")
+            if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
             {
                 otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams);
                 logDebug("This is the rFile: " + otpReportFile);
@@ -407,7 +407,7 @@ if (wfTask == "Inspections")
     }
     if (wfStatus == "Complete")
     {
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
@@ -466,7 +466,7 @@ if (wfTask == "Final Review")
         }
         sendNotification("", propOwnerEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
 
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             rcReportFile = generateReportBatch(capId, "Registration Complete Report", 'DEQ', rcReportParams)
             logDebug("This is the rFile: " + rcReportFile);
