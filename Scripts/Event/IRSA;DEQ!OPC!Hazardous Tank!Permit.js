@@ -115,6 +115,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 
         logDebug("capId: " + capId);
         logDebug("inspectionDateCon: " + inspectionDateCon);
+        var reportParams = aa.util.newHashtable();
 
         //var retVal = new Date(String(inspectionDateCon));
         //logDebug("retVal Date: " + retVal);
@@ -127,6 +128,8 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
         }
         else
         {
+            var reportParams = aa.util.newHashtable();
+
             for (cr in childEnfRecordArray)
             {
                 var childEnfRecord = childEnfRecordArray[cr];

@@ -116,6 +116,8 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
         }
         else
         {
+            var reportParams = aa.util.newHashtable();
+
             for (cr in childEnfRecordArray)
             {
                 var childEnfRecord = childEnfRecordArray[cr];
