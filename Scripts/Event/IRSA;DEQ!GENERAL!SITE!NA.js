@@ -129,10 +129,17 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                     //update violations ASITs only
                 }
                 var alternateID = capId.getCustomID();
+                var year = inspObj.getInspectionDate().getYear();
+                var month = inspObj.getInspectionDate().getMonth();
+                var day = inspObj.getInspectionDate().getDayOfMonth();
+                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                var min = inspObj.getInspectionDate().getMinute();
+                var sec = inspObj.getInspectionDate().getSecond();
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
                 addParameter(reportParams, "SiteRecordID", alternateID.toString());
                 addParameter(reportParams, "InspectionDate", inspectionDateCon);
                 addParameter(reportParams, "InspectionType", inspType);
+                logDebug("report params are: " + reportParams);
                 generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
 
             }

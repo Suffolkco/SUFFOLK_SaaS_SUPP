@@ -141,6 +141,12 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                     //update violations ASITs only
                 }
                 var alternateID = capId.getCustomID();
+                var year = inspObj.getInspectionDate().getYear();
+                var month = inspObj.getInspectionDate().getMonth();
+                var day = inspObj.getInspectionDate().getDayOfMonth();
+                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                var min = inspObj.getInspectionDate().getMinute();
+                var sec = inspObj.getInspectionDate().getSecond();
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
                 addParameter(reportParams, "SiteRecordID", alternateID.toString());
                 addParameter(reportParams, "InspectionDate", inspectionDateCon);
