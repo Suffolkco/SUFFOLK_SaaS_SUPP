@@ -259,6 +259,10 @@ if (wfTask == "Preliminary Sketch Review")
                 updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
             }
         }
+        else
+        {
+            deactivateTask("Inspections");
+        }
     }
     if (matches(wfStatus, "Full Permit Required"))
     {
@@ -370,6 +374,10 @@ if (wfTask == "Grant Review")
                     {
                         updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
                     }
+                }
+                else
+                {
+                    deactivateTask("Inspections");
                 }
             }
         }
