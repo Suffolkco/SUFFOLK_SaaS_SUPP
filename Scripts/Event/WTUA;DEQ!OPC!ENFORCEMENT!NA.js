@@ -107,7 +107,7 @@ if (wfTask == "Violation Review")
 
         //gathering inspection date information to push into the parameter in the email
         var inspDates = [];
-        var aTwelveSite = loadASITable("ARTICLE 12 SITE VIOLATIONS", capId);
+        var aTwelveSite = loadASITable("ARTICLE 12 TANK VIOLATIONS", capId);
         if (aTwelveSite)
         {
             if (aTwelveSite.length >= 1)
@@ -117,20 +117,6 @@ if (wfTask == "Violation Review")
                     if (!matches(aTwelveSite[ats]["Inspection Date"], "", null, " "))
                     {
                         inspDates.push(new Date(aTwelveSite[ats]["Inspection Date"]));
-                    }
-                }
-            }
-        }
-        var aEighteenSite = loadASITable("ARTICLE 18 SITE VIOLATIONS", capId);
-        if (aEighteenSite)
-        {
-            if (aEighteenSite.length >= 1)
-            {
-                for (aes in aEighteenSite)
-                {
-                    if (!matches(aEighteenSite[aes]["Inspection Date"], "", null, " "))
-                    {
-                        inspDates.push(new Date(aEighteenSite[aes]["Inspection Date"]));
                     }
                 }
             }

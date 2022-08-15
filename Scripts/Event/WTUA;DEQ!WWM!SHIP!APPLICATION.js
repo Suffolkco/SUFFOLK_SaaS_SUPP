@@ -79,7 +79,7 @@ if (wfTask == "Application Review")
     }
     if (wfStatus == "Conventional - OK to Proceed")
     {
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
@@ -136,7 +136,7 @@ if (wfTask == "Field Consult Required")
 
     if (wfStatus == "Complete")
     {
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
@@ -259,6 +259,10 @@ if (wfTask == "Preliminary Sketch Review")
                 updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
             }
         }
+        else
+        {
+            deactivateTask("Inspections");
+        }
     }
     if (matches(wfStatus, "Full Permit Required"))
     {
@@ -292,7 +296,7 @@ if (wfTask == "Grant Review")
             }
             editAppSpecific("Part of Septic Improvement Program(SIP)", "Yes")
 
-            if (AInfo["I/A OWTS Installation"] == "CHECKED")
+            if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
             {
                 otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams);
                 logDebug("This is the rFile: " + otpReportFile);
@@ -371,6 +375,10 @@ if (wfTask == "Grant Review")
                         updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
                     }
                 }
+                else
+                {
+                    deactivateTask("Inspections");
+                }
             }
         }
     }
@@ -399,7 +407,7 @@ if (wfTask == "Inspections")
     }
     if (wfStatus == "Complete")
     {
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
@@ -458,7 +466,7 @@ if (wfTask == "Final Review")
         }
         sendNotification("", propOwnerEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
 
-        if (AInfo["I/A OWTS Installation"] == "CHECKED")
+        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
             rcReportFile = generateReportBatch(capId, "Registration Complete Report", 'DEQ', rcReportParams)
             logDebug("This is the rFile: " + rcReportFile);
@@ -559,7 +567,16 @@ if (wfTask == "Final Review")
                     editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
                     editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
                     editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+                    var currentIANumber = getAppSpecific("IA Number", capId);
 
+                    if (matches(currentIANumber, undefined, null, "", " "))
+                    {
+                        editAppSpecificLOCAL("IA Number", iaCustom, capId)
+                    }
+                    else
+                    {
+                        editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
+                    }
                     var newWorkDesc = "";
                     if (!matches(iaManufacturer, "N/A", undefined, null, " "))
                     {
@@ -579,6 +596,8 @@ if (wfTask == "Final Review")
                     }
                     logDebug("newworkdesc is: " + newWorkDesc);
                     updateWorkDesc(newWorkDesc, iaNew);
+                    editAppName("Installed: " + inspSchedDate, iaNew);
+
 
                     if (iaLeachOtherType != null)
                     {
@@ -588,7 +607,11 @@ if (wfTask == "Final Review")
                     {
                         editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
                     }
-
+                    var propertyType = getAppSpecific("Select Property Type", capId);
+                    if (!matches(propertyType, null, undefined, ""))
+                    {
+                        editAppSpecificLOCAL("Type", propertyType, iaNew)
+                    }
                     var pinNumber = makePIN(8);
                     editAppSpecific('IA PIN Number', pinNumber, iaNew)
 
@@ -723,7 +746,16 @@ if (wfTask == "Final Review")
                     editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
                     editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
                     editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+                    var currentIANumber = getAppSpecific("IA Number", capId);
 
+                    if (matches(currentIANumber, undefined, null, "", " "))
+                    {
+                        editAppSpecificLOCAL("IA Number", iaCustom, capId)
+                    }
+                    else
+                    {
+                        editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
+                    }
                     var newWorkDesc = "";
                     if (!matches(iaManufacturer, "N/A", undefined, null, " "))
                     {
@@ -743,6 +775,8 @@ if (wfTask == "Final Review")
                     }
                     logDebug("newworkdesc is: " + newWorkDesc);
                     updateWorkDesc(newWorkDesc, iaNew);
+                    editAppName("Installed: " + inspSchedDate, iaNew);
+
 
                     if (iaLeachOtherType != null)
                     {
@@ -752,7 +786,11 @@ if (wfTask == "Final Review")
                     {
                         editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
                     }
-
+                    var propertyType = getAppSpecific("Select Property Type", capId);
+                    if (!matches(propertyType, null, undefined, ""))
+                    {
+                        editAppSpecificLOCAL("Type", propertyType, iaNew)
+                    }
                     var pinNumber = makePIN(8);
                     editAppSpecific('IA PIN Number', pinNumber, iaNew)
 

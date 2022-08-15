@@ -90,37 +90,73 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 {
     if (inspResult == "Violations Found")
     {
-        var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
-        copyContacts(capId, enfChild);
-        copyParcel(capId, enfChild);
-        copyAddress(capId, enfChild);
-        var siteAltId = parentCap.getCustomID();
-        editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-        var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
-        editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-        var alternateID = capId.getCustomID();
-        var year = inspObj.getInspectionDate().getYear();
-        var month = inspObj.getInspectionDate().getMonth();
-        var day = inspObj.getInspectionDate().getDayOfMonth();
-        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-        var min = inspObj.getInspectionDate().getMinute();
-        var sec = inspObj.getInspectionDate().getSecond();
+        var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA", parentCap);
+        logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
+        if (childEnfRecordArray.length == 0)
+        {
+            var enfChild = createChild("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
+            copyContacts(capId, enfChild);
+            copyParcel(capId, enfChild);
+            copyAddress(capId, enfChild);
+            var siteAltId = parentCap.getCustomID();
+            editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+            var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
+            editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+            var alternateID = capId.getCustomID();
+            var year = inspObj.getInspectionDate().getYear();
+            var month = inspObj.getInspectionDate().getMonth();
+            var day = inspObj.getInspectionDate().getDayOfMonth();
+            var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+            var min = inspObj.getInspectionDate().getMinute();
+            var sec = inspObj.getInspectionDate().getSecond();
 
-        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
-        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+            logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+            var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
 
-        logDebug("capId: " + capId);
-        logDebug("inspectionDateCon: " + inspectionDateCon);
+            logDebug("capId: " + capId);
+            logDebug("inspectionDateCon: " + inspectionDateCon);
+            var reportParams = aa.util.newHashtable();
 
-        //var retVal = new Date(String(inspectionDateCon));
-        //logDebug("retVal Date: " + retVal);
-        addParameter(reportParams, "TankRecordID", alternateID.toString());
-        //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
-        addParameter(reportParams, "InspectionDate", inspectionDateCon);
-        addParameter(reportParams, "InspectionType", inspType);
+            //var retVal = new Date(String(inspectionDateCon));
+            //logDebug("retVal Date: " + retVal);
+            addParameter(reportParams, "TankRecordID", alternateID.toString());
+            //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
+            addParameter(reportParams, "InspectionDate", inspectionDateCon);
+            addParameter(reportParams, "InspectionType", inspType);
 
-        generateReportBatch(enfChild, "Inspection result Tank Operator Script", 'DEQ', reportParams);
+            generateReportBatch(enfChild, "Inspection result Tank Operator Script", 'DEQ', reportParams);
+        }
+        else
+        {
+            var reportParams = aa.util.newHashtable();
 
+            for (cr in childEnfRecordArray)
+            {
+                var childEnfRecord = childEnfRecordArray[cr];
+                logDebug("child enf record is: " + childEnfRecord);
+                var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
+                logDebug("childreccaptype is: " + childRecCapType);
+                if (childRecCapType == "DEQ/OPC/Enforcement/NA")
+                {
+                    //update violations ASITs only
+                }
+                var alternateID = capId.getCustomID();
+                var year = inspObj.getInspectionDate().getYear();
+                var month = inspObj.getInspectionDate().getMonth();
+                var day = inspObj.getInspectionDate().getDayOfMonth();
+                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                var min = inspObj.getInspectionDate().getMinute();
+                var sec = inspObj.getInspectionDate().getSecond();
+                var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+                addParameter(reportParams, "TankRecordID", alternateID.toString());
+                //addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
+                addParameter(reportParams, "InspectionDate", inspectionDateCon);
+                addParameter(reportParams, "InspectionType", inspType);
+
+                generateReportBatch(childEnfRecord, "Inspection result Tank Operator Script", 'DEQ', reportParams);
+
+            }
+        }
     }
 }
 
