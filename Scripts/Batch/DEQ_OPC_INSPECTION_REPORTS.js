@@ -178,7 +178,6 @@ function mainProcess()
 		var siteCount = 0;
 		var tankCount = 0;
 		//var vSQL = "Select INSPECTION_TYPE as inspType, INSPECTION_ID as inspectionId, RECORD_ID as recordNumber from V_INSPECTION where RESULT_='Violations Found' AND INSPECTION_TYPE IN ('OPC Non-PBS Site OP Inspection', 'OPC Non-PBS Site Other Inspection', 'OPC Non-PBS Site Re-Inspection', 'OPC PBS Site GSR Inspection', 'OPC PBS Site OP Inspection', 'OPC PBS Site Other Inspection', 'OPC PBS Site Re-Inspection')";
-
 		var vSQL = "Select INSPECTION_TYPE as inspType, INSPECTION_ID as inspectionId, RECORD_ID as recordNumber from V_INSPECTION where RESULT_='Violations Found' AND INSPECTION_TYPE IN ('Non-PBS Tank OP Inspection', 'Non-PBS Tank Other Inspection', 'Non-PBS Tank Re-Inspection', 'PBS Tank GSR Inspection', 'PBS Tank OP Inspection', 'PBS Tank Other Inspection', 'PBS Tank Re-Inspeciton', 'OPC Non-PBS Site OP Inspection', 'OPC Non-PBS Site Other Inspection', 'OPC Non-PBS Site Re-Inspection', 'OPC PBS Site GSR Inspection', 'OPC PBS Site OP Inspection', 'OPC PBS Site Other Inspection', 'OPC PBS Site Re-Inspection', 'OPC Non-PBS SITE Enf-Req Inspection', 'OPC PBS SITE Enf-Req Inspection')";
 
         var output = "Record ID\n";  		
