@@ -102,6 +102,10 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
             editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
             var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
             editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+            var appName = getAppNameLocal(parentCap);
+            var projDesc = workDescGet(parentCap);
+            editAppName(appName, enfChild);
+            updateWorkDesc(projDesc, enfChild);
             var alternateID = capId.getCustomID();
             var year = inspObj.getInspectionDate().getYear();
             var month = inspObj.getInspectionDate().getMonth();
@@ -228,6 +232,18 @@ function generateReportBatch(itemCap, reportName, module, parameters) {
     }
 }
 
+function getAppNameLocal(givenCap) {
+    var itemCap = givenCap;
+    if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
 
+    capResult = aa.cap.getCap(itemCap)
+
+    if (!capResult.getSuccess())
+    { logDebug("**WARNING: error getting cap : " + capResult.getErrorMessage()); return false }
+
+    capModel = capResult.getOutput().getCapModel()
+
+    return capModel.getSpecialText()
+}
 
 
