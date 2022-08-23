@@ -12,6 +12,7 @@ $(document).ready(function () {
 	pathArray = pathname.split("/");
 	rootDir = "/" + pathArray[1];
 	$(".aca_wrapper").before("<div class='header'></div>");
+	$(".header").after("<div id='google_translate_element' style='width: 120em; margin: 0 auto;'></div>");
 	$(".header").load(rootDir + "/header.html");
 	$(".aca_wrapper").after("<div class='footer'></div>");
 	$(".footer").load(rootDir + "/bottom.html");
