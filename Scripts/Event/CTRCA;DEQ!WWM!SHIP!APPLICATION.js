@@ -3,16 +3,43 @@ var contactResult = aa.people.getCapContactByCapID(capId);
 var capContacts = contactResult.getOutput();
 var emailParams = aa.util.newHashtable();
 var conEmail = "";
+var lpEmail = "";
+var agentEmail = "";
 for (c in capContacts)
 {
-    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
+    if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent", "Property Owner"))
     {
         if (!matches(capContacts[c].email, null, undefined, ""))
         {
-            conEmail += capContacts[c].email + ";"
+            conEmail += capContacts[c].email + ";";
+        }
+        if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent"))
+        {
+            agentEmail += capContacts[c].email + ";";
         }
     }
 }
+var lpResult = aa.licenseScript.getLicenseProf(capId);
+if (lpResult.getSuccess())
+{
+    var lpArr = lpResult.getOutput();
+
+    // Send email to each contact separately.
+    for (var lp in lpArr)
+    {
+        if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+        {
+                lpEmail += lpArr[lp].email + ";";
+        }
+    }
+}
+else 
+{
+    logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+}
+var allEmail = conEmail + lpEmail;
+var agentLpEmail = agentEmail + lpEmail;
+
 
 var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 if (capParcelResult.getSuccess())
@@ -34,7 +61,7 @@ addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$Parcel$$", parcelNumber);
 addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
 
-sendNotification("", conEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
+sendNotification("", allEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
 
 //EHIMS2-35 - WWM Liquid Waste LP check
 

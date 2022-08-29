@@ -10,53 +10,56 @@ addParameter(vEParams, "$$altID$$", capId.getCustomID());
 addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$wfComment$$", wfComment);
 var propOwnerEmail = "";
+var propOwnerName = "";
+var allEmail = "";
+var agentEmail = "";
+
 for (c in capContacts)
 {
     if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
     {
         if (!matches(capContacts[c].email, null, undefined, ""))
         {
+            allEmail += conArray[con].email + ";";
+
             propOwnerEmail += capContacts[c].email + ";"
+            propOwnerName += capContacts[c].firstName + " " + capContacts[c].lastName;
+            logDebug("propOwner name is: " + propOwnerName);
+            addParameter(vEParams, "$$homeowner$$", propOwnerName);
             addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
         }
     }
+    if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent"))
+    {
+        if (!matches(capContacts[c].email, null, undefined, ""))
+        {
+            allEmail += conArray[con].email + ";";
+            agentEmail += conArray[con].email + ";";
+        }
+    }
 }
-var conEmail = "";
-var appEmail = "";
-var homEmail = "";
-var homeOwnerName = "";
-var conArray = getContactArray(capId);
+var lpResult = aa.licenseScript.getLicenseProf(capId);
+if (lpResult.getSuccess())
+{
+    var lpArr = lpResult.getOutput();
+
+    // Send email to each contact separately.
+    for (var lp in lpArr)
+    {
+        if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+        {
+                lpEmail += lpArr[lp].email + ";";
+                allEmail += lpArr[lp].email + ";";
+
+        }
+    }
+}
+else 
+{
+    logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+}
+var lpAgentEmail = agentEmail + lpEmail;
 var capIDString = capId.getCustomID();
-
-for (con in conArray)
-{
-    if (!matches(conArray[con].email, null, undefined, "")) 
-    {
-        if (conArray[con].contactType == "Applicant") 
-        {
-            conEmail += conArray[con].email + ",";
-            appEmail += conArray[con].email + ",";
-            //logDebug("I'm getting contact");
-        }
-    }
-}
-
-for (con in conArray)
-{
-    if (!matches(conArray[con].email, null, undefined, "")) 
-    {
-        if (conArray[con].contactType == "Homeowner") 
-        {
-            conEmail += conArray[con].email + ",";
-            homEmail += conArray[con].email + ",";
-            homeOwnerName += conArray[con].firstName + " " + conArray[con].lastName;
-            logDebug("homeowner name is: " + homeOwnerName);
-            //logDebug("I'm getting contact");
-            addParameter(vEParams, "$$homeowner$$", homeOwnerName);
-        }
-    }
-}
-
 var otpReportParams = aa.util.newHashtable();
 var rcReportParams = aa.util.newHashtable();
 var otpReportFile = new Array();
@@ -71,11 +74,11 @@ if (wfTask == "Application Review")
 {
     if (wfStatus == "I/A OWTS")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
     }
     if (wfStatus == "Conventional - Inspection Required")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
     }
     if (wfStatus == "Conventional - OK to Proceed")
     {
@@ -114,7 +117,7 @@ if (wfTask == "Application Review")
                 otpRFiles.push(docToSend);
                 otpRFiles.push(otpReportFile);
             }
-            sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
         }
     }
     if (wfStatus == "Full Permit Required")
@@ -131,7 +134,7 @@ if (wfTask == "Field Consult Required")
 {
     if (wfStatus == "Incomplete")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
     }
 
     if (wfStatus == "Complete")
@@ -176,7 +179,7 @@ if (wfTask == "Field Consult Required")
                     otpRFiles.push(otpReportFile);
                 }
             }
-            sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
         }
     }
     if (wfStatus == "Full Permit Required")
@@ -189,7 +192,7 @@ if (wfTask == "Field Consult Required")
 
     if (wfStatus == "Waived")
     {
-        sendNotification("", homEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
+        sendNotification("", propOwnerEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
     }
 
 }
@@ -201,15 +204,15 @@ if (wfTask == "Preliminary Sketch Review")
     {
         if (wfStatus == "OK to Proceed") 
         {
-            sendNotification("", appEmail, "", "DEQ_SHIP_OK_PENDING_GRANT_REVIEW", vEParams, null);
+            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_OK_PENDING_GRANT_REVIEW", vEParams, null);
         }
         if (wfStatus == "Inspection Required Prior to Install") 
         {
-            sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
+            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
         }
         if (wfStatus == "Inspection Required Prior to Backfill")
         {
-            sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
+            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
         }
 
         var wfHist = aa.workflow.getWorkflowHistory(capId, null);
@@ -276,7 +279,7 @@ if (wfTask == "Grant Review")
 {
     if (wfStatus == "Awaiting Client Reply")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_14_DAY_DOC_REQUESTED", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_DOC_REQUESTED", vEParams, null);
     }
     if (matches(wfStatus, "No Application Received", "Not Eligible", "OK to Proceed"))
     {
@@ -331,7 +334,7 @@ if (wfTask == "Grant Review")
                     otpRFiles.push(docToSend);
                     otpRFiles.push(otpReportFile);
                 }
-                sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+                sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
             }
         }
         var wfHist = aa.workflow.getWorkflowHistory(capId, null);
@@ -393,17 +396,17 @@ if (wfTask == "Inspections")
 {
     if (wfStatus == "Inspection Failure")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_FAILURE", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_FAILURE", vEParams, null);
     }
 
     if (wfStatus == "Inspection Required Prior to Install")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
     }
 
     if (wfStatus == "Inspection Required Prior to Backfill")
     {
-        sendNotification("", appEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
     }
     if (wfStatus == "Complete")
     {
@@ -442,7 +445,7 @@ if (wfTask == "Inspections")
                 otpRFiles.push(docToSend);
                 otpRFiles.push(otpReportFile);
             }
-            sendNotification("", conEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
         }
     }
 
@@ -464,7 +467,7 @@ if (wfTask == "Final Review")
                 addParameter(vEParams, "$$Parcel$$", parcelNumber);
             }
         }
-        sendNotification("", propOwnerEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
+        sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
 
         if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
@@ -501,7 +504,7 @@ if (wfTask == "Final Review")
                 rcRFiles.push(docToSend);
                 rcRFiles.push(rcReportFile);
             }
-            sendNotification("", appEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+            sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
         }
 
         //begin SHIP SYSTEM DETAILS check
@@ -621,7 +624,7 @@ if (wfTask == "Final Review")
                     logDebug("capId = " + capId);
                     var AInfo = new Array();
                     logDebug("parentCapId = " + parentCapId);
-                    var conEmail = "";
+                    var allEmail = "";
                     logDebug("iaNew =" + iaNew);
                     var pin = getAppSpecific('IA PIN Number', iaNew);
                     logDebug("pin = " + pin);
@@ -647,8 +650,8 @@ if (wfTask == "Final Review")
                         if (!matches(capLPs[l].email, null, undefined, ""))
                         {
                             logDebug("LP emails = " + capLPs[l].email);
-                            conEmail += capLPs[l].email + ";"
-                            logDebug("conEmail = " + conEmail);
+                            allEmail += capLPs[l].email + ";"
+                            logDebug("allEmail = " + allEmail);
                         }
                     }
                     //gathering contacts from parent
@@ -660,8 +663,8 @@ if (wfTask == "Final Review")
                         if (!matches(capContacts[c].email, null, undefined, ""))
                         {
                             logDebug("contact emails = " + capContacts[c].email);
-                            conEmail += capContacts[c].email + ";"
-                            logDebug("conEmail post contacts = " + conEmail);
+                            allEmail += capContacts[c].email + ";"
+                            logDebug("allEmail post contacts = " + allEmail);
                         }
                     }
 
@@ -676,7 +679,7 @@ if (wfTask == "Final Review")
                     addParameter(vEParams, "$$wwmAltID$$", altId);
                     addParameter(vEParams, "$$Parcel$$", parcelNumber);
 
-                    sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 
                 }
             }
@@ -800,7 +803,7 @@ if (wfTask == "Final Review")
                     logDebug("capId = " + capId);
                     var AInfo = new Array();
                     logDebug("parentCapId = " + parentCapId);
-                    var conEmail = "";
+                    var allEmail = "";
                     logDebug("iaNew =" + iaNew);
                     var pin = getAppSpecific('IA PIN Number', iaNew);
                     logDebug("pin = " + pin);
@@ -826,8 +829,8 @@ if (wfTask == "Final Review")
                         if (!matches(capLPs[l].email, null, undefined, ""))
                         {
                             logDebug("LP emails = " + capLPs[l].email);
-                            conEmail += capLPs[l].email + ";"
-                            logDebug("conEmail = " + conEmail);
+                            allEmail += capLPs[l].email + ";"
+                            logDebug("allEmail = " + allEmail);
                         }
                     }
                     //gathering contacts from parent
@@ -839,8 +842,8 @@ if (wfTask == "Final Review")
                         if (!matches(capContacts[c].email, null, undefined, ""))
                         {
                             logDebug("contact emails = " + capContacts[c].email);
-                            conEmail += capContacts[c].email + ";"
-                            logDebug("conEmail post contacts = " + conEmail);
+                            allEmail += capContacts[c].email + ";"
+                            logDebug("allEmail post contacts = " + allEmail);
                         }
                     }
 
@@ -855,7 +858,7 @@ if (wfTask == "Final Review")
                     addParameter(vEParams, "$$wwmAltID$$", altId);
                     addParameter(vEParams, "$$Parcel$$", parcelNumber);
 
-                    sendNotification("", conEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 
                 }
             }
@@ -866,22 +869,22 @@ if (wfTask == "Final Review")
 //General
 if (wfStatus == "No Inspection Needed" || wfStatus == "Complete")
 {
-    sendNotification("", appEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, null);
+    sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, null);
 }
 
 if (wfTask != "Grant Review" && (wfStatus == "Awaiting Client Reply" || wfStatus == "Plan Revision Required"))
 {
-    sendNotification("", appEmail, "", "DEQ_SHIP_ADDITIONAL_DOCUMENTS", vEParams, null);
+    sendNotification("", lpAgentEmail, "", "DEQ_SHIP_ADDITIONAL_DOCUMENTS", vEParams, null);
 }
 
 if (wfStatus == "Full Permit Required")
 {
-    sendNotification("", appEmail, "", "DEQ_SHIP_FULL_PERMIT_REQUIRED", vEParams, null);
+    sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FULL_PERMIT_REQUIRED", vEParams, null);
 }
 
 if (wfStatus == "Withdrawn")
 {
-    sendNotification("", appEmail, "", "DEQ_SHIP_WITHDRAWN", vEParams, null);
+    sendNotification("", lpAgentEmail, "", "DEQ_SHIP_WITHDRAWN", vEParams, null);
     deactivateAllActiveTasks(capId);
     updateAppStatus("Withdrawn");
 }
