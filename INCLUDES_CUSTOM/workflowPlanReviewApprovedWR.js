@@ -7,11 +7,16 @@ function workflowPlanReviewApprovedWR()
 	var conEmail = "";
     var fromEmail = "";
 	var emailAddressArray = new Array();
+	var combinedEmails = "";
 
 	getRecordParams4Notification(emailParams);
     getWorkflowParams4Notification(emailParams);    
+	var waterDistrict = getAppSpecific("Water District", capId);
+	var appName = cap.getSpecialText();
 
 	addParameter(emailParams, "$$altID$$", capId.getCustomID());
+	addParameter(emailParams, "$$waterdistrict$$", waterDistrict);
+	addParameter(emailParams, "$$appname$$", appName);
 
 	if(matches(fromEmail, null, "", undefined))
 	{
@@ -36,9 +41,10 @@ function workflowPlanReviewApprovedWR()
 				}  
 				if (!emailSent)
 				{
-					sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
+					//sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
 					emailAddressArray.push(conEmail);
-					logDebug("email sending: " + conEmail );
+					combinedEmails += conEmail + "; ";
+					logDebug("Contact emails list: " + conEmail );
 				}  
 			}
 		}
@@ -82,9 +88,10 @@ function workflowPlanReviewApprovedWR()
 
 							if (!emailSent)
 							{
-								sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
+								//sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
 								emailAddressArray.push(conEmail);
-								logDebug("CCC email sending: " + conEmail );
+								combinedEmails += conEmail + "; ";
+								
 							}
 						}
 						
@@ -103,9 +110,10 @@ function workflowPlanReviewApprovedWR()
 				}     
 				if (!emailSent)
 				{
-					sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
+					//sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
 					emailAddressArray.push(conEmail);
-					logDebug("LP email sending: " + conEmail );
+					combinedEmails += conEmail + "; ";
+					
 				}
 			}
 			else
@@ -122,12 +130,19 @@ function workflowPlanReviewApprovedWR()
 				} 
 				if (!emailSent)
 				{
-					sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
+					//sendNotification("", conEmail, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
 					emailAddressArray.push(conEmail);
-					logDebug("Other LP email sending: " + conEmail );
+					combinedEmails += conEmail + "; ";
+					
 				}
 			}
 		}
+	}
+
+	if (combinedEmails != null)
+	{		
+		sendNotification("", combinedEmails, "", "DEQ_OPC_AWAITINGCLIENTREPLY_RENEWAL", emailParams, reportFile);
+		logDebug("Contact and LP emails list sent: " + combinedEmails );
 	}
 
 }
