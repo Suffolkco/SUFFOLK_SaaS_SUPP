@@ -144,5 +144,5 @@ function workflowPlanReviewApprovedWR()
 		sendNotification("", combinedEmails, "", "DEQ_OPC_AWAITINGCLIENTREPLY_RENEWAL", emailParams, reportFile);
 		logDebug("Contact and LP emails list sent: " + combinedEmails );
 	}
-
+	sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_AWAITINGCLIENTREPLY_RENEWAL", emailParams, reportFile);
 }
