@@ -141,8 +141,9 @@ function workflowPlanReviewApprovedWR()
 
 	if (combinedEmails != null)
 	{		
-		sendNotification("", combinedEmails, "", "DEQ_OPC_AWAITINGCLIENTREPLY_RENEWAL", emailParams, reportFile);
+		sendNotification("", combinedEmails, "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
 		logDebug("Contact and LP emails list sent: " + combinedEmails );
 	}
-	sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_AWAITINGCLIENTREPLY_RENEWAL", emailParams, reportFile);
+	sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_WR_PLAN REVIEW APPROVED", emailParams, reportFile);
+	logDebug("Admin semail sent: ");
 }
