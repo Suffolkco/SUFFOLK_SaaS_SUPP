@@ -49,6 +49,19 @@ if (wfTask == "Final Review" && wfStatus == "Registration Complete")
                     comment("Awaiting approvable O&M Contract/Registration in Ecology.");
                 }   
             }
+            var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
+            for (sstrow in shipSystemTable)
+            {
+                var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
+                if (matches(iaManufacturer, null, undefined, ""))
+                {
+                    cancel = true;
+                    showMessage = true;
+                    comment("Please fill out I/A Manufactured");
+                }
+            }
+
+
         }
     }
     else
@@ -57,6 +70,11 @@ if (wfTask == "Final Review" && wfStatus == "Registration Complete")
         showMessage = true;
         comment("Complete the SHIP SYSTEM DETAILS Custom List prior to finalizing this registration.");
     }
+ 
+
+
+
+
 }
 
 

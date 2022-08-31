@@ -707,8 +707,9 @@ if (wfTask == "Final Review")
                 //Eduardo Section Jira EHIMS2-93 1.B
                 else if (iaManufacturer == "N/A") 
                 {
-                    deactivateTask("Final Review");
+                    deactivateAllActiveTasks(capId);
                     updateAppStatus('Registration Complete');
+                    checkIANumber = false;
                 }
             }
             if (checkIANumber)
@@ -871,12 +872,12 @@ if (wfTask == "Final Review")
                 //Eduardo Jira EHIMS2-93
                 if(matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
                 {
-                    updateAppStatus("Withdrawn");
+                    updateAppStatus("Awaiting O&M Contract");
                 }
                 else
                 {
                     updateAppStatus("Registration Complete");
-                    deactivateTask("Final Review");
+                    deactivateAllActiveTasks(capId);
                 }
 
 
