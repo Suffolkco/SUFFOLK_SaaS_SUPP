@@ -273,8 +273,7 @@ function latestCompletedInspection()
 					logDebug("Date difference is: " + dateDiff + " which is shorter than: " + shortestdays);					
 					shortestdays = dateDiff;	
 				}				
-				
-							
+											
 			}	
 			if (shortestdays != null)
 			{	

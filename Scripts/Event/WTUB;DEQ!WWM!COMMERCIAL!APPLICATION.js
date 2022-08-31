@@ -279,7 +279,6 @@ function latestCompletedInspection()
 				var dateDiff = parseFloat(dateDifference(inspectionDateCon, todDateCon));
 				logDebug("Day difference is: " + dateDiff);
 				
-
 				if (shortestdays == null || (dateDiff < shortestdays))
 				{
 					inspIdToUse = insps[i].getIdNumber();
