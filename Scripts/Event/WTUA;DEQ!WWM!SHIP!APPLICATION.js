@@ -704,6 +704,12 @@ if (wfTask == "Final Review")
                 {
                     checkIANumber = true;
                 }
+                //Eduardo Section Jira EHIMS2-93 1.B
+                else if (iaManufacturer == "N/A") 
+                {
+                    deactivateTask("Final Review");
+                    updateAppStatus('Registration Complete');
+                }
             }
             if (checkIANumber)
             {
@@ -861,6 +867,20 @@ if (wfTask == "Final Review")
                     sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 
                 }
+
+                //Eduardo Jira EHIMS2-93
+                if(matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
+                {
+                    updateAppStatus("Withdrawn");
+                }
+                else
+                {
+                    updateAppStatus("Registration Complete");
+                    deactivateTask("Final Review");
+                }
+
+
+
             }
         }
     }
