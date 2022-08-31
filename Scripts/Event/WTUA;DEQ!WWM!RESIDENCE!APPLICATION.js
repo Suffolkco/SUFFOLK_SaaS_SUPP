@@ -684,7 +684,7 @@ function latestCompletedInspection()
 				logDebugLocal("inspDate: " + inspDate);			
 	
 				var year = insps[i].getInspectionDate().getYear();
-				var month = insps[i].getInspectionDate().getMonth() - 1;
+				var month = insps[i].getInspectionDate().getMonth();
 				var day = insps[i].getInspectionDate().getDayOfMonth();
 				var hr = insps[i].getInspectionDate().getHourOfDay();
 				var min = insps[i].getInspectionDate().getMinute();
@@ -715,7 +715,7 @@ function latestCompletedInspection()
 			}
 		}	
 
-		// Only look at the most recent inspection with status "Incomplete"
+		// Only look at the most recent inspection with status "Complete"
 		var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
 		logDebugLocal("Inspection ID:" + inspIdToUse);		
 
