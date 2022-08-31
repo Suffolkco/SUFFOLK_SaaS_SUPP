@@ -391,11 +391,11 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 	var finalNoticeTxt = AInfo["Final Notice Text"];
 	if (!matches(finalNoticeTxt, null, undefined, ""))				
 	{
-		do 
+		/*do 
 		{
 			// nothing
 		}
-		while (elapsed() < maxSeconds);
+		while (elapsed() < maxSeconds);*/
 		
 		logDebug("Elapsed: " + elapsed());
 	
