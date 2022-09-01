@@ -395,9 +395,9 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 		{
 			// nothing
 		}
-		while (elapsed() < maxSeconds);*/
+		while (elapsed() < maxSeconds);
 		
-		logDebug("Elapsed: " + elapsed());
+		logDebug("Elapsed: " + elapsed());*/
 	
 		wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");
 	
