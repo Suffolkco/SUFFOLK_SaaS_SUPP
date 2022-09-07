@@ -213,7 +213,7 @@ function mainProcess() {
                                     logDebugLocal("length is 0, creating child code enf record");
                                     logDebugLocal("updating contacts, parcel, address, ASIs, appname, and project description");
                                     var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", null, capId);
-                                    copyContacts(capId, enfChild);
+                                    //copyContacts(capId, enfChild);
                                     copyParcel(capId, enfChild);
                                     copyAddress(capId, enfChild);
                                     var siteAltId = capId.getCustomID();
@@ -286,7 +286,7 @@ function mainProcess() {
                                     logDebugLocal("length is 0, creating child code enf record");
                                     logDebugLocal("updating contacts, parcel, address, ASIs, appname, and project description");
                                     var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
-                                    copyContacts(capId, enfChild);
+                                    //copyContacts(capId, enfChild);
                                     copyParcel(capId, enfChild);
                                     copyAddress(capId, enfChild);
                                     var siteAltId = parentCap.getCustomID();
