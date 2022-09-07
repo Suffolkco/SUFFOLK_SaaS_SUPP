@@ -80,85 +80,88 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
     if (inspResult == "Violations Found")
     {
         var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA")
-        logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
-        if (childEnfRecordArray.length == 0)
+        if (childEnfRecordArray)
         {
-            var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
-            //copyContacts(capId, enfChild);
-            copyParcel(capId, enfChild);
-            copyAddress(capId, enfChild);
-            var siteAltId = capId.getCustomID();
-            editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-            var fileRefNumber = getAppSpecific("File Reference Number", capId);
-            editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-            var appName = getAppName();
-            var projDesc = workDescGet(capId);
-            editAppName(appName, enfChild);
-            updateWorkDesc(projDesc, enfChild);
-            var reportParams = aa.util.newHashtable();
-            var alternateID = capId.getCustomID();
-            var year = inspObj.getInspectionDate().getYear();
-            var month = inspObj.getInspectionDate().getMonth();
-            var day = inspObj.getInspectionDate().getDayOfMonth();
-            var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-            var min = inspObj.getInspectionDate().getMinute();
-            var sec = inspObj.getInspectionDate().getSecond();
-
-
-            var insp = aa.inspection.getInspection(capId, inspId).getOutput();
-            var vInspectionActivity = insp.getInspection().getActivity();
-
-            var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-            var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
-            if (vGuideSheetArray.length != 0)
+            logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
+            if (childEnfRecordArray.length == 0)
             {
-                var x = 0;
-                for (x in vGuideSheetArray)
+                var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
+                //copyContacts(capId, enfChild);
+                copyParcel(capId, enfChild);
+                copyAddress(capId, enfChild);
+                var siteAltId = capId.getCustomID();
+                editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+                var fileRefNumber = getAppSpecific("File Reference Number", capId);
+                editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+                var appName = getAppName();
+                var projDesc = workDescGet(capId);
+                editAppName(appName, enfChild);
+                updateWorkDesc(projDesc, enfChild);
+                var reportParams = aa.util.newHashtable();
+                var alternateID = capId.getCustomID();
+                var year = inspObj.getInspectionDate().getYear();
+                var month = inspObj.getInspectionDate().getMonth();
+                var day = inspObj.getInspectionDate().getDayOfMonth();
+                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                var min = inspObj.getInspectionDate().getMinute();
+                var sec = inspObj.getInspectionDate().getSecond();
+
+
+                var insp = aa.inspection.getInspection(capId, inspId).getOutput();
+                var vInspectionActivity = insp.getInspection().getActivity();
+
+                var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+                var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+                if (vGuideSheetArray.length != 0)
                 {
-                    var vGuideSheet = vGuideSheetArray[x];
-
-                    vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
-                    var z = 0;
-                    for (z in vGuideSheetItemsArray)
+                    var x = 0;
+                    for (x in vGuideSheetArray)
                     {
-                        var vGuideSheetItem = vGuideSheetItemsArray[z];
-                        if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
+                        var vGuideSheet = vGuideSheetArray[x];
+
+                        vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                        var z = 0;
+                        for (z in vGuideSheetItemsArray)
                         {
-                            var guideVioArray = new Array();
-                            var guideItemDetails = new Array();
+                            var vGuideSheetItem = vGuideSheetItemsArray[z];
+                            if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
+                            {
+                                var guideVioArray = new Array();
+                                var guideItemDetails = new Array();
 
-                            var checklistItemWhole = vGuideSheetItem.getGuideItemText().split(".");
-                            logDebug("checklist item text is: " + checklistItemWhole);
-                            var checklistItemNo = checklistItemWhole[0];
-                            logDebug("preferred checklist item text is: " + checklistItemNo);
+                                var checklistItemWhole = vGuideSheetItem.getGuideItemText().split(".");
+                                logDebug("checklist item text is: " + checklistItemWhole);
+                                var checklistItemNo = checklistItemWhole[0];
+                                logDebug("preferred checklist item text is: " + checklistItemNo);
 
-                            var checklistItemComment = vGuideSheetItem.getGuideItemComment();
-                            logDebug("checklist item comment is: " + checklistItemComment);
+                                var checklistItemComment = vGuideSheetItem.getGuideItemComment();
+                                logDebug("checklist item comment is: " + checklistItemComment);
 
+                            }
                         }
+
+
+                        //set up array of checklist items that have a violation
+                        //log checklist number and do a split
+                        //log comment
+
+                        //for each checklist item that has a comment/checklist number, get checklist item number and comment
+                        var newPBSTable = new Array();
+                        var newRow = new Array();
+                        newRow["Inspection Type"] = inspType;
+                        newRow["SITE Record ID"] = alternateID;
+                        newRow["SCDHS Tank Number"] = "N/A";
+                        newRow["Product Store Label"] = "N/A";
+                        newRow["Capacity"] = "N/A";
+                        newRow["Tank Location Label"] = "N/A";
+                        newRow["Item Number"] = checklistItemNo;
+                        newRow["Inspector Finding"] = checklistItemComment;
+                        newRow["Inspection Date"] = inspResultDate;
+                        newRow["Inspector"] = inspInspector;
+                        newPBSTable.push(newRow);
+                        // addASITable("PBS/NONPBS VIOLATIONS", newPBSTable, capId);
+
                     }
-
-
-                    //set up array of checklist items that have a violation
-                    //log checklist number and do a split
-                    //log comment
-
-                    //for each checklist item that has a comment/checklist number, get checklist item number and comment
-                    var newPBSTable = new Array();
-                    var newRow = new Array();
-                    newRow["Inspection Type"] = inspType;
-                    newRow["SITE Record ID"] = alternateID;
-                    newRow["SCDHS Tank Number"] = "N/A";
-                    newRow["Product Store Label"] = "N/A";
-                    newRow["Capacity"] = "N/A";
-                    newRow["Tank Location Label"] = "N/A";
-                    newRow["Item Number"] = checklistItemNo;
-                    newRow["Inspector Finding"] = checklistItemComment;
-                    newRow["Inspection Date"] = inspResultDate;
-                    newRow["Inspector"] = inspInspector;
-                    newPBSTable.push(newRow);
-                    // addASITable("PBS/NONPBS VIOLATIONS", newPBSTable, capId);
-
                 }
             }
         }
