@@ -104,8 +104,47 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
             var min = inspObj.getInspectionDate().getMinute();
             var sec = inspObj.getInspectionDate().getSecond();
 
+            /*
+            var newLabResultsTable = new Array();
+                            for (var l in labResultsTable)
+                            {
+                                var newRow = new Array();
+                                newRow["Sample Date"] = date;
+                                newRow["Lab ID"] = labResultsTable[l]["Lab ID"];
+                                newRow["TN"] = labResultsTable[l]["TN"];
+                                newRow["NO3 Nitrate"] = labResultsTable[l]["NO3 Nitrate"];
+                                newRow["NO2 Nitrite"] = labResultsTable[l]["NO2 Nitrite"];
+                                newRow["TKN"] = labResultsTable[l]["TKN"];
+                                newRow["NH4 Ammonia"] = labResultsTable[l]["NH4 Ammonia"];
+                                newRow["BOD"] = labResultsTable[l]["BOD"];
+                                newRow["TSS"] = labResultsTable[l]["TSS"];
+                                newRow["ALK"] = labResultsTable[l]["ALK"];
+                                newRow["DO"] = doValue;
+                                newRow["PH"] = phValue;
+                                newRow["WW Temp"] = wwTemp;
+                                newRow["Air Temp"] = airTemp;
+                                newRow["Status"] = "Complete";
+                                newRow["Source"] = inspId;
+                                newRow["Phase"] = phase;
+                                newRow["Process"] = process;
+                                newRow["Collection"] = collection;
+                                newRow["Collector"] = collector;
+                                newRow["Field ID"] = fieldId;
+                                newRow["Lab"] = lab;
+                                newRow["Comment"] = labResultsTable[l]["Comment"];
+                                logDebug("comment is: " + labResultsTable[l]["Comment"]);
+
+
+
+                                newLabResultsTable.push(newRow);
+                                break;
+                            }
+
+                            addASITable("LAB RESULTS", newLabResultsTable, capId);
+                            */
+
             //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
-            logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0"); 
+            logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
 
             var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
 
@@ -120,28 +159,41 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
 
             for (cr in childEnfRecordArray)
             {
+                //get file date of each and take a diff to see if it's been opened in the last 7 days
                 var childEnfRecord = childEnfRecordArray[cr];
-                logDebug("child enf record is: " + childEnfRecord);
-                var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
-                logDebug("childreccaptype is: " + childRecCapType);
-                if (childRecCapType == "DEQ/OPC/Enforcement/NA")
-                {
-                    //update violations ASITs only
-                }
-                var alternateID = capId.getCustomID();
-                var year = inspObj.getInspectionDate().getYear();
-                var month = inspObj.getInspectionDate().getMonth();
-                var day = inspObj.getInspectionDate().getDayOfMonth();
-                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-                var min = inspObj.getInspectionDate().getMinute();
-                var sec = inspObj.getInspectionDate().getSecond();
-                var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
-                addParameter(reportParams, "SiteRecordID", alternateID.toString());
-                addParameter(reportParams, "InspectionDate", inspectionDateCon);
-                addParameter(reportParams, "InspectionType", inspType);
-                logDebug("report params are: " + reportParams);
-                generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
+                logDebug("child enf record ID is: " + childEnfRecord.getCustomID());
+                var childDate = aa.cap.getCap(childEnfRecord).getOutput().getFileDate();
 
+                if (childDate != null)
+                {
+                    var childDateToPrint = childDate.getMonth() + "/" + childDate.getDayOfMonth() + "/" + childDate.getYear();
+                    logDebug("childDateToPrint is: " + childDateToPrint);
+                    var dateDif = parseFloat(dateDiff(todayDate, childDate));
+                    var dateDifRound = Math.floor(dateDif);
+                    logDebug("date diff is: " + dateDifRound);
+                    if (dateDifRound <= -7)
+                    {
+                        var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
+                        logDebug("childreccaptype is: " + childRecCapType);
+                        if (childRecCapType == "DEQ/OPC/Enforcement/NA")
+                        {
+                            //update violations ASITs only
+                        }
+                        var alternateID = capId.getCustomID();
+                        var year = inspObj.getInspectionDate().getYear();
+                        var month = inspObj.getInspectionDate().getMonth();
+                        var day = inspObj.getInspectionDate().getDayOfMonth();
+                        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                        var min = inspObj.getInspectionDate().getMinute();
+                        var sec = inspObj.getInspectionDate().getSecond();
+                        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+                        addParameter(reportParams, "SiteRecordID", alternateID.toString());
+                        addParameter(reportParams, "InspectionDate", inspectionDateCon);
+                        addParameter(reportParams, "InspectionType", inspType);
+                        logDebug("report params are: " + reportParams);
+                        generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
+                    }
+                }
             }
         }
     }
