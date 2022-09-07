@@ -307,6 +307,8 @@ function mainProcess() {
                                     var tankLocLabel = getAppSpecific("Tank Location Label", capId);
                                     var articleTwelve = getAppSpecific("Article 12 Reg", capId);
                                     var articleEighteen = getAppSpecific("Article 18 Reg", capId);
+                                    var nextLineTestDate = getAppSpecific("Next Line Test Date", capId);
+                                    var nextTankTestDate = getAppSpecific("Next Tank Test Date", capId);
                                     newRow["Tank Number"] = tankNo;
                                     newRow["Product Store Label"] = productStore;
                                     newRow["Capacity"] = capacity;
