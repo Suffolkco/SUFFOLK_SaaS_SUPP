@@ -168,6 +168,9 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                 {
                     var childDateToPrint = childDate.getMonth() + "/" + childDate.getDayOfMonth() + "/" + childDate.getYear();
                     logDebug("childDateToPrint is: " + childDateToPrint);
+                    var startDate = new Date();
+                    var startTime = startDate.getTime();
+                    var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
                     var dateDif = parseFloat(dateDiff(todayDate, childDate));
                     var dateDifRound = Math.floor(dateDif);
                     logDebug("date diff is: " + dateDifRound);
