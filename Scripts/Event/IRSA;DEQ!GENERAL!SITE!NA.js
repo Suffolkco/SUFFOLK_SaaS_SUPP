@@ -221,14 +221,16 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
 
                 for (child in childrenToUpdate)
                 {
-                    var childFile = aa.cap.getCap(childrenToUpdate[child]).getOutput().getFileDate();
+                    var childFile = aa.cap.getCap(childrenToUpdate[child]).getOutput().getFileDate().getEpochMilliseconds();
                     updateChildFileDates.push(childFile);
+                    logDebug("childfile is: " + childFile);
+                    logDebug("updatechildfiledates is: " + updateChildFileDates);
                     maxDate = Math.max.apply(null, updateChildFileDates);
                     logDebug("maxdate is: " + maxDate);
 
                     if (childFile == maxDate)
                     {
-                        var childCapToUse = childrenToUpdate[child].getCapID();
+                        var childCapToUse = childrenToUpdate[child];
                         logDebug("we found this altid to use: " + childCapToUse.getCustomID());
                     }
                 }
