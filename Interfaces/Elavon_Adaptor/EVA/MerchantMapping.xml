@@ -4,5 +4,6 @@
     <!--<Merchant MerchantAccountName="agency"       MerchantID="007446"       UserID="webpage"     PIN="XCJN6N"></Merchant>-->
     <Merchant MerchantAccountName="DEQ"       MerchantID="0022542"       UserID="apiuser"     PIN="30SJMJVCRLLBY27RIS6KGM259A1QVPE0S9LKOB6SJOIW4I7A73F1CB1CBTAH8ADK"></Merchant>
     <Merchant MerchantAccountName="CONSUMERAFFAIRS"       MerchantID="0022630"       UserID="apiuser167745"     PIN="A54J14S75VLXZC64ZS7JNPPO946H02SZDCLWYGP0W61IKOQQDLNIDX1KAA117K6J"></Merchant>
+    <Merchant MerchantAccountName="ENVHEALTH"       MerchantID="011444"       UserID="webpage"     PIN="V0SZPLTK2OCWO3VQKO1QTO0H39283RD98A4FWQ8KHHL6BJZWLM0RJFZY9U7SC7UA"></Merchant>
   </Adapter>
 </MerchantMapping>

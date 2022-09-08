@@ -80,54 +80,24 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
     if (inspResult == "Violations Found")
     {
         var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA")
-        logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
-        if (childEnfRecordArray.length == 0)
+        if (childEnfRecordArray)
         {
-            var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
-            //copyContacts(capId, enfChild);
-            copyParcel(capId, enfChild);
-            copyAddress(capId, enfChild);
-            var siteAltId = capId.getCustomID();
-            editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-            var fileRefNumber = getAppSpecific("File Reference Number", capId);
-            editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-            var appName = getAppName();
-            var projDesc = workDescGet(capId);
-            editAppName(appName, enfChild);
-            updateWorkDesc(projDesc, enfChild);
-            var reportParams = aa.util.newHashtable();
-            var alternateID = capId.getCustomID();
-            var year = inspObj.getInspectionDate().getYear();
-            var month = inspObj.getInspectionDate().getMonth();
-            var day = inspObj.getInspectionDate().getDayOfMonth();
-            var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-            var min = inspObj.getInspectionDate().getMinute();
-            var sec = inspObj.getInspectionDate().getSecond();
-
-            //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
-            logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0"); 
-
-            var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
-
-            addParameter(reportParams, "SiteRecordID", alternateID.toString());
-            addParameter(reportParams, "InspectionDate", inspectionDateCon);
-            addParameter(reportParams, "InspectionType", inspType);
-            generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
-        }
-        else
-        {
-            var reportParams = aa.util.newHashtable();
-
-            for (cr in childEnfRecordArray)
+            logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
+            if (childEnfRecordArray.length == 0)
             {
-                var childEnfRecord = childEnfRecordArray[cr];
-                logDebug("child enf record is: " + childEnfRecord);
-                var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
-                logDebug("childreccaptype is: " + childRecCapType);
-                if (childRecCapType == "DEQ/OPC/Enforcement/NA")
-                {
-                    //update violations ASITs only
-                }
+                var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
+                //copyContacts(capId, enfChild);
+                copyParcel(capId, enfChild);
+                copyAddress(capId, enfChild);
+                var siteAltId = capId.getCustomID();
+                editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+                var fileRefNumber = getAppSpecific("File Reference Number", capId);
+                editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+                var appName = getAppName();
+                var projDesc = workDescGet(capId);
+                editAppName(appName, enfChild);
+                updateWorkDesc(projDesc, enfChild);
+                var reportParams = aa.util.newHashtable();
                 var alternateID = capId.getCustomID();
                 var year = inspObj.getInspectionDate().getYear();
                 var month = inspObj.getInspectionDate().getMonth();
@@ -135,13 +105,148 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                 var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
+
+
+                var insp = aa.inspection.getInspection(capId, inspId).getOutput();
+                var vInspectionActivity = insp.getInspection().getActivity();
+
+                var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+                var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+                if (vGuideSheetArray.length != 0)
+                {
+                    var x = 0;
+                    for (x in vGuideSheetArray)
+                    {
+                        var vGuideSheet = vGuideSheetArray[x];
+
+                        vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                        var z = 0;
+                        for (z in vGuideSheetItemsArray)
+                        {
+                            var vGuideSheetItem = vGuideSheetItemsArray[z];
+                            if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
+                            {
+                                var guideVioArray = new Array();
+                                var guideItemDetails = new Array();
+
+                                var checklistItemWhole = vGuideSheetItem.getGuideItemText().split(".");
+                                logDebug("checklist item text is: " + checklistItemWhole);
+                                var checklistItemNo = checklistItemWhole[0];
+                                logDebug("preferred checklist item text is: " + checklistItemNo);
+
+                                var checklistItemComment = vGuideSheetItem.getGuideItemComment();
+                                logDebug("checklist item comment is: " + checklistItemComment);
+
+                            }
+                        }
+
+
+                        //set up array of checklist items that have a violation
+                        //log checklist number and do a split
+                        //log comment
+
+                        //for each checklist item that has a comment/checklist number, get checklist item number and comment
+                        var newPBSTable = new Array();
+                        var newRow = new Array();
+                        newRow["Inspection Type"] = inspType;
+                        newRow["SITE Record ID"] = alternateID;
+                        newRow["SCDHS Tank Number"] = "N/A";
+                        newRow["Product Store Label"] = "N/A";
+                        newRow["Capacity"] = "N/A";
+                        newRow["Tank Location Label"] = "N/A";
+                        newRow["Item Number"] = checklistItemNo;
+                        newRow["Inspector Finding"] = checklistItemComment;
+                        newRow["Inspection Date"] = inspResultDate;
+                        newRow["Inspector"] = inspInspector;
+                        newPBSTable.push(newRow);
+                        // addASITable("PBS/NONPBS VIOLATIONS", newPBSTable, capId);
+
+                    }
+                }
+
+
+                //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
+                logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+
                 addParameter(reportParams, "SiteRecordID", alternateID.toString());
                 addParameter(reportParams, "InspectionDate", inspectionDateCon);
                 addParameter(reportParams, "InspectionType", inspType);
-                logDebug("report params are: " + reportParams);
-                generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
+                generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
+            }
+        }
 
+
+        else
+        {
+            var reportParams = aa.util.newHashtable();
+
+            for (cr in childEnfRecordArray)
+            {
+                //get file date of each and take a diff to see if it's been opened in the last 7 days
+                var childEnfRecord = childEnfRecordArray[cr];
+                logDebug("child enf record ID is: " + childEnfRecord.getCustomID());
+                var childDate = aa.cap.getCap(childEnfRecord).getOutput().getFileDate();
+
+                if (childDate != null)
+                {
+                    var childDateToPrint = childDate.getMonth() + "/" + childDate.getDayOfMonth() + "/" + childDate.getYear();
+                    logDebug("childDateToPrint is: " + childDateToPrint);
+                    var startDate = new Date();
+                    var startTime = startDate.getTime();
+                    var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+                    var dateDif = parseFloat(dateDiff(todayDate, childDate));
+                    var dateDifRound = Math.floor(dateDif);
+                    logDebug("date diff is: " + dateDifRound);
+                    if (dateDifRound >= -7)
+                    {
+                        logDebug("record was created less than 7 days ago");
+                        var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
+                        logDebug("childreccaptype is: " + childRecCapType);
+                        if (childRecCapType == "DEQ/OPC/Enforcement/NA")
+                        {
+                            //update violations ASITs only
+                        }
+                        var alternateID = capId.getCustomID();
+                        var year = inspObj.getInspectionDate().getYear();
+                        var month = inspObj.getInspectionDate().getMonth();
+                        var day = inspObj.getInspectionDate().getDayOfMonth();
+                        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                        var min = inspObj.getInspectionDate().getMinute();
+                        var sec = inspObj.getInspectionDate().getSecond();
+                        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+                        addParameter(reportParams, "SiteRecordID", alternateID.toString());
+                        addParameter(reportParams, "InspectionDate", inspectionDateCon);
+                        addParameter(reportParams, "InspectionType", inspType);
+                        logDebug("report params are: " + reportParams);
+                        generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
+                    }
+                    else
+                    //this means that there is an existing Enforcement child record but it has not been opened in the last 7 days, so we're making another one. we should do all the normal copy routines here
+                    {
+                        var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
+                        //copyContacts(capId, enfChild);
+                        copyParcel(capId, enfChild);
+                        copyAddress(capId, enfChild);
+                        var siteAltId = capId.getCustomID();
+                        editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+                        var fileRefNumber = getAppSpecific("File Reference Number", capId);
+                        editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+                        var appName = getAppName();
+                        var projDesc = workDescGet(capId);
+                        editAppName(appName, enfChild);
+                        updateWorkDesc(projDesc, enfChild);
+                        var reportParams = aa.util.newHashtable();
+                        var alternateID = capId.getCustomID();
+                        var year = inspObj.getInspectionDate().getYear();
+                        var month = inspObj.getInspectionDate().getMonth();
+                        var day = inspObj.getInspectionDate().getDayOfMonth();
+                        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                        var min = inspObj.getInspectionDate().getMinute();
+                        var sec = inspObj.getInspectionDate().getSecond();
+                    }
+                }
             }
         }
     }
