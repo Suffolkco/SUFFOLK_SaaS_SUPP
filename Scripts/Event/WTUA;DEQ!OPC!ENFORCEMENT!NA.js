@@ -6,6 +6,7 @@ if (currentUserID == "RLITTLEFIELD")
 }
 
 var emailParams = aa.util.newHashtable();
+var reportParams = aa.util.newHashtable();
 var parentCapId = getParent(capId);
 var conArrayParent = getContactArray(parentCapId);
 var conEmailList = "";
@@ -149,7 +150,34 @@ if (wfTask == "Enforcement Request Review")
     if (wfStatus == "NOPH Sent")
     {
         //need to confirm that this report information is correct, below:
-        //generateReportBatch(capId, "NOPH", 'DEQ', null);
+
+        var enfType = getAppSpecific("Enforcement Type", capId);
+        var reportToSend = "";
+        switch (String(enfType))
+        {
+            //OP
+            case "OP":
+                reportToSend = "";
+            case "TT":
+                reportToSend = "";
+            case "SP":
+                reportToSend = "OPC Swimming Pool NOPH";
+            case "EE":
+                reportToSend = "OPC EE NOPH";
+            case "IW":
+                reportToSend = "";
+            case "BB":
+                reportToSend = "";
+            case "T8":
+                reportToSend = "";
+            case "WL":
+                reportToSend = "OPC Warning Letter";
+            case "LL":
+                reportToSend = "";
+        }
+        addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
+
+        generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
 
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
         addStdConditionStrict("DEQ", "Notice of Hearing", capId);
@@ -158,9 +186,6 @@ if (wfTask == "Enforcement Request Review")
     }
     if (wfStatus == "NOFH Sent")
     {
-        //need to confirm that this report information is correct, below:
-        //generateReportBatch(capId, "NOFH", 'DEQ', null);
-
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
         addStdConditionStrict("DEQ", "Notice of Hearing", capId);
         addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
@@ -169,7 +194,7 @@ if (wfTask == "Enforcement Request Review")
     if (wfStatus == "Warning Letter Sent")
     {
         //need to confirm that this report information is correct, below:
-        //generateReportBatch(capId, "Warning Letter", 'DEQ', null);
+        generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
     }
     //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
     var enfType = AInfo["Enforcement Type"];
@@ -225,7 +250,7 @@ if (wfTask == "Preliminary Hearing")
             addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
-        addParameter(emailParams, "$$hearingTime$$", hearingTime); 
+        addParameter(emailParams, "$$hearingTime$$", hearingTime);
 
         sendNotification("", conEmailList, "", "DEQ_OPC_ENF_PRELIM_HEARING_ADJ", emailParams, null);
 
@@ -427,20 +452,6 @@ function updateAltID(newId) {
         logDebug("Successfully updated alt Id to: " + newId);
     else
         logDebug("Problem updating alt Id: " + result.getErrorMessage());
-
-
-    if (!"undefined".equals(typeof Dpr) && Dpr.isProject(itemCap))
-    {
-        if (Dpr.projectExists(Dpr.getAdminUser(), itemCap))
-        {
-            var project = {};
-            var newCapId = aa.cap.getCapID(itemCap.getID1(), itemCap.getID2(), itemCap.getID3()).getOutput();
-            if (newCapId)
-            {
-                Dpr.updateProject(Dpr.getAdminUser(), newCapId, {number: newCapId.getCustomID() + ""});
-            }
-        }
-    }
 }
 
 function getAddressInALine() {
