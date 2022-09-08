@@ -205,139 +205,93 @@ function mainProcess() {
                         {
                             if (appTypeArray[1] == "General" && appTypeArray[2] == "Site")
                             {
-                                var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA", capId);
+                                var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", null, capId);
+                                //copyContacts(capId, enfChild);
+                                copyParcel(capId, enfChild);
+                                copyAddress(capId, enfChild);
+                                var siteAltId = capId.getCustomID();
+                                editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+                                var fileRefNumber = getAppSpecific("File Reference Number", capId);
+                                editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+                                editAppSpecific("Enforcement Type", "OP", enfChild);
+                                var appName = getAppName();
+                                var projDesc = workDescGet(capId);
+                                editAppName(appName, enfChild);
+                                updateWorkDesc(projDesc, enfChild);
 
-                                logDebugLocal("childenfrecordarray is: " + childEnfRecordArray);
-                                if (matches(childEnfRecordArray, null, "", undefined))
+                                //updating Code Enf record with Tank record info
+                                logDebugLocal("checking for tank records as children of the site");
+                                var childTankRecordArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
+                                logDebugLocal("childTankRecordArray length is: " + childTankRecordArray.length);
+                                if (childTankRecordArray.length > 0)
                                 {
-                                    logDebugLocal("length is 0, creating child code enf record");
-                                    logDebugLocal("updating contacts, parcel, address, ASIs, appname, and project description");
-                                    var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", null, capId);
-                                    //copyContacts(capId, enfChild);
-                                    copyParcel(capId, enfChild);
-                                    copyAddress(capId, enfChild);
-                                    var siteAltId = capId.getCustomID();
-                                    editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-                                    var fileRefNumber = getAppSpecific("File Reference Number", capId);
-                                    editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-                                    editAppSpecific("Enforcement Type", "OP", enfChild);
-                                    var appName = getAppName();
-                                    var projDesc = workDescGet(capId);
-                                    editAppName(appName, enfChild);
-                                    updateWorkDesc(projDesc, enfChild);
-
-                                    //updating Code Enf record with Tank record info
-                                    logDebugLocal("checking for tank records as children of the site");
-                                    var childTankRecordArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
-                                    logDebugLocal("childTankRecordArray length is: " + childTankRecordArray.length);
-                                    if (childTankRecordArray.length > 0)
+                                    //logDebugLocal("child tank records found");
+                                    for (ct in childTankRecordArray)
                                     {
-                                        //logDebugLocal("child tank records found");
-                                        for (ct in childTankRecordArray)
+                                        //logDebugLocal("checking tank record appstatuses...");
+                                        if (getAppStatus(childTankRecordArray[ct]) == "Active")
                                         {
-                                            //logDebugLocal("checking tank record appstatuses...");
-                                            if (getAppStatus(childTankRecordArray[ct]) == "Active")
-                                            {
-                                                logDebugLocal("Active tank found! AltID is: " + childTankRecordArray[ct].getCustomID());
-                                                var newRow = new Array();
-                                                var tankNo = getAppSpecific("SCDHS Tank #", childTankRecordArray[ct]);
-                                                var productStore = getAppSpecific("Product Stored Label", childTankRecordArray[ct]);
-                                                //logDebugLocal("productstore is: " + productStore);
-                                                var capacity = getAppSpecific("Capacity", childTankRecordArray[ct]) + " " + getAppSpecific("Units", childTankRecordArray[ct]);
-                                                var tankLocLabel = getAppSpecific("Tank Location Label", childTankRecordArray[ct]);
-                                                var articleTwelve = getAppSpecific("Article 12 Reg", childTankRecordArray[ct]);
-                                                var articleEighteen = getAppSpecific("Article 18 Reg", childTankRecordArray[ct]);
-                                                newRow["Tank Number"] = tankNo;
-                                                newRow["Product Store Label"] = productStore;
-                                                newRow["Capacity"] = capacity;
-                                                newRow["Tank Location Label"] = tankLocLabel;
-                                                newRow["Article 12"] = articleTwelve;
-                                                newRow["Article 18"] = articleEighteen;
-                                                //logDebugLocal("newRow psl is: " + newRow["Product Store Label"]);
-                                                addRowToASITable("OPERATING PERMIT", newRow, enfChild);
-                                            }
+                                            logDebugLocal("Active tank found! AltID is: " + childTankRecordArray[ct].getCustomID());
+                                            var newRow = new Array();
+                                            var tankNo = getAppSpecific("SCDHS Tank #", childTankRecordArray[ct]);
+                                            var productStore = getAppSpecific("Product Stored Label", childTankRecordArray[ct]);
+                                            //logDebugLocal("productstore is: " + productStore);
+                                            var capacity = getAppSpecific("Capacity", childTankRecordArray[ct]) + " " + getAppSpecific("Units", childTankRecordArray[ct]);
+                                            var tankLocLabel = getAppSpecific("Tank Location Label", childTankRecordArray[ct]);
+                                            var articleTwelve = getAppSpecific("Article 12 Reg", childTankRecordArray[ct]);
+                                            var articleEighteen = getAppSpecific("Article 18 Reg", childTankRecordArray[ct]);
+                                            newRow["Tank Number"] = tankNo;
+                                            newRow["Product Store Label"] = productStore;
+                                            newRow["Capacity"] = capacity;
+                                            newRow["Tank Location Label"] = tankLocLabel;
+                                            newRow["Article 12"] = articleTwelve;
+                                            newRow["Article 18"] = articleEighteen;
+                                            //logDebugLocal("newRow psl is: " + newRow["Product Store Label"]);
+                                            addRowToASITable("OPERATING PERMIT", newRow, enfChild);
                                         }
-                                        //     commenting this out for now because I don't know if updating existing code enf records is needed with this
-                                        //    else
-                                        //    {
-                                        //        for (cr in childEnfRecordArray)
-                                        //        {
-                                        //            var childEnfRecord = childEnfRecordArray[cr];
-                                        //            logDebug("child enf record is: " + childEnfRecord);
-                                        //            var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
-                                        //            logDebug("childreccaptype is: " + childRecCapType);
-                                        //            if (childRecCapType == "DEQ/OPC/Enforcement/NA")
-                                        //            {
-                                        //                //update violations ASITs only
-                                        //            }
-                                        //         }
-                                        //       }
                                     }
                                 }
                             }
                             if (appTypeArray[1] == "OPC" && appTypeArray[2] == "Hazardous Tank" && appTypeArray[3] == "Permit")
                             {
                                 var parentCap = getParentLOCAL(capId);
-                                var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA", parentCap);
 
-                                logDebugLocal("childenfrecordarray is: " + childEnfRecordArray);
-                                if (matches(childEnfRecordArray, null, "", undefined))
-                                {
-                                    logDebugLocal("length is 0, creating child code enf record");
-                                    logDebugLocal("updating contacts, parcel, address, ASIs, appname, and project description");
-                                    var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
-                                    //copyContacts(capId, enfChild);
-                                    copyParcel(capId, enfChild);
-                                    copyAddress(capId, enfChild);
-                                    var siteAltId = parentCap.getCustomID();
-                                    editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-                                    var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
-                                    editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-                                    editAppSpecific("Enforcement Type", "TT", enfChild);
-                                    var appName = getAppName();
-                                    var projDesc = workDescGet(parentCap);
-                                    editAppName(parentCap, enfChild);
-                                    updateWorkDesc(projDesc, enfChild);
+                                logDebugLocal("updating contacts, parcel, address, ASIs, appname, and project description");
+                                var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", null, parentCap);
+                                //copyContacts(capId, enfChild);
+                                copyParcel(capId, enfChild);
+                                copyAddress(capId, enfChild);
+                                var siteAltId = parentCap.getCustomID();
+                                editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+                                var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
+                                editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+                                editAppSpecific("Enforcement Type", "TT", enfChild);
+                                var appName = getAppName();
+                                var projDesc = workDescGet(parentCap);
+                                editAppName(parentCap, enfChild);
+                                updateWorkDesc(projDesc, enfChild);
 
-                                    var newRow = new Array();
-                                    var tankNo = getAppSpecific("SCDHS Tank #", capId);
-                                    var productStore = getAppSpecific("Product Stored Label", capId);
-                                    logDebugLocal("productstore is: " + productStore);
-                                    var capacity = getAppSpecific("Capacity", capId) + " " + getAppSpecific("Units", capId);
-                                    var tankLocLabel = getAppSpecific("Tank Location Label", capId);
-                                    var articleTwelve = getAppSpecific("Article 12 Reg", capId);
-                                    var articleEighteen = getAppSpecific("Article 18 Reg", capId);
-                                    var nextLineTestDate = getAppSpecific("Next Line Test Date", capId);
-                                    var nextTankTestDate = getAppSpecific("Next Tank Test Date", capId);
-                                    newRow["Tank Number"] = tankNo;
-                                    newRow["Product Store Label"] = productStore;
-                                    newRow["Capacity"] = capacity;
-                                    newRow["Tank Location Label"] = tankLocLabel;
-                                    newRow["Next Tank Test Date"] = nextLineTestDate;
-                                    newRow["Next Line Test Date"] = nextTankTestDate;
-                                    logDebugLocal("newRow psl is: " + newRow["Product Store Label"]);
-                                    addRowToASITable("TANK TIGHTNESS TEST", newRow, enfChild);
+                                var newRow = new Array();
+                                var tankNo = getAppSpecific("SCDHS Tank #", capId);
+                                var productStore = getAppSpecific("Product Stored Label", capId);
+                                logDebugLocal("productstore is: " + productStore);
+                                var capacity = getAppSpecific("Capacity", capId) + " " + getAppSpecific("Units", capId);
+                                var tankLocLabel = getAppSpecific("Tank Location Label", capId);
+                                var articleTwelve = getAppSpecific("Article 12 Reg", capId);
+                                var articleEighteen = getAppSpecific("Article 18 Reg", capId);
+                                var nextLineTestDate = getAppSpecific("Next Line Test Date", capId);
+                                var nextTankTestDate = getAppSpecific("Next Tank Test Date", capId);
+                                newRow["Tank Number"] = tankNo;
+                                newRow["Product Store Label"] = productStore;
+                                newRow["Capacity"] = capacity;
+                                newRow["Tank Location Label"] = tankLocLabel;
+                                newRow["Next Tank Test Date"] = nextLineTestDate;
+                                newRow["Next Line Test Date"] = nextTankTestDate;
+                                logDebugLocal("newRow psl is: " + newRow["Product Store Label"]);
+                                addRowToASITable("TANK TIGHTNESS TEST", newRow, enfChild);
 
 
 
-                                }
-                                /* commenting this out for now because I don't know if updating existing code enf records is needed with this
-                                else
-                                {
-                                    for (cr in childEnfRecordArray)
-                                    {
-                                        var childEnfRecord = childEnfRecordArray[cr];
-                                        logDebug("child enf record is: " + childEnfRecord);
-                                        var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
-                                        logDebug("childreccaptype is: " + childRecCapType);
-                                        if (childRecCapType == "DEQ/OPC/Enforcement/NA")
-                                        {
-                                            //update violations ASITs only
-                                        }
-         
-         
-                                    }
-                                }*/
                             }
                         }
                     }
@@ -599,107 +553,106 @@ function doSQL2(sql) {
         logDebugLocal(err.message);
     }
 }
-function getParentLOCAL(targetCapId) 
-{
+function getParentLOCAL(targetCapId) {
     // returns the capId object of the parent.  Assumes only one parent!
     //
-    var getCapResult = aa.cap.getProjectParents(targetCapId,1);
+    var getCapResult = aa.cap.getProjectParents(targetCapId, 1);
     if (getCapResult.getSuccess())
     {
         var parentArray = getCapResult.getOutput();
         if (parentArray.length)
             return parentArray[0].getCapID();
         else
-            {
+        {
             aa.print("**WARNING: GetParent found no project parent for this application");
             return false;
-            }
+        }
     }
     else
-    { 
+    {
         aa.print("**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
         return false;
     }
 }
-function createChildLOCAL(grp,typ,stype,cat,desc) // optional parent capId
+function createChildLOCAL(grp, typ, stype, cat, desc) // optional parent capId
 {
-	//
-	// creates the new application and returns the capID object
-	//
+    //
+    // creates the new application and returns the capID object
+    //
 
-	var itemCap = capId
-	if (arguments.length > 5) itemCap = arguments[5]; // use cap ID specified in args
-	
-	var appCreateResult = aa.cap.createApp(grp,typ,stype,cat,desc);
-	logDebug("creating cap " + grp + "/" + typ + "/" + stype + "/" + cat);
-	if (appCreateResult.getSuccess())
-		{
-		var newId = appCreateResult.getOutput();
-		logDebug("cap " + grp + "/" + typ + "/" + stype + "/" + cat + " created successfully ");
-		
-		// create Detail Record
-		capModel = aa.cap.newCapScriptModel().getOutput();
-		capDetailModel = capModel.getCapModel().getCapDetailModel();
-		capDetailModel.setCapID(newId);
-		aa.cap.createCapDetail(capDetailModel);
+    var itemCap = capId
+    if (arguments.length > 5) itemCap = arguments[5]; // use cap ID specified in args
 
-		var newObj = aa.cap.getCap(newId).getOutput();	//Cap object
-		var result = aa.cap.createAppHierarchy(itemCap, newId); 
-		if (result.getSuccess())
-			logDebug("Child application successfully linked");
-		else
-			logDebug("Could not link applications");
+    var appCreateResult = aa.cap.createApp(grp, typ, stype, cat, desc);
+    logDebug("creating cap " + grp + "/" + typ + "/" + stype + "/" + cat);
+    if (appCreateResult.getSuccess())
+    {
+        var newId = appCreateResult.getOutput();
+        logDebug("cap " + grp + "/" + typ + "/" + stype + "/" + cat + " created successfully ");
 
-		// Copy Parcels
+        // create Detail Record
+        capModel = aa.cap.newCapScriptModel().getOutput();
+        capDetailModel = capModel.getCapModel().getCapDetailModel();
+        capDetailModel.setCapID(newId);
+        aa.cap.createCapDetail(capDetailModel);
 
-		var capParcelResult = aa.parcel.getParcelandAttribute(itemCap,null);
-		if (capParcelResult.getSuccess())
-			{
-			var Parcels = capParcelResult.getOutput().toArray();
-			for (zz in Parcels)
-				{
-				logDebug("adding parcel #" + zz + " = " + Parcels[zz].getParcelNumber());
-				var newCapParcel = aa.parcel.getCapParcelModel().getOutput();
-				newCapParcel.setParcelModel(Parcels[zz]);
-				newCapParcel.setCapIDModel(newId);
-				newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
-				newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
-				aa.parcel.createCapParcel(newCapParcel);
-				}
-			}
+        var newObj = aa.cap.getCap(newId).getOutput();	//Cap object
+        var result = aa.cap.createAppHierarchy(itemCap, newId);
+        if (result.getSuccess())
+            logDebug("Child application successfully linked");
+        else
+            logDebug("Could not link applications");
 
-		// Copy Contacts
-		capContactResult = aa.people.getCapContactByCapID(itemCap);
-		if (capContactResult.getSuccess())
-			{
-			Contacts = capContactResult.getOutput();
-			for (yy in Contacts)
-				{
-				var newContact = Contacts[yy].getCapContactModel();
-				newContact.setCapID(newId);
-				aa.people.createCapContact(newContact);
-				logDebug("added contact");
-				}
-			}	
+        // Copy Parcels
 
-		// Copy Addresses
-		capAddressResult = aa.address.getAddressByCapId(itemCap);
-		if (capAddressResult.getSuccess())
-			{
-			Address = capAddressResult.getOutput();
-			for (yy in Address)
-				{
-				newAddress = Address[yy];
-				newAddress.setCapID(newId);
-				aa.address.createAddress(newAddress);
-				logDebug("added address");
-				}
-			}
-		
-		return newId;
-		}
-	else
-		{
-		logDebug( "**ERROR: adding child App: " + appCreateResult.getErrorMessage());
-		}
+        var capParcelResult = aa.parcel.getParcelandAttribute(itemCap, null);
+        if (capParcelResult.getSuccess())
+        {
+            var Parcels = capParcelResult.getOutput().toArray();
+            for (zz in Parcels)
+            {
+                logDebug("adding parcel #" + zz + " = " + Parcels[zz].getParcelNumber());
+                var newCapParcel = aa.parcel.getCapParcelModel().getOutput();
+                newCapParcel.setParcelModel(Parcels[zz]);
+                newCapParcel.setCapIDModel(newId);
+                newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
+                newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
+                aa.parcel.createCapParcel(newCapParcel);
+            }
+        }
+
+        // Copy Contacts
+        capContactResult = aa.people.getCapContactByCapID(itemCap);
+        if (capContactResult.getSuccess())
+        {
+            Contacts = capContactResult.getOutput();
+            for (yy in Contacts)
+            {
+                var newContact = Contacts[yy].getCapContactModel();
+                newContact.setCapID(newId);
+                aa.people.createCapContact(newContact);
+                logDebug("added contact");
+            }
+        }
+
+        // Copy Addresses
+        capAddressResult = aa.address.getAddressByCapId(itemCap);
+        if (capAddressResult.getSuccess())
+        {
+            Address = capAddressResult.getOutput();
+            for (yy in Address)
+            {
+                newAddress = Address[yy];
+                newAddress.setCapID(newId);
+                aa.address.createAddress(newAddress);
+                logDebug("added address");
+            }
+        }
+
+        return newId;
+    }
+    else
+    {
+        logDebug("**ERROR: adding child App: " + appCreateResult.getErrorMessage());
+    }
 }
