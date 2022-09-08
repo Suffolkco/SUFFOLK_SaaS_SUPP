@@ -55,6 +55,30 @@ try
         }
         }
     }
+
+	var parcelObj = cap.getParcelModel();
+	if (!parcelObj)
+	{ logDebug("No parcel to get attributes"); 
+	}
+	else
+	{
+		var parcelNo = parcelObj.getParcelNumber();
+		if (parcelNo != null)
+		{
+			var parcelTxt = new String(parcelNo);
+			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
+			var length = noSpaceParcelNo.length;
+			if (length != 19)        
+			{            
+				cancel = true;
+				showMessage = true;
+				comment("You have entered the wrong Parcel (Tax Map) Number.");
+				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+				comment ("Please see instructional note in Parcel Section.");
+			}				
+		}
+	}
+	
 }
 catch (error)
 {
