@@ -218,6 +218,13 @@ function mainProcess() {
                                 var projDesc = workDescGet(capId);
                                 editAppName(appName, enfChild);
                                 updateWorkDesc(projDesc, enfChild);
+                                 //updating mask on new child enforcement record 
+                                 var enfType = getAppSpecific("Enforcement Type", enfChild);
+                                 var altIdString = String(enfChild.getCustomID());
+                                 var altSplit = enfChild.getCustomID().split("-");
+                                 altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
+                                 logDebug("Updating Alt ID to: " + altIdString);
+                                 updateAltID(altIdString, enfChild);
 
                                 //updating Code Enf record with Tank record info
                                 logDebugLocal("checking for tank records as children of the site");
@@ -270,7 +277,14 @@ function mainProcess() {
                                 var projDesc = workDescGet(parentCap);
                                 editAppName(parentCap, enfChild);
                                 updateWorkDesc(projDesc, enfChild);
-
+                                //updating mask on new child enforcement record 
+                                var enfType = getAppSpecific("Enforcement Type", enfChild);
+                                var altIdString = String(enfChild.getCustomID());
+                                var altSplit = enfChild.getCustomID().split("-");
+                                altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
+                                logDebug("Updating Alt ID to: " + altIdString);
+                                updateAltID(altIdString, enfChild);
+                                //updating table
                                 var newRow = new Array();
                                 var tankNo = getAppSpecific("SCDHS Tank #", capId);
                                 var productStore = getAppSpecific("Product Stored Label", capId);
