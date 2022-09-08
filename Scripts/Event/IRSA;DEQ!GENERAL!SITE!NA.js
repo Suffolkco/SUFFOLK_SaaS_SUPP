@@ -143,7 +143,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                         {
                             var guideVioArray = new Array();
                             var guideItemDetails = new Array();
-        //gathering those checklist item numbers and comment text from those checklist items
+                            //gathering those checklist item numbers and comment text from those checklist items
 
                             var checklistItemWhole = vGuideSheetItem.getGuideItemText();
                             checklistItemWhole = String(checklistItemWhole).split(".");
