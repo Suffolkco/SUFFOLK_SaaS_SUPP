@@ -178,8 +178,9 @@ function mainProcess()
 		var siteCount = 0;
 		var tankCount = 0;
 		//var vSQL = "Select INSPECTION_TYPE as inspType, INSPECTION_ID as inspectionId, RECORD_ID as recordNumber from V_INSPECTION where RESULT_='Violations Found' AND INSPECTION_TYPE IN ('OPC Non-PBS Site OP Inspection', 'OPC Non-PBS Site Other Inspection', 'OPC Non-PBS Site Re-Inspection', 'OPC PBS Site GSR Inspection', 'OPC PBS Site OP Inspection', 'OPC PBS Site Other Inspection', 'OPC PBS Site Re-Inspection')";
-		var vSQL = "Select INSPECTION_TYPE as inspType, INSPECTION_ID as inspectionId, RECORD_ID as recordNumber from V_INSPECTION where RESULT_='Violations Found' AND INSPECTION_TYPE IN ('Non-PBS Tank OP Inspection', 'Non-PBS Tank Other Inspection', 'Non-PBS Tank Re-Inspection', 'PBS Tank GSR Inspection', 'PBS Tank OP Inspection', 'PBS Tank Other Inspection', 'PBS Tank Re-Inspeciton', 'OPC Non-PBS Site OP Inspection', 'OPC Non-PBS Site Other Inspection', 'OPC Non-PBS Site Re-Inspection', 'OPC PBS Site GSR Inspection', 'OPC PBS Site OP Inspection', 'OPC PBS Site Other Inspection', 'OPC PBS Site Re-Inspection', 'OPC Non-PBS SITE Enf-Req Inspection', 'OPC PBS SITE Enf-Req Inspection')";
-
+		//var vSQL = "Select INSPECTION_TYPE as inspType, INSPECTION_ID as inspectionId, RECORD_ID as recordNumber from V_INSPECTION where RESULT_='Violations Found' AND INSPECTION_TYPE IN ('Non-PBS Tank OP Inspection', 'Non-PBS Tank Other Inspection', 'Non-PBS Tank Re-Inspection', 'PBS Tank GSR Inspection', 'PBS Tank OP Inspection', 'PBS Tank Other Inspection', 'PBS Tank Re-Inspeciton', 'OPC Non-PBS Site OP Inspection', 'OPC Non-PBS Site Other Inspection', 'OPC Non-PBS Site Re-Inspection', 'OPC PBS Site GSR Inspection', 'OPC PBS Site OP Inspection', 'OPC PBS Site Other Inspection', 'OPC PBS Site Re-Inspection', 'OPC Non-PBS SITE Enf-Req Inspection', 'OPC PBS SITE Enf-Req Inspection')";
+		// Check only the SITE inspection types
+		var vSQL = "Select INSPECTION_TYPE as inspType, INSPECTION_ID as inspectionId, RECORD_ID as recordNumber from V_INSPECTION where RESULT_='Violations Found' AND INSPECTION_TYPE IN ('PBS Tank Re-Inspeciton', 'OPC Non-PBS Site OP Inspection', 'OPC Non-PBS Site Other Inspection', 'OPC Non-PBS Site Re-Inspection', 'OPC PBS Site GSR Inspection', 'OPC PBS Site OP Inspection', 'OPC PBS Site Other Inspection', 'OPC PBS Site Re-Inspection', 'OPC Non-PBS SITE Enf-Req Inspection', 'OPC PBS SITE Enf-Req Inspection')";
         var output = "Record ID\n";  		
         		
 		var vResult = doSQLSelect_local(vSQL);  	     
@@ -227,7 +228,7 @@ function mainProcess()
 								var rFiles = new Array();
 								if (inspObj.getInspectionStatus() == "Violations Found")
 								{
-									logDebugLocal("Scanning Site Insp dates. Today Date is: " + dateToCheck + ". Site Insp Date is: " + siteInspDateCon);
+									logDebugLocal("1. Scanning Site Insp dates. Today Date is: " + dateToCheck + ". Site Insp Date is: " + siteInspDateCon);
 									logDebugLocal("Found SITE:" + capIDString + "," + inspID.toString() + "," + siteInspTYPE);
 									var year = inspObj.getInspectionDate().getYear();
 									var month = inspObj.getInspectionDate().getMonth();
@@ -247,7 +248,7 @@ function mainProcess()
 									addParameter(reportParams, "InspectionType", siteInspTYPE);
 									
 														
-									rFile = generateReportBatch(capId, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
+									var rFile = generateReportBatch(capId, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
 								
 									//rFile = generateReportBatch(capId, "Inspection result Tank Operator", 'DEQ', reportParams)
 									//logDebugLocal("This is the rFile: " + rFile);          
@@ -255,6 +256,8 @@ function mainProcess()
 									{
 										
 										rFiles.push(rFile);
+										logDebugLocal("1.1. Added SITE file to array: " + capIDString + ". Inspection ID: " + inspID + "File: " + rFile 
+																		+ "Total Count in File Array: " + rFiles.length);	
 										siteCount++;								   
 										//logDebugLocal("******** Add Site count *******" + capIDString + ". Inspection ID: " +  inspID.toString()); 
 									}
@@ -279,7 +282,7 @@ function mainProcess()
 
 											if (childCapStatus == "Active")
 											{
-												logDebugLocal("Looking for active tanks for " + capIDString);
+												logDebugLocal("2. Looking for active tanks for " + capIDString);
 												var inspResultObj = aa.inspection.getInspections(childCapId);
 												if (inspResultObj.getSuccess())
 												{
@@ -313,7 +316,7 @@ function mainProcess()
 																
 																if (dateDiff == 0)
 																{
-																	logDebugLocal("Scanning inspection dates. Today Date is: " + dateToCheck + ". Inspection Date is: " + inspDateCon);																
+																	logDebugLocal("3. Scanning inspection dates. Today Date is: " + dateToCheck + ". Inspection Date is: " + inspDateCon);																
 																	logDebugLocal("FOUND Today's tank inspection: " + tankInspType + " with status: " + inspList[xx].getInspectionStatus());																
 																	//capId = getApplication(recordID);
 																	
@@ -332,19 +335,22 @@ function mainProcess()
 																
 																	//logDebugLocal("capIDString: " + capIDString);
 																	//logDebugLocal("inspectionDateCon: " + tankinspectionDateCon);
-
+																	logDebugLocal("inspectionId: " + inspObj.getIdNumber().toString());
 																	addParameter(reportTankParams, "TankRecordID", childCapIdString.toString());															
-																	//addParameter(reportParams, "InspectionId", inspObj.getIdNumber().toString());
-																	addParameter(reportTankParams, "InspectionDate", tankinspectionDateCon);
-																	addParameter(reportTankParams, "InspectionType", inspType);
+																	addParameter(reportTankParams, "InspectionId", inspObj.getIdNumber().toString());
+																	logDebugLocal("tank Inspection Date: " + tankinspectionDateCon);
+																	//addParameter(reportTankParams, "InspectionDate", tankinspectionDateCon);
+																	//addParameter(reportTankParams, "InspectionType", inspType);
 															
-																	rFile = generateReportBatch(childCapId, "Inspection result Tank Operator Script", 'DEQ', reportTankParams)
+																	var rtFile = generateReportBatch(childCapId, "Inspection result Tank Operator For Script Use", 'DEQ', reportTankParams)
 																	//logDebug("This is the rFile: " + rFile);           
 																	
-																	if (rFile)
+																	if (rtFile)
 																	{															
-																		rFiles.push(rFile);
-																		logDebugLocal("******** Add Tank count *******" + capIDString + ". Inspection ID: " + inspID); 
+																		rFiles.push(rtFile);
+																		logDebugLocal("4. Added tank file to array: " + capIDString + ". Inspection ID: " + inspID + "File: " + rtFile 
+																		+ "Total Count in File Array: " + rFiles.length);																	
+																		
 																		tankCount++;	
 																	}
 																}
@@ -372,9 +378,9 @@ function mainProcess()
 								}
 								addParameter(emailParams, "$$altID$$", capId.getCustomID());     
 								addParameter(emailParams, "$$inspId$$", inspID);     
-								sendNotification("", "ada.chan@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
+								//sendNotification("", "ada.ariosto@gmail.com","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
 								//sendNotification("", "xiaoyu.chen@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 
-								sendNotification("", "Lindsay.Meltzer@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 						
+								//sendNotification("", "Lindsay.Meltzer@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 						
 								sendNotification("", "Michael.Seaman@suffolkcountyny.gov","", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles); 						
 							}
 						}    
