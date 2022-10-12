@@ -1,5 +1,6 @@
 //WTUA;CONSUMERAFFAIRS!DOCKET!NA!NA
 
+
 // DOCKET #19: Look up custom field entry to relate Complaints and License Records
 if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 {
