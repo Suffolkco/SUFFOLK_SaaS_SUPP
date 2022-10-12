@@ -13,7 +13,15 @@ var swimPools = loadASITable("SWIMMING POOL INFORMATION");
 var totalPools = swimPools.length;
 var indoorArray = new Array();
 var outdoorArray = new Array();
+
+var s_result = aa.address.getAddressByCapId(capId);
 var capAddresses = null;  
+
+if(s_result.getSuccess())
+{
+	capAddresses = s_result.getOutput();
+}
+
 var b1ExpResult = aa.expiration.getLicensesByCapID(capId);
 if (b1ExpResult.getSuccess())
 {
@@ -71,6 +79,12 @@ if ((wfTask == "Plans Distribution" && wfStatus == "Approved") ||
 	dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 	b1Exp.setExpDate(dateMMDDYYY);
 	aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+
+	if (wfTask == "Plans Coordination" && wfStatus == "Approved")
+	{
+		workflowPlansCoordinationApproved(capAddresses);
+	}
+	
 }
 else if (wfTask == "Inspections" && wfStatus == "Modification")
 {
