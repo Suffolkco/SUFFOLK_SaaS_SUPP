@@ -4,69 +4,18 @@
 // DOCKET #19: Look up custom field entry to relate Complaints and License Records
 if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 {
-	var complaintNumber = getAppSpecific("Complaint Number", capId);
-	var licenseNumber = getAppSpecific("License Number", capId);
-    
-	// Link Complaint Number
-	var capComplaintResult = aa.cap.getCapID(complaintNumber);
-	if (capComplaintResult.getSuccess()) {
-		recCapId = capComplaintResult.getOutput();
+	// Link Complaint and License Number
+	include("CA_LINK_LICENSE_NUMBER");
 
-		var linkResult = aa.cap.createAppHierarchy(capId, recCapId);
-		if (linkResult.getSuccess())
-			logDebug("Successfully linked to Complaint Record: " + capId);
-		else
-			logDebug( "**ERROR: linking to parent application parent cap id (" + capId + "): " + linkResult.getErrorMessage());
-
-	}
-	
-	// Link License Number
-	var capLicenseResult = aa.cap.getCapID(licenseNumber);
-	if (capLicResult.getSuccess()) {
-		licCapId = capLicResult.getOutput();
-
-		var linkLResult = aa.cap.createAppHierarchy(capId, licCapId);
-		if (linkLResult.getSuccess())
-			logDebug("Successfully linked to Parent Application : " + capId);
-		else
-			logDebug( "**ERROR: linking to parent application parent cap id (" + capId + "): " + linkLResult.getErrorMessage());
-
-	}
 
 	//DOCKET #29: Update License Status
 	// Get license Number
-	appId = getApplication(licenseNumber);
-	if (appId) {
-		licStatus = getAppStatus(appId);
+	include("CA_UPDATE_LICENSE_STATUS");
 
-		licList = lookup("DCA Filtered License Status", licStatus);
-    
-		// If it's in the shared drop down, reuse
-		if (licList && licList != "")
-		{
-			editAppSpecific("License Status", licStatus);
-		}
-		else
-		{
-			switch (licStatus) {
-				case "Active":
-				case "License Active":
-				case "Pending Renewal":
-					licStatus = 'Licensed';
-					break;
-				case "License Suspended":
-					licStatus = 'Suspended';
-					break;
-				default:
-					licStatus = "Unlicensed";
-				break;
-			}
-			editAppSpecific("License Status", licStatus);
-		}
-	}
+	
 
 	//DOCKET #11: Add a meeting in calendar based on the hearing time and date
-	MeetingScript
+	//MeetingScript
 
 }
 //DOCKET #8: Script to create violation automatically based on the violation cheatsheet custom list
@@ -149,7 +98,7 @@ else if (wfStatus == "Review for Amendment")
 		if (cdWrite.getSuccess())
 			{ logDebug("Assigned CAP to " +assignedUser.getFirstName() + " " + assignedUser.getLastName()); }
 		else
-			{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; return false ; }
+			{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; }
 	}
 	
 }
