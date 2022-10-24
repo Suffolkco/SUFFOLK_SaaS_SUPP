@@ -1,6 +1,7 @@
 //ASA;CONSUMERAFFAIRS!DOCKET!NA!NA
 try {
 
+	var currentUserID = aa.env.getValue("CurrentUserID");
 
 	// DOCKET -22 Email vendor the docket application has been created
 	if (!publicUser)
@@ -10,12 +11,12 @@ try {
 
 	// DOCKET -21 Assign record to the creator after submission
 	var thisUser = currentUserID;
-		
+	logDebug("currentUserID: " + currentUserID);			
+
 	var userObj = aa.person.getUser(thisUser);
 	if (!userObj.getSuccess())
 	{
-		logDebug("Could not find user to assign to");
-		return false;
+		logDebug("Could not find user to assign to");		
 	}
 	else
 	{
@@ -34,16 +35,15 @@ try {
 		// Record Assigned to
 		var assignedUserid = cd.getAsgnStaff();
 		if (assignedUserid ==  null)
-		{
-			cd.setAsgnStaff();
+		{			
 			cd.setAsgnStaff(thisUser);
 
 			cdWrite = aa.cap.editCapDetail(cd)
 
 			if (cdWrite.getSuccess())
-				{ logDebug("Assigned CAP to " + assignId) }
+				{ logDebug("Assigned CAP to " + thisUser) }
 			else
-				{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; return false ; }
+				{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; }
 		}
 	}
 
