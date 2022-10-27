@@ -490,7 +490,7 @@ function makeTable(labResults, resId, inspEmail) {
         t["Analysis Time"] = r[2];
 
         // If there is value, use the value for lab name
-        if (r[3] == GROUP_NAME || 
+        if (r[3] == GROUP_NAME ||
             r[3] == GROUP_NAME_1 ||
             r[3] == GROUP_NAME_2 ||
             r[3] == GROUP_NAME_3) {
@@ -525,7 +525,7 @@ function makeTable(labResults, resId, inspEmail) {
         if (analysisCode == "$VITEK") {
             key = "Vitek";
         }
-        
+
         if (r[3] == GROUP_NAME || r[3] == GROUP_NAME_1 || r[3] == GROUP_NAME_2 || r[3] == GROUP_NAME_3) {
             t["Group Name"] = r[3];
         }
@@ -696,13 +696,13 @@ function processCombos(resId) {
                 var floatIron = parseFloat(thisMetal["Numeric Result"]);
                 var threeFixedFe = parseFloat(floatIron).toFixed(3);
                 var floatThreeFixedFe = parseFloat(threeFixedFe);
-                totalMetals += floatThreeFixedFe;               
+                totalMetals += floatThreeFixedFe;
             }
             if (thisMetal["Analyte Name"] == "Manganese (Mn)") {
-                var floatMn = parseFloat(thisMetal["Numeric Result"]) / 1000;               
-                var threeFixedMn = parseFloat(floatMn).toFixed(3);                
-                var floatThreeFixedMn = parseFloat(threeFixedMn);                
-                totalMetals += floatThreeFixedMn;                
+                var floatMn = parseFloat(thisMetal["Numeric Result"]) / 1000;
+                var threeFixedMn = parseFloat(floatMn).toFixed(3);
+                var floatThreeFixedMn = parseFloat(threeFixedMn);
+                totalMetals += floatThreeFixedMn;
             }
         }
         // add total metal row
