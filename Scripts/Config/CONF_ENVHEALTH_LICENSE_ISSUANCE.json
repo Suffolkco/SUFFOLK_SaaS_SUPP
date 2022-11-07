@@ -1,0 +1,282 @@
+{
+  "EnvHealth/Health Program/Food Protection/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Health Program/Food Protection/Permit",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Health Program/Mobile/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Health Program/Mobile/Permit",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Temporary Event/Annual Molluscan Shellfish/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Temporary Event/Annual Molluscan Shellfish/Permit",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Temporary Event/Annual Sampling/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Temporary Event/Annual Sampling/Permit",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Temporary Event/Vendor/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Temporary Event/NA/NA",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Temporary Event/Organizer/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Temporary Event/NA/NA",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Temporary Event/Multiple Event/Application": {
+    "WorkflowTaskUpdateAfter": [
+      {
+        "metadata": {
+          "description": "Issues a Permit",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ]
+        },
+        "action": {
+          "parentLicense": "EnvHealth/Temporary Event/NA/NA",
+          "issuedStatus": "Active",
+          "copyCustomFields": [
+            "ALL"
+          ],
+          "copyCustomTables": [
+            "ALL"
+          ],
+          "expirationType": "Expiration Code",
+          "expirationPeriod": "EH_FP",
+          "copyContacts": [
+            "ALL"
+          ],
+          "createLP": false,
+          "licenseTable": "",
+          "refLPType": "Business",
+          "contactType": "Applicant",
+          "contactAddressType": "Mailing"
+        },
+        "postScript": ""
+      }
+    ]
+  }
+}
