@@ -1137,7 +1137,7 @@ function processCombos(resId) {
                 var floatRemain533 = parseFloat(thisRemain["Numeric Result"]);
                 logInfo("floatRemain533 " + floatRemain533);
                 totalRemainingSubsetGroup533 += floatRemain533;
-                totalRemainingSubsetGroup533 = totalRemainingSubsetGroup533);
+                totalRemainingSubsetGroup533 = totalRemainingSubsetGroup533;
 
             }
 
