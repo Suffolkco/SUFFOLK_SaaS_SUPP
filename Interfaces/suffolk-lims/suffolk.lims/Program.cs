@@ -324,6 +324,7 @@ namespace suffolk.lims
                 {
                     SmtpClient smtpClient = new SmtpClient(SMTPHost);
                     smtpClient.EnableSsl = true;
+					smtpClient.EnableTls = true;
                     //  smtpClient.UseDefaultCredentials = false;
                     //  smtpClient.Credentials = new System.Net.NetworkCredential(Config.SMTPUser, Config.SMTPPass);
                     smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
