@@ -5,7 +5,9 @@ showDebug = false;
 logDebug("Here's the result of altID to string: " + altId.toString());
 
 // EHIMS-4806
-if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
+if ((wfTask == "Plans Distribution" && wfStatus == "Routed for Review") ||
+(wfTask == "Final Review" && wfStatus == "Approved"))
+
 {		
 	var multiTaxMap = AInfo["Tax Map Numbers"];
 	if (multiTaxMap != null)
