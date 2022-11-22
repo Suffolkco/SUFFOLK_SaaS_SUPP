@@ -1,13 +1,13 @@
 //WTUA:DEQ/OPC/ENFORCEMENT/NA
 
-if (currentUserID == "RLITTLEFIELD")
-{
-    showDebug = true;
-}
+
+showDebug = true;
+
 
 var emailParams = aa.util.newHashtable();
+var reportParams = aa.util.newHashtable();
 var parentCapId = getParent(capId);
-var conArrayParent = getContactArray(parentCapId);
+logDebug("This is our Parent CapID : " + parentCapId);
 var conEmailList = "";
 var conEmailListAll = "";
 var appName = cap.getSpecialText();
@@ -28,23 +28,30 @@ var fineAmount = AInfo["Fine Amount"];
 var revisedFineAmount = AInfo["Revised Fine Amount"];
 var enfReqRevDue;
 
-//getting contacts by type, and then all
-for (con in conArrayParent)
-{
-    if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
+
+if(parentCapId)
+{ //We are preventing an error if we don't find a Parent ID if we do then we add the contacts 
+    //getting contacts by type, and then all
+    var conArrayParent = getContactArray(parentCapId);
+    for (con in conArrayParent)
     {
+
+        if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
+        {
+            if (!matches(conArrayParent[con].email, null, undefined, ""))
+            {
+                logDebug("Contact email: " + conArrayParent[con].email);
+                conEmailList += conArrayParent[con].email + "; ";
+            }
+        }
         if (!matches(conArrayParent[con].email, null, undefined, ""))
         {
             logDebug("Contact email: " + conArrayParent[con].email);
-            conEmailList += conArrayParent[con].email + "; ";
+            conEmailListAll += conArrayParent[con].email + "; ";
         }
     }
-    if (!matches(conArrayParent[con].email, null, undefined, ""))
-    {
-        logDebug("Contact email: " + conArrayParent[con].email);
-        conEmailListAll += conArrayParent[con].email + "; ";
-    }
 }
+
 
 //grabbing the due date of the Enforcement Request Review task in the current workflow, for use in multiple other task/statuses
 var workflowResult = aa.workflow.getTasks(capId);
@@ -131,7 +138,7 @@ if (wfTask == "Violation Review")
 
         addParameter(emailParams, "$$violationDueDate$$", dateSixtyDaysOut);
         addParameter(emailParams, "$$inspDate$$", maxDate);
-        sendNotification("", conEmailList, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
+        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
         updateTaskDueDate("Violation Review", dateThirtyDaysOut);
     }
 }
@@ -149,27 +156,54 @@ if (wfTask == "Enforcement Request Review")
     if (wfStatus == "NOPH Sent")
     {
         //need to confirm that this report information is correct, below:
-        //generateReportBatch(capId, "NOPH", 'DEQ', null);
+
+        var enfType = getAppSpecific("Enforcement Type", capId);
+        var reportToSend = "";
+        switch (String(enfType))
+        {
+            //OP
+            case "OP":
+                reportToSend = "";
+            case "TT":
+                reportToSend = "";
+            case "SP":
+                reportToSend = "OPC Swimming Pool NOPH";
+            case "EE":
+                reportToSend = "OPC EE NOPH";
+            case "IW":
+                reportToSend = "";
+            case "BB":
+                reportToSend = "";
+            case "T8":
+                reportToSend = "";
+            case "WL":
+                reportToSend = "OPC Warning Letter";
+            case "LL":
+                reportToSend = "";
+        }
+        addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
+
+        generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
 
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
         addStdConditionStrict("DEQ", "Notice of Hearing", capId);
         addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
+        //Gets siblings by looking at the parent
+        addConditionSiblings(ParentCap)
 
     }
     if (wfStatus == "NOFH Sent")
     {
-        //need to confirm that this report information is correct, below:
-        //generateReportBatch(capId, "NOFH", 'DEQ', null);
-
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
         addStdConditionStrict("DEQ", "Notice of Hearing", capId);
         addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
-
+        //Gets siblings by looking at the parent
+        addConditionSiblings(ParentCap);
     }
     if (wfStatus == "Warning Letter Sent")
     {
         //need to confirm that this report information is correct, below:
-        //generateReportBatch(capId, "Warning Letter", 'DEQ', null);
+        generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
     }
     //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
     var enfType = AInfo["Enforcement Type"];
@@ -225,8 +259,7 @@ if (wfTask == "Preliminary Hearing")
             addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
-        addParameter(emailParams, "$$hearingTime$$", hearingTime); 
-
+        addParameter(emailParams, "$$hearingTime$$", hearingTime);
         sendNotification("", conEmailList, "", "DEQ_OPC_ENF_PRELIM_HEARING_ADJ", emailParams, null);
 
         //set task due date to the date found in the TSI Hearing Date on this task
@@ -274,9 +307,33 @@ if (wfTask == "Preliminary Hearing")
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$revisedFineAmount$$", revisedFineAmount);
         addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
+        //addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
+        reportParams.put("RecordID", capId.getCustomID().toString());
+        logDebug(reportParams);
+        var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
+
+        if (reportToUse)
+        {
+            var sendThisReport = new Array();
+            sendThisReport.push(reportToUse);
+        }
 
 
-        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, null);
+        if(conEmailListAll == '')
+        {
+        aa.print("We found no parents on the contact record");
+        Systememail = systemUserObj.getEmail();
+        aa.print(Systememail);
+      
+        sendNotification("", Systememail, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
+        }
+        else
+        {
+            aa.print("We found a user on the parent sending email");
+            sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
+        }
+
+       
     }
 }
 
@@ -393,6 +450,17 @@ if (wfStatus == "Case Closed")
     sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_CASE_CLOSED", emailParams, null);
 }
 
+
+
+if (wfTask == "End Enforcement Action" && wfStatus == "Close" )
+{
+    removeAllCapConditions(capId);
+    removeAllCapConditions(parentCapId);
+    //Gets siblings by looking at the parent
+    removeConditionsSiblings(parentCapId);
+}
+
+
 function updateTaskDueDate(taskName, dueDate) {
     var workflowResult = aa.workflow.getTasks(capId);
     if (workflowResult.getSuccess())
@@ -427,20 +495,6 @@ function updateAltID(newId) {
         logDebug("Successfully updated alt Id to: " + newId);
     else
         logDebug("Problem updating alt Id: " + result.getErrorMessage());
-
-
-    if (!"undefined".equals(typeof Dpr) && Dpr.isProject(itemCap))
-    {
-        if (Dpr.projectExists(Dpr.getAdminUser(), itemCap))
-        {
-            var project = {};
-            var newCapId = aa.cap.getCapID(itemCap.getID1(), itemCap.getID2(), itemCap.getID3()).getOutput();
-            if (newCapId)
-            {
-                Dpr.updateProject(Dpr.getAdminUser(), newCapId, {number: newCapId.getCustomID() + ""});
-            }
-        }
-    }
 }
 
 function getAddressInALine() {
@@ -609,3 +663,121 @@ function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFile
     } //download failed
     return null;
 }
+
+
+
+function generateReportBatch(itemCap, reportName, module, parameters)
+{
+    //returns the report file which can be attached to an email.
+    var user = currentUserID; // Setting the User Name
+    var report = aa.reportManager.getReportInfoModelByName(reportName);
+    logDebug("This is the Report Parameter " + parameters);
+    if (!report.getSuccess() || report.getOutput() == null)
+    {
+        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
+        return false;
+    }
+    report = report.getOutput();
+    report.setModule(module);
+    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName, user);
+
+    if (permit.getOutput().booleanValue())
+    {
+        var reportResult = aa.reportManager.getReportResult(report);
+        logDebug("Report Result" + reportResult.getSuccess());
+        if (reportResult.getSuccess())
+        {
+            reportOutput = reportResult.getOutput();
+            logDebug("This is the Report Output in the next part" + reportOutput);
+            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
+            reportFile = reportFile.getOutput();
+            return reportFile;
+        } else
+        {
+            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
+            return false;
+        }
+    } else
+    {
+        logDebug("You have no permission.");
+        return false;
+    }
+}
+function addConditionSiblings(ParentCap)
+{
+    var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
+    for (child in childRecords)
+    {
+       
+        addStdConditionStrict("DEQ", "Notice of Hearing", childRecords[child]);
+    }
+
+}
+function removeConditionsSiblings(ParentCap)
+{
+    var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
+    for (child in childRecords)
+    {
+        removeAllCapConditions(childRecords[child])
+    }
+
+    
+}
+
+function removeAllCapConditions(itemCap) {
+    var capCondResult = aa.capCondition.getCapConditions(itemCap);
+
+    if (!capCondResult.getSuccess())
+    { logDebug("**WARNING: error getting cap conditions : " + capCondResult.getErrorMessage()); return false }
+
+    var ccs = capCondResult.getOutput();
+    for (pc1 in ccs) {
+        var rmCapCondResult = aa.capCondition.deleteCapCondition(itemCap, ccs[pc1].getConditionNumber());
+        if (rmCapCondResult.getSuccess())
+            logDebug("Successfully removed condition to CAP : " + itemCap + ". Condition Description:" + ccs[pc1].getConditionDescription());
+    }
+
+}
+function generateReportP(aaReportName, parameters, rModule)
+{
+var reportName = aaReportName;
+report = aa.reportManager.getReportInfoModelByName(reportName);
+aa.print("After getting the Name" + report);
+aa.print("This is our Cap ID Module and Parameter" +  capId + rModule + parameters )
+report = report.getOutput();
+aa.print("The Output" + report);
+report.setModule(rModule);
+report.setCapId(capId);
+report.setReportParameters(parameters);
+var permit = aa.reportManager.hasPermission(reportName, currentUserID);
+aa.print("This is the permit value we are trying to get" + permit);
+if (permit.getOutput().booleanValue())
+{
+	aa.print("This is the permit value we are trying to get" + permit.getOutput().booleanValue());
+	var reportResult = aa.reportManager.getReportResult(report);
+
+	if (reportResult)
+	{
+		reportResult = reportResult.getOutput();
+		aa.print("Report Results" + reportResult)
+		var reportFile = aa.reportManager.storeReportToDisk(reportResult);
+		logDebug("Report Result: " + reportResult);
+		reportFile = reportFile.getOutput();
+		return reportFile
+	}
+	else
+	{
+		logDebug("Unable to run report: " + reportName + " for Admin" + systemUserObj);
+		return false;
+	}
+}
+else
+{
+	logDebug("No permission to report: " + reportName + " for Admin" + systemUserObj);
+	return false;
+}
+}
+
