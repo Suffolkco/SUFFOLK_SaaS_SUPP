@@ -398,8 +398,23 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 		while (elapsed() < maxSeconds);
 		
 		logDebug("Elapsed: " + elapsed());*/
+
+		//EHIMS-4661: Name Shown in Salutation (Notice of Incomplete Final) 
+		var reportParams = aa.util.newHashtable();   
+		reportParams.put("RecordID", alternateID.toString());	
+
+		var wfUser = aa.person.getUser(currentUserID).getOutput();		
+		var wfFirst = wfUser.getFirstName();
+		var wfLast = wfUser.getLastName();
+		var userTitle = wfUser.getTitle();
+		
+		reportParams.put("FirstName", wfFirst);	
+		reportParams.put("LastName", wfLast);	
+		reportParams.put("Title", userTitle);	
 	
-		wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", "RecordID");
+		logDebugLocal( "First, Last, Title: " + wfFirst + "," + wfLast + "," + userTitle);
+		
+		//wwmWorkflowNOIwithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", reportParams);
 	
 	}
 }
