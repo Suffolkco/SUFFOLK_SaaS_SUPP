@@ -400,6 +400,9 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 		logDebug("Elapsed: " + elapsed());*/
 
 		//EHIMS-4661: Name Shown in Salutation (Notice of Incomplete Final) 
+		var itemCap = aa.cap.getCap(capId).getOutput();		
+		var alternateID = capId.getCustomID();
+
 		var reportParams = aa.util.newHashtable();   
 		reportParams.put("RecordID", alternateID.toString());	
 
