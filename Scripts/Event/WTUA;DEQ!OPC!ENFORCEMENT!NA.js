@@ -204,6 +204,11 @@ if (wfTask == "Enforcement Request Review")
     {
         //need to confirm that this report information is correct, below:
         generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
+         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
+         addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+         addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
+         //Gets siblings by looking at the parent
+         addConditionSiblings(ParentCap);
     }
     //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
     var enfType = AInfo["Enforcement Type"];
