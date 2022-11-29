@@ -1,0 +1,54 @@
+{
+  "EnvHealth/*/*/*": {
+    "WorkflowTaskUpdateBefore": [
+      {
+        "metadata": {
+          "description": "Rule for all EnvHealth issuance",
+          "operator": ""
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [
+            "Permit Issuance"
+          ],
+          "status": [
+            "Issued"
+          ],
+          "allowBalance": false
+        },
+        "action": {
+          "validationMessage": "This action cannot be taken until all outstanding fees are paid in full."
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/Service Request/Plan Review/NA": {
+    "WorkflowTaskUpdateBefore": [
+      {
+        "metadata": {
+          "description": "",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [],
+          "status": [
+            "Full or Minor Plan Review",
+            "Hold for Pre-op",
+            "Minor Plan approval - No Pre-op Req",
+            "Approved Plans Filed",
+            "Permit Issued/Approved Plans Filed"
+          ],
+          "requiredField": [
+            "DEQ/OWM Approval Required?"
+          ]
+        },
+        "action": {
+          "validationMessage": "Plan Review Request required custom fields must be filled out before proceeding. Please fill out all required fields. "
+        },
+        "postScript": ""
+      }
+    ]
+  }
+}

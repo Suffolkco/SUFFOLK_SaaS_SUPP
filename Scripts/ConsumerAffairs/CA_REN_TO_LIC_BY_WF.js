@@ -1,4 +1,6 @@
-if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus == "Renewed") || (appTypeArray[2] == "Polygraph Examiner" && wfTask == "Renewal Review" && wfStatus == "Complete"))
+if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus == "Renewed") ||
+(appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus == "Shelved") 
+|| (appTypeArray[2] == "Polygraph Examiner" && wfTask == "Renewal Review" && wfStatus == "Complete"))
 {
     var vEParams = aa.util.newHashtable();
     var parentCapId = getParentCapID4Renewal();

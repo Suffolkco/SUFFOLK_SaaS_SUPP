@@ -1,14 +1,14 @@
 // /ASIUB:
-// This is to blcok saving if the custom field has not met the condition
-var showDebug = true;
+// This is to block saving if the custom field has not met the condition
+var showDebug = false;
 try
 {
 					    
-	var lotProposed = getAppSpecific("Total Number of Lots Proposed")
+	var lotProposed = AInfo["Total Number of Lots Proposed"];
 	
 	logDebug("lotProposed: " + lotProposed);     
 
-	if (lotProposed && lotProposed < 2)
+	if (lotProposed && lotProposed != "" && lotProposed < 2)
 	{
 		cancel = true;
 		showMessage = true;

@@ -79,108 +79,111 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
 {
     if (inspResult == "Violations Found")
     {
-        var childEnfRecordArray = getChildren("DEQ/OPC/Enforcement/NA")
-        if (childEnfRecordArray)
+        //looking for Child records of the Site that match the Code Enforcement structure
+        var childEnfRecordArray = getChildrenLocal("DEQ/OPC/Enforcement/NA", capId);
+        logDebug("childenfrecordarray is: " + childEnfRecordArray);
+
+        if (matches(childEnfRecordArray, null, undefined, ""))
         {
-            logDebug("childenfrecordarray length is: " + childEnfRecordArray.length);
-            if (childEnfRecordArray.length == 0)
+            //if there are none, then we create a new one
+            var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
+            //copying parcel, address, ASIs, appname, projdesc
+            copyParcel(capId, enfChild);
+            copyAddress(capId, enfChild);
+            var siteAltId = capId.getCustomID();
+            editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+            var fileRefNumber = getAppSpecific("File Reference Number", capId);
+            editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+            var appName = getAppName();
+            var projDesc = workDescGet(capId);
+            editAppName(appName, enfChild);
+            updateWorkDesc(projDesc, enfChild);
+            var reportParams = aa.util.newHashtable();
+            var alternateID = capId.getCustomID();
+            var year = inspObj.getInspectionDate().getYear();
+            var month = inspObj.getInspectionDate().getMonth();
+            var day = inspObj.getInspectionDate().getDayOfMonth();
+            var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+            var min = inspObj.getInspectionDate().getMinute();
+            var sec = inspObj.getInspectionDate().getSecond();
+            //gathering inspectors name from this current Site inspection
+            var inspInspectorObj = inspObj.getInspector();
+            if (inspInspectorObj)
             {
-                var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
-                //copyContacts(capId, enfChild);
-                copyParcel(capId, enfChild);
-                copyAddress(capId, enfChild);
-                var siteAltId = capId.getCustomID();
-                editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-                var fileRefNumber = getAppSpecific("File Reference Number", capId);
-                editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-                var appName = getAppName();
-                var projDesc = workDescGet(capId);
-                editAppName(appName, enfChild);
-                updateWorkDesc(projDesc, enfChild);
-                var reportParams = aa.util.newHashtable();
-                var alternateID = capId.getCustomID();
-                var year = inspObj.getInspectionDate().getYear();
-                var month = inspObj.getInspectionDate().getMonth();
-                var day = inspObj.getInspectionDate().getDayOfMonth();
-                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-                var min = inspObj.getInspectionDate().getMinute();
-                var sec = inspObj.getInspectionDate().getSecond();
-
-
-                var insp = aa.inspection.getInspection(capId, inspId).getOutput();
-                var vInspectionActivity = insp.getInspection().getActivity();
-
-                var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
-                var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
-                if (vGuideSheetArray.length != 0)
+                var inspInspector = inspInspectorObj.getUserID();
+                if (inspInspector)
                 {
-                    var x = 0;
-                    for (x in vGuideSheetArray)
+                    inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                    if (inspInspectorObj != null)
                     {
-                        var vGuideSheet = vGuideSheetArray[x];
-
-                        vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
-                        var z = 0;
-                        for (z in vGuideSheetItemsArray)
-                        {
-                            var vGuideSheetItem = vGuideSheetItemsArray[z];
-                            if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
-                            {
-                                var guideVioArray = new Array();
-                                var guideItemDetails = new Array();
-
-                                var checklistItemWhole = vGuideSheetItem.getGuideItemText().split(".");
-                                logDebug("checklist item text is: " + checklistItemWhole);
-                                var checklistItemNo = checklistItemWhole[0];
-                                logDebug("preferred checklist item text is: " + checklistItemNo);
-
-                                var checklistItemComment = vGuideSheetItem.getGuideItemComment();
-                                logDebug("checklist item comment is: " + checklistItemComment);
-
-                            }
-                        }
-
-
-                        //set up array of checklist items that have a violation
-                        //log checklist number and do a split
-                        //log comment
-
-                        //for each checklist item that has a comment/checklist number, get checklist item number and comment
-                        var newPBSTable = new Array();
-                        var newRow = new Array();
-                        newRow["Inspection Type"] = inspType;
-                        newRow["SITE Record ID"] = alternateID;
-                        newRow["SCDHS Tank Number"] = "N/A";
-                        newRow["Product Store Label"] = "N/A";
-                        newRow["Capacity"] = "N/A";
-                        newRow["Tank Location Label"] = "N/A";
-                        newRow["Item Number"] = checklistItemNo;
-                        newRow["Inspector Finding"] = checklistItemComment;
-                        newRow["Inspection Date"] = inspResultDate;
-                        newRow["Inspector"] = inspInspector;
-                        newPBSTable.push(newRow);
-                        // addASITable("PBS/NONPBS VIOLATIONS", newPBSTable, capId);
-
+                        var vInspectorName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                        logDebug("vinspectorname is: " + vInspectorName);
                     }
                 }
-
-
-                //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
-                logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
-
-                var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
-
-                addParameter(reportParams, "SiteRecordID", alternateID.toString());
-                addParameter(reportParams, "InspectionDate", inspectionDateCon);
-                addParameter(reportParams, "InspectionType", inspType);
-                generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
             }
+
+            var insp = aa.inspection.getInspection(capId, inspId).getOutput();
+            var vInspectionActivity = insp.getInspection().getActivity();
+
+            var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+            var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+            if (vGuideSheetArray.length != 0)
+            {
+                var x = 0;
+                for (x in vGuideSheetArray)
+                {
+                    var vGuideSheet = vGuideSheetArray[x];
+                    vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                    var z = 0;
+                    for (z in vGuideSheetItemsArray)
+                    {
+                        var vGuideSheetItem = vGuideSheetItemsArray[z];
+                        //checking some checklist items to see which have comments (these have violations on them)
+                        if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
+                        {
+                            var guideVioArray = new Array();
+                            var guideItemDetails = new Array();
+                            //gathering those checklist item numbers and comment text from those checklist items
+
+                            var checklistItemWhole = vGuideSheetItem.getGuideItemText();
+                            checklistItemWhole = String(checklistItemWhole).split(".");
+                            var checklistItemNo = checklistItemWhole[0];
+                            logDebug("preferred checklist item text is: " + checklistItemNo);
+
+                            var checklistItemComment = vGuideSheetItem.getGuideItemComment();
+                            logDebug("checklist item comment is: " + checklistItemComment);
+                            //pushing all of the checklist, inspection, and 
+                            var newRow = new Array();
+                            newRow["Inspection Type"] = inspType;
+                            newRow["SITE Record ID"] = alternateID;
+                            newRow["SCDHS Tank Number"] = "N/A";
+                            newRow["Product Store Label"] = "N/A";
+                            newRow["Capacity"] = "N/A";
+                            newRow["Tank Location Label"] = "N/A";
+                            newRow["Item Number"] = checklistItemNo;
+                            newRow["Inspector Finding"] = checklistItemComment;
+                            newRow["Inspection Date"] = inspResultDate;
+                            newRow["Inspector"] = vInspectorName;
+                            addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
+                        }
+                    }
+                }
+            }
+
+            //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
+            logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+
+            var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+
+            addParameter(reportParams, "SiteRecordID", alternateID.toString());
+            addParameter(reportParams, "InspectionDate", inspectionDateCon);
+            addParameter(reportParams, "InspectionType", inspType);
+            generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
         }
-
-
         else
         {
             var reportParams = aa.util.newHashtable();
+            var childrenToUpdate = new Array();
 
             for (cr in childEnfRecordArray)
             {
@@ -199,54 +202,208 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                     var dateDif = parseFloat(dateDiff(todayDate, childDate));
                     var dateDifRound = Math.floor(dateDif);
                     logDebug("date diff is: " + dateDifRound);
-                    if (dateDifRound >= -7)
+                    logDebug("record was created less than 3 days ago");
+                    var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
+                    logDebug("childreccaptype is: " + childRecCapType);
+                    var presentChildEnfType = getAppSpecific("Enforcement Type", childEnfRecordArray[cr]);
+
+                    if (dateDifRound >= -3 && childRecCapType == "DEQ/OPC/Enforcement/NA" && matches(presentChildEnfType, "", null, undefined, "EE", "T8"))
                     {
-                        logDebug("record was created less than 7 days ago");
-                        var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
-                        logDebug("childreccaptype is: " + childRecCapType);
-                        if (childRecCapType == "DEQ/OPC/Enforcement/NA")
-                        {
-                            //update violations ASITs only
-                        }
-                        var alternateID = capId.getCustomID();
-                        var year = inspObj.getInspectionDate().getYear();
-                        var month = inspObj.getInspectionDate().getMonth();
-                        var day = inspObj.getInspectionDate().getDayOfMonth();
-                        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-                        var min = inspObj.getInspectionDate().getMinute();
-                        var sec = inspObj.getInspectionDate().getSecond();
-                        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
-                        addParameter(reportParams, "SiteRecordID", alternateID.toString());
-                        addParameter(reportParams, "InspectionDate", inspectionDateCon);
-                        addParameter(reportParams, "InspectionType", inspType);
-                        logDebug("report params are: " + reportParams);
-                        generateReportBatch(childEnfRecord, "Facility Inspection Summary Report Script", 'DEQ', reportParams)
-                    }
-                    else
-                    //this means that there is an existing Enforcement child record but it has not been opened in the last 7 days, so we're making another one. we should do all the normal copy routines here
-                    {
-                        var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
-                        //copyContacts(capId, enfChild);
-                        copyParcel(capId, enfChild);
-                        copyAddress(capId, enfChild);
-                        var siteAltId = capId.getCustomID();
-                        editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
-                        var fileRefNumber = getAppSpecific("File Reference Number", capId);
-                        editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-                        var appName = getAppName();
-                        var projDesc = workDescGet(capId);
-                        editAppName(appName, enfChild);
-                        updateWorkDesc(projDesc, enfChild);
-                        var reportParams = aa.util.newHashtable();
-                        var alternateID = capId.getCustomID();
-                        var year = inspObj.getInspectionDate().getYear();
-                        var month = inspObj.getInspectionDate().getMonth();
-                        var day = inspObj.getInspectionDate().getDayOfMonth();
-                        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
-                        var min = inspObj.getInspectionDate().getMinute();
-                        var sec = inspObj.getInspectionDate().getSecond();
+                        childrenToUpdate.push(childEnfRecordArray[cr]);
                     }
                 }
+            }
+
+            if (!matches(childrenToUpdate, undefined, null, ""))
+            {
+                var maxDate;
+                var updateChildFileDates = new Array();
+
+                for (child in childrenToUpdate)
+                {
+                    var childFile = aa.cap.getCap(childrenToUpdate[child]).getOutput().getFileDate().getEpochMilliseconds();
+                    updateChildFileDates.push(childFile);
+                    logDebug("childfile is: " + childFile);
+                    logDebug("updatechildfiledates is: " + updateChildFileDates);
+                    maxDate = Math.max.apply(null, updateChildFileDates);
+                    logDebug("maxdate is: " + maxDate);
+
+                    if (childFile == maxDate)
+                    {
+                        var childCapToUse = childrenToUpdate[child];
+                        logDebug("we found this altid to use: " + childCapToUse.getCustomID());
+                    }
+                }
+
+                var alternateID = capId.getCustomID();
+                var year = inspObj.getInspectionDate().getYear();
+                var month = inspObj.getInspectionDate().getMonth();
+                var day = inspObj.getInspectionDate().getDayOfMonth();
+                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                var min = inspObj.getInspectionDate().getMinute();
+                var sec = inspObj.getInspectionDate().getSecond();
+                var inspInspectorObj = inspObj.getInspector();
+                if (inspInspectorObj)
+                {
+                    var inspInspector = inspInspectorObj.getUserID();
+                    if (inspInspector)
+                    {
+                        inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                        if (inspInspectorObj != null)
+                        {
+                            var vInspectorName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                            logDebug("vinspectorname is: " + vInspectorName);
+                        }
+                    }
+                }
+
+                var insp = aa.inspection.getInspection(capId, inspId).getOutput();
+                var vInspectionActivity = insp.getInspection().getActivity();
+
+                var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+                var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+                if (vGuideSheetArray.length != 0)
+                {
+                    var x = 0;
+                    for (x in vGuideSheetArray)
+                    {
+                        var vGuideSheet = vGuideSheetArray[x];
+                        vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                        var z = 0;
+                        for (z in vGuideSheetItemsArray)
+                        {
+                            var vGuideSheetItem = vGuideSheetItemsArray[z];
+                            if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
+                            {
+                                var guideVioArray = new Array();
+                                var guideItemDetails = new Array();
+
+                                var checklistItemWhole = vGuideSheetItem.getGuideItemText();
+                                checklistItemWhole = String(checklistItemWhole).split(".");
+                                var checklistItemNo = checklistItemWhole[0];
+                                logDebug("preferred checklist item text is: " + checklistItemNo);
+
+                                var checklistItemComment = vGuideSheetItem.getGuideItemComment();
+                                logDebug("checklist item comment is: " + checklistItemComment);
+
+                                var newRow = new Array();
+                                newRow["Inspection Type"] = inspType;
+                                newRow["SITE Record ID"] = alternateID;
+                                newRow["SCDHS Tank Number"] = "N/A";
+                                newRow["Product Store Label"] = "N/A";
+                                newRow["Capacity"] = "N/A";
+                                newRow["Tank Location Label"] = "N/A";
+                                newRow["Item Number"] = checklistItemNo;
+                                newRow["Inspector Finding"] = checklistItemComment;
+                                newRow["Inspection Date"] = inspResultDate;
+                                newRow["Inspector"] = vInspectorName;
+                                addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, childCapToUse);
+                            }
+                        }
+                    }
+                }
+                var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+                addParameter(reportParams, "SiteRecordID", alternateID.toString());
+                addParameter(reportParams, "InspectionDate", inspectionDateCon);
+                addParameter(reportParams, "InspectionType", inspType);
+                logDebug("report params are: " + reportParams);
+                generateReportBatch(childCapToUse, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
+
+            }
+
+            else
+            //this means that there is an existing Enforcement child record but it does not meet the criteria to be updated, so we're making another one. we should do all the normal copy routines here
+            {
+                var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
+                copyParcel(capId, enfChild);
+                copyAddress(capId, enfChild);
+                var siteAltId = capId.getCustomID();
+                editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
+                var fileRefNumber = getAppSpecific("File Reference Number", capId);
+                editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
+                var appName = getAppName();
+                var projDesc = workDescGet(capId);
+                editAppName(appName, enfChild);
+                updateWorkDesc(projDesc, enfChild);
+                var reportParams = aa.util.newHashtable();
+                var alternateID = capId.getCustomID();
+                var year = inspObj.getInspectionDate().getYear();
+                var month = inspObj.getInspectionDate().getMonth();
+                var day = inspObj.getInspectionDate().getDayOfMonth();
+                var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+                var min = inspObj.getInspectionDate().getMinute();
+                var sec = inspObj.getInspectionDate().getSecond();
+                var inspInspectorObj = inspObj.getInspector();
+                if (inspInspectorObj)
+                {
+                    var inspInspector = inspInspectorObj.getUserID();
+                    if (inspInspector)
+                    {
+                        inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                        if (inspInspectorObj != null)
+                        {
+                            var vInspectorName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                            logDebug("vinspectorname is: " + vInspectorName);
+                        }
+                    }
+                }
+
+                var insp = aa.inspection.getInspection(capId, inspId).getOutput();
+                var vInspectionActivity = insp.getInspection().getActivity();
+
+                var guideBiz = aa.proxyInvoker.newInstance("com.accela.aa.inspection.guidesheet.GGuideSheetBusiness").getOutput();
+                var vGuideSheetArray = guideBiz.getGGuideSheetWithItemsByInspections("", [vInspectionActivity]).toArray();
+                if (vGuideSheetArray.length != 0)
+                {
+                    var x = 0;
+                    for (x in vGuideSheetArray)
+                    {
+                        var vGuideSheet = vGuideSheetArray[x];
+                        vGuideSheetItemsArray = vGuideSheet.getItems().toArray();
+                        var z = 0;
+                        for (z in vGuideSheetItemsArray)
+                        {
+                            var vGuideSheetItem = vGuideSheetItemsArray[z];
+                            if (vGuideSheetItem && !matches(vGuideSheetItem.getGuideItemComment(), null, undefined, "", " "))
+                            {
+                                var guideVioArray = new Array();
+                                var guideItemDetails = new Array();
+
+                                var checklistItemWhole = vGuideSheetItem.getGuideItemText();
+                                checklistItemWhole = String(checklistItemWhole).split(".");
+                                var checklistItemNo = checklistItemWhole[0];
+                                logDebug("preferred checklist item text is: " + checklistItemNo);
+
+                                var checklistItemComment = vGuideSheetItem.getGuideItemComment();
+                                logDebug("checklist item comment is: " + checklistItemComment);
+
+                                var newRow = new Array();
+                                newRow["Inspection Type"] = inspType;
+                                newRow["SITE Record ID"] = alternateID;
+                                newRow["SCDHS Tank Number"] = "N/A";
+                                newRow["Product Store Label"] = "N/A";
+                                newRow["Capacity"] = "N/A";
+                                newRow["Tank Location Label"] = "N/A";
+                                newRow["Item Number"] = checklistItemNo;
+                                newRow["Inspector Finding"] = checklistItemComment;
+                                newRow["Inspection Date"] = inspResultDate;
+                                newRow["Inspector"] = vInspectorName;
+                                addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
+                            }
+                        }
+                    }
+                }
+
+
+                //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
+                logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+
+                var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+
+                addParameter(reportParams, "SiteRecordID", alternateID.toString());
+                addParameter(reportParams, "InspectionDate", inspectionDateCon);
+                addParameter(reportParams, "InspectionType", inspType);
+                generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
             }
         }
     }
@@ -400,5 +557,119 @@ function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
     else
     {
         logDebug("**ERROR: adding child App: " + appCreateResult.getErrorMessage());
+    }
+}
+function getChildrenLocal(pCapType, pParentCapId) {
+    // Returns an array of children capId objects whose cap type matches pCapType parameter
+    // Wildcard * may be used in pCapType, e.g. "Building/Commercial/*/*"
+    // Optional 3rd parameter pChildCapIdSkip: capId of child to skip
+
+    var retArray = new Array();
+    if (pParentCapId != null) //use cap in parameter 
+        var vCapId = pParentCapId;
+    else // use current cap
+        var vCapId = capId;
+
+    if (arguments.length > 2)
+        var childCapIdSkip = arguments[2];
+    else
+        var childCapIdSkip = null;
+
+    var typeArray = pCapType.split("/");
+    if (typeArray.length != 4)
+        logDebug("**ERROR in childGetByCapType function parameter.  The following cap type parameter is incorrectly formatted: " + pCapType);
+
+    var getCapResult = aa.cap.getChildByMasterID(vCapId);
+    if (!getCapResult.getSuccess())
+    {logDebug("**WARNING: getChildren returned an error: " + getCapResult.getErrorMessage());}
+
+    var childArray = getCapResult.getOutput();
+    if (!matches(childArray, null, undefined, ""))
+    {
+        if (!childArray.length)
+        {logDebug("**WARNING: getChildren function found no children"); return null;}
+    }
+
+    var childCapId;
+    var capTypeStr = "";
+    var childTypeArray;
+    var isMatch;
+    for (xx in childArray)
+    {
+        childCapId = childArray[xx].getCapID();
+        if (childCapIdSkip != null && childCapIdSkip.getCustomID().equals(childCapId.getCustomID())) //skip over this child
+            continue;
+
+        capTypeStr = aa.cap.getCap(childCapId).getOutput().getCapType().toString();	// Convert cap type to string ("Building/A/B/C")
+        childTypeArray = capTypeStr.split("/");
+        isMatch = true;
+        for (yy in childTypeArray) //looking for matching cap type
+        {
+            if (!typeArray[yy].equals(childTypeArray[yy]) && !typeArray[yy].equals("*"))
+            {
+                isMatch = false;
+                continue;
+            }
+        }
+        if (isMatch)
+            retArray.push(childCapId);
+    }
+
+    logDebug("getChildren returned " + retArray.length + " capIds");
+    return retArray;
+
+}
+function addRowToASITable(tableName, tableValues) //optional capId
+{
+    //tableName is the name of the ASI table
+    //tableValues is an associative array of values.  All elements must be either a string or asiTableVal object
+    itemCap = capId
+    if (arguments.length > 2)
+    {
+        itemCap = arguments[2]; //use capId specified in args
+    }
+    var tssmResult = aa.appSpecificTableScript.getAppSpecificTableModel(itemCap, tableName);
+    if (!tssmResult.getSuccess())
+    {
+        logDebug("**WARNING: error retrieving app specific table " + tableName + " " + tssmResult.getErrorMessage());
+        return false;
+    }
+    var tssm = tssmResult.getOutput();
+    var tsm = tssm.getAppSpecificTableModel();
+    var fld = tsm.getTableField();
+    var col = tsm.getColumns();
+    var fld_readonly = tsm.getReadonlyField(); //get ReadOnly property
+    var coli = col.iterator();
+    while (coli.hasNext())
+    {
+        colname = coli.next();
+        if (!tableValues[colname.getColumnName()]) 
+        {
+            logDebug("Value in " + colname.getColumnName() + " - " + tableValues[colname.getColumnName()]);
+            logDebug("addToASITable: null or undefined value supplied for column " + colname.getColumnName() + ", setting to empty string");
+            tableValues[colname.getColumnName()] = "";
+        }
+        if (typeof (tableValues[colname.getColumnName()].fieldValue) != "undefined")
+        {
+            fld.add(tableValues[colname.getColumnName()].fieldValue);
+            fld_readonly.add(tableValues[colname.getColumnName()].readOnly);
+        }
+        else // we are passed a string
+        {
+            fld.add(tableValues[colname.getColumnName()]);
+            fld_readonly.add(null);
+        }
+    }
+    tsm.setTableField(fld);
+    tsm.setReadonlyField(fld_readonly); // set readonly field
+    addResult = aa.appSpecificTableScript.editAppSpecificTableInfos(tsm, itemCap, currentUserID);
+    if (!addResult.getSuccess())
+    {
+        logDebug("**WARNING: error adding record to ASI Table:  " + tableName + " " + addResult.getErrorMessage());
+        return false;
+    }
+    else
+    {
+        logDebug("Successfully added record to ASI Table: " + tableName);
     }
 }

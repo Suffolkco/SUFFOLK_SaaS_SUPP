@@ -41,7 +41,7 @@ try
             if (contactsArray[po].getContactType() == "Complainant" ||
                 contactsArray[po].getContactType() == "Vendor")
             {
-                logDebug("First Name is " + contactsArray[po].getFirstName());
+                //logDebug("First Name is " + contactsArray[po].getFirstName());
                 validFirst = checkWordFilter(contactsArray[po].getFirstName());           
                 validLast = checkWordFilter(contactsArray[po].getLastName());     
                 validBusiness = checkWordFilter(contactsArray[po].getBusinessName());     
@@ -119,18 +119,38 @@ function getScriptText(vScriptName, servProvCode, useProductScripts)
 
 function checkWordFilter(text)
 {
-    var wordList = lookup("ACA_WORD_FILTER","RESTRICTED_WORD_LIST").split(',');
+    var wordList = lookupLocal("ACA_WORD_FILTER","RESTRICTED_WORD_LIST").split(',');
     
     var badWord = false;
     
     for (wL in wordList){
         word = wordList[wL].toUpperCase();
 
-        if (text.toUpperCase().indexOf(word) > -1){          
-            badWord = true;
+        if (text != null)
+        {
+            if (text.toUpperCase().indexOf(word) > -1){          
+                badWord = true;
+            }
         }
      
     }
     return badWord;
 }
 
+function lookupLocal(stdChoice,stdValue) 
+	{
+	var strControl;
+	var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice,stdValue);
+	
+   	if (bizDomScriptResult.getSuccess())
+   		{
+		var bizDomScriptObj = bizDomScriptResult.getOutput();
+		strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+		//logDebug("lookup(" + stdChoice + "," + stdValue + ") = " + strControl);
+		}
+	else
+		{
+		//logDebug("lookup(" + stdChoice + "," + stdValue + ") does not exist");
+		}
+	return strControl;
+	}

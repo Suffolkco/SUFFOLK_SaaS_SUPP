@@ -21,6 +21,9 @@ if(s_result.getSuccess())
 
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {    
+	// Send email notification
+	workflowPlansCoordinationApproved(capAddresses);			
+	
     if (b1ExpResult.getSuccess())
     {
         b1Exp = b1ExpResult.getOutput();

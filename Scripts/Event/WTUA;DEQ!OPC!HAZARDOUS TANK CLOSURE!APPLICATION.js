@@ -6,7 +6,11 @@ if(s_result.getSuccess())
 	capAddresses = s_result.getOutput();
 }
 
-if (wfTask == 'Plans Coordination' && wfStatus == 'Plan Revisions Needed')     
+if (wfTask == 'Plans Coordination' && wfStatus == 'Approved')     
+{	
+	workflowPlansCoordinationApproved(capAddresses);			
+}
+else if (wfTask == 'Plans Coordination' && wfStatus == 'Plan Revisions Needed')     
 {
 	logDebug("Plans coordination and Plan Revisions Needed.");          
 	logDebug("In this loop Comments:" + wfComment);
