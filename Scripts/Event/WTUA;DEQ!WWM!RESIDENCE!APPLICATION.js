@@ -417,7 +417,7 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 	
 		logDebugLocal( "First, Last, Title: " + wfFirst + "," + wfLast + "," + userTitle);
 		
-		//wwmWorkflowNOIwithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", reportParams);
+		wwmWorkflowNOIwithPin("Notice of Incomplete Final", "Notice of Incomplete Final Script", reportParams);
 	
 	}
 }
