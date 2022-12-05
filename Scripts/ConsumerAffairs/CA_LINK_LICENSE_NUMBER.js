@@ -6,11 +6,11 @@ var complaintNumber = getAppSpecific("Complaint Number", capId);
 	if (capComplaintResult.getSuccess()) {
 		recCapId = capComplaintResult.getOutput();
 
-		var linkResult = aa.cap.createAppHierarchy(capId, recCapId);
+		var linkResult = aa.cap.createAppHierarchy(recCapId, capId);
 		if (linkResult.getSuccess())
 			logDebug("Successfully linked to Complaint Record: " + capId);
 		else
-			logDebug( "**ERROR: linking to parent application parent cap id (" + capId + "): " + linkResult.getErrorMessage());
+			logDebug( "**ERROR: linking to parent application parent cap id (" + recCapId + "): " + linkResult.getErrorMessage());
 
 	}
 	
@@ -19,10 +19,10 @@ var complaintNumber = getAppSpecific("Complaint Number", capId);
 	if (capLicResult.getSuccess()) {
 		licCapId = capLicResult.getOutput();
 
-		var linkLResult = aa.cap.createAppHierarchy(capId, licCapId);
+		var linkLResult = aa.cap.createAppHierarchy(licCapId, capId);
 		if (linkLResult.getSuccess())
 			logDebug("Successfully linked to Parent Application : " + capId);
 		else
-			logDebug( "**ERROR: linking to parent application parent cap id (" + capId + "): " + linkLResult.getErrorMessage());
+			logDebug( "**ERROR: linking to parent application parent cap id (" + licCapId + "): " + linkLResult.getErrorMessage());
 
 	}
