@@ -52,12 +52,16 @@ if (appId) {
 
 }
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-function formatDate(dateString, pattern)
-{ 
-	if(dateString == null || dateString == '')
-	{
-		return '';
-	}
-	return expression.formatDate(dateString, pattern);
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [month, day, year].join('/');
 }
