@@ -39,29 +39,16 @@ if (appId) {
         //Updating Expiration Date of License	
 		logDebug("Current ASI Expdate is: " + expDate);
 		
-		var today = new Date();
+		/*var today = new Date();
 		logDebug("today's date is " + today);
 		var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
 
-		var newExpDate = formatDate(nullExpDate);
+		var newExpDate = formatDate(nullExpDate);*/
 
-		logDebug("New expiration date is " + newExpDate);	
+		logDebug("Docket license expiration date ASI set to " + expDate);	
 
-        editAppSpecific("License Expiration Date", newExpDate, capId);
+        editAppSpecific("License Expiration Date", expDate, capId);
     }
 
 }
 
-function formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
-
-    return [month, day, year].join('/');
-}
