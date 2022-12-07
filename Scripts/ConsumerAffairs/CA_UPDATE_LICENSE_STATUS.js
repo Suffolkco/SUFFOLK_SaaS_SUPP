@@ -51,3 +51,13 @@ if (appId) {
     }
 
 }
+
+
+function formatDate(dateString, pattern)
+{ 
+	if(dateString == null || dateString == '')
+	{
+		return '';
+	}
+	return expression.formatDate(dateString, pattern);
+}
