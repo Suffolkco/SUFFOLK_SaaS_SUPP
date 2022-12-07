@@ -32,7 +32,7 @@ if (appId) {
 
 
     // Copy License Expiration Date
-    var expDate = getAppSpecific("Expiration Date", capId);
+    var expDate = getAppSpecific("Expiration Date", appId);
 
     if (expDate && expDate != "")
     {
