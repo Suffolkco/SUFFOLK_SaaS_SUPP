@@ -220,7 +220,7 @@ try
 				}
 				if (!numeric)
 				{
-					comment ("Parcel (Tax Map) Number must be a number. Your entry include a non-numeric value.");
+					comment ("Parcel (Tax Map) Number must be a number. Your entry has included a non-numeric value.");
 				}
 				comment ("Please see instructional note in Parcel Section.");
 			}				
