@@ -201,7 +201,9 @@ try
 
 			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');	
 			
-			var numeric = isNumeric(noSpaceParcelNo);
+			var numeric = /^\d+$/.test(noSpaceParcelNo);
+			//var numeric = isNumeric(noSpaceParcelNo);
+
 			logDebug("numeric? " + numeric);
 			var length = noSpaceParcelNo.length;
 			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
@@ -218,7 +220,7 @@ try
 				}
 				if (!numeric)
 				{
-					comment ("Parcel (Tax Map) Number must be a number. Your entry include a non-numeric value");
+					comment ("Parcel (Tax Map) Number must be a number. Your entry include a non-numeric value.");
 				}
 				comment ("Please see instructional note in Parcel Section.");
 			}				
