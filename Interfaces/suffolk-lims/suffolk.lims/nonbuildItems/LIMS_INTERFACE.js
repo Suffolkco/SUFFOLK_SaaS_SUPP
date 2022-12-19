@@ -46,15 +46,20 @@ const GROUP_NAME = "PERFLUORINATED COMPOUNDS";
 const GROUP_NAME_1 = "PFAS 533";
 const GROUP_NAME_2 = "PFAS 537.1";
 const GROUP_NAME_3 = "PFAS SCWA";
-const MAIN_GROUP_TOTAL_533 = "Main Group Total PFAS";
-const MAIN_GROUP_TOTAL_537_1 = "Main Group Total PFAS";
+//const MAIN_GROUP_TOTAL_533 = "Main Group Total PFAS";
+//const MAIN_GROUP_TOTAL_537_1 = "Main Group Total PFAS";
+const MAIN_GROUP_TOTAL_533 = "PFAS6 (Perfluoroalkyl Substance-6)";
+const MAIN_GROUP_TOTAL_537_1 = "PFAS6 (Perfluoroalkyl Substance-6)";
 
-const PRIORITIZED_SUBSET_TOTAL_533 = "Prioritized Subset of Emerging PFAS Total";
-const PRIORITIZED_SUBSET_TOTAL_537_1 = "Prioritized Subset of Emerging PFAS Total";
+//const PRIORITIZED_SUBSET_TOTAL_533 = "Prioritized Subset of Emerging PFAS Total";
+//const PRIORITIZED_SUBSET_TOTAL_537_1 = "Prioritized Subset of Emerging PFAS Total";
+const PRIORITIZED_SUBSET_TOTAL_533 = "PFAS Category 1";
+const PRIORITIZED_SUBSET_TOTAL_537_1 = "PFAS Category 1";
 
-const REMAINING_PFAS_TOTAL_533 = "Remaining Emerging PFAS Total";
-const REMAINING_PFAS_TOTAL_537_1 = "Remaining Emerging PFAS Total";
-
+//const REMAINING_PFAS_TOTAL_533 = "Remaining Emerging PFAS Total";
+//const REMAINING_PFAS_TOTAL_537_1 = "Remaining Emerging PFAS Total";
+const REMAINING_PFAS_TOTAL_533 = "PFAS Category 2";
+const REMAINING_PFAS_TOTAL_537_1 = "PFAS Category 2";
 
 //test data
 //var resultsRecords = [
@@ -868,7 +873,7 @@ function processCombos(resId) {
                 cMethod = getCertifiedMethod(analysisCode);
                 if (!cMethod) cMethod = "";
                 key = prettyName + "|" + cMethod;
-                t["Group Name"] = MAIN_GROUP_TOTAL_533;
+                t["Group Name"] = GROUP_NAME_1; //MAIN_GROUP_TOTAL_533;
                 t["Analyte & Method"] = key;
                 aInfo = getAnalyteObject(key);
                 if (aInfo && aInfo != "")
@@ -943,7 +948,7 @@ function processCombos(resId) {
                 cMethod = getCertifiedMethod(analysisCode);
                 if (!cMethod) cMethod = "";
                 key = prettyName + "|" + cMethod;
-                t["Group Name"] = MAIN_GROUP_TOTAL_537_1;
+                t["Group Name"] = GROUP_NAME_1;//MAIN_GROUP_TOTAL_537_1;
                 t["Analyte & Method"] = key;
                 aInfo = getAnalyteObject(key);
                 if (aInfo && aInfo != "")
@@ -975,7 +980,7 @@ function processCombos(resId) {
     }
 
     //3. Prioritized Subset of Emerging PAS TOTAL: add total prioritized subset of emerging pfa 533 group row
-    logInfo("3. Found " + pfaPriorSubsetCombos533.length + " pfas 533 prioritized subset group rows to combine");
+    logInfo("3. Found " + pfaPriorSubsetCombos533.length + " PFAS Category 1 prioritized subset group rows to combine");
     if (pfaPriorSubsetCombos533.length > 1) {
         var totalPrioritizedSubsetGroup533 = 0.0;
         for (var sIndex in pfaPriorSubsetCombos533) {
@@ -1009,7 +1014,7 @@ function processCombos(resId) {
                 analysisCode = pfaPriorSubsetCombos533[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
-                t["Group Name"] = PRIORITIZED_SUBSET_TOTAL_533;
+                t["Group Name"] = GROUP_NAME_1;//PRIORITIZED_SUBSET_TOTAL_533;
                 t["Analyte & Method"] = key;
                 aInfo = getAnalyteObject(key);
                 if (aInfo && aInfo != "")
@@ -1040,7 +1045,7 @@ function processCombos(resId) {
     }
 
     //4. Prioritized Subset of Emerging PFAS TOTAL: add total prioritized subset of emerging pfa 537.1 group row
-    logInfo("4. Found " + pfaPriorSubsetCombos537.length + " pfas 537.1 prioritized subset main group rows to combine");
+    logInfo("4. Found " + pfaPriorSubsetCombos537.length + " PFAS Category 1 prioritized subset main group rows to combine");
     if (pfaPriorSubsetCombos537.length > 1) {
         var totalPrioritizedSubsetGroup537 = 0.0;
         for (var sIndex in pfaPriorSubsetCombos537) {
@@ -1076,7 +1081,7 @@ function processCombos(resId) {
                 analysisCode = pfaPriorSubsetCombos537[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
-                t["Group Name"] = PRIORITIZED_SUBSET_TOTAL_537_1;
+                t["Group Name"] = GROUP_NAME_1;//PRIORITIZED_SUBSET_TOTAL_537_1;
                 t["Analyte & Method"] = key;
                 aInfo = getAnalyteObject(key);
                 if (aInfo && aInfo != "")
@@ -1107,7 +1112,7 @@ function processCombos(resId) {
     }
 
     //5. Remaining Emering PFAS TOTAL: add total remaining emerging pfa 533 group row
-    logInfo("5. Found " + pfaRemainEmergCombos533.length + " pfas 533 remain emergy group rows to combine");
+    logInfo("5. Found " + pfaRemainEmergCombos533.length + " PFAS Category 2 group rows to combine");
     if (pfaRemainEmergCombos533.length > 1) {
         var totalRemainingSubsetGroup533 = 0.0;
         for (var rIndex in pfaRemainEmergCombos533) {
@@ -1155,7 +1160,7 @@ function processCombos(resId) {
                 analysisCode = pfaRemainEmergCombos533[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
-                t["Group Name"] = REMAINING_PFAS_TOTAL_533;
+                t["Group Name"] = GROUP_NAME_1;//REMAINING_PFAS_TOTAL_533;
                 t["Analyte & Method"] = key;
                 aInfo = getAnalyteObject(key);
                 if (aInfo && aInfo != "")
@@ -1185,8 +1190,8 @@ function processCombos(resId) {
         }
     }
 
-    //6. Remaining Emerging PFAS TOTAL: add total remaining emerging pfa 537.1 group row
-    logInfo("6. Found " + pfaRemainEmergCombos537.length + " pfas 537.1 remain emergy group rows to combine");
+    //6. Remaining Emerging PFAS TOTAL: add total remaining PFAS Category 2 group row
+    logInfo("6. Found " + pfaRemainEmergCombos537.length + " PFAS Category 2 group rows to combine");
     if (pfaRemainEmergCombos537.length > 1) {
         var totalRemainingSubsetGroup537 = 0.0;
         for (var rIndex in pfaRemainEmergCombos537) {
@@ -1230,7 +1235,7 @@ function processCombos(resId) {
                 analysisCode = pfaRemainEmergCombos537[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
-                t["Group Name"] = REMAINING_PFAS_TOTAL_537_1;
+                t["Group Name"] = GROUP_NAME_1;//REMAINING_PFAS_TOTAL_537_1;
                 t["Analyte & Method"] = key;
                 aInfo = getAnalyteObject(key);
                 if (aInfo && aInfo != "")
