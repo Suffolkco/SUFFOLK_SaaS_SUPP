@@ -46,18 +46,15 @@ const GROUP_NAME = "PERFLUORINATED COMPOUNDS";
 const GROUP_NAME_1 = "PFAS 533";
 const GROUP_NAME_2 = "PFAS 537.1";
 const GROUP_NAME_3 = "PFAS SCWA";
-//const MAIN_GROUP_TOTAL_533 = "Main Group Total PFAS";
-//const MAIN_GROUP_TOTAL_537_1 = "Main Group Total PFAS";
+
 const PFAS6_TOTAL_533 = "PFAS6 (Perfluoroalkyl Substance-6)";
 const PFAS6_TOTAL_537_1 = "PFAS6 (Perfluoroalkyl Substance-6)";
 
-//const PRIORITIZED_SUBSET_TOTAL_533 = "Prioritized Subset of Emerging PFAS Total";
-//const PRIORITIZED_SUBSET_TOTAL_537_1 = "Prioritized Subset of Emerging PFAS Total";
+
 const PFAS_CATEGORY_1_TOTAL_533 = "PFAS Category 1";
 const PFAS_CATEGORY_1_TOTAL_537_1 = "PFAS Category 1";
 
-//const REMAINING_PFAS_TOTAL_533 = "Remaining Emerging PFAS Total";
-//const REMAINING_PFAS_TOTAL_537_1 = "Remaining Emerging PFAS Total";
+
 const PFAS_CATEGORY_2_TOTAL_533 = "PFAS Category 2";
 const PFAS_CATEGORY_2_TOTAL_537_1 = "PFAS Category 2";
 
@@ -712,6 +709,7 @@ function processCombos(resId) {
                 metalComboFound = true;
                 metalComboRow = row;
                 break;
+            /****** Uncomment this to include total 
             case PFAS_CATEGORY_2_TOTAL_533:
                 pfaCatogory2Combos533Found = true;
                 pfaCatogory2Combos533Row = row;
@@ -736,13 +734,17 @@ function processCombos(resId) {
                 pFAS6Combos537Found = true;
                 pFAS6Combos537Row = row;
                 break;
+                */
+
             // PFAS6 Group
+             /****** Uncomment this to include total
             case "PFOS (Perfluorooctanesulfonic acid)":
             case "PFOA (Perfluorooctanoic acid)":
             case "PFHxS (Perfluorohexanesulfonic acid)":
             case "PFHpA (Perfluoroheptanoic acid)":
             case "PFNA (Perfluorononanoic acid)":
             case "PFDA (Perfluorodecanoic acid)":
+             /****** Uncomment this to include total
             // Case sensitive
             case "PFOS (Perfluorooctanesulfonic Acid)":
             case "PFOA (Perfluorooctanoic Acid)":
@@ -793,6 +795,7 @@ function processCombos(resId) {
                 originalTable.push(row);
                 break;
          
+         
             case "PFBA (Perfluorobutanoic acid)":
             case "PFBS (Perfluorobutanesulfonic acid)":
             case "PFPeA (Perfluoropentanoic acid)":
@@ -806,8 +809,7 @@ function processCombos(resId) {
             case "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)":
             case "PFMPA (Perfluoro-3-methoxypropanoic acid)":
             case "PFMBA (Perfluoro-4-methoxybutanoic acid)":          
-            //case "PFPeA (Perfluoropentanoic Acid)":
-            //case "PFPeS (Perfluoropentanesulfonic Acid)":
+          
                                    
                 analysisCode = row["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
@@ -820,6 +822,7 @@ function processCombos(resId) {
 
                 originalTable.push(row);
                 break;
+                */
             case "Total Aldicarb(calc)":
                 aldiComboFound = true;
                 aldiComboRow = row;
@@ -834,7 +837,9 @@ function processCombos(resId) {
         }
     }
 
-    //1. MAIN GROUP TOTAL: add total pfa main group row 533
+    //**************** Uncomment this section to addd the group row *******************************************
+    //1. PFAS6 533 TOTAL: add total pfa main group row 533
+    /*
     logInfo("1. Found " + pFAS6Combos533.length + " pFAS6 533 main group rows to combine");
     if (pFAS6Combos533.length > 1) {
         var totalMainGroup = 0.0;
@@ -912,9 +917,10 @@ function processCombos(resId) {
             }
         }
     }
-
-    //2. MAIN GROUP TOTAL: add total pfa main group row 537.1
-    logInfo("2. Found " + pFAS6Combos537.length + " pfas 537.1 main group rows to combine");
+    */
+    //2. PFAS6 537.1 TOTAL: add total pfa main group row 537.1
+    //**************** Uncomment this section to addd the group row *******************************************
+    /*logInfo("2. Found " + pFAS6Combos537.length + " pfas 537.1 main group rows to combine");
     if (pFAS6Combos537.length > 1) {
         var totalMainGroup537 = 0.0;
         for (var pIndex in pFAS6Combos537) {
@@ -987,9 +993,11 @@ function processCombos(resId) {
             }
         }
     }
+    */
 
-    //3. Prioritized Subset of Emerging PAS TOTAL: add total prioritized subset of emerging pfa 533 group row
-    logInfo("3. Found " + pfaCatogory1Combos533.length + " PFAS Category 1 prioritized subset group rows to combine");
+    //3. Category 1 PAS TOTAL: add total prioritized subset of emerging pfa 533 group row
+    //**************** Uncomment this section to addd the group row *******************************************
+    /*logInfo("3. Found " + pfaCatogory1Combos533.length + " PFAS Category 1 prioritized subset group rows to combine");
     if (pfaCatogory1Combos533.length > 1) {
         var totalPrioritizedSubsetGroup533 = 0.0;
         for (var sIndex in pfaCatogory1Combos533) {
@@ -1054,9 +1062,10 @@ function processCombos(resId) {
             }
         }
     }
-
-    //4. Prioritized Subset of Emerging PFAS TOTAL: add total prioritized subset of emerging pfa 537.1 group row
-    logInfo("4. Found " + pfaCatogory1Combos537.length + " PFAS Category 1 prioritized subset main group rows to combine");
+    */
+    //**************** Uncomment this section to addd the group row *******************************************
+    //4. Category 1 PFAS TOTAL: add total prioritized subset of emerging pfa 537.1 group row
+    /* logInfo("4. Found " + pfaCatogory1Combos537.length + " PFAS Category 1 prioritized subset main group rows to combine");
     if (pfaCatogory1Combos537.length > 1) {
         var totalPrioritizedSubsetGroup537 = 0.0;
         for (var sIndex in pfaCatogory1Combos537)
@@ -1125,9 +1134,10 @@ function processCombos(resId) {
             }
         }
     }
-
-    //5. Remaining Emering PFAS TOTAL: add total remaining emerging pfa 533 group row
-    logInfo("5. Found " + pfaCatogory2Combos533.length + " PFAS Category 2 group rows to combine");
+    */
+    //**************** Uncomment this section to addd the group row *******************************************
+    //5. Category 2 PFAS TOTAL: add total remaining emerging pfa 533 group row
+    /* logInfo("5. Found " + pfaCatogory2Combos533.length + " PFAS Category 2 group rows to combine");
     if (pfaCatogory2Combos533.length > 1) {
         var totalRemainingSubsetGroup533 = 0.0;
         for (var rIndex in pfaCatogory2Combos533) {
@@ -1270,7 +1280,7 @@ function processCombos(resId) {
             }
         }
     }
-
+    */
 
     logInfo("Found " + metalCombos.length + " metal rows to combine");
     if (metalCombos.length > 1) {
