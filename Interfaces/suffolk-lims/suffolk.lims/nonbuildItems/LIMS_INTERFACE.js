@@ -48,18 +48,18 @@ const GROUP_NAME_2 = "PFAS 537.1";
 const GROUP_NAME_3 = "PFAS SCWA";
 //const MAIN_GROUP_TOTAL_533 = "Main Group Total PFAS";
 //const MAIN_GROUP_TOTAL_537_1 = "Main Group Total PFAS";
-const MAIN_GROUP_TOTAL_533 = "PFAS6 (Perfluoroalkyl Substance-6)";
-const MAIN_GROUP_TOTAL_537_1 = "PFAS6 (Perfluoroalkyl Substance-6)";
+const PFAS6_TOTAL_533 = "PFAS6 (Perfluoroalkyl Substance-6)";
+const PFAS6_TOTAL_537_1 = "PFAS6 (Perfluoroalkyl Substance-6)";
 
 //const PRIORITIZED_SUBSET_TOTAL_533 = "Prioritized Subset of Emerging PFAS Total";
 //const PRIORITIZED_SUBSET_TOTAL_537_1 = "Prioritized Subset of Emerging PFAS Total";
-const PRIORITIZED_SUBSET_TOTAL_533 = "PFAS Category 1";
-const PRIORITIZED_SUBSET_TOTAL_537_1 = "PFAS Category 1";
+const PFAS_CATEGORY_1_TOTAL_533 = "PFAS Category 1";
+const PFAS_CATEGORY_1_TOTAL_537_1 = "PFAS Category 1";
 
 //const REMAINING_PFAS_TOTAL_533 = "Remaining Emerging PFAS Total";
 //const REMAINING_PFAS_TOTAL_537_1 = "Remaining Emerging PFAS Total";
-const REMAINING_PFAS_TOTAL_533 = "PFAS Category 2";
-const REMAINING_PFAS_TOTAL_537_1 = "PFAS Category 2";
+const PFAS_CATEGORY_2_TOTAL_533 = "PFAS Category 2";
+const PFAS_CATEGORY_2_TOTAL_537_1 = "PFAS Category 2";
 
 //test data
 //var resultsRecords = [
@@ -662,29 +662,29 @@ function processCombos(resId) {
     svocComboRow = [];
     asiTableRowArray = [];
 
-    pfaMainGroupCombos533 = [];
-    pfaMainGroupCombos533Found = false;
-    pfaMainGroupCombos533Row = [];
+    pFAS6Combos533 = [];
+    pFAS6Combos533Found = false;
+    pFAS6Combos533Row = [];
 
-    pfaMainGroupCombos537 = [];
-    pfaMainGroupCombos537Found = false;
-    pfaMainGroupCombos537Row = [];
+    pFAS6Combos537 = [];
+    pFAS6Combos537Found = false;
+    pFAS6Combos537Row = [];
 
-    pfaPriorSubsetCombos533 = [];
-    pfaPriorSubsetCombos533Found = false;
-    pfaPriorSubsetCombos533Row = [];
+    pfaCatogory1Combos533 = [];
+    pfaCatogory1Combos533Found = false;
+    pfaCatogory1Combos533Row = [];
 
-    pfaPriorSubsetCombos537 = [];
-    pfaPriorSubsetCombos537Found = false;
-    pfaPriorSubsetCombos537Row = [];
+    pfaCatogory1Combos537 = [];
+    pfaCatogory1Combos537Found = false;
+    pfaCatogory1Combos537Row = [];
 
-    pfaRemainEmergCombos533 = [];
-    pfaRemainEmergCombos533Found = false;
-    pfaRemainEmergCombos533Row = [];
+    pfaCatogory2Combos533 = [];
+    pfaCatogory2Combos533Found = false;
+    pfaCatogory2Combos533Row = [];
 
-    pfaRemainEmergCombos537 = [];
-    pfaRemainEmergCombos537Found = false;
-    pfaRemainEmergCombos537Row = [];
+    pfaCatogory2Combos537 = [];
+    pfaCatogory2Combos537Found = false;
+    pfaCatogory2Combos537Row = [];
 
     originalTable = [];     // without the combo rows
     var labResults = loadASITable("SAMPLE RESULTS", resId);
@@ -712,30 +712,31 @@ function processCombos(resId) {
                 metalComboFound = true;
                 metalComboRow = row;
                 break;
-            case REMAINING_PFAS_TOTAL_533:
-                pfaRemainEmergCombos533Found = true;
-                pfaRemainEmergCombos533Row = row;
+            case PFAS_CATEGORY_2_TOTAL_533:
+                pfaCatogory2Combos533Found = true;
+                pfaCatogory2Combos533Row = row;
                 break;
-            case REMAINING_PFAS_TOTAL_537_1:
-                pfaRemainEmergCombos537Found = true;
-                pfaRemainEmergCombos537Row = row;
+            case PFAS_CATEGORY_2_TOTAL_537_1:
+                pfaCatogory2Combos537Found = true;
+                pfaCatogory2Combos537Row = row;
                 break;
-            case PRIORITIZED_SUBSET_TOTAL_533:
-                pfaPriorSubsetCombos533Found = true;
-                pfaPriorSubsetCombos533Row = row;
+            case PFAS_CATEGORY_1_TOTAL_533:
+                pfaCatogory1Combos533Found = true;
+                pfaCatogory1Combos533Row = row;
                 break;
-            case PRIORITIZED_SUBSET_TOTAL_537_1:
-                pfaPriorSubsetCombos537Found = true;
-                pfaPriorSubsetCombos537Row = row;
+            case PFAS_CATEGORY_1_TOTAL_537_1:
+                pfaCatogory1Combos537Found = true;
+                pfaCatogory1Combos537Row = row;
                 break;
-            case MAIN_GROUP_TOTAL_533:
-                pfaMainGroupCombos533Found = true;
-                pfaMainGroupCombos533Row = row;
+            case PFAS6_TOTAL_533:
+                pFAS6Combos533Found = true;
+                pFAS6Combos533Row = row;
                 break;
-            case MAIN_GROUP_TOTAL_537_1:
-                pfaMainGroupCombos537Found = true;
-                pfaMainGroupCombos537Row = row;
+            case PFAS6_TOTAL_537_1:
+                pFAS6Combos537Found = true;
+                pFAS6Combos537Row = row;
                 break;
+            // PFAS6 Group
             case "PFOS (Perfluorooctanesulfonic acid)":
             case "PFOA (Perfluorooctanoic acid)":
             case "PFHxS (Perfluorohexanesulfonic acid)":
@@ -754,38 +755,44 @@ function processCombos(resId) {
                 analysisCode = row["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 if (cMethod == GROUP_NAME_1) {
-                    pfaMainGroupCombos533.push(row);
+                    pFAS6Combos533.push(row);
                 }
                 if (cMethod == GROUP_NAME_2) {
-                    pfaMainGroupCombos537.push(row);
+                    pFAS6Combos537.push(row);
                 }
 
                 originalTable.push(row);
                 break;
+            // Case senstivie
             case "PFHpS (Perfluoroheptanesulfonic acid)":
-            case "PFUnA (Perfluoroundecanoic acid)":
-            case "PFDoA (Perfluorododecanoic acid)":
-            case "HFPO-DA (Hexafluoropropylene oxide dimer acid)":
-            case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)":
-            case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)":
-            // Case sensitive
             case "PFHpS (Perfluoroheptanesulfonic Acid)":
+            // Case senstivie
+            case "PFUnA (Perfluoroundecanoic acid)":
             case "PFUnA (Perfluoroundecanoic Acid)":
+            // Case sensitive
+            case "PFDoA (Perfluorododecanoic acid)":           
             case "PFDoA (Perfluorododecanoic Acid)":
+                                       
+            case "HFPO-DA/GenX (Hexafluoropropylene oxide dimer acid)":
+            // Case sensitive  
+            case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)":                  
             case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-Oxaundecane-1-Sulfonic Acid)":
+            // Case sensitive    
+            case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)":           
             case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-Oxanonane-1-Sulfonic Acid)":
 
                 analysisCode = row["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 if (cMethod == GROUP_NAME_1) {
-                    pfaPriorSubsetCombos533.push(row);
+                    pfaCatogory1Combos533.push(row);
                 }
                 if (cMethod == GROUP_NAME_2) {
-                    pfaPriorSubsetCombos573.push(row);
+                    pfaCatogory1Combos537.push(row);
                 }
 
                 originalTable.push(row);
                 break;
+         
             case "PFBA (Perfluorobutanoic acid)":
             case "PFBS (Perfluorobutanesulfonic acid)":
             case "PFPeA (Perfluoropentanoic acid)":
@@ -795,23 +802,20 @@ function processCombos(resId) {
             case "4:2FTS (1H, 1H, 2H, 2H-Perfluorohexane sulfonic acid)":
             case "6:2FTS (1H, 1H, 2H, 2H-Perfluorooctane sulfonic acid)":
             case "8:2FTS (1H, 1H, 2H, 2H-Perfluorodecane sulfonic acid)":
-            case "NFDHA (Nonafluoro-3,6-dioxaheptanoic acid)":
+            case "NFDHA (Nonafluoro-3,6-dioxaheptanoic acid)":          
             case "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)":
             case "PFMPA (Perfluoro-3-methoxypropanoic acid)":
-            case "PFMBA (Perfluoro-4-methoxybutanoic acid)":
-            // Case sensitive
-            case "PFBA (Perfluorobutanoic Acid)":
-            case "PFBS (Perfluorobutanesulfonic Acid)":
-            case "PFPeA (Perfluoropentanoic Acid)":
-            case "PFPeS (Perfluoropentanesulfonic Acid)":
-            case "PFHxA (Perfluorohexanoic Acid)":
+            case "PFMBA (Perfluoro-4-methoxybutanoic acid)":          
+            //case "PFPeA (Perfluoropentanoic Acid)":
+            //case "PFPeS (Perfluoropentanesulfonic Acid)":
+                                   
                 analysisCode = row["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 if (cMethod == GROUP_NAME_1) {
-                    pfaRemainEmergCombos533.push(row);
+                    pfaCatogory2Combos533.push(row);
                 }
                 if (cMethod == GROUP_NAME_2) {
-                    pfaRemainEmergCombos537.push(row);
+                    pfaCatogory2Combos537.push(row);
                 }
 
                 originalTable.push(row);
@@ -831,45 +835,48 @@ function processCombos(resId) {
     }
 
     //1. MAIN GROUP TOTAL: add total pfa main group row 533
-    logInfo("1. Found " + pfaMainGroupCombos533.length + " pfas 533 main group rows to combine");
-    if (pfaMainGroupCombos533.length > 1) {
+    logInfo("1. Found " + pFAS6Combos533.length + " pFAS6 533 main group rows to combine");
+    if (pFAS6Combos533.length > 1) {
         var totalMainGroup = 0.0;
-        for (var pIndex in pfaMainGroupCombos533) {
-            thisMain = pfaMainGroupCombos533[pIndex];
+        for (var pIndex in pFAS6Combos533) {
+            thisMain = pFAS6Combos533[pIndex];
             if (thisMain["Analyte Name"] == "PFOS (Perfluorooctanesulfonic acid)" ||
                 thisMain["Analyte Name"] == "PFOA (Perfluorooctanoic acid)" ||
                 thisMain["Analyte Name"] == "PFHxS (Perfluorohexanesulfonic acid)" ||
                 thisMain["Analyte Name"] == "PFHpA (Perfluoroheptanoic acid)" ||
                 thisMain["Analyte Name"] == "PFNA (Perfluorononanoic acid)" ||
                 thisMain["Analyte Name"] == "PFDA (Perfluorodecanoic acid)" ||
+                // Case sensitive
                 thisMain["Analyte Name"] == "PFOS (Perfluorooctanesulfonic Acid)" ||
                 thisMain["Analyte Name"] == "PFOA (Perfluorooctanoic Acid)" ||
                 thisMain["Analyte Name"] == "PFHxS (Perfluorohexanesulfonic Acid)" ||
                 thisMain["Analyte Name"] == "PFHpA (Perfluoroheptanoic Acid)" ||
                 thisMain["Analyte Name"] == "PFNA (Perfluorononanoic Acid)" ||
-                thisMain["Analyte Name"] == "PFDA (Perfluorodecanoic Acid)") {
+                thisMain["Analyte Name"] == "PFDA (Perfluorodecanoic Acid)")
+            {
+
                 logInfo("Adding " + thisMain["Analyte Name"] + ", " + parseFloat(thisMain["Numeric Result"]));
                 //totalMainGroup += parseFloat(thisMain["Numeric Result"]);
 
                 var floatMain533 = parseFloat(thisMain["Numeric Result"]);
                 totalMainGroup += floatMain533;
                 totalMainGroup = parseFloat(totalMainGroup);
-
+                
             }
         }
 
         // add total main group row
-        logInfo("Total PFA 533 main group is: " + totalMainGroup);
+        logInfo("Total pFAS6 PFA 533 main group is: " + totalMainGroup);
         if (totalMainGroup > 0) {
-            if (!pfaMainGroupCombos533Found) {
+            if (!pFAS6Combos533Found) {
                 var t = {};
-                t["Field Number"] = pfaMainGroupCombos533[0]["Field Number"];
-                t["Analysis Date"] = pfaMainGroupCombos533[0]["Analysis Date"];
-                t["Analysis Time"] = pfaMainGroupCombos533[0]["Analysis Time"];
+                t["Field Number"] = pFAS6Combos533[0]["Field Number"];
+                t["Analysis Date"] = pFAS6Combos533[0]["Analysis Date"];
+                t["Analysis Time"] = pFAS6Combos533[0]["Analysis Time"];
 
-                prettyName = MAIN_GROUP_TOTAL_533;
-                t["Lab Name"] = pfaMainGroupCombos533[0]["Lab Name"];
-                analysisCode = pfaMainGroupCombos533[0]["Lab Analysis Code"];
+                prettyName = GROUP_NAME_1;//MAIN_GROUP_TOTAL_533;
+                t["Lab Name"] = pFAS6Combos533[0]["Lab Name"];
+                analysisCode = pFAS6Combos533[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 if (!cMethod) cMethod = "";
                 key = prettyName + "|" + cMethod;
@@ -880,14 +887,14 @@ function processCombos(resId) {
                     t["Analyte Information"] = aInfo.info;
                 t["Certified Method"] = cMethod;
                 t["C-Number"] = aInfo.casNumber;
-                t["Analyte Name"] = prettyName;
+                t["Analyte Name"] = PFAS6_TOTAL_533;//prettyName;
                 t["DMDL Notation"] = aInfo.dmdlNotation;
                 t["DMDL"] = aInfo.dmdl;
                 t["MCL"] = aInfo.mcl;
                 t["MCL Notation"] = aInfo.mclNotation;
 
 
-                t["Units"] = pfaMainGroupCombos533[0]["Units"];
+                t["Units"] = pFAS6Combos533[0]["Units"];
                 t["CAS Number"] = aInfo.casNumber;
                 t["Numeric Result"] = "" + totalMainGroup;
                 t["Trace Results"] = ""; t["Text Results"] = ""; t["Combination Results"] = ""; t["Analyte MDL"] = "";
@@ -897,27 +904,28 @@ function processCombos(resId) {
                 t["Lab Analysis Code"] = analysisCode; // Confirm with Josh
                 t["Results"] = "" + totalMainGroup;
                 asiTableRowArray.push(t);
-                logInfo("Added main group combination 533 main group row. Total: " + totalMainGroup);
+                logInfo("Added pFAS6 combination 533 row. Total: " + totalMainGroup);
             }
             else {
-                pfaMainGroupCombos533Row["Number Result"] = totalMainGroup;
-                pfaMainGroupCombos533Row["Results"] = totalMainGroup;
+                pFAS6Combos533Row["Number Result"] = totalMainGroup;
+                pFAS6Combos533Row["Results"] = totalMainGroup;
             }
         }
     }
 
     //2. MAIN GROUP TOTAL: add total pfa main group row 537.1
-    logInfo("2. Found " + pfaMainGroupCombos537.length + " pfas 537.1 main group rows to combine");
-    if (pfaMainGroupCombos537.length > 1) {
+    logInfo("2. Found " + pFAS6Combos537.length + " pfas 537.1 main group rows to combine");
+    if (pFAS6Combos537.length > 1) {
         var totalMainGroup537 = 0.0;
-        for (var pIndex in pfaMainGroupCombos537) {
-            thisMain537 = pfaMainGroupCombos537[pIndex];
+        for (var pIndex in pFAS6Combos537) {
+            thisMain537 = pFAS6Combos537[pIndex];
             if (thisMain537["Analyte Name"] == "PFOS (Perfluorooctanesulfonic acid)" ||
                 thisMain537["Analyte Name"] == "PFOA (Perfluorooctanoic acid)" ||
                 thisMain537["Analyte Name"] == "PFHxS (Perfluorohexanesulfonic acid)" ||
                 thisMain537["Analyte Name"] == "PFHpA (Perfluoroheptanoic acid)" ||
                 thisMain537["Analyte Name"] == "PFNA (Perfluorononanoic acid)" ||
                 thisMain537["Analyte Name"] == "PFDA (Perfluorodecanoic acid)" ||
+                // Case sensitive list below
                 thisMain537["Analyte Name"] == "PFOS (Perfluorooctanesulfonic Acid)" ||
                 thisMain537["Analyte Name"] == "PFOA (Perfluorooctanoic Acid)" ||
                 thisMain537["Analyte Name"] == "PFHxS (Perfluorohexanesulfonic Acid)" ||
@@ -930,21 +938,22 @@ function processCombos(resId) {
                 var floatMain537 = parseFloat(thisMain537["Numeric Result"]);
                 totalMainGroup537 += floatMain537;
                 totalMainGroup537 = parseFloat(totalMainGroup537);
+                logInfo("Adding " + thisMain537["Analyte Name"] + ", " + floatMain537);
             }
         }
 
         // add total main group row
         logInfo("Total PFA 537.1 main group is: " + totalMainGroup537);
         if (totalMainGroup537 > 0) {
-            if (!pfaMainGroupCombos537Found) {
+            if (!pFAS6Combos537Found) {
                 var t = {};
-                t["Field Number"] = pfaMainGroupCombos537[0]["Field Number"];
-                t["Analysis Date"] = pfaMainGroupCombos537[0]["Analysis Date"];
-                t["Analysis Time"] = pfaMainGroupCombos537[0]["Analysis Time"];
+                t["Field Number"] = pFAS6Combos537[0]["Field Number"];
+                t["Analysis Date"] = pFAS6Combos537[0]["Analysis Date"];
+                t["Analysis Time"] = pFAS6Combos537[0]["Analysis Time"];
 
-                prettyName = MAIN_GROUP_TOTAL_537_1;
-                t["Lab Name"] = pfaMainGroupCombos537[0]["Lab Name"];
-                analysisCode = pfaMainGroupCombos537[0]["Lab Analysis Code"];
+                prettyName = GROUP_NAME_1;//MAIN_GROUP_TOTAL_537_1;
+                t["Lab Name"] = pFAS6Combos537[0]["Lab Name"];
+                analysisCode = pFAS6Combos537[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 if (!cMethod) cMethod = "";
                 key = prettyName + "|" + cMethod;
@@ -955,7 +964,7 @@ function processCombos(resId) {
                     t["Analyte Information"] = aInfo.info;
                 t["Certified Method"] = cMethod;
                 t["C-Number"] = aInfo.casNumber;
-                t["Analyte Name"] = prettyName;
+                t["Analyte Name"] = PFAS6_TOTAL_537_1;//prettyName;
                 t["DMDL Notation"] = aInfo.dmdlNotation;
                 t["DMDL"] = aInfo.dmdl;
                 t["MCL"] = aInfo.mcl;
@@ -973,45 +982,47 @@ function processCombos(resId) {
                 logInfo("Added main group combination 537.1 main group row. Total: " + totalMainGroup537);
             }
             else {
-                pfaMainGroupCombos537Row["Number Result"] = totalMainGroup537;
-                pfaMainGroupCombos537Row["Results"] = totalMainGroup537;
+                pFAS6Combos537Row["Number Result"] = totalMainGroup537;
+                pFAS6Combos537Row["Results"] = totalMainGroup537;
             }
         }
     }
 
     //3. Prioritized Subset of Emerging PAS TOTAL: add total prioritized subset of emerging pfa 533 group row
-    logInfo("3. Found " + pfaPriorSubsetCombos533.length + " PFAS Category 1 prioritized subset group rows to combine");
-    if (pfaPriorSubsetCombos533.length > 1) {
+    logInfo("3. Found " + pfaCatogory1Combos533.length + " PFAS Category 1 prioritized subset group rows to combine");
+    if (pfaCatogory1Combos533.length > 1) {
         var totalPrioritizedSubsetGroup533 = 0.0;
-        for (var sIndex in pfaPriorSubsetCombos533) {
-            thisPrior = pfaPriorSubsetCombos533[sIndex];
-            if (thisPrior["Analyte Name"] == "PFHpS (Perfluoroheptanesulfonic acid)" ||
-                thisPrior["Analyte Name"] == "PFUnA (Perfluoroundecanoic acid)" ||
-                thisPrior["Analyte Name"] == "PFDoA(Perfluorododecanoic acid)" ||
-                thisPrior["Analyte Name"] == "PFHpS (Perfluoroheptanesulfonic Acid)" ||
-                thisPrior["Analyte Name"] == "PFUnA (Perfluoroundecanoic Acid)" ||
-                thisPrior["Analyte Name"] == "PFDoA(Perfluorododecanoic Acid)" ||
-                thisPrior["Analyte Name"] == "HFPO-DA (Hexafluoropropylene oxide dimer acid)" ||
+        for (var sIndex in pfaCatogory1Combos533) {
+            thisPrior = pfaCatogory1Combos533[sIndex];
+            if (thisPrior["Analyte Name"] == "PFHpS (Perfluoroheptanesulfonic acid)" ||               
+                thisPrior["Analyte Name"] == "PFDoA (Perfluorododecanoic acid)" ||                
+                thisPrior["Analyte Name"] == "PFUnA (Perfluoroundecanoic acid)" ||                
+                thisPrior["Analyte Name"] == "HFPO-DA/GenX (Hexafluoropropylene oxide dimer acid)" ||
                 thisPrior["Analyte Name"] == "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)" ||
-                thisPrior["Analyte Name"] == "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)") {
+                thisPrior["Analyte Name"] == "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)" ||
+                // case sensitive list
+                thisPrior["Analyte Name"] == "PFHpS (Perfluoroheptanesulfonic Acid)" ||
+                thisPrior["Analyte Name"] == "PFDoA (Perfluorododecanoic Acid)" ||
+                thisPrior["Analyte Name"] == "PFUnA (Perfluoroundecanoic Acid)") {
                 //totalPrioritizedSubsetGroup533 += parseFloat(thisPrior["Numeric Result"]);
 
                 var floatPrior533 = parseFloat(thisPrior["Numeric Result"]);
                 totalPrioritizedSubsetGroup533 += floatPrior533;
                 totalPrioritizedSubsetGroup533 = parseFloat(totalPrioritizedSubsetGroup533);
+                logInfo("Adding " + thisPrior["Analyte Name"] + ", " + floatPrior533);
             }
         }
         // add total total prioritized of emerging pfa group row
-        logInfo("Total " + PRIORITIZED_SUBSET_TOTAL_533 + " is: " + totalPrioritizedSubsetGroup533);
+        logInfo("Total " + PFAS_CATEGORY_1_TOTAL_533 + " is: " + totalPrioritizedSubsetGroup533);
         if (totalPrioritizedSubsetGroup533 > 0) {
-            if (!pfaPriorSubsetCombos533Found) {
+            if (!pfaCatogory1Combos533Found) {
                 var t = {};
-                t["Field Number"] = pfaPriorSubsetCombos533[0]["Field Number"];
-                t["Analysis Date"] = pfaPriorSubsetCombos533[0]["Analysis Date"];
-                t["Analysis Time"] = pfaPriorSubsetCombos533[0]["Analysis Time"];
-                t["Lab Name"] = pfaPriorSubsetCombos533[0]["Lab Name"];
-                prettyName = PRIORITIZED_SUBSET_TOTAL_533;
-                analysisCode = pfaPriorSubsetCombos533[0]["Lab Analysis Code"];
+                t["Field Number"] = pfaCatogory1Combos533[0]["Field Number"];
+                t["Analysis Date"] = pfaCatogory1Combos533[0]["Analysis Date"];
+                t["Analysis Time"] = pfaCatogory1Combos533[0]["Analysis Time"];
+                t["Lab Name"] = pfaCatogory1Combos533[0]["Lab Name"];
+                prettyName = GROUP_NAME_1;//PRIORITIZED_SUBSET_TOTAL_533;
+                analysisCode = pfaCatogory1Combos533[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
                 t["Group Name"] = GROUP_NAME_1;//PRIORITIZED_SUBSET_TOTAL_533;
@@ -1021,12 +1032,12 @@ function processCombos(resId) {
                     t["Analyte Information"] = aInfo.info;
                 t["Certified Method"] = cMethod;
                 t["C-Number"] = aInfo.casNumber;
-                t["Analyte Name"] = prettyName;
+                t["Analyte Name"] = PFAS_CATEGORY_1_TOTAL_533;//prettyName;
                 t["DMDL Notation"] = aInfo.dmdlNotation;
                 t["DMDL"] = aInfo.dmdl;
                 t["MCL"] = aInfo.mcl;
                 t["MCL Notation"] = aInfo.mclNotation;
-                t["Units"] = pfaPriorSubsetCombos533[0]["Units"];
+                t["Units"] = pfaCatogory1Combos533[0]["Units"];
                 t["CAS Number"] = aInfo.casNumber;
                 t["Numeric Result"] = "" + totalPrioritizedSubsetGroup533;
                 t["Trace Results"] = ""; t["Text Results"] = ""; t["Combination Results"] = ""; t["Analyte MDL"] = "";
@@ -1038,47 +1049,51 @@ function processCombos(resId) {
                 logInfo("Added main group combination main group row. Total: " + totalPrioritizedSubsetGroup533);
             }
             else {
-                pfaPriorSubsetCombos533["Number Result"] = totalPrioritizedSubsetGroup533;
-                pfaPriorSubsetCombos533["Results"] = totalPrioritizedSubsetGroup533;
+                pfaCatogory1Combos533["Number Result"] = totalPrioritizedSubsetGroup533;
+                pfaCatogory1Combos533["Results"] = totalPrioritizedSubsetGroup533;
             }
         }
     }
 
     //4. Prioritized Subset of Emerging PFAS TOTAL: add total prioritized subset of emerging pfa 537.1 group row
-    logInfo("4. Found " + pfaPriorSubsetCombos537.length + " PFAS Category 1 prioritized subset main group rows to combine");
-    if (pfaPriorSubsetCombos537.length > 1) {
+    logInfo("4. Found " + pfaCatogory1Combos537.length + " PFAS Category 1 prioritized subset main group rows to combine");
+    if (pfaCatogory1Combos537.length > 1) {
         var totalPrioritizedSubsetGroup537 = 0.0;
-        for (var sIndex in pfaPriorSubsetCombos537) {
-            thisPrior537 = pfaPriorSubsetCombos537[sIndex];
+        for (var sIndex in pfaCatogory1Combos537)
+        {
+            thisPrior537 = pfaCatogory1Combos537[sIndex];
             if (thisPrior537["Analyte Name"] == "PFHpS (Perfluoroheptanesulfonic acid)" ||
-                thisPrior537["Analyte Name"] == "PFUnA (Perfluoroundecanoic acid)" ||
-                thisPrior537["Analyte Name"] == "PFDoA(Perfluorododecanoic acid)" ||
-                thisPrior537["Analyte Name"] == "PFHpS (Perfluoroheptanesulfonic Acid)" ||
-                thisPrior537["Analyte Name"] == "PFUnA (Perfluoroundecanoic Acid)" ||
-                thisPrior537["Analyte Name"] == "PFDoA(Perfluorododecanoic Acid)" ||
-                thisPrior537["Analyte Name"] == "HFPO-DA (Hexafluoropropylene oxide dimer acid)" ||
-                thisPrior537["Analyte Name"] == "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)" ||
-                thisPrior537["Analyte Name"] == "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)") {
-                //totalPrioritizedSubsetGroup537 += parseFloat(thisPrior537["Numeric Result"]);
+                thisPrior["Analyte Name"] == "PFUnA (Perfluoroundecanoic acid)" ||
+                thisPrior["Analyte Name"] == "PFDoA (Perfluorododecanoic acid)" ||
+                thisPrior["Analyte Name"] == "HFPO-DA/GenX (Hexafluoropropylene oxide dimer acid)" ||            
+                thisPrior["Analyte Name"] == "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)" ||
+                thisPrior["Analyte Name"] == "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)" ||
+                // Case sensitive List below
+                thisPrior["Analyte Name"] == "PFHpS(Perfluoroheptanesulfonic Acid)" ||
+                thisPrior["Analyte Name"] == "PFUnA (Perfluoroundecanoic Acid)" ||
+                thisPrior["Analyte Name"] == "PFDoA (Perfluorododecanoic Acid)")
+                {
+                    //totalPrioritizedSubsetGroup537 += parseFloat(thisPrior537["Numeric Result"]);
 
 
-                var floatPrior537 = parseFloat(thisPrior537["Numeric Result"]);
-                totalPrioritizedSubsetGroup537 += floatPrior537;
-                totalPrioritizedSubsetGroup537 = parseFloat(totalPrioritizedSubsetGroup537);
-
-            }
+                    var floatPrior537 = parseFloat(thisPrior537["Numeric Result"]);
+                    totalPrioritizedSubsetGroup537 += floatPrior537;
+                    totalPrioritizedSubsetGroup537 = parseFloat(totalPrioritizedSubsetGroup537);
+                    logInfo("Adding " + thisPrior["Analyte Name"] + ", " + floatPrior537);
+                }
+            
         }
         // add total total prioritized of emerging pfa group row
-        logInfo("Total " + PRIORITIZED_SUBSET_TOTAL_537_1 + " is: " + totalPrioritizedSubsetGroup537);
+        logInfo("Total " + PFAS_CATEGORY_1_TOTAL_537_1 + " is: " + totalPrioritizedSubsetGroup537);
         if (totalPrioritizedSubsetGroup537 > 0) {
-            if (!pfaPriorSubsetCombos537Row) {
+            if (!pfaCatogory1Combos537Row) {
                 var t = {};
-                t["Field Number"] = pfaPriorSubsetCombos537[0]["Field Number"];
-                t["Analysis Date"] = pfaPriorSubsetCombos537[0]["Analysis Date"];
-                t["Analysis Time"] = pfaPriorSubsetCombos537[0]["Analysis Time"];
-                t["Lab Name"] = pfaPriorSubsetCombos537[0]["Lab Name"];
-                prettyName = PRIORITIZED_SUBSET_TOTAL_537_1;
-                analysisCode = pfaPriorSubsetCombos537[0]["Lab Analysis Code"];
+                t["Field Number"] = pfaCatogory1Combos537[0]["Field Number"];
+                t["Analysis Date"] = pfaCatogory1Combos537[0]["Analysis Date"];
+                t["Analysis Time"] = pfaCatogory1Combos537[0]["Analysis Time"];
+                t["Lab Name"] = pfaCatogory1Combos537[0]["Lab Name"];
+                prettyName = GROUP_NAME_1;//PRIORITIZED_SUBSET_TOTAL_537_1;
+                analysisCode = pfaCatogory1Combos537[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
                 t["Group Name"] = GROUP_NAME_1;//PRIORITIZED_SUBSET_TOTAL_537_1;
@@ -1088,7 +1103,7 @@ function processCombos(resId) {
                     t["Analyte Information"] = aInfo.info;
                 t["Certified Method"] = cMethod;
                 t["C-Number"] = aInfo.casNumber;
-                t["Analyte Name"] = prettyName;
+                t["Analyte Name"] = PFAS_CATEGORY_1_TOTAL_537_1;// prettyName;
                 t["DMDL Notation"] = aInfo.dmdlNotation;
                 t["DMDL"] = aInfo.dmdl;
                 t["MCL"] = aInfo.mcl;
@@ -1105,42 +1120,38 @@ function processCombos(resId) {
                 logInfo("Added main group combination main group row. Total: " + totalPrioritizedSubsetGroup537);
             }
             else {
-                pfaPriorSubsetCombos537["Number Result"] = totalPrioritizedSubsetGroup537;
-                pfaPriorSubsetCombos537["Results"] = totalPrioritizedSubsetGroup537;
+                pfaCatogory1Combos537["Number Result"] = totalPrioritizedSubsetGroup537;
+                pfaCatogory1Combos537["Results"] = totalPrioritizedSubsetGroup537;
             }
         }
     }
 
     //5. Remaining Emering PFAS TOTAL: add total remaining emerging pfa 533 group row
-    logInfo("5. Found " + pfaRemainEmergCombos533.length + " PFAS Category 2 group rows to combine");
-    if (pfaRemainEmergCombos533.length > 1) {
+    logInfo("5. Found " + pfaCatogory2Combos533.length + " PFAS Category 2 group rows to combine");
+    if (pfaCatogory2Combos533.length > 1) {
         var totalRemainingSubsetGroup533 = 0.0;
-        for (var rIndex in pfaRemainEmergCombos533) {
-            thisRemain = pfaRemainEmergCombos533[rIndex];
-            if (thisRemain["Analyte Name"] == "PFBA (Perfluorobutanoic acid)" ||
-                thisRemain["Analyte Name"] == "PFBA (Perfluorobutanoic Acid)" ||
-                thisRemain["Analyte Name"] == "PFBS (Perfluorobutanesulfonic acid)" ||
-                thisRemain["Analyte Name"] == "PFBS (Perfluorobutanesulfonic Acid)" ||
-                thisRemain["Analyte Name"] == "PFPeA (Perfluoropentanoic acid)" ||
-                thisRemain["Analyte Name"] == "PFPeA (Perfluoropentanoic Acid)" ||
-                thisRemain["Analyte Name"] == "PFPeS(Perfluoropentanesulfonic acid)" ||
-                thisRemain["Analyte Name"] == "PFPeS(Perfluoropentanesulfonic Acid)" ||
-                thisRemain["Analyte Name"] == "PFHxA (Perfluorohexanoic acid)" ||
-                thisRemain["Analyte Name"] == "PFHxA (Perfluorohexanoic Acid)" ||
-                thisRemain["Analyte Name"] == "ADONA (4,8-Dioxa-3H-perfluorononanoic acid)" ||
-                thisRemain["Analyte Name"] == "ADONA (4,8-Dioxa-3H-perfluorononanoic Acid)" ||
+        for (var rIndex in pfaCatogory2Combos533) {
+            thisRemain = pfaCatogory2Combos533[rIndex];
+            if (thisRemain["Analyte Name"] == "PFBA (Perfluorobutanoic acid)" ||               
+                thisRemain["Analyte Name"] == "PFBS (Perfluorobutanesulfonic acid)" ||                
+                thisRemain["Analyte Name"] == "PFPeA (Perfluoropentanoic acid)" ||                
+                thisRemain["Analyte Name"] == "PFPeS (Perfluoropentanesulfonic acid)" ||                
+                thisRemain["Analyte Name"] == "PFHxA (Perfluorohexanoic acid)" ||                
+                thisRemain["Analyte Name"] == "ADONA (4,8-Dioxa-3H-perfluorononanoic acid)" ||                
                 thisRemain["Analyte Name"] == "4:2FTS (1H, 1H, 2H, 2H-Perfluorohexane sulfonic acid)" ||
                 thisRemain["Analyte Name"] == "6:2FTS (1H, 1H, 2H, 2H-Perfluorooctane sulfonic acid)" ||
                 thisRemain["Analyte Name"] == "8:2FTS (1H, 1H, 2H, 2H-Perfluorodecane sulfonic acid)" ||
                 thisRemain["Analyte Name"] == "NFDHA (Nonafluoro-3,6-dioxaheptanoic acid)" ||
-                thisRemain["Analyte Name"] == "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)" ||
+                thisRemain["Analyte Name"] == "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)" ||                
                 thisRemain["Analyte Name"] == "PFMPA (Perfluoro-3-methoxypropanoic acid)" ||
-                thisRemain["Analyte Name"] == "PFMPA (Perfluoro-3-methoxypropanoic acid)") {
+                thisRemain["Analyte Name"] == "PFMBA (Perfluoro-4-methoxypropanoic acid)") {
+
                 //totalRemainingSubsetGroup533 += parseFloat(thisRemain["Numeric Result"]);
 
 
                 var floatRemain533 = parseFloat(thisRemain["Numeric Result"]);
-                logInfo("floatRemain533 " + floatRemain533);
+                logInfo("Adding " + thisRemain["Analyte Name"] + ", " + floatRemain533);
+                //logInfo("floatRemain533 " + floatRemain533);
                 totalRemainingSubsetGroup533 += floatRemain533;
                 totalRemainingSubsetGroup533 = totalRemainingSubsetGroup533;
 
@@ -1148,16 +1159,16 @@ function processCombos(resId) {
 
         }
         // add total total prioritized of emerging pfa group row
-        logInfo("Total " + REMAINING_PFAS_TOTAL_533 + " 533 is: " + totalRemainingSubsetGroup533);
+        logInfo("Total " + PFAS_CATEGORY_2_TOTAL_533 + " 533 is: " + totalRemainingSubsetGroup533);
         if (totalRemainingSubsetGroup533 > 0) {
-            if (!pfaRemainEmergCombos533Found) {
+            if (!pfaCatogory2Combos533Found) {
                 var t = {};
-                t["Field Number"] = pfaRemainEmergCombos533[0]["Field Number"];
-                t["Analysis Date"] = pfaRemainEmergCombos533[0]["Analysis Date"];
-                t["Analysis Time"] = pfaRemainEmergCombos533[0]["Analysis Time"];
-                t["Lab Name"] = pfaRemainEmergCombos533[0]["Lab Name"];
-                prettyName = REMAINING_PFAS_TOTAL_533;
-                analysisCode = pfaRemainEmergCombos533[0]["Lab Analysis Code"];
+                t["Field Number"] = pfaCatogory2Combos533[0]["Field Number"];
+                t["Analysis Date"] = pfaCatogory2Combos533[0]["Analysis Date"];
+                t["Analysis Time"] = pfaCatogory2Combos533[0]["Analysis Time"];
+                t["Lab Name"] = pfaCatogory2Combos533[0]["Lab Name"];
+                prettyName = GROUP_NAME_1;//REMAINING_PFAS_TOTAL_533;
+                analysisCode = pfaCatogory2Combos533[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
                 t["Group Name"] = GROUP_NAME_1;//REMAINING_PFAS_TOTAL_533;
@@ -1167,12 +1178,12 @@ function processCombos(resId) {
                     t["Analyte Information"] = aInfo.info;
                 t["Certified Method"] = cMethod;
                 t["C-Number"] = aInfo.casNumber;
-                t["Analyte Name"] = prettyName;
+                t["Analyte Name"] = PFAS_CATEGORY_2_TOTAL_533;//prettyName;
                 t["DMDL Notation"] = aInfo.dmdlNotation;
                 t["DMDL"] = aInfo.dmdl;
                 t["MCL"] = aInfo.mcl;
                 t["MCL Notation"] = aInfo.mclNotation;
-                t["Units"] = pfaRemainEmergCombos533[0]["Units"];
+                t["Units"] = pfaCatogory2Combos533[0]["Units"];
                 t["CAS Number"] = aInfo.casNumber;
                 t["Numeric Result"] = "" + totalRemainingSubsetGroup533;
                 t["Trace Results"] = ""; t["Text Results"] = ""; t["Combination Results"] = ""; t["Analyte MDL"] = "";
@@ -1184,36 +1195,31 @@ function processCombos(resId) {
                 logInfo("Added main group combination main group row. Total: " + totalRemainingSubsetGroup533);
             }
             else {
-                pfaRemainEmergCombos533["Number Result"] = totalRemainingSubsetGroup533;
-                pfaRemainEmergCombos533["Results"] = totalRemainingSubsetGroup533;
+                pfaCatogory2Combos533["Number Result"] = totalRemainingSubsetGroup533;
+                pfaCatogory2Combos533["Results"] = totalRemainingSubsetGroup533;
             }
         }
     }
 
     //6. Remaining Emerging PFAS TOTAL: add total remaining PFAS Category 2 group row
-    logInfo("6. Found " + pfaRemainEmergCombos537.length + " PFAS Category 2 group rows to combine");
-    if (pfaRemainEmergCombos537.length > 1) {
+    logInfo("6. Found " + pfaCatogory2Combos537.length + " PFAS Category 2 group rows to combine");
+    if (pfaCatogory2Combos537.length > 1) {
         var totalRemainingSubsetGroup537 = 0.0;
-        for (var rIndex in pfaRemainEmergCombos537) {
-            thisRemain537 = pfaRemainEmergCombos537[rIndex];
+        for (var rIndex in pfaCatogory2Combos537) {
+            thisRemain537 = pfaCatogory2Combos537[rIndex];
 
-            if (thisRemain537["Analyte Name"] == "PFBA (Perfluorobutanoic acid)" ||
-                thisRemain537["Analyte Name"] == "PFBA (Perfluorobutanoic Acid)" ||
-                thisRemain537["Analyte Name"] == "PFBS (Perfluorobutanesulfonic acid)" ||
-                thisRemain537["Analyte Name"] == "PFBS (Perfluorobutanesulfonic Acid)" ||
-                thisRemain537["Analyte Name"] == "PFPeA (Perfluoropentanoic acid)" ||
-                thisRemain537["Analyte Name"] == "PFPeA (Perfluoropentanoic Acid)" ||
-                thisRemain537["Analyte Name"] == "PFPeS(Perfluoropentanesulfonic acid)" ||
-                thisRemain537["Analyte Name"] == "PFPeS(Perfluoropentanesulfonic Acid)" ||
-                thisRemain537["Analyte Name"] == "PFHxA (Perfluorohexanoic acid)" ||
-                thisRemain537["Analyte Name"] == "PFHxA (Perfluorohexanoic Acid)" ||
+            if (thisRemain537["Analyte Name"] == "PFBA (Perfluorobutanoic acid)" ||               
+                thisRemain537["Analyte Name"] == "PFBS (Perfluorobutanesulfonic acid)" ||               
+                thisRemain537["Analyte Name"] == "PFPeA (Perfluoropentanoic acid)" ||               
+                thisRemain537["Analyte Name"] == "PFPeS (Perfluoropentanesulfonic acid)" ||                
+                thisRemain537["Analyte Name"] == "PFHxA (Perfluorohexanoic acid)" ||                
                 thisRemain537["Analyte Name"] == "ADONA (4,8-Dioxa-3H-perfluorononanoic acid)" ||
                 thisRemain537["Analyte Name"] == "4:2FTS (1H, 1H, 2H, 2H-Perfluorohexane sulfonic acid)" ||
                 thisRemain537["Analyte Name"] == "6:2FTS (1H, 1H, 2H, 2H-Perfluorooctane sulfonic acid)" ||
                 thisRemain537["Analyte Name"] == "8:2FTS (1H, 1H, 2H, 2H-Perfluorodecane sulfonic acid)" ||
                 thisRemain537["Analyte Name"] == "NFDHA (Nonafluoro-3,6-dioxaheptanoic acid)" ||
                 thisRemain537["Analyte Name"] == "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)" ||
-                thisRemain537["Analyte Name"] == "PFMPA (Perfluoro-3-methoxypropanoic acid)" ||
+                thisRemain537["Analyte Name"] == "PFMBA (Perfluoro-4-methoxybutanoic acid)" ||
                 thisRemain537["Analyte Name"] == "PFMPA (Perfluoro-3-methoxypropanoic acid)") {
                 //totalRemainingSubsetGroup537 += parseFloat(thisRemain537["Numeric Result"]);
                 var floatRemain537 = parseFloat(thisRemain537["Numeric Result"]);
@@ -1223,16 +1229,16 @@ function processCombos(resId) {
 
         }
         // add total total prioritized of emerging pfa group row
-        logInfo("Total " + REMAINING_PFAS_TOTAL_537_1 + " 537.1 is: " + totalRemainingSubsetGroup537);
+        logInfo("Total " + PFAS_CATEGORY_2_TOTAL_537_1 + " 537.1 is: " + totalRemainingSubsetGroup537);
         if (totalRemainingSubsetGroup537 > 0) {
-            if (!pfaRemainEmergCombos537) {
+            if (!pfaCatogory2Combos537) {
                 var t = {};
-                t["Field Number"] = pfaRemainEmergCombos537[0]["Field Number"];
-                t["Analysis Date"] = pfaRemainEmergCombos537[0]["Analysis Date"];
-                t["Analysis Time"] = pfaRemainEmergCombos537[0]["Analysis Time"];
-                t["Lab Name"] = pfaRemainEmergCombos537[0]["Lab Name"];
-                prettyName = REMAINING_PFAS_TOTAL_537_1;
-                analysisCode = pfaRemainEmergCombos537[0]["Lab Analysis Code"];
+                t["Field Number"] = pfaCatogory2Combos537[0]["Field Number"];
+                t["Analysis Date"] = pfaCatogory2Combos537[0]["Analysis Date"];
+                t["Analysis Time"] = pfaCatogory2Combos537[0]["Analysis Time"];
+                t["Lab Name"] = pfaCatogory2Combos537[0]["Lab Name"];
+                prettyName = GROUP_NAME_1;//REMAINING_PFAS_TOTAL_537_1;
+                analysisCode = pfaCatogory2Combos537[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
                 t["Group Name"] = GROUP_NAME_1;//REMAINING_PFAS_TOTAL_537_1;
@@ -1242,12 +1248,12 @@ function processCombos(resId) {
                     t["Analyte Information"] = aInfo.info;
                 t["Certified Method"] = cMethod;
                 t["C-Number"] = aInfo.casNumber;
-                t["Analyte Name"] = prettyName;
+                t["Analyte Name"] = PFAS_CATEGORY_2_TOTAL_537_1;//prettyName;
                 t["DMDL Notation"] = aInfo.dmdlNotation;
                 t["DMDL"] = aInfo.dmdl;
                 t["MCL"] = aInfo.mcl;
                 t["MCL Notation"] = aInfo.mclNotation;
-                t["Units"] = pfaRemainEmergCombos537[0]["Units"];
+                t["Units"] = pfaCatogory2Combos537[0]["Units"];
                 t["CAS Number"] = aInfo.casNumber;
                 t["Numeric Result"] = "" + totalRemainingSubsetGroup537;
                 t["Trace Results"] = ""; t["Text Results"] = ""; t["Combination Results"] = ""; t["Analyte MDL"] = "";
@@ -1259,8 +1265,8 @@ function processCombos(resId) {
                 logInfo("Added main group combination main group row. Total: " + totalRemainingSubsetGroup537);
             }
             else {
-                pfaRemainEmergCombos537["Number Result"] = totalRemainingSubsetGroup537;
-                pfaRemainEmergCombos537["Results"] = totalRemainingSubsetGroup537;
+                pfaCatogory2Combos537["Number Result"] = totalRemainingSubsetGroup537;
+                pfaCatogory2Combos537["Results"] = totalRemainingSubsetGroup537;
             }
         }
     }
@@ -1429,8 +1435,8 @@ function processCombos(resId) {
             }
         }
     }
-    if (!metalComboFound && !aldiComboFound && !svocComboFound && !pfaMainGroupCombos533Found && !pfaMainGroupCombos537Found && !pfaPriorSubsetCombos533Found && !pfaPriorSubsetCombos537Found
-        && !pfaRemainEmergCombos533Found && !pfaRemainEmergCombos537Found) {
+    if (!metalComboFound && !aldiComboFound && !svocComboFound && !pFAS6Combos533Found && !pFAS6Combos537Found && !pfaCatogory1Combos533Found && !pfaCatogory1Combos537Found
+        && !pfaCatogory2Combos533Found && !pfaCatogory2Combos537Found) {
         if (asiTableRowArray.length > 0)
             addToASITableLOCAL("SAMPLE RESULTS", asiTableRowArray, resId);
     }
@@ -1442,18 +1448,18 @@ function processCombos(resId) {
             originalTable.push(aldiComboRow);
         if (svocComboFound)
             originalTable.push(svocComboRow);
-        if (pfaMainGroupCombos533Found)
-            originalTable.push(pfaMainGroupCombos533Row);
-        if (pfaMainGroupCombos537Found)
-            originalTable.push(pfaMainGroupCombos537Row);
-        if (pfaPriorSubsetCombos533Found)
-            originalTable.push(pfaPriorSubsetCombos533Row);
-        if (pfaPriorSubsetCombos537Found)
-            originalTable.push(pfaPriorSubsetCombos537Row);
-        if (pfaRemainEmergCombos533Found)
-            originalTable.push(pfaRemainEmergCombos533Row);
-        if (pfaRemainEmergCombos537Found)
-            originalTable.push(pfaRemainEmergCombos537Row);
+        if (pFAS6Combos533Found)
+            originalTable.push(pFAS6Combos533Row);
+        if (pFAS6Combos537Found)
+            originalTable.push(pFAS6Combos537Row);
+        if (pfaCatogory1Combos533Found)
+            originalTable.push(pfaCatogory1Combos533Row);
+        if (pfaCatogory1Combos537Found)
+            originalTable.push(pfaCatogory1Combos537Row);
+        if (pfaCatogory2Combos533Found)
+            originalTable.push(pfaCatogory2Combos533Row);
+        if (pfaCatogory2Combos537Found)
+            originalTable.push(pfaCatogory2Combos537Row);
         addASITable("SAMPLE RESULTS", originalTable, resId);
     }
 }
