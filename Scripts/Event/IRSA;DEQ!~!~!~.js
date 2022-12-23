@@ -1,5 +1,8 @@
 //IRSA:DEQ/~/~/~
 
+showDebug = true;
+
+
 var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
 var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
@@ -38,13 +41,18 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 // EHIMS-4697: OPC Dry Cleaners Inspection only
 if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || inspResult == "Incomplete"))
 {
+    logDebug(inspType + ", " + inspResult);
+
     inspModel = inspObj.getInspection();
     gsList = inspModel.getGuideSheets();
     if (gsList)
     {
+        logDebug(gsList);
+
         gsArr = gsList.toArray();
         for (gsi in gsArr)
         {
+            logDebug(gsArr);
             gs = gsArr[gsi];
             gsItemList = gs.getItems();
             if (gsItemList)
