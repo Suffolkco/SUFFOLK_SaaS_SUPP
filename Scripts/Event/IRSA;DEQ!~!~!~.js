@@ -114,27 +114,27 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                         logDebug("checklistStatus: " + checklistStatus);
                         logDebug("stanardComment: " + stanardComment);
 
-                        if (gsItem.getGuideItemText().toUpperCase().contains("Is required County Signage posted?"))
+                        if (gsItem.getGuideItemText().contains("Is required County Signage posted?"))
                         {
                             editAppSpecific("Signage 'County'", checklistStatus, capId);
                         }
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Was there any Organic signage noted?"))
+                        else if (gsItem.getGuideItemText().contains("Was there any Organic signage noted?"))
                         {
                             editAppSpecific("Signage 'Organic'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("the facility using Process Perc?"))
+                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Perc?"))
                         {
                             editAppSpecific("Process 'Perc'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Hydrocarbon?"))
+                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Hydrocarbon?"))
                         {
                             editAppSpecific("Process 'Hydrocarbon'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Drop?"))
+                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Drop?"))
                         {
                             editAppSpecific("Process 'Drop'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Wet Clean?"))
+                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Wet Clean?"))
                         {
                             editAppSpecific("Process 'Wet Clean'", checklistStatus, capId);
                         }  
@@ -146,15 +146,15 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                             }
                             editAppSpecific("Process Other", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using any Washing Machine(s)?"))
+                        else if (gsItem.getGuideItemText().contains("Is the facility using any Washing Machine(s)?"))
                         {
                             editAppSpecific("Signage 'Organic'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Are there any Floor Drains present at the facility?"))
+                        else if (gsItem.getGuideItemText().contains("Are there any Floor Drains present at the facility?"))
                         {
                             editAppSpecific("Signage 'Organic'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Are spotting agents being used?"))
+                        else if (gsItem.getGuideItemText().contains("Are spotting agents being used?"))
                         {
                             if (checklistStatus == 'Y') // also copy comments
                             {                            
