@@ -36,7 +36,7 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 }
 
 // EHIMS-4697: OPC Dry Cleaners Inspection only
-if (inspType == "OPC Dry Cleaners Inspection" && (inspResult == "Complete" || inspResult == "Incomplete"))
+if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || inspResult == "Incomplete"))
 {
     inspModel = inspObj.getInspection();
     gsList = inspModel.getGuideSheets();
@@ -64,7 +64,7 @@ if (inspType == "OPC Dry Cleaners Inspection" && (inspResult == "Complete" || in
                     stanardComment = gsItem.getGuideItemComment()
                     logDebug("checklistStatus: " + checklistStatus);
                     logDebug("stanardComment: " + stanardComment);
-                    
+
                     if (gsItem.getGuideItemText().toUpperCase().contains("Is required County Signage posted?"))
                     {
                         editAppSpecific("Signage 'County'", checklistStatus, capId);
