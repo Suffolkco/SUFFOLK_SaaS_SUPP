@@ -134,14 +134,6 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                         {
                             editAppSpecific("Process 'Wet'", checklistStatus, capId);
                         }  
-                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Other Processes?"))
-                        {
-                            if (checklistStatus == 'Y') // also copy comments
-                            {
-                                editAppSpecific("Other Process Type", stanardComment, capId);
-                            }
-                            editAppSpecific("Process Other", checklistStatus, capId);
-                        }  
                         else if (gsItem.getGuideItemText().contains("Is the facility using any Washing Machine(s)?"))
                         {
                             editAppSpecific("Signage 'Organic'", checklistStatus, capId);
@@ -150,6 +142,15 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                         {
                             editAppSpecific("Signage 'Organic'", checklistStatus, capId);
                         }  
+                        else if (gsItem.getGuideItemText().contains("Is the facility using Other Processes?"))
+                        {
+                            if (checklistStatus == 'Y') // also copy comments
+                            {
+                                editAppSpecific("Other Process Type", stanardComment, capId);
+                            }
+                            editAppSpecific("Process Other", checklistStatus, capId);
+                        }  
+                        
                         else if (gsItem.getGuideItemText().contains("Are spotting agents being used?"))
                         {
                             if (checklistStatus == 'Y') // also copy comments
