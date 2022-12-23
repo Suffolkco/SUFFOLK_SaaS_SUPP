@@ -88,12 +88,10 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
         logDebug(inspModel);
         if (gsList)
         {
-            logDebug(gsList);
-
             gsArr = gsList.toArray();
             for (gsi in gsArr)
             {
-                logDebug(gsArr);
+                
                 gs = gsArr[gsi];
                 gsItemList = gs.getItems();
                 if (gsItemList)
@@ -102,10 +100,8 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                     for (gsii in gsItemArr)
                     {
                         gsItem = gsItemArr[gsii];
-                        logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
-                        logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
-                        logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
-                        logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
+                        logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());                       
+                        logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());                       
                         logDebug("gguidesheetItemModel.getGuideItemComment(): " + gsItem.getGuideItemComment());
                         logDebug("gsItem.getGuideType(): " + gsItem.getGuideType());
                         
@@ -136,7 +132,7 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                         }  
                         else if (gsItem.getGuideItemText().contains("Is the facility using Process Wet Clean?"))
                         {
-                            editAppSpecific("Process 'Wet Clean'", checklistStatus, capId);
+                            editAppSpecific("Process 'Wet'", checklistStatus, capId);
                         }  
                         else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Other Processes?"))
                         {
@@ -158,7 +154,7 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                         {
                             if (checklistStatus == 'Y') // also copy comments
                             {                            
-                                editAppSpecific("Spotting Agent(s)", stanardComment, capId);
+                                editAppSpecific("Spotting Agent", stanardComment, capId);
                             }
                             
                         }  
