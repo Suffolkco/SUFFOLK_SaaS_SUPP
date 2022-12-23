@@ -65,7 +65,7 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                     logDebug("inspList[xx].getInspectionStatus() = " + inspList[xx].getInspectionStatus());
 
                     if (inspList[xx].getInspectionType().toUpperCase().contains("OPC DRY CLEANER INSPECTION") &&
-                        (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Incomplete"))
+                        (inspList[xx].getInspectionStatus() == "Complete" || inspList[xx].getInspectionStatus() == "Incomplete"))
                     {
                         inspObj = inspList[xx];
                         logDebug("Inspection number: " + inspList[xx].getInspection().getIdNumber());
