@@ -46,11 +46,18 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
 
     if (inspResultObj.getSuccess())
     {
+        logDebug("Success? " + inspResultObj.getSuccess());
+
         var inspList = inspResultObj.getOutput();
+
+        logDebug("inspList.length? " + inspList.length);
+
         if (inspList && inspList.length > 0)
         {
             for (var xx in inspList)
             {                
+                logDebug("inspList.length? " + inspList[xx].getInspection().getIdNumber());
+                
                 if (inspList[xx].getInspection().getIdNumber() == inspId)
                 {
                     if (inspList[xx].getInspectionType().toUpperCase().contains("OPC Dry Cleaner Inspection") &&
