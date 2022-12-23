@@ -42,89 +42,120 @@ if (inspType == "Sampling Event" && inspResult == "Sent to Lab")
 if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || inspResult == "Incomplete"))
 {
     logDebug(inspType + ", " + inspResult);
+    var inspResultObj = aa.inspection.getInspections(capId);
 
-    inspModel = inspObj.getInspection();
-    gsList = inspModel.getGuideSheets();
-    if (gsList)
+    if (inspResultObj.getSuccess())
     {
-        logDebug(gsList);
-
-        gsArr = gsList.toArray();
-        for (gsi in gsArr)
+        var inspList = inspResultObj.getOutput();
+        if (inspList && inspList.length > 0)
         {
-            logDebug(gsArr);
-            gs = gsArr[gsi];
-            gsItemList = gs.getItems();
-            if (gsItemList)
-            {
-                gsItemArr = gsItemList.toArray();
-                for (gsii in gsItemArr)
+            for (var xx in inspList)
+            {                
+                if (inspList[xx].getInspection().getIdNumber() == inspId)
                 {
-                    gsItem = gsItemArr[gsii];
-                    logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
-                    logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
-                    logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
-                    logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
-                    logDebug("gguidesheetItemModel.getGuideItemComment(): " + gsItem.getGuideItemComment());
-                    logDebug("gsItem.getGuideType(): " + gsItem.getGuideType());
-                    
-                    checklistStatus = gsItem.getGuideItemStatus();
-                    stanardComment = gsItem.getGuideItemComment()
-                    logDebug("checklistStatus: " + checklistStatus);
-                    logDebug("stanardComment: " + stanardComment);
+                    if (inspList[xx].getInspectionType().toUpperCase().contains("OPC Dry Cleaner Inspection") &&
+                        (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Incomplete"))
+                    {
+                        inspObj = inspList[xx];
+                        logDebug("Inspection number: " + inspList[xx].getInspection().getIdNumber());
+                        logDebug("Inspection type: " + inspList[xx].getInspectionType());
+                        logDebug("Inspection Status: " + inspList[xx].getInspectionStatus());
 
-                    if (gsItem.getGuideItemText().toUpperCase().contains("Is required County Signage posted?"))
-                    {
-                        editAppSpecific("Signage 'County'", checklistStatus, capId);
                     }
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Was there any Organic signage noted?"))
-                    {
-                        editAppSpecific("Signage 'Organic'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("the facility using Process Perc?"))
-                    {
-                        editAppSpecific("Process 'Perc'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Hydrocarbon?"))
-                    {
-                        editAppSpecific("Process 'Hydrocarbon'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Drop?"))
-                    {
-                        editAppSpecific("Process 'Drop'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Wet Clean?"))
-                    {
-                        editAppSpecific("Process 'Wet Clean'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Other Processes?"))
-                    {
-                        if (checklistStatus == 'Y') // also copy comments
-                        {
-                            editAppSpecific("Other Process Type", stanardComment, capId);
-                        }
-                        editAppSpecific("Process Other", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using any Washing Machine(s)?"))
-                    {
-                        editAppSpecific("Signage 'Organic'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Are there any Floor Drains present at the facility?"))
-                    {
-                        editAppSpecific("Signage 'Organic'", checklistStatus, capId);
-                    }  
-                    else if (gsItem.getGuideItemText().toUpperCase().contains("Are spotting agents being used?"))
-                    {
-                        if (checklistStatus == 'Y') // also copy comments
-                        {                            
-                            editAppSpecific("Spotting Agent(s)", stanardComment, capId);
-                        }
-                        
-                    }  
                 }
             }
         }
-    }   
+    }
+    if (!inspObj)
+    {
+        logDebug("No inspection found to update");
+    }
+    else
+    {
+        inspModel = inspObj.getInspection();
+        gsList = inspModel.getGuideSheets();
+        logDebug(inspModel);
+        if (gsList)
+        {
+            logDebug(gsList);
+
+            gsArr = gsList.toArray();
+            for (gsi in gsArr)
+            {
+                logDebug(gsArr);
+                gs = gsArr[gsi];
+                gsItemList = gs.getItems();
+                if (gsItemList)
+                {
+                    gsItemArr = gsItemList.toArray();
+                    for (gsii in gsItemArr)
+                    {
+                        gsItem = gsItemArr[gsii];
+                        logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
+                        logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
+                        logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
+                        logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
+                        logDebug("gguidesheetItemModel.getGuideItemComment(): " + gsItem.getGuideItemComment());
+                        logDebug("gsItem.getGuideType(): " + gsItem.getGuideType());
+                        
+                        checklistStatus = gsItem.getGuideItemStatus();
+                        stanardComment = gsItem.getGuideItemComment()
+                        logDebug("checklistStatus: " + checklistStatus);
+                        logDebug("stanardComment: " + stanardComment);
+
+                        if (gsItem.getGuideItemText().toUpperCase().contains("Is required County Signage posted?"))
+                        {
+                            editAppSpecific("Signage 'County'", checklistStatus, capId);
+                        }
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Was there any Organic signage noted?"))
+                        {
+                            editAppSpecific("Signage 'Organic'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("the facility using Process Perc?"))
+                        {
+                            editAppSpecific("Process 'Perc'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Hydrocarbon?"))
+                        {
+                            editAppSpecific("Process 'Hydrocarbon'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Drop?"))
+                        {
+                            editAppSpecific("Process 'Drop'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Process Wet Clean?"))
+                        {
+                            editAppSpecific("Process 'Wet Clean'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using Other Processes?"))
+                        {
+                            if (checklistStatus == 'Y') // also copy comments
+                            {
+                                editAppSpecific("Other Process Type", stanardComment, capId);
+                            }
+                            editAppSpecific("Process Other", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Is the facility using any Washing Machine(s)?"))
+                        {
+                            editAppSpecific("Signage 'Organic'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Are there any Floor Drains present at the facility?"))
+                        {
+                            editAppSpecific("Signage 'Organic'", checklistStatus, capId);
+                        }  
+                        else if (gsItem.getGuideItemText().toUpperCase().contains("Are spotting agents being used?"))
+                        {
+                            if (checklistStatus == 'Y') // also copy comments
+                            {                            
+                                editAppSpecific("Spotting Agent(s)", stanardComment, capId);
+                            }
+                            
+                        }  
+                    }
+                }
+            }
+        }   
+    }
        
 }
 else
