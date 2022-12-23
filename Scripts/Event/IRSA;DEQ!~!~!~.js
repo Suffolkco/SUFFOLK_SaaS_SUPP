@@ -110,55 +110,58 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
                         logDebug("checklistStatus: " + checklistStatus);
                         logDebug("stanardComment: " + stanardComment);
 
-                        if (gsItem.getGuideItemText().contains("Is required County Signage posted?"))
+                        if (checklistStatus == 'Y' || checklistStatus == 'N')
                         {
-                            editAppSpecific("Signage 'County'", checklistStatus, capId);
-                        }
-                        else if (gsItem.getGuideItemText().contains("Was there any Organic signage noted?"))
-                        {
-                            editAppSpecific("Signage 'Organic'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Perc?"))
-                        {
-                            editAppSpecific("Process 'Perc'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Hydrocarbon?"))
-                        {
-                            editAppSpecific("Process 'Hydrocarbon'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Drop?"))
-                        {
-                            editAppSpecific("Process 'Drop'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Is the facility using Process Wet Clean?"))
-                        {
-                            editAppSpecific("Process 'Wet'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Is the facility using any Washing Machine(s)?"))
-                        {
-                            editAppSpecific("Signage 'Organic'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Are there any Floor Drains present at the facility?"))
-                        {
-                            editAppSpecific("Signage 'Organic'", checklistStatus, capId);
-                        }  
-                        else if (gsItem.getGuideItemText().contains("Is the facility using Other Processes?"))
-                        {
-                            if (checklistStatus == 'Y') // also copy comments
+                            if (gsItem.getGuideItemText().contains("Is required County Signage posted?"))
                             {
-                                editAppSpecific("Other Process Type", stanardComment, capId);
+                                editAppSpecific("Signage 'County'", checklistStatus, capId);
                             }
-                            editAppSpecific("Process Other", checklistStatus, capId);
-                        }  
-                        
-                        else if (gsItem.getGuideItemText().contains("Are spotting agents being used?"))
-                        {
-                            if (checklistStatus == 'Y') // also copy comments
-                            {                            
-                                editAppSpecific("Spotting Agent", stanardComment, capId);
-                            }
+                            else if (gsItem.getGuideItemText().contains("Was there any Organic signage noted?"))
+                            {
+                                editAppSpecific("Signage 'Organic'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Is the facility using Process Perc?"))
+                            {
+                                editAppSpecific("Process 'Perc'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Is the facility using Process Hydrocarbon?"))
+                            {
+                                editAppSpecific("Process 'Hydrocarbon'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Is the facility using Process Drop?"))
+                            {
+                                editAppSpecific("Process 'Drop'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Is the facility using Process Wet Clean?"))
+                            {
+                                editAppSpecific("Process 'Wet'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Is the facility using any Washing Machine(s)?"))
+                            {
+                                editAppSpecific("Washing Machine'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Are there any Floor Drains present at the facility?"))
+                            {
+                                editAppSpecific("Floor Drain'", checklistStatus, capId);
+                            }  
+                            else if (gsItem.getGuideItemText().contains("Is the facility using Other Processes?"))
+                            {
+                                if (checklistStatus == 'Y') // also copy comments
+                                {
+                                    editAppSpecific("Other Process Type", stanardComment, capId);
+                                }
+                                editAppSpecific("Process Other", checklistStatus, capId);
+                            }  
                             
-                        }  
+                            else if (gsItem.getGuideItemText().contains("Are spotting agents being used?"))
+                            {
+                                if (checklistStatus == 'Y') // also copy comments
+                                {                            
+                                    editAppSpecific("Spotting Agent", stanardComment, capId);
+                                }
+                                
+                            }  
+                        }
                     }
                 }
             }
