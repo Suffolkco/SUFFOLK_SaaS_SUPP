@@ -15,16 +15,17 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         expDateASI = new Date(expDateASI);
         logDebug("New Date Exp Date is: " + expDateASI)
         var newExpDate = (expDateASI.getMonth() + 1) + date.getMonth() + (expDateASI.getFullYear() + 2);
-
-     
         logDebug("New Exp Date is: " + newExpDate);
-        editAppSpecific("Expiration Date", newExpDate, parentCapId);
+        newExpirationDate = newExpDate("MM/dd/yyyy");
+        logDebug("New Expiration Date is: " + newExpirationDate);
+        
+        editAppSpecific("Expiration Date", newExpirationDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
         if (b1ExpResult.getSuccess())
         {
             var b1Exp = b1ExpResult.getOutput();
             b1Exp.setExpStatus("Active");
-            b1Exp.setExpDate(aa.date.parseDate(newExpDate));
+            b1Exp.setExpDate(aa.date.parseDate(newExpirationDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Renewed", "", "", "", parentCapId);
@@ -51,14 +52,17 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("today's date is " + today);
         // 2 years for licenses
         var nullExpDate = (today.getMonth() + 1) + date.getMonth() + (today.getFullYear() + 2);
+        newExpirationDate = nullExpDate.toString("MM/dd/yyyy");
 
         if (appTypeArray[1] == "TLC") // 1 year for TLC
         {
             nullExpDate = (today.getMonth() + 1) + date.getMonth() + (today.getFullYear() + 1);
+            // DAP-558
+            newExpirationDate = nullExpDate.toString("MM/dd/yyyy");
         }
         else
         {
-            editAppSpecific("Expiration Date", nullExpDate, parentCapId);
+            editAppSpecific("Expiration Date", newExpirationDate, parentCapId);
         }     
         logDebug("null date is " + nullExpDate);
        
@@ -67,7 +71,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         {
             var b1Exp = b1ExpResult.getOutput();
             b1Exp.setExpStatus("Active");
-            b1Exp.setExpDate(aa.date.parseDate(nullExpDate));
+            b1Exp.setExpDate(aa.date.parseDate(newExpirationDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
@@ -119,7 +123,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         if (appTypeArray[1] != "TLC")
         {
-            addParameter(vEParams, "$$expDate$$", newExpDate);
+            addParameter(vEParams, "$$expDate$$", newExpirationDate);
         }
         if (appTypeArray[1] == "TLC")
         {
