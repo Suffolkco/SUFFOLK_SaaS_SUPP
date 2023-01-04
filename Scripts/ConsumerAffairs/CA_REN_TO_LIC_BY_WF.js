@@ -14,7 +14,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("ASI Expdate is: " + expDateASI);
         expDateASI = new Date(expDateASI);
         logDebug("New Date Exp Date is: " + expDateASI)
-        var newExpDate = (expDateASI.getMonth() + 1) + "/01/" + (expDateASI.getFullYear() + 2);
+        var newExpDate = (expDateASI.getMonth() + 1) + date.getMonth() + (expDateASI.getFullYear() + 2);
 
      
         logDebug("New Exp Date is: " + newExpDate);
@@ -50,11 +50,11 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         var today = new Date();
         logDebug("today's date is " + today);
         // 2 years for licenses
-        var nullExpDate = (today.getMonth() + 1) + "/01/" + (today.getFullYear() + 2);
+        var nullExpDate = (today.getMonth() + 1) + date.getMonth() + (today.getFullYear() + 2);
 
         if (appTypeArray[1] == "TLC") // 1 year for TLC
         {
-            nullExpDate = (today.getMonth() + 1) + "/01/" + (today.getFullYear() + 1);
+            nullExpDate = (today.getMonth() + 1) + date.getMonth() + (today.getFullYear() + 1);
         }
         else
         {
