@@ -13,10 +13,13 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         logDebug("ASI Expdate is: " + expDateASI);
         expDateASI = new Date(expDateASI);
-        logDebug("New Date Exp Date is: " + expDateASI)
+        logDebug("New ASI Exp Date is: " + expDateASI)
         var newExpDate = (expDateASI.getMonth() + 1) + date.getMonth() + (expDateASI.getFullYear() + 2);
         logDebug("New Exp Date is: " + newExpDate);
-        newExpirationDate = newExpDate.toString("MM/dd/yyyy");
+
+        var DDMMYYYY = jsDateToMMDDYYYY(newExpDate);        
+        newExpirationDate = aa.date.parseDate(DDMMYYYY);
+              
         logDebug("New Expiration Date is: " + newExpirationDate);
         
         editAppSpecific("Expiration Date", newExpirationDate, parentCapId);
@@ -146,7 +149,24 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     }
 }
 
-
+function jsDateToMMDDYYYY(pJavaScriptDate) {
+    //converts javascript date to string in MM/DD/YYYY format
+    if (pJavaScriptDate != null)
+    {
+        if (Date.prototype.isPrototypeOf(pJavaScriptDate))
+        {
+            return (pJavaScriptDate.getMonth() + 1).toString() + "/" + pJavaScriptDate.getDate() + "/" + pJavaScriptDate.getFullYear();
+        } else
+        {
+            logDebug("Parameter is not a javascript date");
+            return ("INVALID JAVASCRIPT DATE");
+        }
+    } else
+    {
+        logDebug("Parameter is null");
+        return ("NULL PARAMETER VALUE");
+    }
+}
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
     var itemCap = capId;
