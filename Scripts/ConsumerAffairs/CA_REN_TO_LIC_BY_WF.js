@@ -16,7 +16,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("New Date Exp Date is: " + expDateASI)
         var newExpDate = (expDateASI.getMonth() + 1) + date.getMonth() + (expDateASI.getFullYear() + 2);
         logDebug("New Exp Date is: " + newExpDate);
-        newExpirationDate = newExpDate("MM/dd/yyyy");
+        newExpirationDate = newExpDate.toString("MM/dd/yyyy");
         logDebug("New Expiration Date is: " + newExpirationDate);
         
         editAppSpecific("Expiration Date", newExpirationDate, parentCapId);
