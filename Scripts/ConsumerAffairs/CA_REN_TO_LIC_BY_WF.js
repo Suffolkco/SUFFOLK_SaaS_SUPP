@@ -9,26 +9,22 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
 
     //Updating Expiration Date of License
+
+
     if (expDateASI != null)
     {
         logDebug("ASI Expdate is: " + expDateASI);
         expDateASI = new Date(expDateASI);
-        logDebug("New ASI Exp Date is: " + expDateASI)
-        var newExpDate = (expDateASI.getMonth() + 1) + 1 + (expDateASI.getFullYear() + 2);
+        logDebug("New Date Exp Date is: " + expDateASI)
+        var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
         logDebug("New Exp Date is: " + newExpDate);
-
-        var DDMMYYYY = jsDateToMMDDYYYY(newExpDate);        
-        newExpirationDate = aa.date.parseDate(DDMMYYYY);
-              
-        logDebug("New Expiration Date is: " + newExpirationDate);
-        
-        editAppSpecific("Expiration Date", newExpirationDate, parentCapId);
+        editAppSpecific("Expiration Date", newExpDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
         if (b1ExpResult.getSuccess())
         {
             var b1Exp = b1ExpResult.getOutput();
             b1Exp.setExpStatus("Active");
-            b1Exp.setExpDate(aa.date.parseDate(newExpirationDate));
+            b1Exp.setExpDate(aa.date.parseDate(newExpDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Renewed", "", "", "", parentCapId);
@@ -53,28 +49,26 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         var today = new Date();
         logDebug("today's date is " + today);
-        // 2 years for licenses
-        var nullExpDate = (today.getMonth() + 1) + 1 + (today.getFullYear() + 2);
-        newExpirationDate = nullExpDate.toString("MM/dd/yyyy");
+         // 2 years for licenses
+        var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
 
         if (appTypeArray[1] == "TLC") // 1 year for TLC
         {
-            nullExpDate = (today.getMonth() + 1) + 1 + (today.getFullYear() + 1);
-            // DAP-558
-            newExpirationDate = nullExpDate.toString("MM/dd/yyyy");
+            nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 1);
         }
         else
         {
-            editAppSpecific("Expiration Date", newExpirationDate, parentCapId);
-        }     
+            editAppSpecific("Expiration Date", nullExpDate, parentCapId);
+        }
+
         logDebug("null date is " + nullExpDate);
-       
+        
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
         if (b1ExpResult.getSuccess())
         {
             var b1Exp = b1ExpResult.getOutput();
             b1Exp.setExpStatus("Active");
-            b1Exp.setExpDate(aa.date.parseDate(newExpirationDate));
+            b1Exp.setExpDate(aa.date.parseDate(nullExpDate));
             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
             updateAppStatus("Active", "", parentCapId);
             updateTask("Issuance", "Pending Renewal", "", "", "", parentCapId);
@@ -126,7 +120,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         if (appTypeArray[1] != "TLC")
         {
-            addParameter(vEParams, "$$expDate$$", newExpirationDate);
+            addParameter(vEParams, "$$expDate$$", newExpDate);
         }
         if (appTypeArray[1] == "TLC")
         {
@@ -139,9 +133,6 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
         }
         emailTemplate = "CA_LICENSE_RENEWAL_APPLICANT_NOTICE";
-
-        logDebug(parentCapId.getCustomID());
-       
         addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
@@ -149,24 +140,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     }
 }
 
-function jsDateToMMDDYYYY(pJavaScriptDate) {
-    //converts javascript date to string in MM/DD/YYYY format
-    if (pJavaScriptDate != null)
-    {
-        if (Date.prototype.isPrototypeOf(pJavaScriptDate))
-        {
-            return (pJavaScriptDate.getMonth() + 1).toString() + "/" + pJavaScriptDate.getDate() + "/" + pJavaScriptDate.getFullYear();
-        } else
-        {
-            logDebug("Parameter is not a javascript date");
-            return ("INVALID JAVASCRIPT DATE");
-        }
-    } else
-    {
-        logDebug("Parameter is null");
-        return ("NULL PARAMETER VALUE");
-    }
-}
+
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
     var itemCap = capId;
