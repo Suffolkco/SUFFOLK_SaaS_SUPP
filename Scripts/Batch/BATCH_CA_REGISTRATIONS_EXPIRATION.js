@@ -164,8 +164,7 @@ function mainProcess()
     {
         var sysDateMMDDYYYY = dateFormatted(sysDate.getMonth(), sysDate.getDayOfMonth() -1, sysDate.getYear(), "");
         // Test
-        //sysDateMMDDYYYY='12/01/2022';
-        dateCheckString = sysDateMMDDYYYY;
+        //sysDateMMDDYYYY='12/01/2022';        
         dateCheckString = sysDateMMDDYYYY;
         dateCheckString1 = dateCheckString.replace(/\b0/g, '');
 
