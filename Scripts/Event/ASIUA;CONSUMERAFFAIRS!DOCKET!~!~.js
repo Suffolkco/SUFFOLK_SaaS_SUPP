@@ -5,11 +5,12 @@ try
 {
 
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
-
+	removeASITable("VIOLATION CHEAT SHEET", capId);
 	var i = 0;
 	var newCheatsheet = new Array();
 	for (var c in cheatSheet)
 	{
+		itemNo = i++;
 		var newRow = new Array();
 		newRow["Violation Date"] = cheatSheet[c]["Violation Date"];
 		newRow["Occurrence Date"] = cheatSheet[c]["Occurrence Date"];
@@ -19,9 +20,9 @@ try
 		newRow["Withdraw Violation"] = cheatSheet[c]["Withdraw Violation"];
 		newRow["Reference Violation Number"] = cheatSheet[c]["Reference Violation Number"];
 		newRow["Abbreviated Description"] = cheatSheet[c]["Abbreviated Description"];
-		newRow["Item"] = i++;
-		newCheatsheet.push(newRow);
-		break;
+		newRow["Item"] = itemNo;
+		logDebug("itemNo: " + itemNo);
+		newCheatsheet.push(newRow);		
 	}
 
 	addASITable("VIOLATION CHEAT SHEET", newCheatsheet, capId);
