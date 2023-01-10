@@ -34,30 +34,45 @@ else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
 	//4.  What is Case number map to in violation record
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET")
    //logDebug("Amount of swimming pools on this record are: " + swimPools.length);
+   
+
    for (c in cheatSheet)
    {
-	   var conInfo = cheatSheet[c]["Consumer Info"];
-	   var venInfo = cheatSheet[c]["Vendor Info"];
+	
+		var item = cheatSheet[c]["Item"];
 	   var vioDate = cheatSheet[c]["Violation Date"];
-	   var caseNo = cheatSheet[c]["Case Number"];
-	   var vioDate = cheatSheet[c]["Violation Date"];
+	   var occDate = cheatSheet[c]["Occurence Date"];
+	   var caseNo = cheatSheet[c]["Case Number"];	  
 	   var caseNo = cheatSheet[c]["Case Number"];
 	   var charge = cheatSheet[c]["Charge"];
+	   var createVio = cheatSheet[c]["Create Violation"];
 	   var vioNo = cheatSheet[c]["Reference Violation Number"];
+	   var withdrawVio = cheatSheet[c]["Withdraw Violation"];	   
+	   var abbDesc = cheatSheet[c]["Abbreviated Description"];
 
-		var violationChild = createChildLocal("ConsumerAffairs", "Docket", "NA", "NA");
-		if (violationChild != null)
-		{		
-			editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     
-						
-			// Put the newly created violation record ID back to the cheat sheet
-			vioAltId = violationChild.getCustomID();
+	   logDebug("vioNo: " + vioNo);
 
-			rowIdentifier = conInfo; // ? Can we use consumer Info as unique identifier?
-
-
-			editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, conInfo, "Consumer Info") 
-			
+	   // Only if they enable the flag and the field is empty
+	   if (createVio == 'CHECKED' && vioNo == null)
+	   {
+			var violationChild = createChildLocal("ConsumerAffairs", "Docket", "NA", "NA");
+			if (violationChild != null)
+			{		
+				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
+				copyContacts(capId, violationChild);
+				
+				// Put the newly created violation record ID back to the cheat sheet
+				vioAltId = violationChild.getCustomID();
+				logDebug("vioAltId: " + vioAltId);
+				
+				//function editASITableRowViaRowIdentifer(tableCapId, tableName, editName, editValue, rowValue, rowIdentifier) {
+				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
+				
+			}
+		}
+		if (withdrawVio == 'CHECKED') // What do we do here? Unrelated or just set the Violation status to be withdraw?
+		{
+			// 
 		}
 	}
 
