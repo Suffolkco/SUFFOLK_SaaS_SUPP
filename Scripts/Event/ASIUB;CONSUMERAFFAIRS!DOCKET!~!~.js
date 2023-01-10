@@ -7,10 +7,10 @@ try
 
 	//loadASITables4ACA();
 
-	//local_loadASITables4ACA();
+	local_loadASITables4ACA();
 	
-	logGlobals(AInfo);
-	
+	//logGlobals(AInfo);
+
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
 	
 		
@@ -75,6 +75,7 @@ catch (err) {
 					}  catch (ex) { 
 						tval = tobj; 
 					}
+					logDebug("tcol: " + tcol + ", tval: " + tval);
 					tempObject[tcol.getColumnName()] = tval;
 				}
 				tempArray.push(tempObject);
