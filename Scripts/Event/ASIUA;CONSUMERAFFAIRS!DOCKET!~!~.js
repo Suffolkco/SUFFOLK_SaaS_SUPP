@@ -6,11 +6,11 @@ try
 
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
 	removeASITable("VIOLATION CHEAT SHEET", capId);
-	var i = 0;
+	var i = 1;
 	var newCheatsheet = new Array();
 	for (var c in cheatSheet)
 	{
-		itemNo = i++;
+		var itemNo = i++;
 		var newRow = new Array();
 		newRow["Violation Date"] = cheatSheet[c]["Violation Date"];
 		newRow["Occurrence Date"] = cheatSheet[c]["Occurrence Date"];
