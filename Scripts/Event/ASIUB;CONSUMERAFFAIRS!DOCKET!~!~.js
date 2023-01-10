@@ -6,17 +6,16 @@ try
 
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
 	
-	var i = 1;
-	
+		
 	for (var c in cheatSheet)
 	{
 	
 		var createVio = cheatSheet[c]["Create Violation"];
-		var vioNo = cheatSheet[c]["Reference Violation Number"];
+		var withdrawVio = cheatSheet[c]["Withdraw Violation"];
 	
  
 		// Only if they enable the flag and the field is empty
-		if (createVio == 'Y' && vioNo =='Y')
+		if (createVio == 'Y' && withdrawVio =='Y')
 		{
 			cancel = true;
 			showMessage = true;
