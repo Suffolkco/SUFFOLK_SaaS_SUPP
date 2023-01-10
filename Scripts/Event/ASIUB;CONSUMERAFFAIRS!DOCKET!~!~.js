@@ -12,7 +12,8 @@ try
 	
 		var createVio = cheatSheet[c]["Create Violation"];
 		var withdrawVio = cheatSheet[c]["Withdraw Violation"];
-	
+		logDebug("createVio:" + createVio);
+		logDebug("withdrawVio:" + withdrawVio);
  
 		// Only if they enable the flag and the field is empty
 		if (createVio == 'Y' && withdrawVio =='Y')
