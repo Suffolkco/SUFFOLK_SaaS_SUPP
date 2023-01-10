@@ -16,7 +16,7 @@ try
 		logDebug("withdrawVio:" + withdrawVio);
  
 		// Only if they enable the flag and the field is empty
-		if (createVio == 'Y' && withdrawVio =='Y')
+		if (createVio == 'CHECKED' && withdrawVio =='CHECKED')
 		{
 			cancel = true;
 			showMessage = true;
