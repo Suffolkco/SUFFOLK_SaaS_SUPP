@@ -18,8 +18,7 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 	}
 
     // DOCKET - 23/30: Custom Field required fields
-    if (getAppSpecific("License Vendor Attorney Present", capId) == null || 
-    getAppSpecific("Consumer Attorney Present", capId) == null || 
+    if (getAppSpecific("Consumer Attorney Present", capId) == null || 
     getAppSpecific("Vendor Present", capId) == null || 
     getAppSpecific("Consumer Present", capId) == null || 
     getAppSpecific("Vendor Witnesses", capId) == null || 
