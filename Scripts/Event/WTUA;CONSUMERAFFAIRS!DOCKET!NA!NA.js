@@ -56,10 +56,10 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   // Only if they enable the flag and the field is empty
 	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
 	   {
-			var violationChild = createChildLocal("ConsumerAffairs", "Docket", "NA", "NA");
+			var violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA");
 			if (violationChild != null)
 			{		
-				logDebug("createVio: " + vioDate);
+				logDebug("Violation date: " + vioDate);
 				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
 				copyContacts(capId, violationChild);
 				
