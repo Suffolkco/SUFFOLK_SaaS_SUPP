@@ -36,7 +36,11 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET")
    //logDebug("Amount of swimming pools on this record are: " + swimPools.length);
    
-
+   var complaintNumber = getAppSpecific("Complaint Number", capId);
+		
+	// License as Parent -> Complaint -> Violation
+	var capComplaintResult = aa.cap.getCapID(complaintNumber);
+	
    for (c in cheatSheet)
    {
 	
@@ -56,7 +60,13 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   // Only if they enable the flag and the field is empty
 	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
 	   {
-			var violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA");
+			
+			if (capComplaintResult.getSuccess()) {
+				cmpCapId = capComplaintResult.getOutput();		
+				logDebug("cmpCapId: " + cmpCapId);			
+			}
+			
+			var violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
 			if (violationChild != null)
 			{		
 				logDebug("Violation date: " + vioDate);
@@ -69,6 +79,10 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				
 				//function editASITableRowViaRowIdentifer(tableCapId, tableName, editName, editValue, rowValue, rowIdentifier) {
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
+
+				
+
+
 				
 			}
 		}
