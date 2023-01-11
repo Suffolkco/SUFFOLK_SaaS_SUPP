@@ -19,7 +19,7 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 
 }
 //DOCKET #8: Script to create violation automatically based on the violation cheatsheet custom list
-else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
+else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 {
 	//Consumer Info
 	//Vendor Info
