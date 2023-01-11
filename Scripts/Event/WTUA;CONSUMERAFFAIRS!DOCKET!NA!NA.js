@@ -1,5 +1,5 @@
 //WTUA;CONSUMERAFFAIRS!DOCKET!NA!NA
-
+showDebug = true;
 
 // DOCKET #19: Look up custom field entry to relate Complaints and License Records
 if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
@@ -27,6 +27,7 @@ else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
 	//Case Number
 	//Charge
 	//Reference Violation Number
+	logDebug("Loading cheat sheet");
 
 	//1.  How to convert Vendor Info text field into Violation record? Which field to map to?
 	//2. Same as vendor Info
@@ -51,13 +52,14 @@ else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
 	   var abbDesc = cheatSheet[c]["Abbreviated Description"];
 
 	   logDebug("vioNo: " + vioNo);
-
+	   logDebug("createVio: " + createVio);
 	   // Only if they enable the flag and the field is empty
 	   if (createVio == 'CHECKED' && vioNo == null)
 	   {
 			var violationChild = createChildLocal("ConsumerAffairs", "Docket", "NA", "NA");
 			if (violationChild != null)
 			{		
+				logDebug("createVio: " + vioDate);
 				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
 				copyContacts(capId, violationChild);
 				
