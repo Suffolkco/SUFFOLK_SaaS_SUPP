@@ -54,7 +54,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   logDebug("vioNo: " + vioNo);
 	   logDebug("createVio: " + createVio);
 	   // Only if they enable the flag and the field is empty
-	   if (createVio == 'CHECKED' && vioNo == null)
+	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
 	   {
 			var violationChild = createChildLocal("ConsumerAffairs", "Docket", "NA", "NA");
 			if (violationChild != null)
