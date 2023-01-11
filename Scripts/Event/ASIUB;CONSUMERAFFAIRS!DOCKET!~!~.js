@@ -1,6 +1,30 @@
 // /ASIUA:
 // This is to add the unique ID to the custom list VIOLATION CHEAT SHEET
 var showDebug = true;
+var useSA = false;
+var SA = null;
+var SAScript = null;
+var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
+{
+    useSA = true;
+    SA = bzr.getOutput().getDescription();
+    bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
+    if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
+}
+
+if (SA)
+{
+    eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
+    eval(getScriptText(SAScript, SA));
+}
+else
+{
+    eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+}
+
+eval(getScriptText("INCLUDES_CUSTOM"));
+
 try
 {
 	var AInfo = new Array();						// Create array for tokenized variables
