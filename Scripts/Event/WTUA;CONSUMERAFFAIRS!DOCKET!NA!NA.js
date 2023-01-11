@@ -88,6 +88,27 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 		}
 		if (withdrawVio == 'CHECKED') // What do we do here? Unrelated or just set the Violation status to be withdraw?
 		{
+			if (vioNo != "" || vioNo != null)
+			{
+				logDebug("Withdraw violation request: " + vioNo);
+				
+				// get cap id from alt id
+				var capIdRes = aa.cap.getCapID(vioNo);
+
+				//GET CAP ID, if result returns an error then don't process this record.
+				if (!capIdRes.getSuccess()) 
+				{
+					logDebugLocal("ERROR getting capId for record " + vioNo + ". Err: " + capIdRes.getOutput()); 
+				}
+				else
+				{
+					vioCapId = capIdRes.getOutput();
+					var cap = aa.cap.getCap(vioCapId).getOutput();
+
+					updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
+				}
+			
+			}
 			// 
 		}
 	}
