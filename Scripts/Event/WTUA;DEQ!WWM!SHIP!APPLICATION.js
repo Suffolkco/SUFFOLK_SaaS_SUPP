@@ -9,7 +9,7 @@ var addrResult = getAddressInALine(capId);
 addParameter(vEParams, "$$altID$$", capId.getCustomID());
 addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$wfComment$$", wfComment);
-//var InspComment = GetLastInspComment(capId);
+
 var propOwnerEmail = "";
 var propOwnerName = "";
 var allEmail = "";
@@ -79,7 +79,7 @@ if (wfTask == "Application Review")
     }
     if (wfStatus == "Conventional - Inspection Required")
     {
-        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
+        //sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
     }
     if (wfStatus == "Conventional - OK to Proceed")
     {
@@ -180,6 +180,11 @@ if (wfTask == "Field Consult Required")
                     otpRFiles.push(otpReportFile);
                 }
             }
+            var vEParams = aa.util.newHashtable();
+            var altId = capId.getCustomID();
+            addParameter(vEParams, "$$wwmAltID$$", altId);
+            addParameter(vEParams, "$$wfComment$$", wfComment);
+            addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
             sendNotification("", lpAgentEmail, "", "DEQ_SHIP_ADDITIONAL_DOCUMENTS", vEParams, otpRFiles);
         }
     }
@@ -193,7 +198,7 @@ if (wfTask == "Field Consult Required")
 
     if (wfStatus == "Waived")
     {
-        sendNotification("", propOwnerEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
+       // sendNotification("", propOwnerEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
     }
 
 }
@@ -240,7 +245,6 @@ if (wfTask == "Preliminary Sketch Review")
                 if (matches(wfHist[h].getDisposition(), "No Application Received", "Not Eligible", "OK to Proceed") && maxWfDate == wfHist[h].getDispositionDate().getEpochMilliseconds())
                 {
                     tasksCompleted = true;
-                    logDebug("tasks look good");
                 }
              
             }
@@ -262,8 +266,16 @@ if (wfTask == "Preliminary Sketch Review")
                 updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
             }
         }
-        else
+        if(!tasksCompleted)
         {
+            if (wfStatus == "Inspection Required Prior to Install")
+            {
+                updateAppStatus("Inspection Required Pending Grant");
+            }
+            if (wfStatus == "OK to Proceed")
+            {
+                updateAppStatus("OK Pending Grant Review");
+            }
             deactivateTask("Inspections");
         }
     }
@@ -418,6 +430,11 @@ if (wfTask == "Inspections")
 {
     if (wfStatus == "Inspection Failure")
     {
+        var InspComment = GetLastInspComment(capId);
+        var InspDate = GetLastInspDate(capId);
+        addParameter(vEParams, "$$wfComment$$", InspComment);
+        addParameter(vEParams, "$$InspDate$$", InspDate);
+        addParameter(vEParams, "$$altID$$", capId.getCustomID());
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_FAILURE", vEParams, null);
     }
 
@@ -550,6 +567,13 @@ if (wfTask == "Final Review")
                 if (iaManufacturer != "N/A") 
                 {
                     checkIANumber = true;
+                    updateAppStatus("Registration Complete");
+                    deactivateAllActiveTasks(capId);
+                    OmFlag =true;
+                    if(rcRFiles!= undefined)
+                    {
+                    sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                    }
                 }
                 
                 if (iaManufacturer == "N/A") 
@@ -561,7 +585,8 @@ if (wfTask == "Final Review")
                     if(rcRFiles!= undefined)
                     {
                     sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
-                    sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
+                    //Removed Per Edward's comment
+                    //sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
                     }
                 }
                 if (iaManufacturer != "N/A" && !matches(getAppSpecific("IA Number"), null, undefined, "") && !matches(getAppSpecific("O&M Contract Approved"), null, undefined, "")  ) 
@@ -574,6 +599,19 @@ if (wfTask == "Final Review")
                 var newInspSchedDate = new Date(inspSchedDate);
                 var inspSchedDatePlusOne = (newInspSchedDate.getMonth() + 1) + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1901);
                 var inspSchedDatePlusThree = (newInspSchedDate.getMonth() + 1) + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1903);
+
+
+                if (!matches(getAppSpecific("IA Number"), null, undefined, "") && matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
+                {
+                    var vEParams = aa.util.newHashtable();
+                    var addrResult = getAddressInALine(capId);
+                    addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
+                    addParameter(vEParams, "$$address$$", addrResult);
+                    addParameter(vEParams, "$$pin$$", pin);
+                    addParameter(vEParams, "$$wwmAltID$$", altId);
+                    addParameter(vEParams, "$$Parcel$$", parcelNumber);
+                    sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                }
 
                 if (matches(getAppSpecific("IA Number"), null, undefined, ""))
                 {
@@ -725,6 +763,7 @@ if (wfTask == "Final Review")
                     sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
                     updateAppStatus("Awaiting O&M Contract");
                 }
+              
               //Eduardo Jira EHIMS2-93 //Ensure that duplicate status does not occur
               if(!matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
               {
@@ -739,7 +778,7 @@ if (wfTask == "Final Review")
                 {
                     updateAppStatus("Awaiting O&M Contract");
                 }
-                }
+            }
         }
        
        
@@ -934,7 +973,7 @@ if (wfTask == "Final Review")
 }
 
 //General come here
-if (wfStatus == "No Inspection Needed" || wfStatus == "Complete")
+if ((wfStatus == "No Inspection Needed" || wfStatus == "Complete") && (wfTask != "Field Consult Required"))
 {
     otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
     logDebug("This is the rFile: " + otpReportFile);
@@ -981,6 +1020,11 @@ if (wfStatus == "No Inspection Needed" || wfStatus == "Complete")
 
 if (wfTask != "Grant Review" && (wfStatus == "Awaiting Client Reply" || wfStatus == "Plan Revision Required"))
 {
+    var altId = capId.getCustomID();
+    var vEParams = aa.util.newHashtable();
+    addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
+    addParameter(vEParams, "$$wwmAltID$$", altId);
+    addParameter(vEParams, "$$wfComment$$", wfComment);
     sendNotification("", lpAgentEmail, "", "DEQ_SHIP_ADDITIONAL_DOCUMENTS", vEParams, null);
 }
 
@@ -1275,17 +1319,26 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
 }
-/*
+
 function GetLastInspComment(capId)
 {
     inspectionResult = aa.inspection.getInspections(capId);
 				if (inspectionResult.getSuccess()) {
 					var lastInsp = inspectionResult.getOutput().pop();
-                    var Inspcomment = lastInsp.getInspectionComments();
-                    aa.print(lastInsp.getInspector());
-				    aa.print("This should be the comment " + Inspcomment);
-                  
+                    aa.print(lastInsp.getInspection().getResultComment() + "Our Result Comment");
                 }
-                return lastInsp.getInspectionComments();
+                return  lastInsp.getInspection().getResultComment();
 }
-*/
+
+
+function GetLastInspDate(capId)
+{
+    inspectionResult = aa.inspection.getInspections(capId);
+				if (inspectionResult.getSuccess()) {
+					var lastInsp = inspectionResult.getOutput().pop();
+                    var LastDate = lastInsp.getInspectionDate().getMonth() + "/" + lastInsp.getInspectionDate().getDayOfMonth() + "/" + lastInsp.getInspectionDate().getYear();
+                }
+                return  LastDate;
+}
+
+
