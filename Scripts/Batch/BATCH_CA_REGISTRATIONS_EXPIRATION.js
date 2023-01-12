@@ -163,8 +163,15 @@ function mainProcess()
     try
     {
         var sysDateMMDDYYYY = dateFormatted(sysDate.getMonth(), sysDate.getDayOfMonth() -1, sysDate.getYear(), "");
+        // Test
+        //sysDateMMDDYYYY='12/01/2022';        
         dateCheckString = sysDateMMDDYYYY;
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT = '" + dateCheckString + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Registrations'"; 
+        dateCheckString1 = dateCheckString.replace(/\b0/g, '');
+
+        logDebugLocal("Date to check: " + dateCheckString);        
+        logDebugLocal("Date to check 1: " + dateCheckString1);
+
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT IN ('" + dateCheckString + "','" + dateCheckString1 + "') WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Registrations'"; 
         var output = "Record ID | Expiration Date \n";
         var vResult = doSQLSelect_local(vSQL); 
 
@@ -193,7 +200,7 @@ function mainProcess()
                                 var curSt = b1Exp.getExpStatus();
                                 if (curSt != null)
                                 {
-                                    if (curSt == "About to Expire")
+                                    if (curSt == "About to Expire" || curSt == "Active")
                                     {
                                             b1Exp.setExpStatus("Expired");
                                             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());

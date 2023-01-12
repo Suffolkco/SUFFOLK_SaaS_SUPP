@@ -199,16 +199,29 @@ try
 			
 			var parcelTxt = new String(parcelNo);
 
-			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');				
+			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');	
+			
+			var numeric = /^\d+$/.test(noSpaceParcelNo);
+			//var numeric = isNumeric(noSpaceParcelNo);
+
+			logDebug("numeric? " + numeric);
 			var length = noSpaceParcelNo.length;
 			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
 			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
-			if (length != 19)        
+			if (length != 19 || !numeric)        
 			{            
 				cancel = true;
 				showMessage = true;
+
 				comment("You have entered the wrong Parcel (Tax Map) Number.");
-				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+				if (length != 19)
+				{
+					comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+				}
+				if (!numeric)
+				{
+					comment ("Parcel (Tax Map) Number must be a number. Your entry has included a non-numeric value.");
+				}
 				comment ("Please see instructional note in Parcel Section.");
 			}				
 		}
@@ -229,7 +242,11 @@ catch (ex)
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
-
+function isNumeric(str) {
+	if (typeof str != "string") return false // we only process strings!  
+	return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+		   !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
 
 if (debug.indexOf("**ERROR") > 0)
 	{

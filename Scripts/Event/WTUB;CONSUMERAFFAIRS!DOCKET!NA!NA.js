@@ -18,8 +18,7 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 	}
 
     // DOCKET - 23/30: Custom Field required fields
-    if (getAppSpecific("License Vendor Attorney Present", capId) == null || 
-    getAppSpecific("Consumer Attorney Present", capId) == null || 
+    if (getAppSpecific("Consumer Attorney Present", capId) == null || 
     getAppSpecific("Vendor Present", capId) == null || 
     getAppSpecific("Consumer Present", capId) == null || 
     getAppSpecific("Vendor Witnesses", capId) == null || 
@@ -58,6 +57,19 @@ else if (wfTask == "Create Violation Cheat Sheet" && wfStatus == "Complete")
         comment("All Exhibit document types have not been attached.");
     }
     
+}
+// DOCKET#57: Block workflow update on Hearing Report task if there is no hearing officer report
+else if (wfTask == "Hearing Report" && wfStatus == "Complete")
+{
+    //Check if the Hearing Report has not been attached
+    offCheck = determineDocumentAttached("Hearing Officer Report and Recommendation");
+    
+    if(!offCheck)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("No Hearing Officer Report and Recommendation document has been attached. Please attach document before proceeding. Unable to move to the next task.");
+    }
 }
 // DOCKET #7: Docket Type Script: Block to proceed if AOS has not been scanned at workflow task Notice of Hearing -> next step
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")

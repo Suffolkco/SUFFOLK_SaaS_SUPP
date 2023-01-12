@@ -1,5 +1,5 @@
 //WTUA;CONSUMERAFFAIRS!DOCKET!NA!NA
-
+showDebug = true;
 
 // DOCKET #19: Look up custom field entry to relate Complaints and License Records
 if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
@@ -19,7 +19,7 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 
 }
 //DOCKET #8: Script to create violation automatically based on the violation cheatsheet custom list
-else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
+else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 {
 	//Consumer Info
 	//Vendor Info
@@ -27,6 +27,7 @@ else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
 	//Case Number
 	//Charge
 	//Reference Violation Number
+	logDebug("Loading cheat sheet");
 
 	//1.  How to convert Vendor Info text field into Violation record? Which field to map to?
 	//2. Same as vendor Info
@@ -34,30 +35,81 @@ else if (wfTask == 'Create Violation' && wfStatus == 'Complete')
 	//4.  What is Case number map to in violation record
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET")
    //logDebug("Amount of swimming pools on this record are: " + swimPools.length);
+   
+   var complaintNumber = getAppSpecific("Complaint Number", capId);
+		
+	// License as Parent -> Complaint -> Violation
+	var capComplaintResult = aa.cap.getCapID(complaintNumber);
+	
    for (c in cheatSheet)
    {
-	   var conInfo = cheatSheet[c]["Consumer Info"];
-	   var venInfo = cheatSheet[c]["Vendor Info"];
+	
+		var item = cheatSheet[c]["Item"];
 	   var vioDate = cheatSheet[c]["Violation Date"];
-	   var caseNo = cheatSheet[c]["Case Number"];
-	   var vioDate = cheatSheet[c]["Violation Date"];
+	   var occDate = cheatSheet[c]["Occurence Date"];
+	   var caseNo = cheatSheet[c]["Case Number"];	  
 	   var caseNo = cheatSheet[c]["Case Number"];
 	   var charge = cheatSheet[c]["Charge"];
+	   var createVio = cheatSheet[c]["Create Violation"];
 	   var vioNo = cheatSheet[c]["Reference Violation Number"];
+	   var withdrawVio = cheatSheet[c]["Withdraw Violation"];	   
+	   var abbDesc = cheatSheet[c]["Abbreviated Description"];
 
-		var violationChild = createChildLocal("ConsumerAffairs", "Docket", "NA", "NA");
-		if (violationChild != null)
-		{		
-			editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     
-						
-			// Put the newly created violation record ID back to the cheat sheet
-			vioAltId = violationChild.getCustomID();
-
-			rowIdentifier = conInfo; // ? Can we use consumer Info as unique identifier?
-
-
-			editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, conInfo, "Consumer Info") 
+	   logDebug("vioNo: " + vioNo);
+	   logDebug("createVio: " + createVio);
+	   // Only if they enable the flag and the field is empty
+	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
+	   {
 			
+			if (capComplaintResult.getSuccess()) {
+				cmpCapId = capComplaintResult.getOutput();		
+				logDebug("cmpCapId: " + cmpCapId);			
+			}
+			
+			var violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
+			if (violationChild != null)
+			{		
+				logDebug("Violation date: " + vioDate);
+				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
+				copyContacts(capId, violationChild);
+				
+				// Put the newly created violation record ID back to the cheat sheet
+				vioAltId = violationChild.getCustomID();
+				logDebug("vioAltId: " + vioAltId);
+				
+				//function editASITableRowViaRowIdentifer(tableCapId, tableName, editName, editValue, rowValue, rowIdentifier) {
+				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
+
+				
+
+
+				
+			}
+		}
+		if (withdrawVio == 'CHECKED') // What do we do here? Unrelated or just set the Violation status to be withdraw?
+		{
+			if (vioNo != "" || vioNo != null)
+			{
+				logDebug("Withdraw violation request: " + vioNo);
+				
+				// get cap id from alt id
+				var capIdRes = aa.cap.getCapID(vioNo);
+
+				//GET CAP ID, if result returns an error then don't process this record.
+				if (!capIdRes.getSuccess()) 
+				{
+					logDebugLocal("ERROR getting capId for record " + vioNo + ". Err: " + capIdRes.getOutput()); 
+				}
+				else
+				{
+					vioCapId = capIdRes.getOutput();
+					var cap = aa.cap.getCap(vioCapId).getOutput();
+
+					updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
+				}
+			
+			}
+			// 
 		}
 	}
 

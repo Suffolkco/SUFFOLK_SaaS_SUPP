@@ -29,4 +29,26 @@ if (appId) {
         }
         editAppSpecific("License Status", licStatus, capId);
     }
+
+
+    // Copy License Expiration Date
+    var expDate = getAppSpecific("Expiration Date", appId);
+
+    if (expDate && expDate != "")
+    {
+        //Updating Expiration Date of License	
+		logDebug("Current ASI Expdate is: " + expDate);
+		
+		/*var today = new Date();
+		logDebug("today's date is " + today);
+		var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
+
+		var newExpDate = formatDate(nullExpDate);*/
+
+		logDebug("Docket license expiration date ASI set to " + expDate);	
+
+        editAppSpecific("License Expiration Date", expDate, capId);
+    }
+
 }
+

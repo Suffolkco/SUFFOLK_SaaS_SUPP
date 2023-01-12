@@ -9,14 +9,31 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
 
     //Updating Expiration Date of License
+
+
     if (expDateASI != null)
     {
         logDebug("ASI Expdate is: " + expDateASI);
         expDateASI = new Date(expDateASI);
         logDebug("New Date Exp Date is: " + expDateASI)
-        var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
 
-     
+        var dd = expDateASI.getDate();
+        var mm = expDateASI.getMonth()+1; 
+        var yyyy = expDateASI.getFullYear() + 2;
+
+        if(dd<10) 
+        {
+            dd='0'+dd;
+        } 
+
+        if(mm<10) 
+        {
+            mm='0'+mm;
+        } 
+
+        var newExpDate = mm+'/'+ dd +'/'+ yyyy;
+        //var newExpDate = (expDateASI.getMonth() + 1) + "/" + 1 + "/" + (expDateASI.getFullYear() + 2);
+
         logDebug("New Exp Date is: " + newExpDate);
         editAppSpecific("Expiration Date", newExpDate, parentCapId);
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
@@ -49,19 +66,40 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
     {
         var today = new Date();
         logDebug("today's date is " + today);
-        // 2 years for licenses
-        var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; 
+        var yyyy = today.getFullYear();
+
+        if(dd<10) 
+        {
+            dd='0'+dd;
+        } 
+
+        if(mm<10) 
+        {
+            mm='0'+mm;
+        } 
+
+         // 2 years for licenses
+        //var nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 2);
+        var nullExpDate = mm+'/'+ dd +'/'+ yyyy;
 
         if (appTypeArray[1] == "TLC") // 1 year for TLC
         {
-            nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 1);
+            yyyy = today.getFullYear() + 1;
+            nullExpDate = mm+'/'+ dd +'/'+ yyyy;
+            logDebug("Expiration date TLC is " + nullExpDate);
+            //nullExpDate = (today.getMonth() + 1) + "/" + 1 + "/" + (today.getFullYear() + 1);
         }
         else
         {
+            yyyy = today.getFullYear() + 2;
+            nullExpDate = mm+'/'+ dd +'/'+ yyyy;
             editAppSpecific("Expiration Date", nullExpDate, parentCapId);
-        }     
-        logDebug("null date is " + nullExpDate);
-       
+            logDebug("Expiration Date 2 years date is " + nullExpDate);
+        }
+        
+        
         var b1ExpResult = aa.expiration.getLicensesByCapID(parentCapId);
         if (b1ExpResult.getSuccess())
         {
@@ -132,9 +170,6 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
 
         }
         emailTemplate = "CA_LICENSE_RENEWAL_APPLICANT_NOTICE";
-
-        logDebug(parentCapId.getCustomID());
-       
         addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);

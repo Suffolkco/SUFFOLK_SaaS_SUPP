@@ -1,28 +1,39 @@
 var complaintNumber = getAppSpecific("Complaint Number", capId);
 	var licenseNumber = getAppSpecific("License Number", capId);
     
-	// Link Complaint Number
-	var capComplaintResult = aa.cap.getCapID(complaintNumber);
-	if (capComplaintResult.getSuccess()) {
-		recCapId = capComplaintResult.getOutput();
 
-		var linkResult = aa.cap.createAppHierarchy(capId, recCapId);
-		if (linkResult.getSuccess())
-			logDebug("Successfully linked to Complaint Record: " + capId);
-		else
-			logDebug( "**ERROR: linking to parent application parent cap id (" + capId + "): " + linkResult.getErrorMessage());
+	// Link License Number to Complaint and Docket
 
-	}
-	
-	// Link License Number
 	var capLicResult = aa.cap.getCapID(licenseNumber);
 	if (capLicResult.getSuccess()) {
 		licCapId = capLicResult.getOutput();
 
-		var linkLResult = aa.cap.createAppHierarchy(capId, licCapId);
+		// License as Parent -> Complaint 
+		var capComplaintResult = aa.cap.getCapID(complaintNumber);
+		if (capComplaintResult.getSuccess()) {
+			recCapId = capComplaintResult.getOutput();
+
+			var linkResult = aa.cap.createAppHierarchy(licCapId, recCapId);
+			if (linkResult.getSuccess())
+				logDebug("Successfully linked to Complaint Record: " + recCapId);
+			else
+				logDebug( "**ERROR: linking to parent application parent cap id (" + licCapId + "): " + linkResult.getErrorMessage());
+
+		}
+
+		// License as Parent -> Docket 
+		var linkLResult = aa.cap.createAppHierarchy(licCapId, capId);
 		if (linkLResult.getSuccess())
-			logDebug("Successfully linked to Parent Application : " + capId);
+			logDebug("Successfully linked to Parent License Record : " + licCapId);
 		else
-			logDebug( "**ERROR: linking to parent application parent cap id (" + capId + "): " + linkLResult.getErrorMessage());
+			logDebug( "**ERROR: linking to parent application parent cap id (" + licCapId + "): " + linkLResult.getErrorMessage());
+
+			// Link Complaint Number
+	
+	
 
 	}
+
+	
+	
+	
