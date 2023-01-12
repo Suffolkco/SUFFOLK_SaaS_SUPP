@@ -73,8 +73,8 @@ try
 				cancel = true;
 				showMessage = true;
 				comment("You have entered the wrong Parcel (Tax Map) Number.");
-				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
-				comment ("Please see instructional note in Parcel Section.");
+				comment ("Parcel (Tax Map) Number must be characters; you entered " + length + " character.");
+				//comment ("Please see instructional note in Parcel Section.");
 			}				
 		}
 	}
