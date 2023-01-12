@@ -76,7 +76,7 @@ if (wfTask == "Violation Review")
 {
     if (wfStatus == "Request Inspection")
     {
-
+        //
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         updateTaskDueDate("Violation Review", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
@@ -151,7 +151,8 @@ if (wfTask == "Enforcement Request Review")
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-
+        activateTask("Request Inspection");
+		deactivateTask("Enforcement Request Review");
     }
     if (wfStatus == "NOPH Sent")
     {
@@ -163,52 +164,53 @@ if (wfTask == "Enforcement Request Review")
         {
             //OP
             case "OP":
-                reportToSend = "";
+                reportToSend = "OPC Waiver Report";
             case "TT":
-                reportToSend = "";
+                reportToSend = "OPC Waiver Report";
             case "SP":
                 reportToSend = "OPC Swimming Pool NOPH";
             case "EE":
                 reportToSend = "OPC EE NOPH";
             case "IW":
-                reportToSend = "";
+                reportToSend = "OPC Waiver Report";
             case "BB":
-                reportToSend = "";
+                reportToSend = "OPC Waiver Report";
             case "T8":
-                reportToSend = "";
+                reportToSend = "OPC Waiver Report";
             case "WL":
                 reportToSend = "OPC Warning Letter";
             case "LL":
-                reportToSend = "";
+                reportToSend = "OPC Waiver Report";
         }
         addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
 
         generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
 
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
-        addStdConditionStrict("DEQ", "Notice of Hearing", capId);
-        addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
+        //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+        addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
         //Gets siblings by looking at the parent
-        addConditionSiblings(ParentCap)
+        addConditionSiblings(parentCapId)
 
     }
     if (wfStatus == "NOFH Sent")
     {
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
-        addStdConditionStrict("DEQ", "Notice of Hearing", capId);
-        addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
+        //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+        addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
         //Gets siblings by looking at the parent
-        addConditionSiblings(ParentCap);
+        addConditionSiblings(parentCapId);
     }
     if (wfStatus == "Warning Letter Sent")
     {
         //need to confirm that this report information is correct, below:
         generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
-         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
-         addStdConditionStrict("DEQ", "Notice of Hearing", capId);
-         addStdConditionStrict("DEQ", "Notice of Hearing", parentCapId);
-         //Gets siblings by looking at the parent
-         addConditionSiblings(ParentCap);
+            //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
+            //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+            //Gets siblings by looking at the parent 
+            //Also gets the record you are on so I commented out the o
+            addConditionSiblings(parentCapId);
+            addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
     }
     //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
     var enfType = AInfo["Enforcement Type"];
@@ -335,6 +337,7 @@ if (wfTask == "Preliminary Hearing")
         else
         {
             aa.print("We found a user on the parent sending email");
+            aa.print(conEmailListAll);
             sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
         }
 
@@ -391,7 +394,17 @@ if (wfTask == "Formal Hearing")
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
         addParameter(emailParams, "$$revisedFineAmount$$", revisedFineAmount);
+        emailParams.put("RecordID", capId.getCustomID().toString());
+        var reportToUse = generateReportP("OPC Waiver Report", emailParams, 'DEQ');
 
+        if (reportToUse)
+        {
+            var sendThisReport = new Array();
+            sendThisReport.push(reportToUse);
+        }
+
+
+        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
 
         sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, null);
     }
@@ -577,30 +590,33 @@ function getUserIDAssignedToTask(vCapId, taskName) {
 }
 function addStdConditionStrict(cType, cDesc) {
     var itemCap = capId;
+    aa.print("arguments.length:" + arguments.length);
     if (arguments.length == 3)
     {
         itemCap = arguments[2]; // use cap ID specified in args
     }
     if (!aa.capCondition.getStandardConditions)
     {
-        logDebug("addStdConditionStrict function is not available in this version of Accela Automation.");
+        aa.print("addStdConditionStrict function is not available in this version of Accela Automation.");
     } else
     {
         standardConditions = aa.capCondition.getStandardConditions(cType, cDesc).getOutput();
+        aa.print("standardConditions.length:" + standardConditions.length);
         for (i = 0; i < standardConditions.length; i++)
         {
             // Activate strict match
             if (standardConditions[i].getConditionType().toUpperCase() == cType.toUpperCase() && standardConditions[i].getConditionDesc().toUpperCase() == cDesc.toUpperCase())
             {
                 standardCondition = standardConditions[i];
-                var addCapCondResult = aa.capCondition.addCapCondition(itemCap, standardCondition.getConditionType(), standardCondition.getConditionDesc(), standardCondition.getConditionComment(), sysDate, null, sysDate, null, null, standardCondition.getImpactCode(), systemUserObj, systemUserObj, "Applied", currentUserID, "A", null, standardCondition.getDisplayConditionNotice(), standardCondition.getIncludeInConditionName(), standardCondition.getIncludeInShortDescription(), standardCondition.getInheritable(), standardCondition.getLongDescripton(), standardCondition.getPublicDisplayMessage(), standardCondition.getResolutionAction(), null, null, standardCondition.getConditionNbr(), standardCondition.getConditionGroup(), standardCondition.getDisplayNoticeOnACA(), standardCondition.getDisplayNoticeOnACAFee(), standardCondition.getPriority(), standardCondition.getConditionOfApproval());
+                var addCapCondResult = aa.capCondition.addCapCondition(itemCap, standardCondition.getConditionType(), standardCondition.getConditionDesc(), "OPC staff, see open enforcement record", sysDate, null, sysDate, null, null, standardCondition.getImpactCode(), systemUserObj, systemUserObj, "Applied", currentUserID, "A", null, "Y", standardCondition.getIncludeInConditionName(), standardCondition.getIncludeInShortDescription(), standardCondition.getInheritable(), standardCondition.getLongDescripton(), standardCondition.getPublicDisplayMessage(), standardCondition.getResolutionAction(), null, null, standardCondition.getConditionNbr(), standardCondition.getConditionGroup(), standardCondition.getDisplayNoticeOnACA(), standardCondition.getDisplayNoticeOnACAFee(), standardCondition.getPriority(), standardCondition.getConditionOfApproval());
 
                 if (addCapCondResult.getSuccess())
                 {
-                    logDebug("Successfully added condition (" + standardCondition.getConditionDesc() + ")");
+                    aa.print("Successfully added condition (" + standardCondition.getConditionDesc() + ")");
+                    aa.print("Adding a condition to " + capId);
                 } else
                 {
-                    logDebug("**ERROR: adding condition (" + standardCondition.getConditionDesc() + "): " + addCapCondResult.getErrorMessage());
+                    aa.print("**ERROR: adding condition (" + standardCondition.getConditionDesc() + "): " + addCapCondResult.getErrorMessage());
                 }
             }
         }
@@ -716,8 +732,8 @@ function addConditionSiblings(ParentCap)
     var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
     for (child in childRecords)
     {
-       
-        addStdConditionStrict("DEQ", "Notice of Hearing", childRecords[child]);
+       aa.print("Adding conditions to " + childRecords[child]);
+        addStdConditionStrict("DEQ", "Open Enforcement Record", childRecords[child]);
     }
 
 }
@@ -726,6 +742,7 @@ function removeConditionsSiblings(ParentCap)
     var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
     for (child in childRecords)
     {
+        aa.print("Removing conditions to " + childRecords[child]);
         removeAllCapConditions(childRecords[child])
     }
 
