@@ -10,7 +10,7 @@ if (wfTask == "End Enforcement Action" && wfStatus == "Close")
     }
 }
 
-if (wfTask == "Enforcement Request Review" && wfStatus == "NOPH Sent")
+if (wfTask == "Enforcement Request Review")
 {
     var enforcementType = getAppSpecific("Enforcement Type");
     if (matches(enforcementType, "", null, undefined, " "))
