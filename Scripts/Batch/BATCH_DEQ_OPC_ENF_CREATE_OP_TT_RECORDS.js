@@ -179,6 +179,7 @@ function mainProcess() {
             "   AND P.B1_PER_SUB_TYPE  in ('Hazardous Tank', 'Site')                                  \n" +
             "   AND P.B1_PER_CATEGORY in ('Permit', 'NA')           "
         var altIds = doSQL2(sql);
+        var processflag = true;  
         if (altIds)
         {
             if (altIds.length <= 0)
@@ -195,6 +196,7 @@ function mainProcess() {
                     //GET CAP ID, if result returns an error then don't process this record.
                     if (!capIdRes.getSuccess()) {logDebugLocal("ERROR getting capId for record " + altId + ". Err: " + capIdRes.getOutput()); continue;}
                     capId = capIdRes.getOutput();
+
                     var cap = aa.cap.getCap(capId).getOutput();
                     var appType = cap.getCapType();
                     var appTypeArray = String(appType).split("/");
@@ -218,13 +220,12 @@ function mainProcess() {
                                 var projDesc = workDescGet(capId);
                                 editAppName(appName, enfChild);
                                 updateWorkDesc(projDesc, enfChild);
-                                 //updating mask on new child enforcement record 
-                                 var enfType = getAppSpecific("Enforcement Type", enfChild);
-                                 var altIdString = String(enfChild.getCustomID());
-                                 var altSplit = enfChild.getCustomID().split("-");
-                                 altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
-                                 logDebug("Updating Alt ID to: " + altIdString);
-                                 updateAltID(altIdString, enfChild);
+                                //updating mask on new child enforcement record 
+                                var altIdString = String(enfChild.getCustomID());
+                                var altSplit = enfChild.getCustomID().split("-");
+                                altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + "OP";
+                                logDebugLocal("Updating Alt ID to: " + altIdString);
+                                updateAltID(altIdString, enfChild);
 
                                 //updating Code Enf record with Tank record info
                                 logDebugLocal("checking for tank records as children of the site");
@@ -235,10 +236,38 @@ function mainProcess() {
                                     //logDebugLocal("child tank records found");
                                     for (ct in childTankRecordArray)
                                     {
+                                       
                                         //logDebugLocal("checking tank record appstatuses...");
                                         if (getAppStatus(childTankRecordArray[ct]) == "Active")
                                         {
+                                            aa.print("This is the value of our flag at the start of the loop" + processflag);     
                                             logDebugLocal("Active tank found! AltID is: " + childTankRecordArray[ct].getCustomID());
+                                            var OfficialUseC  = getAppSpecific("Official Use Code", childTankRecordArray[ct]);
+                                            logDebugLocal("Active tank found! AltID is: " + childTankRecordArray[ct].getCustomID());
+                                            var OfficialUseString = String(OfficialUseC);
+                                            if(matches(OfficialUseString, "UR","81", "82","85","UAP","AP"))
+                                            {
+                                            aa.print("We found one of the strings so we shouldnt process")
+                                            processflag = false;  
+                                            }
+
+                                            if(OfficialUseString.indexOf("TEMP") != -1)
+                                            {
+                                            aa.print("TEMP was found so we get a value that's not -1 so we shouldnt process")
+                                            processflag = false;
+                                            }
+                                            if(OfficialUseString.indexOf("EX")!= -1)
+                                            {
+                                                aa.print("EX was found so we get a value that's not -1 so we shouldnt process");
+                                                processflag = false;
+                                            }
+                                            aa.print("This is our value for the first comparison " + matches(OfficialUseString, "UR","81", "82","85","UAP","AP"));
+                                            aa.print("This is our value for the second comparison " + (OfficialUseString.indexOf("TEMP") != -1));
+                                            aa.print("This is our value for the Third comparison " + (OfficialUseString.indexOf("EX")!= -1));
+                                           
+                                            if(processflag)
+                                            {
+                                            aa.print("Processing tank with index of" +  OfficialUseString);
                                             var newRow = new Array();
                                             var tankNo = getAppSpecific("SCDHS Tank #", childTankRecordArray[ct]);
                                             var productStore = getAppSpecific("Product Stored Label", childTankRecordArray[ct]);
@@ -253,10 +282,12 @@ function mainProcess() {
                                             newRow["Tank Location Label"] = tankLocLabel;
                                             newRow["Article 12"] = articleTwelve;
                                             newRow["Article 18"] = articleEighteen;
-                                            newRow["APPENDIX A"] = "CHECKED";
+                                            newRow["APPENDIX  A"] = "CHECKED";
                                             //logDebugLocal("newRow psl is: " + newRow["Product Store Label"]);
                                             addRowToASITable("OPERATING PERMIT", newRow, enfChild);
+                                            }
                                         }
+                                        processflag = true;
                                     }
                                 }
                             }
@@ -321,7 +352,33 @@ function mainProcess() {
                                     }
                                     if(flag || enfChild != undefined)
                                     //updating table
-                                    {
+                                    {//Applysame logic as above
+                                        processflag = true; 
+                                        var OfficialUseC  = getAppSpecific("Official Use Code", capId);
+                                        aa.print(capId)
+                                        aa.print("We are in the flag or child undefined and the process flag is " + processflag );
+                                        var OfficialUseString = String(OfficialUseC);
+                                        if(matches(OfficialUseString, "UR","81", "82","85","UAP","AP"))
+                                        {
+                                        aa.print("We found one of the strings so we shouldnt process")
+                                        processflag = false;  
+                                        }
+                                        if(OfficialUseString.indexOf("TEMP") != -1)
+                                        {
+                                        aa.print("TEMP was found so we get a value that's not -1 so we shouldnt process")
+                                        processflag = false;
+                                        }
+                                        if(OfficialUseString.indexOf("EX")!= -1)
+                                        {
+                                            aa.print("EX was found so we get a value that's not -1 so we shouldnt process");
+                                            processflag = false;
+                                        }
+                                        aa.print("This is our value for the first comparison " + matches(OfficialUseString, "UR","81", "82","85","UAP","AP"));
+                                        aa.print("This is our value for the second comparison " + (OfficialUseString.indexOf("TEMP") != -1));
+                                        aa.print("This is our value for the Third comparison " + (OfficialUseString.indexOf("EX")!= -1));
+                                        if(processflag)
+                                        {
+                                        aa.print("Our Flag is " + processflag + " We should process " + OfficialUseString);
                                         var newRow = new Array();
                                         var tankNo = getAppSpecific("SCDHS Tank #", capId);
                                         var productStore = getAppSpecific("Product Stored Label", capId);
@@ -338,7 +395,7 @@ function mainProcess() {
                                         newRow["Tank Location Label"] = tankLocLabel;
                                         newRow["Next Tank Test Date"] = nextLineTestDate;
                                         newRow["Next Line Test Date"] = nextTankTestDate;
-                                        newRow["APPENDIX A"] = "CHECKED";
+                                        newRow["APPENDIX  A"] = "CHECKED";
                                         logDebugLocal("ASI Custom List Product Store" + newRow["Product Store Label"]);
                                         if(enfChild != undefined)
                                         {
@@ -351,6 +408,7 @@ function mainProcess() {
                                             logDebugLocal("Adding a to already created record + " +  CapToUse.getCustomID());
                                             addRowToASITable("TANK TIGHTNESS TEST", newRow, CapToUse);
                                             
+                                        }
                                         }
                                     }
                                 }

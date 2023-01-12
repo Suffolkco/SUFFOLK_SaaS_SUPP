@@ -465,6 +465,8 @@ function mainProcess(thisType) {
                                     {
                                         if (wfObj[i].getActiveFlag() == "Y")
                                         {
+                                            if(wfObj[i].getDueDate()!=null)
+                                            {
                                             var dueDate = wfObj[i].getDueDate().getMonth() + "/" + wfObj[i].getDueDate().getDayOfMonth() + "/" + wfObj[i].getDueDate().getYear();
 
                                             //logDebugLocal("due date for " + wfObj[i].getTaskDescription() + " task is: " + dueDate);
@@ -498,6 +500,7 @@ function mainProcess(thisType) {
                                                     }
                                                 }
                                             }
+                                          }   
                                         }
                                     }
                                 }
