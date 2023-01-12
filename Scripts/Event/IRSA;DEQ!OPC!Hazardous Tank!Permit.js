@@ -90,6 +90,8 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 {
     if (inspResult == "Violations Found")
     {
+        var reportParams = aa.util.newHashtable();
+
         var childEnfRecordArray = getChildrenLocal("DEQ/OPC/Enforcement/NA", parentCap);
         logDebug("childenfrecordarray is: " + childEnfRecordArray);
 
@@ -113,7 +115,6 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
             var projDesc = workDescGet(parentCap);
             editAppName(appName, enfChild);
             updateWorkDesc(projDesc, enfChild);
-            var reportParams = aa.util.newHashtable();
             var alternateID = parentCap.getCustomID();
             var year = inspObj.getInspectionDate().getYear();
             var month = inspObj.getInspectionDate().getMonth();
@@ -171,14 +172,15 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                             var newRow = new Array();
                             newRow["Inspection Type"] = inspType;
                             newRow["SITE Record ID"] = alternateID;
-                            newRow["SCDHS Tank Number"] = tankNum;
+                            newRow["SCDHS Tank Number"] = tankNumber;
                             newRow["Product Store Label"] = prodStorLabel;
-                            newRow["Capacity"] = capacity + " " + units;
+                            newRow["Capacity"] = capacity + " " + units + " " + getAppSpecific("Units Label");
                             newRow["Tank Location Label"] = tankLoc;
                             newRow["Item Number"] = checklistItemNo;
                             newRow["Inspector Finding"] = checklistItemComment;
                             newRow["Inspection Date"] = inspResultDate;
                             newRow["Inspector"] = vInspectorName;
+                            newRow["Appendix  A"] = "CHECKED";
                             addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
                         }
                     }
@@ -190,14 +192,13 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 
             var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
 
-            addParameter(reportParams, "SiteRecordID", alternateID.toString());
-            addParameter(reportParams, "InspectionDate", inspectionDateCon);
-            addParameter(reportParams, "InspectionType", inspType);
-            generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
+            addParameter(reportParams, "TankRecordID", alternateID.toString());
+            addParameter(reportParams, "InspectionId", inspId);
+            logDebug("report params are: " + reportParams);
+            generateReportBatch(enfChild, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams);
         }
         else
         {
-            var reportParams = aa.util.newHashtable();
             var childrenToUpdate = new Array();
 
             for (cr in childEnfRecordArray)
@@ -257,6 +258,10 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
+                var prodStorLabel = getAppSpecific("Product Stored Label", capId);
+                var capacity = getAppSpecific("Capacity", capId);
+                var units = getAppSpecific("Units", capId);
+                var tankLoc = getAppSpecific("Tank Location", capId);
                 var inspInspectorObj = inspObj.getInspector();
                 if (inspInspectorObj)
                 {
@@ -304,7 +309,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                                 var newRow = new Array();
                                 newRow["Inspection Type"] = inspType;
                                 newRow["SITE Record ID"] = alternateID;
-                                newRow["SCDHS Tank Number"] = tankNum;
+                                newRow["SCDHS Tank Number"] = tankNumber;
                                 newRow["Product Store Label"] = prodStorLabel;
                                 newRow["Capacity"] = capacity + " " + units;
                                 newRow["Tank Location Label"] = tankLoc;
@@ -318,11 +323,12 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                     }
                 }
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
-                addParameter(reportParams, "SiteRecordID", alternateID.toString());
-                addParameter(reportParams, "InspectionDate", inspectionDateCon);
-                addParameter(reportParams, "InspectionType", inspType);
+                logDebug("Inspection DateTime: " + inspectionDateCon);
+
+                addParameter(reportParams, "TankRecordID", alternateID.toString());
+                addParameter(reportParams, "InspectionId", inspId);
                 logDebug("report params are: " + reportParams);
-                generateReportBatch(childCapToUse, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
+                generateReportBatch(childCapToUse, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams);
 
             }
 
@@ -336,7 +342,6 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
                 var fileRefNumber = getAppSpecific("File Reference Number", parentCap);
                 editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
-                var tankNum = getAppSpecific("SCDHS Tank #", capId);
                 var prodStorLabel = getAppSpecific("Product Stored Label", capId);
                 var capacity = getAppSpecific("Capacity", capId);
                 var units = getAppSpecific("Units", capId);
@@ -345,7 +350,6 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var projDesc = workDescGet(parentCap);
                 editAppName(appName, enfChild);
                 updateWorkDesc(projDesc, enfChild);
-                var reportParams = aa.util.newHashtable();
                 var alternateID = parentCap.getCustomID();
                 var year = inspObj.getInspectionDate().getYear();
                 var month = inspObj.getInspectionDate().getMonth();
@@ -400,10 +404,10 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                                 var newRow = new Array();
                                 newRow["Inspection Type"] = inspType;
                                 newRow["SITE Record ID"] = alternateID;
-                                newRow["SCDHS Tank Number"] = "N/A";
-                                newRow["Product Store Label"] = "N/A";
-                                newRow["Capacity"] = "N/A";
-                                newRow["Tank Location Label"] = "N/A";
+                                newRow["SCDHS Tank Number"] = tankNumber;
+                                newRow["Product Store Label"] = prodStorLabel;
+                                newRow["Capacity"] = capacity + " " + units;
+                                newRow["Tank Location Label"] = tankLoc;
                                 newRow["Item Number"] = checklistItemNo;
                                 newRow["Inspector Finding"] = checklistItemComment;
                                 newRow["Inspection Date"] = inspResultDate;
@@ -414,16 +418,15 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                     }
                 }
 
-
                 //logDebug("Inspection DateTime: " + month + "/" + day + "/" + year + "Hr: " +  hr + ',' + min + "," + sec);
                 logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
 
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
 
-                addParameter(reportParams, "SiteRecordID", alternateID.toString());
-                addParameter(reportParams, "InspectionDate", inspectionDateCon);
-                addParameter(reportParams, "InspectionType", inspType);
-                generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
+                addParameter(reportParams, "TankRecordID", alternateID.toString());
+                addParameter(reportParams, "InspectionId", inspId);
+                logDebug("report params are: " + reportParams);
+                generateReportBatch(enfChild, "Inspection result Tank Operator For Script Use", 'DEQ', reportParams);
             }
         }
     }
