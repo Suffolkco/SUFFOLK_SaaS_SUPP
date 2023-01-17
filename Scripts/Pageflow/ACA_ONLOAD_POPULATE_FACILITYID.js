@@ -27,7 +27,7 @@ try {
 		copyOwnersFromParent4ACA(cap, parentCapId);
 
 		// OMATKARI - Isseue 3021 - Copy Contacts
-		copyContactFromParent4ACA(cap, parentCapId);
+		//copyContactFromParent4ACA(cap, parentCapId);
 
 		//Copy ASI
 		copyAppSpecific4ACA(parentCap);

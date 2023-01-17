@@ -4,11 +4,11 @@
 |
 | Usage			: validate required ASIT based on ASI
 |
-| Client		: SUFFOLKCO	
+| Client		: SUFFOLKCO
 | Created by	: Ron Kovacs
 | Created On	: 10/06/2022
 |
-| Notes			: Require at least one of the ACA ASIT rows to proceed. Provide helpful error message when fail. 
+| Notes			: Item 215 G8 require ASIT row quantity based on ASI # quantity
 /------------------------------------------------------------------------------------------------------*/
 showDebug = false;
 /*------------------------------------------------------------------------------------------------------/
@@ -33,26 +33,27 @@ cap = capModel;
 try {
 	var appSpecificInfo = new Array();
 	loadAppSpecific4ACA(appSpecificInfo);
-		var asitRows = getASITable4ACA("MENU");
-		if (!asitRows || asitRows.length == 0) {
-			cancel = true;
-			message += "<font color=red>Please enter at least one Menu item below in order to continue. </font>" + br;
-		}
+	var eventNumber = appSpecificInfo["Number of Events"];
+	
+	var asitRows = getASITable4ACA("EVENT INFORMATION");
+	if ((!asitRows || asitRows.length == 0) && asitRows.length != (parseInt(eventNumber))) {
+		cancel = true;
+		message += "<font color=red>Please enter the same number of events as rows below as is in the 'Number of Events' field above. </font>" + br;
+	}
 	var appSpecificInfo = new Array();
 loadAppSpecific4ACA(appSpecificInfo);
-	var asitRows = getASITable4ACA("FOOD SERVICE INFORMATION");
+	var asitRows = getASITable4ACA("FOOD SOURCE INFORMATION");
 	if (!asitRows || asitRows.length == 0) {
 		cancel = true;
-		message += "<font color=red>Please enter at least one Food Service Location below in order to continue. </font>" + br;
+		message += "<font color=red>Please enter at least one Food Service item below in order to continue. </font>" + br;
 	}
 		var appSpecificInfo = new Array();
 loadAppSpecific4ACA(appSpecificInfo);
-	var asitRows = getASITable4ACA("HOURS OF OPERATION");
+	var asitRows = getASITable4ACA("MENU AND PREPARATION");
 	if (!asitRows || asitRows.length == 0) {
 		cancel = true;
-		message += "<font color=red>Please enter Hours of Operation below in order to continue. </font>" + br;
+		message += "<font color=red>Please enter at least one Menu and Prep item below in order to continue. </font>" + br;
 	}
-
 } catch (err) {
 	cancel = true;
 	message += "A system error has occured: " + err.message;
