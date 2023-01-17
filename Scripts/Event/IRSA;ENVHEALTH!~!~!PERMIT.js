@@ -6,6 +6,8 @@ eval(getScriptText("EH_Permit_UpdateEnforcementDataTables"));
 // Send the Change of Ownership email to the new Facility Owner
 eval(getScriptText("EH_ChangeOfOwnershipPINInspection"));
 
+// Update the Violation Text and Corrective Text custom field on the Checklist Item from Standard Choices
+eval(getScriptText("EH_Permit_UpdateViolationLongDesc"));
 
 function editRecordStatus(targetCapId, strStatus){
     var capModel = aa.cap.getCap(targetCapId).getOutput();

@@ -216,28 +216,40 @@ if (appMatch("EnvHealth/Temporary Event/Annual Sampling/Application")) {
 }
 
 if (appMatch("EnvHealth/Temporary Event/Organizer/Application")) {
-		var invFee = "Y";
-		updateFee("TEORG01", "EH_FP_APP", "FINAL", 1, invFee);
-}
-
-if (appMatch("EnvHealth/Temporary Event/Vendor/Application")) {
 	var invFee = "Y";
-	updateFee("TEVND01", "EH_FP_APP", "FINAL", 1, invFee);
-	
+	updateFee("TEORG01", "EH_FP_APP", "FINAL", 1, invFee);
+		
+	//Late fees
+	var eventStartDate = getAppSpecific("Opening Date"); //this date is working
 	var today = aa.date.getCurrentDate();
-	var vtodayPlusTwentyOne = dateFormatted(today.getMonth(), (today.getDayOfMonth() + 21), today.getYear());
-	var eventStartDate = getAppSpecific("Event Start Date")
-	if (eventStartDate <= vtodayPlusTwentyOne) {
-	updateFee("TEMELATE01", "EH_FP_APP", "FINAL", 1, invFee);
+	var vtoday = dateFormatted(today.getMonth(), today.getDayOfMonth(), today.getYear()); //this date is working to pull in today
+	var todayPlusTwentyOne = dateAdd(vtoday, 21);
+	var numDaysDiff = dateDiff(vtoday,eventStartDate)
+	if ((numDaysDiff <= 21) && (numDaysDiff > 0)){
+		addFee("TEMELATE01", "EH_FP_APP", "FINAL", 1, invFee);
 	}
 }
 
-if (appMatch("EnvHealth/Temporary Event/Multiple Event/Application")) {
-		var numberOfEvents = getAppSpecific("Number of Events");
-		var invFee = "Y";
-		updateFee("TEMULT01", "EH_FP_APP", "FINAL", parseInt(numberOfEvents), invFee);
-		
+
+if (appMatch("EnvHealth/Temporary Event/Vendor/Application")) {
+	//base fee single
+	var numberOfEvents = getAppSpecific("Number of Events");
+	var multFlag = getAppSpecific("Will you be applying for more than one event?");
+	var invFee = "Y";
+	if (multFlag == ("No")) {
+	updateFee("TEVND01", "EH_FP_APP", "FINAL", 1, invFee);
+	}
+	//base fee mult
+	var numberOfEvents = getAppSpecific("Number of Events");
+	var multFlag = getAppSpecific("Will you be applying for more than one event?");
+	var invFee = "Y";
+	if (multFlag == ("Yes") && numberOfEvents > 1) {
+	updateFee("TEMULT01", "EH_FP_APP", "FINAL", parseInt(numberOfEvents), invFee);
+	}
+	
 	//Late Fees for Multiple Temporary Event
+	var numberOfEvents = getAppSpecific("Number of Events");
+	var multFlag = getAppSpecific("Will you be applying for more than one event?");
 	loadASITables(capId);
 	var hearingDatesASIT = loadASITable("EVENT INFORMATION");
 	if(hearingDatesASIT.length > 0)
@@ -245,16 +257,33 @@ if (appMatch("EnvHealth/Temporary Event/Multiple Event/Application")) {
 		for(eachrow1st in hearingDatesASIT) 
 		{
 			var asiTRow = hearingDatesASIT[eachrow1st];
-			if(asiTRow["Event Dates"] != null && asiTRow["Event Dates"] != "") 
+			if(asiTRow["Event Start Date"] != null && asiTRow["Event Start Date"] != "" && multFlag == ("No"))
 			{
+				var _eventDate = hearingDatesASIT[eachrow1st]['Event Start Date'].fieldValue
+				var toDate = convertDate(_eventDate);
+				//var eventStartDate = asiTRow["Event Dates"]
+				//var veventDate = convertDate(eventStartDate);
 				var today = aa.date.getCurrentDate();
-				var vtodayPlusFourteen = dateFormatted(today.getMonth(), (today.getDayOfMonth() + 14), today.getYear());
-				var eventDate = asiTRow["Event Dates"]
-				var veventDate = convertDate(eventDate)
-				var invFee = "Y";
-				if(veventDate <= vtodayPlusFourteen)
-				{
-				updateFee("TEMELATE01", "EH_FP_APP", "FINAL", 1, invFee);
+				var vtoday = dateFormatted(today.getMonth(), today.getDayOfMonth(), today.getYear()); //this date is working to pull in today
+				var numDaysDiff = dateDiff(vtoday,toDate)
+				if ((numDaysDiff <= 14) && (numDaysDiff > 0)){
+					var invFee = "Y";
+					updateFee("TEMELATE01", "EH_FP_APP", "FINAL", 1, invFee);
+				}
+			}
+			var asiTRow = hearingDatesASIT[eachrow1st];
+			if(asiTRow["Event Start Date"] != null && asiTRow["Event Start Date"] != "" && multFlag == ("Yes") && numberOfEvents > 1)
+			{
+				var _eventDate = hearingDatesASIT[eachrow1st]['Event Start Date'].fieldValue
+				var toDate = convertDate(_eventDate);
+				//var eventStartDate = asiTRow["Event Dates"]
+				//var veventDate = convertDate(eventStartDate);
+				var today = aa.date.getCurrentDate();
+				var vtoday = dateFormatted(today.getMonth(), today.getDayOfMonth(), today.getYear()); //this date is working to pull in today
+				var numDaysDiff = dateDiff(vtoday,toDate)
+				if ((numDaysDiff <= 21) && (numDaysDiff > 0)){
+					var invFee = "Y";
+					updateFee("TEMELATE01", "EH_FP_APP", "FINAL", 1, invFee);
 				}
 			}
 		}
@@ -317,7 +346,10 @@ if (appMatch("EnvHealth/*/*/*")) {
 	//var parentId = cap.getParentCapID();
 }
 
+function dateDiff(date1, date2) {
 
+    return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
+}
 
 /*
 updateShortNotes((AInfo['Project Record ID']), capId);
