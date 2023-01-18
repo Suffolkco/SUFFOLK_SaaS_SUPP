@@ -1,135 +1,4 @@
-// Find Parent Facility and update current record with Facility Name and ID
-if(!appMatch("EnvHealth/Facility/NA/NA")){
-    var facilityID = getFacilityId(capId);
-    if(facilityID != false){
-        updateFacilityInfo(capId,facilityID);
-    }
-}
-
-
-//Relate EnvHealth Records as children to entered Facility Record
-if (appMatch("EnvHealth/*/*/*")) {
-	var capIdPar = aa.cap.getCapID(getAppSpecific("Facility ID"));
-	logDebug(capIdPar);
-	if(capIdPar.getSuccess())
-	{
-		var parentId = capIdPar.getOutput();
-		var linkResult = aa.cap.createAppHierarchy(parentId, capId);
-	}
-	//var cap = aa.env.getValue("CapModel");
-	//var parentId = cap.getParentCapID();
-}
-
-
-function editRecordStatus(targetCapId, strStatus){
-    var capModel = aa.cap.getCap(targetCapId).getOutput();
-    capModel.setCapStatus(strStatus);
-    aa.cap.editCapByPK(capModel.getCapModel());
-  }
-  function copyASIBySubGroup(sourceCapId, targetCapId, vSubGroupName) {
-    useAppSpecificGroupName = true;
-    var sAInfo = new Array;
-    loadAppSpecific(sAInfo, sourceCapId);
-    for (var asi in sAInfo) {
-      if( asi.substr(0,asi.indexOf(".")) == vSubGroupName){
-        editAppSpecific(asi, sAInfo[asi], targetCapId);
-      }
-    }
-    useAppSpecificGroupName = false;
-  }
-  function getAppName(capId){    
-    capResult = aa.cap.getCap(capId);
-    capModel = capResult.getOutput().getCapModel()
-    var appName = capModel.getSpecialText();
-    if(appName){
-      return appName;
-    }else{
-          return false;
-    }
-  }
-  function updateFacilityInfo(targetCapId,vFacilityId){
-      var capResult = aa.cap.getCap(vFacilityId);
-      if(capResult != null){
-          var capModel = capResult.getOutput().getCapModel()
-          var appName = capModel.getSpecialText();
-          var itemName = "Facility ID";
-          var itemGroup = null;
-          if (useAppSpecificGroupName){
-              if (itemName.indexOf(".") < 0)
-                  { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-              itemGroup = itemName.substr(0,itemName.indexOf("."));
-              itemName = itemName.substr(itemName.indexOf(".")+1);
-          }
-          var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,vFacilityId.getCustomID(),itemGroup);
-          if (appSpecInfoResult.getSuccess()){
-              logDebug( "INFO: " + itemName + " was updated."); 
-          } 	
-          else{
-              logDebug( "WARNING: " + itemName + " was not updated."); 
-          }
-          var itemName = "Facility Name";
-          var itemGroup = null;
-          if (useAppSpecificGroupName){
-              if (itemName.indexOf(".") < 0)
-                  { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-              itemGroup = itemName.substr(0,itemName.indexOf("."));
-              itemName = itemName.substr(itemName.indexOf(".")+1);
-          }
-          var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,appName,itemGroup);
-          if (appSpecInfoResult.getSuccess()){
-              logDebug( "INFO: " + itemName + " was updated."); 
-          } 	
-          else{
-              logDebug( "WARNING: " + itemName + " was not updated."); 
-          }
-          var itemName = "Facility DBA";
-          var itemGroup = null;
-          if (useAppSpecificGroupName){
-              if (itemName.indexOf(".") < 0)
-                  { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-              itemGroup = itemName.substr(0,itemName.indexOf("."));
-              itemName = itemName.substr(itemName.indexOf(".")+1);
-          }
-          var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,getAppSpecific("Facility DBA",vFacilityId),itemGroup);
-          if (appSpecInfoResult.getSuccess()){
-              logDebug( "INFO: " + itemName + " was updated."); 
-          } 	
-          else{
-              logDebug( "WARNING: " + itemName + " was not updated."); 
-          }
-          var itemName = "Business Code";
-          var itemGroup = null;
-          if (useAppSpecificGroupName){
-              if (itemName.indexOf(".") < 0)
-                  { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-              itemGroup = itemName.substr(0,itemName.indexOf("."));
-              itemName = itemName.substr(itemName.indexOf(".")+1);
-          }
-          var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,getAppSpecific("Business Code",vFacilityId),itemGroup);
-          if (appSpecInfoResult.getSuccess()){
-              logDebug( "INFO: " + itemName + " was updated."); 
-          } 	
-          else{
-              logDebug( "WARNING: " + itemName + " was not updated."); 
-          }
-          var itemName = "Billing Anniversary";
-          var itemGroup = null;
-          if (useAppSpecificGroupName){
-              if (itemName.indexOf(".") < 0)
-                  { logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-              itemGroup = itemName.substr(0,itemName.indexOf("."));
-              itemName = itemName.substr(itemName.indexOf(".")+1);
-          }
-          var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,getAppSpecific("Billing Anniversary",vFacilityId),itemGroup);
-          if (appSpecInfoResult.getSuccess()){
-              logDebug( "INFO: " + itemName + " was updated."); 
-          } 	
-          else{
-              logDebug( "WARNING: " + itemName + " was not updated."); 
-          }
-      }
-  }
-  //Import these into the INCLUDES_CUSTOM
+//Import these into the INCLUDES_CUSTOM
 function addBStructure(vCapId,structNo,structType,structName,structDesc){
     var added = aa.bStructure.addStructure(vCapId, structNo, structType, structName, structDesc, "", aa.date.getCurrentDate());
     if (added.getSuccess()) {
@@ -431,22 +300,22 @@ function getActivityCustomFieldValue(capId,activityCustomFieldName,curActivityNu
 	}
 }
 function getFacilityId(vCapId){
-    var facilityId = null;
-    facilityId = getParentByCapId(vCapId);
-    if(!matches(facilityId,null,undefined,"")){
-        if(appMatch("EnvHealth/Facility/NA/NA",facilityId)){
-            return facilityId;
-        }else{
-            // If Parent isnt a Facility, try the Gradparent
-            facilityId = getParentByCapId(facilityId);
-            if(!matches(facilityId,null,undefined,"")){
-                if(appMatch("EnvHealth/Facility/NA/NA",facilityId)){
-                    return facilityId;
-                }
-            }
-        }
-    }
-    return false;
+   var facilityId = null;
+   facilityId = getParentByCapId(vCapId);
+   if(!matches(facilityId,null,undefined,"")){
+       if(appMatch("EnvHealth/Facility/NA/NA",facilityId)){
+           return facilityId;
+       }else{
+           // If Parent isnt a Facility, try the Gradparent
+           facilityId = getParentByCapId(facilityId);
+           if(!matches(facilityId,null,undefined,"")){
+               if(appMatch("EnvHealth/Facility/NA/NA",facilityId)){
+                   return facilityId;
+               }
+           }
+       }
+   }
+   return false;
 }
 function getGuideSheetFieldValue(gsCustomFieldItem,itemCap,inspIDNumArg,gsItemSeqNo) {
 	var r = aa.inspection.getInspections(itemCap);
@@ -732,7 +601,7 @@ function valueExistInASITCol(vTableName,keyName,keyValue,vCapId){
 	}
 	return matchResult;
 }
-function updateFacilityInfo(targetCapId,vFacilityId){
+function updateFacilityNameId(targetCapId,vFacilityId){
 	var capResult = aa.cap.getCap(vFacilityId);
 	if(capResult != null){
 		var capModel = capResult.getOutput().getCapModel()
@@ -761,51 +630,6 @@ function updateFacilityInfo(targetCapId,vFacilityId){
 			itemName = itemName.substr(itemName.indexOf(".")+1);
 		}
 		var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,appName,itemGroup);
-		if (appSpecInfoResult.getSuccess()){
-			logDebug( "INFO: " + itemName + " was updated."); 
-		} 	
-		else{
-			logDebug( "WARNING: " + itemName + " was not updated."); 
-		}
-		var itemName = "Facility DBA";
-		var itemGroup = null;
-		if (useAppSpecificGroupName){
-			if (itemName.indexOf(".") < 0)
-				{ logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-			itemGroup = itemName.substr(0,itemName.indexOf("."));
-			itemName = itemName.substr(itemName.indexOf(".")+1);
-		}
-		var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,getAppSpecific("Facility DBA",vFacilityId),itemGroup);
-		if (appSpecInfoResult.getSuccess()){
-			logDebug( "INFO: " + itemName + " was updated."); 
-		} 	
-		else{
-			logDebug( "WARNING: " + itemName + " was not updated."); 
-		}
-		var itemName = "Business Code";
-		var itemGroup = null;
-		if (useAppSpecificGroupName){
-			if (itemName.indexOf(".") < 0)
-				{ logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-			itemGroup = itemName.substr(0,itemName.indexOf("."));
-			itemName = itemName.substr(itemName.indexOf(".")+1);
-		}
-		var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,getAppSpecific("Business Code",vFacilityId),itemGroup);
-		if (appSpecInfoResult.getSuccess()){
-			logDebug( "INFO: " + itemName + " was updated."); 
-		} 	
-		else{
-			logDebug( "WARNING: " + itemName + " was not updated."); 
-		}
-		var itemName = "Billing Anniversary";
-		var itemGroup = null;
-		if (useAppSpecificGroupName){
-			if (itemName.indexOf(".") < 0)
-				{ logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
-			itemGroup = itemName.substr(0,itemName.indexOf("."));
-			itemName = itemName.substr(itemName.indexOf(".")+1);
-		}
-		var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,getAppSpecific("Billing Anniversary",vFacilityId),itemGroup);
 		if (appSpecInfoResult.getSuccess()){
 			logDebug( "INFO: " + itemName + " was updated."); 
 		} 	

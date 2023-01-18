@@ -1,25 +1,22 @@
-// Find Parent Facility and update current record with Facility Name and ID
-if(!appMatch("EnvHealth/Facility/NA/NA")){
-    var facilityID = getFacilityId(capId);
-    if(facilityID != false){
-        updateFacilityInfo(capId,facilityID);
-    }
+// Update any Inspections on the Permit from the Record Data Table
+var myTable = new Array;
+var myTable = loadASITable("VIOLATIONS",capId);
+var gsUpdateArr = new Array();
+for (y in myTable) {
+    var current_row = myTable[y];	
+    var GSSeqNo = current_row["Checklist Item ID"].fieldValue;
+    var GSInspId = parseInt(current_row["Inspection ID"].fieldValue);
+    var GSViolName = current_row["Violation Name"].fieldValue;
+    var GSViolDegree = current_row["Degree"].fieldValue;
+    var GSViolStatus = current_row["Status"].fieldValue;
+    var GSComplyBy = current_row["Comply By"].fieldValue;
+    var GSCompliedOn= current_row["Complied On"].fieldValue;
+    var GSComplianceType= current_row["Compliance Type"].fieldValue;
+    updateGuidesheetItemStatus(GSInspId, GSViolName, GSViolStatus, capId);
+    var UniqueId = GSInspId + GSSeqNo;
+    gsUpdateArr[UniqueId] = new Array(GSSeqNo,GSViolName,"Return to Compliance Date",GSCompliedOn,"Return to Compliance Qualifier",GSComplianceType,"Comply By",GSComplyBy,capId,GSInspId);
 }
-
-
-//Relate EnvHealth Records as children to entered Facility Record
-if (appMatch("EnvHealth/*/*/*")) {
-	var capIdPar = aa.cap.getCapID(getAppSpecific("Facility ID"));
-	logDebug(capIdPar);
-	if(capIdPar.getSuccess())
-	{
-		var parentId = capIdPar.getOutput();
-		var linkResult = aa.cap.createAppHierarchy(parentId, capId);
-	}
-	//var cap = aa.env.getValue("CapModel");
-	//var parentId = cap.getParentCapID();
-}
-
+updateGuidesheetFieldValueByArray(gsUpdateArr,capId);
 
 function editRecordStatus(targetCapId, strStatus){
     var capModel = aa.cap.getCap(targetCapId).getOutput();

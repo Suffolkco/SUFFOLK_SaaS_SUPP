@@ -8,11 +8,9 @@
         },
         "preScript": "",
         "criteria": {
-          "task": [
-            "Permit Issuance"
-          ],
+          "task": [],
           "status": [
-            "Issued"
+            "Completed"
           ]
         },
         "action": {
@@ -48,11 +46,9 @@
         },
         "preScript": "",
         "criteria": {
-          "task": [
-            "Permit Issuance"
-          ],
+          "task": [],
           "status": [
-            "Issued"
+            "Completed"
           ]
         },
         "action": {
@@ -92,7 +88,8 @@
             "Permit Issuance"
           ],
           "status": [
-            "Issued"
+            "Issued - Inspection Required",
+            "Issued - Inspection Not Required"
           ]
         },
         "action": {
@@ -172,7 +169,8 @@
             "Permit Issuance"
           ],
           "status": [
-            "Issued"
+            "Issued - Inspection Required",
+            "Issued - Inspection Not Required"
           ]
         },
         "action": {
@@ -212,47 +210,8 @@
             "Permit Issuance"
           ],
           "status": [
-            "Issued"
-          ]
-        },
-        "action": {
-          "parentLicense": "EnvHealth/Temporary Event/NA/NA",
-          "issuedStatus": "Active",
-          "copyCustomFields": [
-            "ALL"
-          ],
-          "copyCustomTables": [
-            "ALL"
-          ],
-          "expirationType": "Expiration Code",
-          "expirationPeriod": "EH_FP",
-          "copyContacts": [
-            "ALL"
-          ],
-          "createLP": false,
-          "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
-          "contactAddressType": "Mailing"
-        },
-        "postScript": ""
-      }
-    ]
-  },
-  "EnvHealth/Temporary Event/Multiple Event/Application": {
-    "WorkflowTaskUpdateAfter": [
-      {
-        "metadata": {
-          "description": "Issues a Permit",
-          "operators": {}
-        },
-        "preScript": "",
-        "criteria": {
-          "task": [
-            "Permit Issuance"
-          ],
-          "status": [
-            "Issued"
+            "Issued - Inspection Required",
+            "Issued - Inspection Not Required"
           ]
         },
         "action": {

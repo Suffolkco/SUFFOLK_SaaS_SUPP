@@ -33,25 +33,11 @@ cap = capModel;
 try {
 	var appSpecificInfo = new Array();
 	loadAppSpecific4ACA(appSpecificInfo);
-		var asitRows = getASITable4ACA("MENU");
+		var asitRows = getASITable4ACA("FOODS/BEVERAGES TO BE SAMPLED");
 		if (!asitRows || asitRows.length == 0) {
 			cancel = true;
-			message += "<font color=red>Please enter at least one Menu item below in order to continue. </font>" + br;
+			message += "<font color=red>Please enter at least one Food or Beverage to be sampled below in order to continue. </font>" + br;
 		}
-	var appSpecificInfo = new Array();
-loadAppSpecific4ACA(appSpecificInfo);
-	var asitRows = getASITable4ACA("FOOD SERVICE INFORMATION");
-	if (!asitRows || asitRows.length == 0) {
-		cancel = true;
-		message += "<font color=red>Please enter at least one Food Service Location below in order to continue. </font>" + br;
-	}
-		var appSpecificInfo = new Array();
-loadAppSpecific4ACA(appSpecificInfo);
-	var asitRows = getASITable4ACA("HOURS OF OPERATION");
-	if (!asitRows || asitRows.length == 0) {
-		cancel = true;
-		message += "<font color=red>Please enter Hours of Operation below in order to continue. </font>" + br;
-	}
 
 } catch (err) {
 	cancel = true;

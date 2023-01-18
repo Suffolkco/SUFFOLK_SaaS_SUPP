@@ -1,25 +1,65 @@
-// Find Parent Facility and update current record with Facility Name and ID
-if(!appMatch("EnvHealth/Facility/NA/NA")){
-    var facilityID = getFacilityId(capId);
-    if(facilityID != false){
-        updateFacilityInfo(capId,facilityID);
+// This Script looks at the guidesheet items and if there are violations it will create rows in the Violations Data Table
+var GSNonComStatusLkp = lookup("EH_VIOL_TYPE_STATUSES","NonCompliance");
+var vTableName = "VIOLATIONS"
+//logDebug("Inspection ID " + inspId);
+var guideSheetsAry = getGuideSheetObjects(inspId);
+if (!guideSheetsAry || guideSheetsAry.length == 0) {
+    logDebug("**WARN getGuideSheetObjects failed");
+}else{
+    for (g in guideSheetsAry) {
+        var guideSheetItem = guideSheetsAry[g];
+        var guideSheetItemStatus = guideSheetItem.status
+        var flagSkipGS = false;
+        if(guideSheetItemStatus == GSNonComStatusLkp){
+            var ggsheetitem = guideSheetItem.item;
+            var guideSheetItemType = guideSheetItem.gsType;
+            var guideSheetItemName = guideSheetItem.text;
+            logDebug("guideSheetItemName " + guideSheetItemName + " " + guideSheetItemStatus);
+            var guideSheetSeqNo = ggsheetitem.guideItemSeqNbr.toString();
+            var guideSheetItemObsDate = getGuideSheetFieldValue("Observation Date",capId,inspId,ggsheetitem.guideItemSeqNbr);
+            var guideSheetItemDegree = getGuideSheetFieldValue("Degree of Violation",capId,inspId,ggsheetitem.guideItemSeqNbr); 
+            var guideSheetItemComplyBy = getGuideSheetFieldValue("Comply By",capId,inspId,ggsheetitem.guideItemSeqNbr);
+            var guideSheetItemReturntoComplianceDate = getGuideSheetFieldValue("Return to Compliance Date",capId,inspId,ggsheetitem.guideItemSeqNbr);
+            var guideSheetItemReturntoComplianceQualifier = getGuideSheetFieldValue("Return to Compliance Qualifier",capId,inspId,ggsheetitem.guideItemSeqNbr);
+            if(ggsheetitem.guideItemComment != null){
+                var guideSheetItemComment = ggsheetitem.guideItemComment.toString();
+            }else{
+                var guideSheetItemComment = "";
+            }
+            if(valueExistInASIT2Col(vTableName,"Checklist Item ID",guideSheetSeqNo,"Inspection ID",inspId,capId)){
+                flagSkipGS = true;
+                //This code used to update existing rows in the ASIT instead of adding new ones if a match is found
+                logDebug("Updating existing Violation Rows on the table " + vTableName);
+                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Status",guideSheetItemStatus);
+                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Degree",guideSheetItemDegree);
+                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Comply By",guideSheetItemComplyBy);
+                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Compliance Type", guideSheetItemReturntoComplianceQualifier);
+                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Complied On", guideSheetItemReturntoComplianceDate);
+                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Checklist Comment", guideSheetItemComment);
+            }
+    
+            if(!flagSkipGS && guideSheetItemStatus == GSNonComStatusLkp){
+                logDebug("Adding New Violation Rows to the table " + vTableName);
+                var violationsAry = new Array();
+                var asitRow = new Array();
+                asitRow["Create/Assign Enforcement"] = new asiTableValObj("Create/Assign Enforcement",null,"N");
+                asitRow["Enf Case #"] = new asiTableValObj("Enf Case #", "", "N");
+                asitRow["Violation Name"] = new asiTableValObj("Violation Name", guideSheetItemName, "Y");
+                asitRow["Status"] = new asiTableValObj("Status", guideSheetItemStatus, "Y");
+                asitRow["Degree"] = new asiTableValObj("Degree", guideSheetItemDegree, "Y");
+                asitRow["Observed Date"] = new asiTableValObj("Observed Date", guideSheetItemObsDate, "Y");
+                asitRow["Comply By"] = new asiTableValObj("Comply By",guideSheetItemComplyBy,"N");
+                asitRow["Complied On"] = new asiTableValObj("Complied On",guideSheetItemReturntoComplianceDate,"N");
+                asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",guideSheetItemReturntoComplianceQualifier,"N");
+                asitRow["Checklist Comment"] = new asiTableValObj("Checklist Comment", guideSheetItemComment, "Y");
+                asitRow["Checklist Item ID"] = new asiTableValObj("Checklist Item ID", guideSheetSeqNo, "Y");
+                asitRow["Inspection ID"] = new asiTableValObj("Inspection ID", inspId.toString(), "Y");
+                violationsAry.push(asitRow);
+                addASITable(vTableName, violationsAry, capId);
+            }
+        }
     }
 }
-
-
-//Relate EnvHealth Records as children to entered Facility Record
-if (appMatch("EnvHealth/*/*/*")) {
-	var capIdPar = aa.cap.getCapID(getAppSpecific("Facility ID"));
-	logDebug(capIdPar);
-	if(capIdPar.getSuccess())
-	{
-		var parentId = capIdPar.getOutput();
-		var linkResult = aa.cap.createAppHierarchy(parentId, capId);
-	}
-	//var cap = aa.env.getValue("CapModel");
-	//var parentId = cap.getParentCapID();
-}
-
 
 function editRecordStatus(targetCapId, strStatus){
     var capModel = aa.cap.getCap(targetCapId).getOutput();
