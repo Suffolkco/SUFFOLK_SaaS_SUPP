@@ -226,11 +226,11 @@ function mainProcess() {
                                 altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + "OP";
                                 logDebugLocal("Updating Alt ID to: " + altIdString);
                                 updateAltID(altIdString, enfChild);
-
                                 //updating Code Enf record with Tank record info
                                 logDebugLocal("checking for tank records as children of the site");
                                 var childTankRecordArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
                                 logDebugLocal("There are " + childTankRecordArray.length + " total tanks as children. Now checking and adding Active tanks...");
+                                assignTaskCustom("Violation Review", "MSEAMAN",enfChild);
                                 if (childTankRecordArray.length > 0)
                                 {
                                     //logDebugLocal("child tank records found");
@@ -290,6 +290,7 @@ function mainProcess() {
                                         processflag = true;
                                     }
                                 }
+                                
                             }
                             if (appTypeArray[1] == "OPC" && appTypeArray[2] == "Hazardous Tank" && appTypeArray[3] == "Permit")
                             {
@@ -349,6 +350,7 @@ function mainProcess() {
                                     altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + "TT";
                                     logDebugLocal("Updating Alt ID to: " + altIdString);
                                     updateAltID(altIdString, enfChild);
+                                    assignTaskCustom("Violation Review", "MSEAMAN",enfChild);
                                     }
                                     if(flag || enfChild != undefined)
                                     //updating table
@@ -849,3 +851,50 @@ function copyConditions(fromCapId) // optional toCapID
 	}
 } 
  
+
+
+
+function assignTaskCustom(wfstr,username,ChildCap) // optional process name
+	{
+	// Assigns the task to a user.  No audit.
+	//
+    aa.print("Inside the assign method")
+	var useProcess = false;
+	var processName = "";		
+	var taskUserResult = aa.person.getUser(username);
+	if (taskUserResult.getSuccess())
+    {
+		taskUserObj = taskUserResult.getOutput();  //  User Object
+        aa.print("We got the user");
+    }
+        else
+		{ logMessage("**ERROR: Failed to get user object: " + taskUserResult.getErrorMessage()); return false; }
+		
+	var workflowResult = aa.workflow.getTaskItems(ChildCap, wfstr, processName, null, null, null);
+ 	if (workflowResult.getSuccess())
+    {
+  	 	var wfObj = workflowResult.getOutput();
+        aa.print("We got the workflow object");
+    }
+        else
+  	  	{ 
+            aa.print("We failed to get the workflow")
+            logMessage("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage()); 
+            return false; 
+        }
+	
+	for (i in wfObj)
+		{
+   		var fTask = wfObj[i];
+ 		if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase())  && (!useProcess || fTask.getProcessCode().equals(processName)))
+			{
+			fTask.setAssignedUser(taskUserObj);
+			var taskItem = fTask.getTaskItem();
+			var adjustResult = aa.workflow.assignTask(taskItem);
+            aa.print(adjustResult);
+			aa.print("Assigned Workflow Task: " + wfstr + " to " + username);
+			logMessage("Assigned Workflow Task: " + wfstr + " to " + username);
+			logDebug("Assigned Workflow Task: " + wfstr + " to " + username);
+			}			
+		}
+	}
