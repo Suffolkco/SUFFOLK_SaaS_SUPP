@@ -282,7 +282,7 @@ function mainProcess() {
                                             newRow["Tank Location Label"] = tankLocLabel;
                                             newRow["Article 12"] = articleTwelve;
                                             newRow["Article 18"] = articleEighteen;
-                                            newRow["APPENDIX  A"] = "CHECKED";
+                                            newRow["Appendix A"] = "CHECKED";
                                             //logDebugLocal("newRow psl is: " + newRow["Product Store Label"]);
                                             addRowToASITable("OPERATING PERMIT", newRow, enfChild);
                                             }
@@ -397,7 +397,7 @@ function mainProcess() {
                                         newRow["Tank Location Label"] = tankLocLabel;
                                         newRow["Next Tank Test Date"] = nextLineTestDate;
                                         newRow["Next Line Test Date"] = nextTankTestDate;
-                                        newRow["APPENDIX  A"] = "CHECKED";
+                                        newRow["Appendix A"] = "CHECKED";
                                         logDebugLocal("ASI Custom List Product Store" + newRow["Product Store Label"]);
                                         if(enfChild != undefined)
                                         {
