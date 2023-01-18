@@ -180,7 +180,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                             newRow["Inspector Finding"] = checklistItemComment;
                             newRow["Inspection Date"] = inspResultDate;
                             newRow["Inspector"] = vInspectorName;
-                            newRow["Appendix  A"] = "CHECKED";
+                            newRow["Appendix A"] = "CHECKED";
                             addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
                         }
                     }
