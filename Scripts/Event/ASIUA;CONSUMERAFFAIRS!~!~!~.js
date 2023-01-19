@@ -36,10 +36,16 @@ try
 						dateMMDDYYY = customFieldExpDate;						
 						dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 
-						var dd = dateMMDDYYY.getDate();
-						var mm = dateMMDDYYY.getMonth()+1; 
-						var yyyy = dateMMDDYYY.getFullYear();
+
+						dateCheckString = String(customFieldExpDate).split("/")
+        				var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
+
+						var dd = String('0' + dateCheckString[0]).slice(-2) ;
+						var mm = String('0' + dateCheckString[1]).slice(-2);
+						var yyyy = dateCheckString[2];
 				
+						logDebug("Format Date:"+ dd + ", " + mm + "," + yyyy);
+
 						if(dd<10) 
 						{
 							dd='0'+dd;
@@ -55,7 +61,7 @@ try
 						logDebug("New Format Date:"+ correctFormatExpDate);
 						editAppSpecific("Expiration Date", correctFormatExpDate);
 						logDebug("Set Expiration date ASI to : " + correctFormatExpDate);
-						
+
 						b1Exp.setExpDate(dateMMDDYYY);			
 						aa.expiration.editB1Expiration(b1Exp.getB1Expiration());					
 						logDebug(capId.getCustomID() + ": Updated renewal expiration date to " + customFieldExpDate);
