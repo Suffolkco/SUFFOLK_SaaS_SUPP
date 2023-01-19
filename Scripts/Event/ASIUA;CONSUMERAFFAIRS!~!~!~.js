@@ -40,21 +40,11 @@ try
 						dateCheckString = String(customFieldExpDate).split("/")
         				var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
 
-						var dd = String('0' + dateCheckString[0]).slice(-2) ;
-						var mm = String('0' + dateCheckString[1]).slice(-2);
+						var mm = String('0' + dateCheckString[0]).slice(-2);
+						var dd = String('0' + dateCheckString[1]).slice(-2) ;						
 						var yyyy = dateCheckString[2];
 				
-						logDebug("Format Date:"+ dd + ", " + mm + "," + yyyy);
-
-						if(dd<10) 
-						{
-							dd='0'+dd;
-						} 
-				
-						if(mm<10) 
-						{
-							mm='0'+mm;
-						} 
+						logDebug("Format Date:"+ mm + ", " + dd + "," + yyyy);
 				
 						var correctFormatExpDate = mm+'/'+ dd +'/'+ yyyy;
 
