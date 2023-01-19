@@ -21,15 +21,16 @@ var dateThirtyDaysOut = dateAdd(new Date(), 30);
 var dateSixtyDaysOut = dateAdd(new Date(), 60);
 logDebug("date sixty days out is: " + dateSixtyDaysOut);
 var hearingDate = AInfo["Hearing Date"];
+var hearingDateLessSeven = (convertDate(hearingDate).getMonth() + 1) + "/" + (convertDate(hearingDate).getDate() - 7) + "/" + (convertDate(hearingDate).getYear() + 1900);
 var hearingTime = AInfo["Hearing Time"];
 var todayDate = new Date();
-var todayDateConverted = dateFormatted(todayDate.getMonth() + 1, todayDate.getDate(), todayDate.getYear() + 1901, "MM/DD/YYYY");
+var todayDateConverted = dateFormatted(todayDate.getMonth() + 1, todayDate.getDate(), todayDate.getYear() + 1900, "MM/DD/YYYY");
 var fineAmount = AInfo["Fine Amount"];
 var revisedFineAmount = AInfo["Revised Fine Amount"];
 var enfReqRevDue;
 
 
-if(parentCapId)
+if (parentCapId)
 { //We are preventing an error if we don't find a Parent ID if we do then we add the contacts 
     //getting contacts by type, and then all
     var conArrayParent = getContactArray(parentCapId);
@@ -152,7 +153,7 @@ if (wfTask == "Enforcement Request Review")
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         activateTask("Request Inspection");
-		deactivateTask("Enforcement Request Review");
+        deactivateTask("Enforcement Request Review");
     }
     if (wfStatus == "NOPH Sent")
     {
@@ -185,15 +186,15 @@ if (wfTask == "Enforcement Request Review")
         addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
 
         generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
-        if(String(enfType)=="TT")
+        if (String(enfType) == "TT")
         {
             var rFile = new Array();
-        rFile = reportRunSaveCustom(reportToSend, false, true, true, 'DEQ', reportParams);
+            rFile = reportRunSaveCustom(reportToSend, false, true, true, 'DEQ', reportParams);
         }
-        if(String(enfType)=="OP")
+        if (String(enfType) == "OP")
         {
             var rFile = new Array();
-        rFile = reportRunSaveCustom(reportToSend, false, true, true, 'DEQ', reportParams);
+            rFile = reportRunSaveCustom(reportToSend, false, true, true, 'DEQ', reportParams);
         }
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
         //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
@@ -214,12 +215,12 @@ if (wfTask == "Enforcement Request Review")
     {
         //need to confirm that this report information is correct, below:
         generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
-            //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
-            //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
-            //Gets siblings by looking at the parent 
-            //Also gets the record you are on so I commented out the o
-            addConditionSiblings(parentCapId);
-            addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
+        //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
+        //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
+        //Gets siblings by looking at the parent 
+        //Also gets the record you are on so I commented out the o
+        addConditionSiblings(parentCapId);
+        addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
     }
     //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
     var enfType = AInfo["Enforcement Type"];
@@ -273,8 +274,27 @@ if (wfTask == "Preliminary Hearing")
             addParameter(emailParams, "$$assignUser$$", prelimHearingUserName);
             addParameter(emailParams, "$$userPhoneNum$$", prelimHearingUserPhone);
             addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
+
+            //adding a couple more contacts from the parent, for SP enforcement types
+            var enfType = getAppSpecific("Enforcement Type", capId);
+            if (enfType == "SP")
+            {
+                for (con in conArrayParent)
+                {
+
+                    if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator"))
+                    {
+                        if (!matches(conArrayParent[con].email, null, undefined, ""))
+                        {
+                            logDebug("Additional contact email: " + conArrayParent[con].email);
+                            conEmailList += conArrayParent[con].email + "; ";
+                        }
+                    }
+                }
+            }
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
+        addParameter(emailParams, "$$hearingDateLessSeven$$", hearingDateLessSeven);
         addParameter(emailParams, "$$hearingTime$$", hearingTime);
         sendNotification("", conEmailList, "", "DEQ_OPC_ENF_PRELIM_HEARING_ADJ", emailParams, null);
 
@@ -321,7 +341,7 @@ if (wfTask == "Preliminary Hearing")
         }
         addParameter(emailParams, "$$dateSent$$", todayDateConverted);
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
-        addParameter(emailParams, "$$revisedFineAmount$$", revisedFineAmount);
+        addParameter(emailParams, "$$revFineAmount$$", revisedFineAmount);
         addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
         //addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
         reportParams.put("RecordID", capId.getCustomID().toString());
@@ -335,13 +355,13 @@ if (wfTask == "Preliminary Hearing")
         }
 
 
-        if(conEmailListAll == '')
+        if (conEmailListAll == '')
         {
-        aa.print("We found no parents on the contact record");
-        Systememail = systemUserObj.getEmail();
-        aa.print(Systememail);
-      
-        sendNotification("", Systememail, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
+            aa.print("We found no parents on the contact record");
+            Systememail = systemUserObj.getEmail();
+            aa.print(Systememail);
+
+            sendNotification("", Systememail, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
         }
         else
         {
@@ -350,7 +370,7 @@ if (wfTask == "Preliminary Hearing")
             sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
         }
 
-       
+
     }
 }
 
@@ -379,6 +399,7 @@ if (wfTask == "Formal Hearing")
             addParameter(emailParams, "$$userEmail$$", formalHearingUserEmail);
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
+        addParameter(emailParams, "$$hearingDateLessSeven$$", hearingDateLessSeven);
         addParameter(emailParams, "$$hearingTime$$", hearingTime);
 
         sendNotification("", conEmailList, "", "DEQ_OPC_ENF_FORMAL_HEARING_ADJ", emailParams, null);
@@ -402,9 +423,9 @@ if (wfTask == "Formal Hearing")
         addParameter(emailParams, "$$dateSent$$", todayDateConverted);
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
-        addParameter(emailParams, "$$revisedFineAmount$$", revisedFineAmount);
-        emailParams.put("RecordID", capId.getCustomID().toString());
-        var reportToUse = generateReportP("OPC Waiver Report", emailParams, 'DEQ');
+        addParameter(emailParams, "$$revFineAmount$$", revisedFineAmount);
+        reportParams.put("RecordID", capId.getCustomID().toString());
+        var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
 
         if (reportToUse)
         {
@@ -414,8 +435,6 @@ if (wfTask == "Formal Hearing")
 
 
         sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
-
-        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, null);
     }
 }
 
@@ -479,7 +498,7 @@ if (wfStatus == "Case Closed")
 
 
 
-if (wfTask == "End Enforcement Action" && wfStatus == "Close" )
+if (wfTask == "End Enforcement Action" && wfStatus == "Close")
 {
     removeAllCapConditions(capId);
     removeAllCapConditions(parentCapId);
@@ -552,7 +571,7 @@ function getAddressInALine() {
                     strAddress += " " + addPart;
                 var addPart = addressToUse.getStreetName();
                 if (addPart && addPart != "")
-                    strAddress += " " + addPart;
+                    strAddress += " " + addPart + ",";
                 var addPart = addressToUse.getStreetSuffix();
                 if (addPart && addPart != "")
                     strAddress += " " + addPart;
@@ -696,8 +715,7 @@ function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFile
 
 
 
-function generateReportBatch(itemCap, reportName, module, parameters)
-{
+function generateReportBatch(itemCap, reportName, module, parameters) {
     //returns the report file which can be attached to an email.
     var user = currentUserID; // Setting the User Name
     var report = aa.reportManager.getReportInfoModelByName(reportName);
@@ -713,7 +731,8 @@ function generateReportBatch(itemCap, reportName, module, parameters)
     report.setReportParameters(parameters);
 
     var permit = aa.reportManager.hasPermission(reportName, user);
-
+    aa.print("This is the permission on the report" + permit);
+    logDebug("This is the permission on the report" + permit);
     if (permit.getOutput().booleanValue())
     {
         var reportResult = aa.reportManager.getReportResult(report);
@@ -736,18 +755,16 @@ function generateReportBatch(itemCap, reportName, module, parameters)
         return false;
     }
 }
-function addConditionSiblings(ParentCap)
-{
+function addConditionSiblings(ParentCap) {
     var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
     for (child in childRecords)
     {
-       aa.print("Adding conditions to " + childRecords[child]);
+        aa.print("Adding conditions to " + childRecords[child]);
         addStdConditionStrict("DEQ", "Open Enforcement Record", childRecords[child]);
     }
 
 }
-function removeConditionsSiblings(ParentCap)
-{
+function removeConditionsSiblings(ParentCap) {
     var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
     for (child in childRecords)
     {
@@ -755,252 +772,250 @@ function removeConditionsSiblings(ParentCap)
         removeAllCapConditions(childRecords[child])
     }
 
-    
+
 }
 
 function removeAllCapConditions(itemCap) {
     var capCondResult = aa.capCondition.getCapConditions(itemCap);
 
     if (!capCondResult.getSuccess())
-    { logDebug("**WARNING: error getting cap conditions : " + capCondResult.getErrorMessage()); return false }
+    {logDebug("**WARNING: error getting cap conditions : " + capCondResult.getErrorMessage()); return false}
 
     var ccs = capCondResult.getOutput();
-    for (pc1 in ccs) {
+    for (pc1 in ccs)
+    {
         var rmCapCondResult = aa.capCondition.deleteCapCondition(itemCap, ccs[pc1].getConditionNumber());
         if (rmCapCondResult.getSuccess())
             logDebug("Successfully removed condition to CAP : " + itemCap + ". Condition Description:" + ccs[pc1].getConditionDescription());
     }
 
 }
-function generateReportP(aaReportName, parameters, rModule)
-{
-var reportName = aaReportName;
-report = aa.reportManager.getReportInfoModelByName(reportName);
-aa.print("After getting the Name" + report);
-aa.print("This is our Cap ID Module and Parameter" +  capId + rModule + parameters )
-report = report.getOutput();
-aa.print("The Output" + report);
-report.setModule(rModule);
-report.setCapId(capId);
-report.setReportParameters(parameters);
-var permit = aa.reportManager.hasPermission(reportName, currentUserID);
-aa.print("This is the permit value we are trying to get" + permit);
-if (permit.getOutput().booleanValue())
-{
-	aa.print("This is the permit value we are trying to get" + permit.getOutput().booleanValue());
-	var reportResult = aa.reportManager.getReportResult(report);
+function generateReportP(aaReportName, parameters, rModule) {
+    var reportName = aaReportName;
+    report = aa.reportManager.getReportInfoModelByName(reportName);
+    aa.print("After getting the Name" + report);
+    aa.print("This is our Cap ID Module and Parameter" + capId + rModule + parameters)
+    report = report.getOutput();
+    aa.print("The Output" + report);
+    report.setModule(rModule);
+    report.setCapId(capId);
+    report.setReportParameters(parameters);
+    var permit = aa.reportManager.hasPermission(reportName, currentUserID);
+    aa.print("This is the permit value we are trying to get" + permit);
+    if (permit.getOutput().booleanValue())
+    {
+        aa.print("This is the permit value we are trying to get" + permit.getOutput().booleanValue());
+        var reportResult = aa.reportManager.getReportResult(report);
 
-	if (reportResult)
-	{
-		reportResult = reportResult.getOutput();
-		aa.print("Report Results" + reportResult)
-		var reportFile = aa.reportManager.storeReportToDisk(reportResult);
-		logDebug("Report Result: " + reportResult);
-		reportFile = reportFile.getOutput();
-		return reportFile
-	}
-	else
-	{
-		logDebug("Unable to run report: " + reportName + " for Admin" + systemUserObj);
-		return false;
-	}
-}
-else
-{
-	logDebug("No permission to report: " + reportName + " for Admin" + systemUserObj);
-	return false;
-}
+        if (reportResult)
+        {
+            reportResult = reportResult.getOutput();
+            aa.print("Report Results" + reportResult)
+            var reportFile = aa.reportManager.storeReportToDisk(reportResult);
+            logDebug("Report Result: " + reportResult);
+            reportFile = reportFile.getOutput();
+            return reportFile
+        }
+        else
+        {
+            logDebug("Unable to run report: " + reportName + " for Admin" + systemUserObj);
+            return false;
+        }
+    }
+    else
+    {
+        logDebug("No permission to report: " + reportName + " for Admin" + systemUserObj);
+        return false;
+    }
 }
 
-function reportRunSave(reportName, view, edmsSave, storeToDisk, reportModule, reportParams) 
-{
-	var name = "";
-	var rFile = new Array();
-	var error = "";
-	var reportModel = aa.reportManager.getReportModelByName(reportName); //get detail of report to drive logic
-	if (reportModel.getSuccess()) 
-	{
-		reportDetail = reportModel.getOutput();
-		name = reportDetail.getReportDescription();
-		if (name == null || name == "") 
-		{
-			name = reportDetail.getReportName();
-		}
-		var reportInfoModel = aa.reportManager.getReportInfoModelByName(reportName);  //get report info to change the way report runs
-		if (reportInfoModel.getSuccess()) 
-		{ 
-			report = reportInfoModel.getOutput();
-			report.setModule(reportModule); 
-			report.setCapId(capId);
-			reportInfo = report.getReportInfoModel();
-			report.setReportParameters(reportParams);
-			//process parameter selection and EDMS save
-			if (edmsSave == true && view == true ) 
-			{
-				reportRun = aa.reportManager.runReport(reportParams, reportDetail);
-				showMessage = true;
-				comment(reportRun.getOutput()); //attaches report
-				if (storeToDisk == true) 
-				{
-					reportInfo.setNotSaveToEDMS(false);
-					reportResult = aa.reportManager.getReportResult(report); //attaches report
-					if (reportResult.getSuccess()) 
-					{
-						reportOut = reportResult.getOutput();
-						reportOut.setName(changeNameofAttachment(reportOut.getName()));
-						rFile = aa.reportManager.storeReportToDisk(reportOut);
-						if (rFile.getSuccess()) 
-						{
-							rFile = rFile.getOutput();
-						} 
-						else 
-						{
-							rFile = new Array();
-							error = "Report failed to store to disk.  Debug reportFile for error message.";
-							logDebug(error);
-						}
-					} 
-					else 
-					{
-						rFile = new Array();
-						error = "Report failed to run and store to disk.  Debug reportResult for error message, line 52";
-						logDebug(error);
-					}
-				} 
-				else 
-				{
-					rFile = new Array();
-				}
-			} 
-			else if (edmsSave == true && view == false) 
-			{
-				reportInfo.setNotSaveToEDMS(false);
-				reportResult = aa.reportManager.getReportResult(report); //attaches report
-				if (reportResult.getSuccess()) 
-				{
-					reportOut = reportResult.getOutput();
-					reportOut.setName(changeNameofAttachment(reportOut.getName()));
-					if (storeToDisk == true) 
-					{
-						rFile = aa.reportManager.storeReportToDisk(reportOut);
-						if (rFile.getSuccess()) 
-						{
-							logDebug("Storing to disk");
-							rFile = rFile.getOutput();
-						} 
-						else 
-						{
-							rFile = new Array();
-							error = "Report failed to store to disk.  Debug rFile for error message.";
-							logDebug(error);
-						}
-					} 
-					else 
-					{
-						rFile = new Array();
-					}
-				} 
-				else 
-				{
-					rFile = new Array();
-					error = "Report failed to run and store to disk.  Debug reportResult for error message, line 93";
-					logDebug(error);
-				}
-			} 
-			else if (edmsSave == false && view == true) 
-			{
-				reportRun = aa.reportManager.runReport(reportParams, reportDetail);
-				showMessage = true;
-				comment(reportRun.getOutput());
-				if (storeToDisk == true) 
-				{
-					reportInfo.setNotSaveToEDMS(true);
-					reportResult = aa.reportManager.getReportResult(report);
-					if (reportResult.getSuccess()) 
-					{
-						reportResult = reportResult.getOutput();
-						reportResult.setName(changeNameofAttachment(reportResult.getName()));
-						rFile = aa.reportManager.storeReportToDisk(reportResult);
-						if (rFile.getSuccess()) 
-						{
-							rFile = rFile.getOutput();
-						} 
-						else 
-						{
-							rFile = new Array();
-							error = "Report failed to store to disk.  Debug rFile for error message.";
-							logDebug(error);
-						}
-					} 
-					else 
-					{
-						rFile = new Array();
-						error = "Report failed to run and store to disk.  Debug reportResult for error message, line 125";
-						logDebug(error);
-					}
-				} 
-				else 
-				{
-					rFile = new Array();
-				}
-			} 
-			else if (edmsSave == false && view == false) 
-			{
-				if (storeToDisk == true) 
-				{
-					reportInfo.setNotSaveToEDMS(true);
-					reportResult = aa.reportManager.getReportResult(report);
-					if (reportResult.getSuccess()) 
-					{
-						reportResult = reportResult.getOutput();
-						reportResult.setName(changeNameofAttachment(reportResult.getName()));
-						rFile = aa.reportManager.storeReportToDisk(reportResult);
-						logDebug("Report File: " + rFile.getSuccess());
-						if (rFile.getSuccess()) 
-						{
-							rFile = rFile.getOutput();
-							logDebug("Actual Report: " + rFile);
-						} 
-						else 
-						{
-							rFile = new Array();
-							error = "Report failed to store to disk.  Debug rFile for error message.";
-							logDebug(error);
-						}
-					}
-					else 
-					{
-						rFile = new Array();
-						error = "Report failed to run and store to disk.  Debug reportResult for error message, line 163";
-						logDebug(error);
-					}
-				} 
-				else 
-				{
-					rFile = new Array();
-				}
-			}
-		} 
-		else 
-		{
-			rFile = new Array();
-			error = "Failed to get report information.  Check report name matches name in Report Manager.";
-			logDebug(error);
-		}
-	} 
-	else 
-	{
-		rFile = new Array();
-		error = "Failed to get report detail.  Check report name matches name in Report Manager.";
-		logDebug(error);
-	}
-	function changeNameofAttachment(attachmentName) 
-	{
-		rptExtLoc = attachmentName.indexOf(".");
-		rptLen = attachmentName.length();
-		ext = attachmentName.substr(rptExtLoc, rptLen);
-		attachName = name + ext;
-		return attachName
-	}	
-	return rFile;
+function reportRunSave(reportName, view, edmsSave, storeToDisk, reportModule, reportParams) {
+    var name = "";
+    var rFile = new Array();
+    var error = "";
+    var reportModel = aa.reportManager.getReportModelByName(reportName); //get detail of report to drive logic
+    if (reportModel.getSuccess()) 
+    {
+        reportDetail = reportModel.getOutput();
+        name = reportDetail.getReportDescription();
+        if (name == null || name == "") 
+        {
+            name = reportDetail.getReportName();
+        }
+        var reportInfoModel = aa.reportManager.getReportInfoModelByName(reportName);  //get report info to change the way report runs
+        if (reportInfoModel.getSuccess()) 
+        {
+            report = reportInfoModel.getOutput();
+            report.setModule(reportModule);
+            report.setCapId(capId);
+            reportInfo = report.getReportInfoModel();
+            report.setReportParameters(reportParams);
+            //process parameter selection and EDMS save
+            if (edmsSave == true && view == true) 
+            {
+                reportRun = aa.reportManager.runReport(reportParams, reportDetail);
+                showMessage = true;
+                comment(reportRun.getOutput()); //attaches report
+                if (storeToDisk == true) 
+                {
+                    reportInfo.setNotSaveToEDMS(false);
+                    reportResult = aa.reportManager.getReportResult(report); //attaches report
+                    if (reportResult.getSuccess()) 
+                    {
+                        reportOut = reportResult.getOutput();
+                        reportOut.setName(changeNameofAttachment(reportOut.getName()));
+                        rFile = aa.reportManager.storeReportToDisk(reportOut);
+                        if (rFile.getSuccess()) 
+                        {
+                            rFile = rFile.getOutput();
+                        }
+                        else 
+                        {
+                            rFile = new Array();
+                            error = "Report failed to store to disk.  Debug reportFile for error message.";
+                            logDebug(error);
+                        }
+                    }
+                    else 
+                    {
+                        rFile = new Array();
+                        error = "Report failed to run and store to disk.  Debug reportResult for error message, line 52";
+                        logDebug(error);
+                    }
+                }
+                else 
+                {
+                    rFile = new Array();
+                }
+            }
+            else if (edmsSave == true && view == false) 
+            {
+                reportInfo.setNotSaveToEDMS(false);
+                reportResult = aa.reportManager.getReportResult(report); //attaches report
+                if (reportResult.getSuccess()) 
+                {
+                    reportOut = reportResult.getOutput();
+                    reportOut.setName(changeNameofAttachment(reportOut.getName()));
+                    if (storeToDisk == true) 
+                    {
+                        rFile = aa.reportManager.storeReportToDisk(reportOut);
+                        if (rFile.getSuccess()) 
+                        {
+                            logDebug("Storing to disk");
+                            rFile = rFile.getOutput();
+                        }
+                        else 
+                        {
+                            rFile = new Array();
+                            error = "Report failed to store to disk.  Debug rFile for error message.";
+                            logDebug(error);
+                        }
+                    }
+                    else 
+                    {
+                        rFile = new Array();
+                    }
+                }
+                else 
+                {
+                    rFile = new Array();
+                    error = "Report failed to run and store to disk.  Debug reportResult for error message, line 93";
+                    logDebug(error);
+                }
+            }
+            else if (edmsSave == false && view == true) 
+            {
+                reportRun = aa.reportManager.runReport(reportParams, reportDetail);
+                showMessage = true;
+                comment(reportRun.getOutput());
+                if (storeToDisk == true) 
+                {
+                    reportInfo.setNotSaveToEDMS(true);
+                    reportResult = aa.reportManager.getReportResult(report);
+                    if (reportResult.getSuccess()) 
+                    {
+                        reportResult = reportResult.getOutput();
+                        reportResult.setName(changeNameofAttachment(reportResult.getName()));
+                        rFile = aa.reportManager.storeReportToDisk(reportResult);
+                        if (rFile.getSuccess()) 
+                        {
+                            rFile = rFile.getOutput();
+                        }
+                        else 
+                        {
+                            rFile = new Array();
+                            error = "Report failed to store to disk.  Debug rFile for error message.";
+                            logDebug(error);
+                        }
+                    }
+                    else 
+                    {
+                        rFile = new Array();
+                        error = "Report failed to run and store to disk.  Debug reportResult for error message, line 125";
+                        logDebug(error);
+                    }
+                }
+                else 
+                {
+                    rFile = new Array();
+                }
+            }
+            else if (edmsSave == false && view == false) 
+            {
+                if (storeToDisk == true) 
+                {
+                    reportInfo.setNotSaveToEDMS(true);
+                    reportResult = aa.reportManager.getReportResult(report);
+                    if (reportResult.getSuccess()) 
+                    {
+                        reportResult = reportResult.getOutput();
+                        reportResult.setName(changeNameofAttachment(reportResult.getName()));
+                        rFile = aa.reportManager.storeReportToDisk(reportResult);
+                        logDebug("Report File: " + rFile.getSuccess());
+                        if (rFile.getSuccess()) 
+                        {
+                            rFile = rFile.getOutput();
+                            logDebug("Actual Report: " + rFile);
+                        }
+                        else 
+                        {
+                            rFile = new Array();
+                            error = "Report failed to store to disk.  Debug rFile for error message.";
+                            logDebug(error);
+                        }
+                    }
+                    else 
+                    {
+                        rFile = new Array();
+                        error = "Report failed to run and store to disk.  Debug reportResult for error message, line 163";
+                        logDebug(error);
+                    }
+                }
+                else 
+                {
+                    rFile = new Array();
+                }
+            }
+        }
+        else 
+        {
+            rFile = new Array();
+            error = "Failed to get report information.  Check report name matches name in Report Manager.";
+            logDebug(error);
+        }
+    }
+    else 
+    {
+        rFile = new Array();
+        error = "Failed to get report detail.  Check report name matches name in Report Manager.";
+        logDebug(error);
+    }
+    function changeNameofAttachment(attachmentName) {
+        rptExtLoc = attachmentName.indexOf(".");
+        rptLen = attachmentName.length();
+        ext = attachmentName.substr(rptExtLoc, rptLen);
+        attachName = name + ext;
+        return attachName
+    }
+    return rFile;
 }
