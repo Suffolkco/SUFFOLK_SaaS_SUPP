@@ -49,8 +49,11 @@ try
 						var correctFormatExpDate = mm+'/'+ dd +'/'+ yyyy;
 
 						logDebug("New Format Date:"+ correctFormatExpDate);
-						editAppSpecific("Expiration Date", correctFormatExpDate);
-						logDebug("Set Expiration date ASI to : " + correctFormatExpDate);
+						if (correctFormatExpDate != customFieldExpDate)
+						{
+							editAppSpecific("Expiration Date", correctFormatExpDate);
+							logDebug("Set Expiration date ASI to : " + correctFormatExpDate);
+						}
 
 						b1Exp.setExpDate(dateMMDDYYY);			
 						aa.expiration.editB1Expiration(b1Exp.getB1Expiration());					
