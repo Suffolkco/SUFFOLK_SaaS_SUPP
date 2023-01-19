@@ -35,9 +35,27 @@ try
 						
 						dateMMDDYYY = customFieldExpDate;						
 						dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-						logDebug("Parsed Date:"+ dateMMDDYYY);
-						editAppSpecific("Expiration Date", dateMMDDYYY);
-						logDebug("Set Expiration date ASI to : " + dateMMDDYYY);
+
+						var dd = dateMMDDYYY.getDate();
+						var mm = dateMMDDYYY.getMonth()+1; 
+						var yyyy = dateMMDDYYY.getFullYear();
+				
+						if(dd<10) 
+						{
+							dd='0'+dd;
+						} 
+				
+						if(mm<10) 
+						{
+							mm='0'+mm;
+						} 
+				
+						var correctFormatExpDate = mm+'/'+ dd +'/'+ yyyy;
+
+						logDebug("New Format Date:"+ correctFormatExpDate);
+						editAppSpecific("Expiration Date", correctFormatExpDate);
+						logDebug("Set Expiration date ASI to : " + correctFormatExpDate);
+						
 						b1Exp.setExpDate(dateMMDDYYY);			
 						aa.expiration.editB1Expiration(b1Exp.getB1Expiration());					
 						logDebug(capId.getCustomID() + ": Updated renewal expiration date to " + customFieldExpDate);
