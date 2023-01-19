@@ -5,7 +5,8 @@ try
 {
 
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
-	
+	var caseNo = getAppSpecific("Complaint Number");
+
 	var i = 1;
 	var newCheatsheet = new Array();
 	for (var c in cheatSheet)
@@ -14,7 +15,7 @@ try
 		var newRow = new Array();
 		newRow["Violation Date"] = cheatSheet[c]["Violation Date"];
 		newRow["Occurrence Date"] = cheatSheet[c]["Occurrence Date"];
-		newRow["Case Number"] = cheatSheet[c]["Case Number"];		
+		newRow["Case Number"] = caseNo;	
 		newRow["Charge"] = cheatSheet[c]["Charge"];
 		newRow["Create Violation"] = cheatSheet[c]["Create Violation"];
 		newRow["Withdraw Violation"] = cheatSheet[c]["Withdraw Violation"];
