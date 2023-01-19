@@ -20,6 +20,7 @@ try
 			var customFieldExpDate = getAppSpecific("Expiration Date")
 			
 			logDebug("customFieldExpDate: " + customFieldExpDate);     
+			
 			if (customFieldExpDate && customFieldExpDate != "")
 			{
 				var b1ExpResult = aa.expiration.getLicensesByCapID(capId);
@@ -34,6 +35,9 @@ try
 						
 						dateMMDDYYY = customFieldExpDate;						
 						dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+						logDebug("Parsed Date:"+ dateMMDDYYY);
+						editAppSpecific("Expiration Date", dateMMDDYYY);
+						logDebug("Set Expiration date ASI to : " + dateMMDDYYY);
 						b1Exp.setExpDate(dateMMDDYYY);			
 						aa.expiration.editB1Expiration(b1Exp.getB1Expiration());					
 						logDebug(capId.getCustomID() + ": Updated renewal expiration date to " + customFieldExpDate);
