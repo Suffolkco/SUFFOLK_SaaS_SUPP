@@ -18,7 +18,7 @@ try
 		newRow["Case Number"] = caseNo;	
 		newRow["Charge"] = cheatSheet[c]["Charge"];
 		newRow["Create Violation"] = cheatSheet[c]["Create Violation"];
-		newRow["Withdraw Violation"] = cheatSheet[c]["Withdraw Violation"];
+		newRow["Withdraw/Void Violation"] = cheatSheet[c]["Withdraw/Void Violation"];
 		newRow["Reference Violation Number"] = cheatSheet[c]["Reference Violation Number"];
 		newRow["Abbreviated Description"] = cheatSheet[c]["Abbreviated Description"];
 		newRow["Item"] = itemNo.toString();
