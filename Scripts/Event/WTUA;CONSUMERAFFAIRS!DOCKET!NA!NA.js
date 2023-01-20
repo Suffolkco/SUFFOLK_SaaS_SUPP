@@ -48,11 +48,11 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   var vioDate = cheatSheet[c]["Violation Date"];
 	   var occDate = cheatSheet[c]["Occurence Date"];
 	   var caseNo = cheatSheet[c]["Case Number"];	  
-	   var caseNo = cheatSheet[c]["Case Number"];
+	  
 	   var charge = cheatSheet[c]["Charge"];
 	   var createVio = cheatSheet[c]["Create Violation"];
 	   var vioNo = cheatSheet[c]["Reference Violation Number"];
-	   var withdrawVio = cheatSheet[c]["Withdraw Violation"];	   
+	    
 	   var abbDesc = cheatSheet[c]["Abbreviated Description"];
 
 	   logDebug("vioNo: " + vioNo);
@@ -79,38 +79,11 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				
 				//function editASITableRowViaRowIdentifer(tableCapId, tableName, editName, editValue, rowValue, rowIdentifier) {
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
-
-				
-
-
 				
 			}
 		}
-		if (withdrawVio == 'CHECKED') // What do we do here? Unrelated or just set the Violation status to be withdraw?
-		{
-			if (vioNo != "" || vioNo != null)
-			{
-				logDebug("Withdraw violation request: " + vioNo);
-				
-				// get cap id from alt id
-				var capIdRes = aa.cap.getCapID(vioNo);
-
-				//GET CAP ID, if result returns an error then don't process this record.
-				if (!capIdRes.getSuccess()) 
-				{
-					logDebugLocal("ERROR getting capId for record " + vioNo + ". Err: " + capIdRes.getOutput()); 
-				}
-				else
-				{
-					vioCapId = capIdRes.getOutput();
-					var cap = aa.cap.getCap(vioCapId).getOutput();
-
-					updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
-				}
-			
-			}
-			// 
-		}
+		
+		
 	}
 
 
@@ -120,7 +93,10 @@ else if (wfTask == "Hearing")
 {
 	if (wfStatus == "Withdrawn" || wfStatus == "AOD" || wfStatus == "Licensed Waiver" || wfStatus == "Unlicensed Waiver")
 	{	
-		// What template to use? 
+		var staffEmailsToSend = lookup("DCA_Docket_Email_List", "All");   	
+		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_HEARING", emailParams, null);
+		
+		
 	}
 }
 //DOCKET # 39 Script to assign the record to the director automatically if the status is set to “Review for Amendment”
@@ -167,6 +143,7 @@ else if (wfTask == "Director Review" && wfStatus == "Complete")
 else if (wfTask == 'NOD' && wfStatus == 'Complete')
 {
 	include("CA_SEND_VENDOR_EMAIL_TASK_COMPLETED");
+	// Automatically update the Payment Due Date + 40!!!!!!!!!!!!!!!!!!! To do Ada
 }
 // DOCKET #15: Send email notification when payment has been made
 else if (wfTask == 'Payment')
