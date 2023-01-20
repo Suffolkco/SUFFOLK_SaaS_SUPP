@@ -230,7 +230,7 @@ function mainProcess() {
                                 logDebugLocal("checking for tank records as children of the site");
                                 var childTankRecordArray = getChildren("DEQ/OPC/Hazardous Tank/Permit", capId);
                                 logDebugLocal("There are " + childTankRecordArray.length + " total tanks as children. Now checking and adding Active tanks...");
-                                assignTaskCustom("Violation Review", "MSEAMAN",enfChild);
+                                assignTaskCustom("Violation Review", "JGERACE", enfChild);
                                 if (childTankRecordArray.length > 0)
                                 {
                                     //logDebugLocal("child tank records found");
@@ -350,7 +350,7 @@ function mainProcess() {
                                     altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + "TT";
                                     logDebugLocal("Updating Alt ID to: " + altIdString);
                                     updateAltID(altIdString, enfChild);
-                                    assignTaskCustom("Violation Review", "MSEAMAN",enfChild);
+                                    assignTaskCustom("Violation Review", "KCLUNIE",enfChild);
                                     }
                                     if(flag || enfChild != undefined)
                                     //updating table

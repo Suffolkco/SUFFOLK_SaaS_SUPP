@@ -5,7 +5,7 @@ showDebug = true;
 
 
 var emailParams = aa.util.newHashtable();
-var reportParams = aa.util.newHashtable();
+var reportParams = aa.util.newHashMap();
 var parentCapId = getParent(capId);
 logDebug("This is our Parent CapID : " + parentCapId);
 var conEmailList = "";
@@ -21,13 +21,18 @@ var dateThirtyDaysOut = dateAdd(new Date(), 30);
 var dateSixtyDaysOut = dateAdd(new Date(), 60);
 logDebug("date sixty days out is: " + dateSixtyDaysOut);
 var hearingDate = AInfo["Hearing Date"];
-var hearingDateLessSeven = (convertDate(hearingDate).getMonth() + 1) + "/" + (convertDate(hearingDate).getDate() - 7) + "/" + (convertDate(hearingDate).getYear() + 1900);
+if (!matches(hearingDate, null, "", undefined))
+{
+    var hearingDateLessSeven = (convertDate(hearingDate).getMonth() + 1) + "/" + (convertDate(hearingDate).getDate() - 7) + "/" + (convertDate(hearingDate).getYear() + 1900);
+}
 var hearingTime = AInfo["Hearing Time"];
 var todayDate = new Date();
 var todayDateConverted = dateFormatted(todayDate.getMonth() + 1, todayDate.getDate(), todayDate.getYear() + 1900, "MM/DD/YYYY");
 var fineAmount = AInfo["Fine Amount"];
 var revisedFineAmount = AInfo["Revised Fine Amount"];
 var enfReqRevDue;
+var formHearingDue;
+var prelimHearingDue;
 
 
 if (parentCapId)
@@ -68,6 +73,24 @@ for (i in wfObj)
             enfReqRevDue = fTask.getDueDate();
             enfReqRevDue = enfReqRevDue.getMonth() + "/" + enfReqRevDue.getDayOfMonth() + "/" + enfReqRevDue.getYear();
             logDebug("enforcement request review date is: " + enfReqRevDue);
+        }
+    }
+    if (fTask.getTaskDescription() == "Preliminary Hearing")
+    {
+        if (fTask.getDueDate() != null)
+        {
+            prelimHearingDue = fTask.getDueDate();
+            prelimHearingDue = prelimHearingDue.getMonth() + "/" + prelimHearingDue.getDayOfMonth() + "/" + prelimHearingDue.getYear();
+            logDebug("prelim hearing due date is: " + prelimHearingDue);
+        }
+    }
+    if (fTask.getTaskDescription() == "Formal Hearing")
+    {
+        if (fTask.getDueDate() != null)
+        {
+            formHearingDue = fTask.getDueDate();
+            formHearingDue = formHearingDue.getMonth() + "/" + formHearingDue.getDayOfMonth() + "/" + formHearingDue.getYear();
+            logDebug("formal hearing due date is: " + formHearingDue);
         }
     }
 }
@@ -165,27 +188,39 @@ if (wfTask == "Enforcement Request Review")
         {
             //OP
             case "OP":
-                reportToSend = "OPC Waiver Report";
+                reportToSend = "OPC OP NOPH";
+                break;
             case "TT":
-                reportToSend = "OPC Waiver Report";
+                reportToSend = "OPC TT NOPH";
+                break;
             case "SP":
                 reportToSend = "OPC Swimming Pool NOPH";
+                break;
             case "EE":
                 reportToSend = "OPC EE NOPH";
+                break;
             case "IW":
                 reportToSend = "OPC Waiver Report";
+                break;
             case "BB":
                 reportToSend = "OPC Waiver Report";
+                break;
             case "T8":
-                reportToSend = "OPC Waiver Report";
+                reportToSend = "OPC T8 NOPH";
+                break;
             case "WL":
                 reportToSend = "OPC Warning Letter";
+                break;
             case "LL":
                 reportToSend = "OPC Waiver Report";
+                break;
         }
-        addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
+        reportParams.put("RecordID", capId.getCustomID());
 
         generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
+        /*
+        not sure why this code is here, as the above code should do the same thing
+        
         if (String(enfType) == "TT")
         {
             var rFile = new Array();
@@ -195,12 +230,16 @@ if (wfTask == "Enforcement Request Review")
         {
             var rFile = new Array();
             rFile = reportRunSaveCustom(reportToSend, false, true, true, 'DEQ', reportParams);
-        }
+        }*/
+
         //set task due date to the date found in the TSI Hearing Date on the Preliminary Hearing task
         //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
-        addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
-        //Gets siblings by looking at the parent
-        addConditionSiblings(parentCapId)
+        if (!matches(parentCapId, "", null, undefined))
+        {
+            addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
+            //Gets siblings by looking at the parent
+            addConditionSiblings(parentCapId)
+        }
 
     }
     if (wfStatus == "NOFH Sent")
@@ -294,7 +333,6 @@ if (wfTask == "Preliminary Hearing")
             }
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
-        addParameter(emailParams, "$$hearingDateLessSeven$$", hearingDateLessSeven);
         addParameter(emailParams, "$$hearingTime$$", hearingTime);
         sendNotification("", conEmailList, "", "DEQ_OPC_ENF_PRELIM_HEARING_ADJ", emailParams, null);
 
@@ -342,7 +380,7 @@ if (wfTask == "Preliminary Hearing")
         addParameter(emailParams, "$$dateSent$$", todayDateConverted);
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$revFineAmount$$", revisedFineAmount);
-        addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
+        addParameter(emailParams, "$$feeDueDate$$", prelimHearingDue);
         //addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
         reportParams.put("RecordID", capId.getCustomID().toString());
         logDebug(reportParams);
@@ -422,7 +460,7 @@ if (wfTask == "Formal Hearing")
         }
         addParameter(emailParams, "$$dateSent$$", todayDateConverted);
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
-        addParameter(emailParams, "$$feeDueDate$$", enfReqRevDue);
+        addParameter(emailParams, "$$feeDueDate$$", formHearingDue);
         addParameter(emailParams, "$$revFineAmount$$", revisedFineAmount);
         reportParams.put("RecordID", capId.getCustomID().toString());
         var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
@@ -829,7 +867,7 @@ function generateReportP(aaReportName, parameters, rModule) {
     }
 }
 
-function reportRunSave(reportName, view, edmsSave, storeToDisk, reportModule, reportParams) {
+function reportRunSaveCustom(reportName, view, edmsSave, storeToDisk, reportModule, reportParams) {
     var name = "";
     var rFile = new Array();
     var error = "";

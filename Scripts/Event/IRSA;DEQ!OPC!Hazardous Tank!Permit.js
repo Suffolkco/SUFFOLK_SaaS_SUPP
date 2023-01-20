@@ -115,13 +115,16 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
             var projDesc = workDescGet(parentCap);
             editAppName(appName, enfChild);
             updateWorkDesc(projDesc, enfChild);
-            var alternateID = parentCap.getCustomID();
+            var alternateID = capId.getCustomID();
+            var parentAltId = parentCap.getCustomID();
             var year = inspObj.getInspectionDate().getYear();
             var month = inspObj.getInspectionDate().getMonth();
             var day = inspObj.getInspectionDate().getDayOfMonth();
             var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
             var min = inspObj.getInspectionDate().getMinute();
             var sec = inspObj.getInspectionDate().getSecond();
+            assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
+
             //gathering inspectors name from this current Site inspection
             var inspInspectorObj = inspObj.getInspector();
             if (inspInspectorObj)
@@ -171,7 +174,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                             //pushing all of the checklist, inspection, and 
                             var newRow = new Array();
                             newRow["Inspection Type"] = inspType;
-                            newRow["SITE Record ID"] = alternateID;
+                            newRow["SITE Record ID"] = parentAltId;
                             newRow["SCDHS Tank Number"] = tankNumber;
                             newRow["Product Store Label"] = prodStorLabel;
                             newRow["Capacity"] = capacity + " " + units + " " + getAppSpecific("Units Label");
@@ -180,7 +183,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                             newRow["Inspector Finding"] = checklistItemComment;
                             newRow["Inspection Date"] = inspResultDate;
                             newRow["Inspector"] = vInspectorName;
-                            newRow["Appendix A"] = "CHECKED";
+                            newRow["Appendix  A"] = "CHECKED";
                             addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
                         }
                     }
@@ -251,7 +254,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                     }
                 }
 
-                var alternateID = parentCap.getCustomID();
+                var parentAltId = parentCap.getCustomID();
                 var year = inspObj.getInspectionDate().getYear();
                 var month = inspObj.getInspectionDate().getMonth();
                 var day = inspObj.getInspectionDate().getDayOfMonth();
@@ -308,7 +311,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 
                                 var newRow = new Array();
                                 newRow["Inspection Type"] = inspType;
-                                newRow["SITE Record ID"] = alternateID;
+                                newRow["SITE Record ID"] = parentAltId;
                                 newRow["SCDHS Tank Number"] = tankNumber;
                                 newRow["Product Store Label"] = prodStorLabel;
                                 newRow["Capacity"] = capacity + " " + units;
@@ -350,7 +353,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var projDesc = workDescGet(parentCap);
                 editAppName(appName, enfChild);
                 updateWorkDesc(projDesc, enfChild);
-                var alternateID = parentCap.getCustomID();
+                var parentAltId = parentCap.getCustomID();
                 var year = inspObj.getInspectionDate().getYear();
                 var month = inspObj.getInspectionDate().getMonth();
                 var day = inspObj.getInspectionDate().getDayOfMonth();
@@ -358,6 +361,8 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
                 var inspInspectorObj = inspObj.getInspector();
+                assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
+
                 if (inspInspectorObj)
                 {
                     var inspInspector = inspInspectorObj.getUserID();
@@ -403,7 +408,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
 
                                 var newRow = new Array();
                                 newRow["Inspection Type"] = inspType;
-                                newRow["SITE Record ID"] = alternateID;
+                                newRow["SITE Record ID"] = parentAltId;
                                 newRow["SCDHS Tank Number"] = tankNumber;
                                 newRow["Product Store Label"] = prodStorLabel;
                                 newRow["Capacity"] = capacity + " " + units;
@@ -712,3 +717,47 @@ function addRowToASITable(tableName, tableValues) //optional capId
         logDebug("Successfully added record to ASI Table: " + tableName);
     }
 }
+function assignTaskCustom(wfstr,username,ChildCap) // optional process name
+	{
+	// Assigns the task to a user.  No audit.
+	//
+    aa.print("Inside the assign method")
+	var useProcess = false;
+	var processName = "";		
+	var taskUserResult = aa.person.getUser(username);
+	if (taskUserResult.getSuccess())
+    {
+		taskUserObj = taskUserResult.getOutput();  //  User Object
+        aa.print("We got the user");
+    }
+        else
+		{ logMessage("**ERROR: Failed to get user object: " + taskUserResult.getErrorMessage()); return false; }
+		
+	var workflowResult = aa.workflow.getTaskItems(ChildCap, wfstr, processName, null, null, null);
+ 	if (workflowResult.getSuccess())
+    {
+  	 	var wfObj = workflowResult.getOutput();
+        aa.print("We got the workflow object");
+    }
+        else
+  	  	{ 
+            aa.print("We failed to get the workflow")
+            logMessage("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage()); 
+            return false; 
+        }
+	
+	for (i in wfObj)
+		{
+   		var fTask = wfObj[i];
+ 		if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase())  && (!useProcess || fTask.getProcessCode().equals(processName)))
+			{
+			fTask.setAssignedUser(taskUserObj);
+			var taskItem = fTask.getTaskItem();
+			var adjustResult = aa.workflow.assignTask(taskItem);
+            aa.print(adjustResult);
+			aa.print("Assigned Workflow Task: " + wfstr + " to " + username);
+			logMessage("Assigned Workflow Task: " + wfstr + " to " + username);
+			logDebug("Assigned Workflow Task: " + wfstr + " to " + username);
+			}			
+		}
+	}

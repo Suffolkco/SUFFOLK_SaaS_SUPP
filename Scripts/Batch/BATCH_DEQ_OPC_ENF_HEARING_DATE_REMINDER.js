@@ -391,7 +391,7 @@ function mainProcess(thisType) {
                                     }
                                 }
                             }
-                            if (!matches(getAppStatus(), "Withdrawn"))
+                           /* if (!matches(getAppStatus(), "Withdrawn"))
                             {
                                 var workflowResult = aa.workflow.getTasks(capId);
                                 if (workflowResult.getSuccess())
@@ -452,7 +452,7 @@ function mainProcess(thisType) {
                                     //logDebugLocal("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage()); 
                                     return false;
                                 }
-                            }
+                            }*/
                             
                                 if (!matches(getAppStatus(), "Case Closed", "Withdrawn"))
                                 {
