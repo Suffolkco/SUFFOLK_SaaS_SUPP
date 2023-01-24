@@ -177,13 +177,13 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                             newRow["SITE Record ID"] = parentAltId;
                             newRow["SCDHS Tank Number"] = tankNumber;
                             newRow["Product Store Label"] = prodStorLabel;
-                            newRow["Capacity"] = capacity + " " + units + " " + getAppSpecific("Units Label");
+                            newRow["Capacity"] = capacity + " " + getAppSpecific("Units Label");
                             newRow["Tank Location Label"] = tankLoc;
                             newRow["Item Number"] = checklistItemNo;
                             newRow["Inspector Finding"] = checklistItemComment;
                             newRow["Inspection Date"] = inspResultDate;
                             newRow["Inspector"] = vInspectorName;
-                            newRow["Appendix  A"] = "CHECKED";
+                            newRow["Appendix A"] = "CHECKED";
                             addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
                         }
                     }
@@ -314,12 +314,13 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                                 newRow["SITE Record ID"] = parentAltId;
                                 newRow["SCDHS Tank Number"] = tankNumber;
                                 newRow["Product Store Label"] = prodStorLabel;
-                                newRow["Capacity"] = capacity + " " + units;
+                                newRow["Capacity"] = capacity + " " + getAppSpecific("Units Label");
                                 newRow["Tank Location Label"] = tankLoc;
                                 newRow["Item Number"] = checklistItemNo;
                                 newRow["Inspector Finding"] = checklistItemComment;
                                 newRow["Inspection Date"] = inspResultDate;
                                 newRow["Inspector"] = vInspectorName;
+                                newRow["Appendix A"] = "CHECKED";
                                 addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, childCapToUse);
                             }
                         }
