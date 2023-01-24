@@ -327,7 +327,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 }
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
                 logDebug("Inspection DateTime: " + inspectionDateCon);
-
+                var alternateID = capId.getCustomID();
                 addParameter(reportParams, "TankRecordID", alternateID.toString());
                 addParameter(reportParams, "InspectionId", inspId);
                 logDebug("report params are: " + reportParams);
@@ -427,7 +427,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
 
                 var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
-
+                var alternateID = capId.getCustomID();
                 addParameter(reportParams, "TankRecordID", alternateID.toString());
                 addParameter(reportParams, "InspectionId", inspId);
                 logDebug("report params are: " + reportParams);
@@ -717,47 +717,47 @@ function addRowToASITable(tableName, tableValues) //optional capId
         logDebug("Successfully added record to ASI Table: " + tableName);
     }
 }
-function assignTaskCustom(wfstr,username,ChildCap) // optional process name
-	{
-	// Assigns the task to a user.  No audit.
-	//
+function assignTaskCustom(wfstr, username, ChildCap) // optional process name
+{
+    // Assigns the task to a user.  No audit.
+    //
     aa.print("Inside the assign method")
-	var useProcess = false;
-	var processName = "";		
-	var taskUserResult = aa.person.getUser(username);
-	if (taskUserResult.getSuccess())
+    var useProcess = false;
+    var processName = "";
+    var taskUserResult = aa.person.getUser(username);
+    if (taskUserResult.getSuccess())
     {
-		taskUserObj = taskUserResult.getOutput();  //  User Object
+        taskUserObj = taskUserResult.getOutput();  //  User Object
         aa.print("We got the user");
     }
-        else
-		{ logMessage("**ERROR: Failed to get user object: " + taskUserResult.getErrorMessage()); return false; }
-		
-	var workflowResult = aa.workflow.getTaskItems(ChildCap, wfstr, processName, null, null, null);
- 	if (workflowResult.getSuccess())
+    else
+    {logMessage("**ERROR: Failed to get user object: " + taskUserResult.getErrorMessage()); return false;}
+
+    var workflowResult = aa.workflow.getTaskItems(ChildCap, wfstr, processName, null, null, null);
+    if (workflowResult.getSuccess())
     {
-  	 	var wfObj = workflowResult.getOutput();
+        var wfObj = workflowResult.getOutput();
         aa.print("We got the workflow object");
     }
-        else
-  	  	{ 
-            aa.print("We failed to get the workflow")
-            logMessage("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage()); 
-            return false; 
-        }
-	
-	for (i in wfObj)
-		{
-   		var fTask = wfObj[i];
- 		if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase())  && (!useProcess || fTask.getProcessCode().equals(processName)))
-			{
-			fTask.setAssignedUser(taskUserObj);
-			var taskItem = fTask.getTaskItem();
-			var adjustResult = aa.workflow.assignTask(taskItem);
+    else
+    {
+        aa.print("We failed to get the workflow")
+        logMessage("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage());
+        return false;
+    }
+
+    for (i in wfObj)
+    {
+        var fTask = wfObj[i];
+        if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase()) && (!useProcess || fTask.getProcessCode().equals(processName)))
+        {
+            fTask.setAssignedUser(taskUserObj);
+            var taskItem = fTask.getTaskItem();
+            var adjustResult = aa.workflow.assignTask(taskItem);
             aa.print(adjustResult);
-			aa.print("Assigned Workflow Task: " + wfstr + " to " + username);
-			logMessage("Assigned Workflow Task: " + wfstr + " to " + username);
-			logDebug("Assigned Workflow Task: " + wfstr + " to " + username);
-			}			
-		}
-	}
+            aa.print("Assigned Workflow Task: " + wfstr + " to " + username);
+            logMessage("Assigned Workflow Task: " + wfstr + " to " + username);
+            logDebug("Assigned Workflow Task: " + wfstr + " to " + username);
+        }
+    }
+}

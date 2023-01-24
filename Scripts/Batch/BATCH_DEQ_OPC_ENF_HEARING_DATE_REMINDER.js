@@ -214,7 +214,7 @@ function mainProcess(thisType) {
 
                             var addrResult = getAddressInALine(capId);
 
-                            if (getAppStatus() == "OPEN PH")
+                            if (matches(getAppStatus(), "OPEN PH", "Open PH"))
                             {
                                 var prelimHearingUserId = getUserIDAssignedToTask(capId, "Preliminary Hearing")
                                 //logDebugLocal("prelimhearing user id is: " + prelimHearingUserId);
@@ -255,8 +255,8 @@ function mainProcess(thisType) {
                                         addParameter(vEParams, "$$hearingDate$$", hearingDate);
                                         addParameter(vEParams, "$$hearingTime$$", hearingTime);
 
-
-                                        var contactResult = aa.people.getCapContactByCapID(capId);
+                                        var parentCapId = getParent(capId);
+                                        var contactResult = aa.people.getCapContactByCapID(parentCapId);
                                         if (contactResult.getSuccess())
                                         {
                                             var capContacts = contactResult.getOutput();
@@ -270,6 +270,7 @@ function mainProcess(thisType) {
                                                 }
                                             }
                                         }
+                                        //logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
                                         sendNotification("", conEmail, "", "DEQ_OPC_ENF_PRELIM_HEARING_REM", vEParams, null);
 
                                     }
@@ -307,26 +308,13 @@ function mainProcess(thisType) {
                                         addParameter(vEParams, "$$facilityName$$", appName);
                                         addParameter(vEParams, "$$prelimHearingDate$$", statDate);
 
-                                        var contactResult = aa.people.getCapContactByCapID(capId);
-                                        if (contactResult.getSuccess())
-                                        {
-                                            var capContacts = contactResult.getOutput();
-                                            conEmail = "";
-                                            for (c in capContacts)
-                                            {
-                                                addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-                                                if (!matches(capContacts[c].email, null, undefined, ""))
-                                                {
-                                                    conEmail += capContacts[c].email + ";";
-                                                }
-                                            }
-                                            sendNotification("", prelimHearingUserEmail, "", "DEQ_OPC_ENF_MIS_HEARING", vEParams, null);
+                                        logDebugLocal("sending missed hearing template to " + prelimHearingUserEmail + " as part of " + capId.getCustomID());
 
-                                        }
+                                        sendNotification("", prelimHearingUserEmail, "", "DEQ_OPC_ENF_MIS_HEARING", vEParams, null);
                                     }
                                 }
                             }
-                            if (getAppStatus() == "OPEN FH")
+                            if (matches(getAppStatus(), "OPEN FH", "Open FH"))
                             {
                                 var statDate = getAppSpecific("Hearing Date");
                                 if (statDate != null)
@@ -359,8 +347,8 @@ function mainProcess(thisType) {
                                     //Looking for upcoming Formal Hearing date
                                     if (matches(dateDifRound, 7, 10, 14))
                                     {
-                                        //logDebugLocal("Checking for Formal Hearing Reminders...");
-
+                                        logDebugLocal("Checking for Formal Hearing Reminders...");
+                                        logDebugLocal("datedifround is: " + dateDifRound);
                                         addParameter(vEParams, "$$altID$$", capIDString);
                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                                         addParameter(vEParams, "$$addressInALine$$", addrResult);
@@ -370,9 +358,10 @@ function mainProcess(thisType) {
                                         addParameter(vEParams, "$$hearingTime$$", hearingTime);
                                         addParameter(vEParams, "$$hearingDateMinusWeek$$", hearingDateMinusWeek);
 
-                                        
 
-                                        var contactResult = aa.people.getCapContactByCapID(capId);
+
+                                        var parentCapId = getParent(capId);
+                                        var contactResult = aa.people.getCapContactByCapID(parentCapId);
                                         if (contactResult.getSuccess())
                                         {
                                             var capContacts = contactResult.getOutput();
@@ -386,76 +375,77 @@ function mainProcess(thisType) {
                                                 }
                                             }
                                         }
+                                        logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
                                         sendNotification("", conEmail, "", "DEQ_OPC_ENF_FORMAL_HEARING_REM", vEParams, null);
 
                                     }
                                 }
                             }
-                           /* if (!matches(getAppStatus(), "Withdrawn"))
+                            /* if (!matches(getAppStatus(), "Withdrawn"))
+                             {
+                                 var workflowResult = aa.workflow.getTasks(capId);
+                                 if (workflowResult.getSuccess())
+                                 {
+                                     var wfObj = workflowResult.getOutput();
+                                     for (i in wfObj)
+                                     {
+                                         if (wfObj[i].getTaskDescription() == "Enforcement Request Review" && wfObj[i].getDisposition() == "Warning Letter Sent")
+                                         {
+                                             var dueDate = wfObj[i].getDueDate().getMonth() + "/" + wfObj[i].getDueDate().getDayOfMonth() + "/" + wfObj[i].getDueDate().getYear();
+                                             logDebugLocal("due date for warning letter task is: " + dueDate);
+                                             var errUserId = getUserIDAssignedToTask(capId, "Enforcement Request Review")
+                                             //logDebugLocal("prelimhearing user id is: " + errUserId);
+                                             var userToSend = aa.person.getUser(errUserId).getOutput();
+                                             //logDebugLocal("user to send is: " + userToSend);
+                                             if (userToSend != null)
+                                             {
+                                                 var errUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+                                                 logDebugLocal("errusername is: " + errUserName);
+                                                 var errUserEmail = userToSend.getEmail();
+ 
+                                                 if (dueDate != null)
+                                                 {
+                                                     var dateDif = parseFloat(dateDiff(todayDate, dueDate));
+                                                     //logDebugLocal("todaydate is: " + todayDate + " and duedate is: " + dueDate);
+                                                     var dateDifRound = Math.floor(dateDif);
+                                                     logDebugLocal("datediffround is: " + dateDifRound);
+ 
+                                                     //Overdue Warning Letter status
+                                                     if (matches(dateDifRound, -1))
+                                                     {
+                                                         addParameter(vEParams, "$$altID$$", capIDString);
+                                                         addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
+                                                         addParameter(vEParams, "$$facilityName$$", appName);
+                                                         var contactResult = aa.people.getCapContactByCapID(capId);
+                                                         if (contactResult.getSuccess())
+                                                         {
+                                                             var capContacts = contactResult.getOutput();
+                                                             var conEmail = "";
+                                                             for (c in capContacts)
+                                                             {
+                                                                 addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                                                                 if (!matches(capContacts[c].email, null, undefined, ""))
+                                                                 {
+                                                                     conEmail += capContacts[c].email + ";";
+                                                                 }
+                                                             }
+                                                         }
+                                                         sendNotification("", errUserEmail, "", "DEQ_OPC_ENF_ACT_REQ", vEParams, null);
+                                                     }
+                                                 }
+                                             }
+                                         }
+                                     }
+                                 }
+                                 else
+                                 {
+                                     //logDebugLocal("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage()); 
+                                     return false;
+                                 }
+                             }*/
+
+                            if (!matches(getAppStatus(), "Case Closed", "Withdrawn"))
                             {
-                                var workflowResult = aa.workflow.getTasks(capId);
-                                if (workflowResult.getSuccess())
-                                {
-                                    var wfObj = workflowResult.getOutput();
-                                    for (i in wfObj)
-                                    {
-                                        if (wfObj[i].getTaskDescription() == "Enforcement Request Review" && wfObj[i].getDisposition() == "Warning Letter Sent")
-                                        {
-                                            var dueDate = wfObj[i].getDueDate().getMonth() + "/" + wfObj[i].getDueDate().getDayOfMonth() + "/" + wfObj[i].getDueDate().getYear();
-                                            logDebugLocal("due date for warning letter task is: " + dueDate);
-                                            var errUserId = getUserIDAssignedToTask(capId, "Enforcement Request Review")
-                                            //logDebugLocal("prelimhearing user id is: " + errUserId);
-                                            var userToSend = aa.person.getUser(errUserId).getOutput();
-                                            //logDebugLocal("user to send is: " + userToSend);
-                                            if (userToSend != null)
-                                            {
-                                                var errUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-                                                logDebugLocal("errusername is: " + errUserName);
-                                                var errUserEmail = userToSend.getEmail();
-
-                                                if (dueDate != null)
-                                                {
-                                                    var dateDif = parseFloat(dateDiff(todayDate, dueDate));
-                                                    //logDebugLocal("todaydate is: " + todayDate + " and duedate is: " + dueDate);
-                                                    var dateDifRound = Math.floor(dateDif);
-                                                    logDebugLocal("datediffround is: " + dateDifRound);
-
-                                                    //Overdue Warning Letter status
-                                                    if (matches(dateDifRound, -1))
-                                                    {
-                                                        addParameter(vEParams, "$$altID$$", capIDString);
-                                                        addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
-                                                        addParameter(vEParams, "$$facilityName$$", appName);
-                                                        var contactResult = aa.people.getCapContactByCapID(capId);
-                                                        if (contactResult.getSuccess())
-                                                        {
-                                                            var capContacts = contactResult.getOutput();
-                                                            var conEmail = "";
-                                                            for (c in capContacts)
-                                                            {
-                                                                addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
-                                                                if (!matches(capContacts[c].email, null, undefined, ""))
-                                                                {
-                                                                    conEmail += capContacts[c].email + ";";
-                                                                }
-                                                            }
-                                                        }
-                                                        sendNotification("", errUserEmail, "", "DEQ_OPC_ENF_ACT_REQ", vEParams, null);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    //logDebugLocal("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage()); 
-                                    return false;
-                                }
-                            }*/
-                            
-                                if (!matches(getAppStatus(), "Case Closed", "Withdrawn"))
-                                {
                                 //logDebugLocal("Checking for overdue workflow tasks...");
                                 var workflowResult = aa.workflow.getTasks(capId);
                                 if (workflowResult.getSuccess())
@@ -465,42 +455,42 @@ function mainProcess(thisType) {
                                     {
                                         if (wfObj[i].getActiveFlag() == "Y")
                                         {
-                                            if(wfObj[i].getDueDate()!=null)
+                                            if (wfObj[i].getDueDate() != null)
                                             {
-                                            var dueDate = wfObj[i].getDueDate().getMonth() + "/" + wfObj[i].getDueDate().getDayOfMonth() + "/" + wfObj[i].getDueDate().getYear();
+                                                var dueDate = wfObj[i].getDueDate().getMonth() + "/" + wfObj[i].getDueDate().getDayOfMonth() + "/" + wfObj[i].getDueDate().getYear();
 
-                                            //logDebugLocal("due date for " + wfObj[i].getTaskDescription() + " task is: " + dueDate);
-                                            var taskUserId = getUserIDAssignedToTask(capId, wfObj[i].getTaskDescription())
-                                            //logDebugLocal("assigned user id is: " + taskUserId);
-                                            var userToSend = aa.person.getUser(taskUserId).getOutput();
-                                            //logDebugLocal("user to send is: " + userToSend);
-                                            if (userToSend != null)
-                                            {
-                                                var taskUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-                                                //logDebugLocal("taskUserName is: " + taskUserName);
-                                                var taskUserEmail = userToSend.getEmail();
-
-                                                if (dueDate != null)
+                                                //logDebugLocal("due date for " + wfObj[i].getTaskDescription() + " task is: " + dueDate);
+                                                var taskUserId = getUserIDAssignedToTask(capId, wfObj[i].getTaskDescription())
+                                                //logDebugLocal("assigned user id is: " + taskUserId);
+                                                var userToSend = aa.person.getUser(taskUserId).getOutput();
+                                                //logDebugLocal("user to send is: " + userToSend);
+                                                if (userToSend != null)
                                                 {
-                                                    var dateDif = parseFloat(dateDiff(todayDate, dueDate));
-                                                    //logDebugLocal("todaydate is: " + todayDate + " and duedate is: " + dueDate);
-                                                    var dateDifRound = Math.floor(dateDif);
-                                                    //logDebugLocal("datediffround is: " + dateDifRound);
+                                                    var taskUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+                                                    //logDebugLocal("taskUserName is: " + taskUserName);
+                                                    var taskUserEmail = userToSend.getEmail();
 
-                                                    //Overdue open task
-                                                    if (matches(dateDifRound, -1))
+                                                    if (dueDate != null)
                                                     {
-                                                        //logDebugLocal("datedif matches");
-                                                        addParameter(vEParams, "$$altID$$", capIDString);
-                                                        //logDebugLocal("capidstring is: " + capIDString);
-                                                        addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
-                                                        addParameter(vEParams, "$$facilityName$$", appName);
-                                                        //logDebugLocal("sending to " + taskUserEmail);
-                                                        sendNotification("", taskUserEmail, "", "DEQ_OPC_ENF_ACT_REQ", vEParams, null);
+                                                        var dateDif = parseFloat(dateDiff(todayDate, dueDate));
+                                                        //logDebugLocal("todaydate is: " + todayDate + " and duedate is: " + dueDate);
+                                                        var dateDifRound = Math.floor(dateDif);
+                                                        //logDebugLocal("datediffround is: " + dateDifRound);
+
+                                                        //Overdue open task
+                                                        if (matches(dateDifRound, -1))
+                                                        {
+                                                            //logDebugLocal("datedif matches");
+                                                            addParameter(vEParams, "$$altID$$", capIDString);
+                                                            //logDebugLocal("capidstring is: " + capIDString);
+                                                            addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
+                                                            addParameter(vEParams, "$$facilityName$$", appName);
+                                                            //logDebugLocal("sending action required template to " + taskUserEmail + " as part of " + capId.getCustomID());
+                                                            sendNotification("", taskUserEmail, "", "DEQ_OPC_ENF_ACT_REQ", vEParams, null);
+                                                        }
                                                     }
                                                 }
                                             }
-                                          }   
                                         }
                                     }
                                 }
