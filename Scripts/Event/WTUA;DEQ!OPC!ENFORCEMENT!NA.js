@@ -395,11 +395,11 @@ if (wfTask == "Preliminary Hearing")
 
         if (conEmailListAll == '')
         {
-            aa.print("We found no parents on the contact record");
-            Systememail = systemUserObj.getEmail();
-            aa.print(Systememail);
+            aa.print("We found no contacts on the parent record");
+            var systemEmail = systemUserObj.getEmail();
+            aa.print(systemEmail);
 
-            sendNotification("", Systememail, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
+            sendNotification("", systemEmail, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
         }
         else
         {
