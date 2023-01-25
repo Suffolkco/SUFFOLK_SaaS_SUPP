@@ -1,4 +1,4 @@
-showDebug = true;
+//showDebug = true;
 
 /* deprecated on 5/23/22 - possible use forthcoming when the renewal/fee process is re-developed - Ryan Littlefield
 if (wfTask == "Tracking" && wfStatus == "System Valid")

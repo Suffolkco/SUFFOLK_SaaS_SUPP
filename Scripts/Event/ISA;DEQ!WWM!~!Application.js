@@ -1,5 +1,5 @@
 //ISA;DEQ!WWM!~!Application
-showDebug = true;
+//showDebug = true;
 var emailText = "";
 logDebugLocal("Information: " + inspId + "," + inspSchedDate);
 // Not used anymore

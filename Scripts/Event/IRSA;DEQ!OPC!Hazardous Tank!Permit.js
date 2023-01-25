@@ -1,6 +1,6 @@
 //IRSA:DEQ/OPC/HAZARDOUS TANK/PERMIT
 
-showDebug = true;
+//showDebug = true;
 var emailText = "";
 var today = new Date();
 
@@ -111,7 +111,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
             var capacity = getAppSpecific("Capacity", capId);
             var units = getAppSpecific("Units", capId);
             var tankLoc = getAppSpecific("Tank Location", capId);
-            var appName = getAppName();
+            var appName = getAppNameLocal(parentCap);
             var projDesc = workDescGet(parentCap);
             editAppName(appName, enfChild);
             updateWorkDesc(projDesc, enfChild);
@@ -350,7 +350,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var capacity = getAppSpecific("Capacity", capId);
                 var units = getAppSpecific("Units", capId);
                 var tankLoc = getAppSpecific("Tank Location", capId);
-                var appName = getAppName();
+                var appName = getAppNameLocal(parentCap);
                 var projDesc = workDescGet(parentCap);
                 editAppName(appName, enfChild);
                 updateWorkDesc(projDesc, enfChild);
