@@ -14,7 +14,7 @@ try
 		var itemNo = i++;
 		var newRow = new Array();
 		var vioNo = cheatSheet[c]["Reference Violation Number"];
-		var withdrawVoidVio = cheatSheet[c]["Withdraw/ Void Violation"];	  
+		var withdrawVoidVio = cheatSheet[c]["Withdraw/Void Violation"];	  
 		newRow["Violation Date"] = cheatSheet[c]["Violation Date"];
 		newRow["Occurrence Date"] = cheatSheet[c]["Occurrence Date"];
 		newRow["Case Number"] = caseNo;	
