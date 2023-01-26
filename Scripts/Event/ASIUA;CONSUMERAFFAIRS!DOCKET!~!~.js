@@ -24,8 +24,7 @@ try
 		newRow["Reference Violation Number"] = vioNo;
 		newRow["Abbreviated Description"] = cheatSheet[c]["Abbreviated Description"];
 		newRow["Item"] = itemNo.toString();
-		logDebug("itemNo: " + itemNo);
-		
+		logDebug("itemNo: " + itemNo);		
 		logDebug("withdrawVoidVio: " + withdrawVoidVio);
 
 		if (withdrawVoidVio != null)
