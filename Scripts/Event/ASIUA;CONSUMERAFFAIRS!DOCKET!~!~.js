@@ -26,7 +26,8 @@ try
 		newRow["Item"] = itemNo.toString();
 		logDebug("itemNo: " + itemNo);
 		
-		
+		logDebug("withdrawVoidVio: " + withdrawVoidVio);
+
 		if (withdrawVoidVio != null)
 		{
 			if (vioNo != "" || vioNo != null)
@@ -48,11 +49,17 @@ try
 
 					if (withdrawVoidVio  == 'Withdraw') // What do we do here? Unrelated or just set the Violation status to be withdraw?
 					{
-						updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
+						if (!matches(getAppStatis[vioCapId], "Withdrawn"))
+						{
+							updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
+						}
 					}
 					else if (withdrawVoidVio == "Void")
 					{
-						updateAppStatus("VOID", "Updated through docket violation cheatsheet.", vioCapId);
+						if (!matches(getAppStatis[vioCapId], "VOID"))
+						{						
+							updateAppStatus("VOID", "Updated through docket violation cheatsheet.", vioCapId);
+						}
 					}
 				}
 			
