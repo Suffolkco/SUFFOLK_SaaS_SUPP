@@ -1,3 +1,4 @@
+
 var ikGrease = AInfo["In-Kind Grease Trap Replacement"];
 var stInstall = AInfo["Septic Tank Installation"];
 var iaInstall = AInfo["I/A OWTS Installation"];
@@ -39,16 +40,6 @@ if (wfTask == "Final Review" && wfStatus == "Registration Complete")
         }
         else
         {
-            /* 11/29 Meeting this was no longer needed
-            if (!matches(getAppSpecific("IA Number"), "", null, undefined))
-            {
-                if (matches(getAppSpecific("O&M Contract Approved"), "", null, undefined))
-                {
-                    cancel = true;
-                    showMessage = true;
-                    comment("Awaiting approvable O&M Contract/Registration in Ecology.");
-                }   
-            }
             var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
             for (sstrow in shipSystemTable)
             {
@@ -57,11 +48,9 @@ if (wfTask == "Final Review" && wfStatus == "Registration Complete")
                 {
                     cancel = true;
                     showMessage = true;
-                    comment("Please fill out I/A Manufacturer");
+                    comment("Please fill out I/A Manufacturer.");
                 }
             }
-*/
-
         }
     }
     else

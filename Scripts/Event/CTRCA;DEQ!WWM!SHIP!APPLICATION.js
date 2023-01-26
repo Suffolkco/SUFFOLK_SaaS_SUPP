@@ -5,6 +5,8 @@ var emailParams = aa.util.newHashtable();
 var conEmail = "";
 var lpEmail = "";
 var agentEmail = "";
+var propEmail = "";
+var propOwnerName = "";
 for (c in capContacts)
 {
     if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent", "Property Owner"))
@@ -16,6 +18,11 @@ for (c in capContacts)
         if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent"))
         {
             agentEmail += capContacts[c].email + ";";
+        }
+        if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
+        {
+            propEmail += capContacts[c].email + ";";
+            propOwnerName = capContacts[c].getCapContactModel().getContactName();
         }
     }
 }
@@ -59,9 +66,11 @@ var addrResult = getAddressInALine(capId);
 addParameter(vEParams, "$$altID$$", capId.getCustomID());
 addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$Parcel$$", parcelNumber);
-addParameter(vEParams, "$$FullNameBusName$$", capContacts[c].getCapContactModel().getContactName());
+addParameter(vEParams, "$$homeowner$$", propOwnerName);
 
-sendNotification("", allEmail, "", "DEQ_SHIP_HOMEOWNER", vEParams, null);
+sendNotification("", propEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
+sendNotification("", allEmail, "", "DEQ_SHIP_APPLICATION_RECEIVED", vEParams, null);
+
 
 //EHIMS2-35 - WWM Liquid Waste LP check
 
@@ -165,7 +174,8 @@ if (conditionAddAndEmail)
 {
     addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
-    sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
+    var recipientEmail = lookup("DCA_Docket_Email_List", "LW");
+    sendNotification("", recipientEmail, "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
 }
 
 function getContactName(vConObj) {

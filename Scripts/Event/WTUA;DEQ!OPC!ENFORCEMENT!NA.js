@@ -1,7 +1,7 @@
 //WTUA:DEQ/OPC/ENFORCEMENT/NA
 
 
-showDebug = true;
+//showDebug = true;
 
 
 var emailParams = aa.util.newHashtable();

@@ -96,144 +96,144 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
             addASITable("LAB RESULTS", labResultsTable, parentCapId);
         }
 
+    }
 
-
-        if (conUpdate == "CHECKED")
+    if (conUpdate == "CHECKED")
+    {
+        var capContacts = aa.people.getCapContactByCapID(parentCapId);
+        if (capContacts.getSuccess())
         {
-            var capContacts = aa.people.getCapContactByCapID(parentCapId);
-            if (capContacts.getSuccess())
+            capContacts = capContacts.getOutput();
+            logDebug("capContacts: " + capContacts);
+
+            for (var yy in capContacts)
             {
-                capContacts = capContacts.getOutput();
-                logDebug("capContacts: " + capContacts);
+                //aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
 
-                for (var yy in capContacts)
+                if (capContacts[yy].getPeople().getAuditStatus() == "A")
                 {
-                    //aa.people.removeCapContact(parentCapId, capContacts[yy].getPeople().getContactSeqNumber());
-
-                    if (capContacts[yy].getPeople().getAuditStatus() == "A")
-                    {
-                        capContacts[yy].getPeople().setAuditStatus("I");
-                        aa.people.editCapContact(capContacts[yy].getCapContactModel());
-                        logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
-                        logDebug("We Got in here");
-                    }
+                    capContacts[yy].getPeople().setAuditStatus("I");
+                    aa.people.editCapContact(capContacts[yy].getCapContactModel());
+                    logDebug("Contact Status: " + capContacts[yy].getPeople().getAuditStatus());
+                    logDebug("We Got in here");
                 }
             }
+        }
 
-            copyContacts(capId, parentCapId);
+        copyContacts(capId, parentCapId);
 
-            var myCap = capId;
-            var myCustomCap = myCap.getCustomID();
+        var myCap = capId;
+        var myCustomCap = myCap.getCustomID();
 
-            var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
-            if (getCapResult.getSuccess())
+        var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
+        if (getCapResult.getSuccess())
+        {
+            var apsArray = getCapResult.getOutput();
+            for (aps in apsArray)
             {
-                var apsArray = getCapResult.getOutput();
-                for (aps in apsArray)
-                {
-                    myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-                    logDebug("apsArray = " + apsArray);
-                    var relCap = myCap.getCapID();
-                    var relCapID = relCap.getCustomID();
-                }
+                myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+                logDebug("apsArray = " + apsArray);
+                var relCap = myCap.getCapID();
+                var relCapID = relCap.getCustomID();
             }
+        }
 
-            var getCapResult = aa.cap.getCapID(iaNumber);
-            if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
+        var getCapResult = aa.cap.getCapID(iaNumber);
+        if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
+        {
+            var wwmIA = getCapResult.getOutput();
+
+            logDebug("wwmIA = " + wwmIA.getCustomID());
+
+            //Removing Existing LPs
+
+            iaEmail = removeAllIASPLicensedProf(wwmIA);
+            logDebug("iaEmail = " + iaEmail);
+            if (iaEmail != "")
             {
-                var wwmIA = getCapResult.getOutput();
-
-                logDebug("wwmIA = " + wwmIA.getCustomID());
-
-                //Removing Existing LPs
-
-                iaEmail = removeAllIASPLicensedProf(wwmIA);
-                logDebug("iaEmail = " + iaEmail);
-                if (iaEmail != "")
-                {
-                    var vEParams = aa.util.newHashtable();
-                    var addrResult = getAddressInALine(wwmIA);
-                    addParameter(vEParams, "$$altID$$", relCapID);
-                    addParameter(vEParams, "$$address$$", addrResult);
-                    sendNotification("", iaEmail, "", "DEQ_IA__OWTS_REMOVAL", vEParams, null);
-                }
-
-                copyLicenseProfessional(capId, wwmIA);
-                logDebug("Added License Profoessinal");
-
-                //Gathering Contacts from IA Record
-                var contactResult = aa.people.getCapContactByCapID(capId);
-                var capContacts = contactResult.getOutput();
-                var conEmail = "";
-                for (c in capContacts)
-                {
-                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Agent"))
-                    {
-                        if (!matches(capContacts[c].email, null, undefined, ""))
-                        {
-                            conEmail += capContacts[c].email + ";"
-                        }
-                    }
-                }
-
-                //Gathering LPs from IA Record
-                var licProfResult = aa.licenseScript.getLicenseProf(capId);
-
-                var capLPs = licProfResult.getOutput();
-                for (l in capLPs)
-                {
-                    if (capLPs[l].getLicenseType() == "IA Service Provider")
-                    {
-                        var busName = capLPs[l].getBusinessName()
-                    }
-                    if (!matches(capLPs[l].email, null, undefined, ""))
-                    {
-                        conEmail += capLPs[l].email + ";"
-                    }
-                }
-
-                logDebug("ConEmail = " + conEmail);
-
                 var vEParams = aa.util.newHashtable();
                 var addrResult = getAddressInALine(wwmIA);
                 addParameter(vEParams, "$$altID$$", relCapID);
                 addParameter(vEParams, "$$address$$", addrResult);
-                addParameter(vEParams, "$$busName$$", busName);
-
-                sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
+                sendNotification("", iaEmail, "", "DEQ_IA__OWTS_REMOVAL", vEParams, null);
             }
-        }
 
-        if (contractStart != null)
-        {
-            editAppSpecific("Contract Start Date", contractStart, parentCapId);
-            editAppSpecific("Contract Term", term, parentCapId);
-            contractStart = new Date(contractStart);
-            var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
-            editAppSpecific("Contract Expiration Date", newExpDate, parentCapId);
-            updateShortNotes("Contract Expiration: " + newExpDate, parentCapId);
-        }
+            copyLicenseProfessional(capId, wwmIA);
+            logDebug("Added License Professional");
 
-        if (contractAnualCost != null)
-        {
-            editAppSpecific("Contract Annual Cost", contractAnualCost, parentCapId);
-        }
-
-        if (serviceReport == "CHECKED")
-        {
-            if (serviceDate != null)
+            //Gathering Contacts from IA Record
+            var contactResult = aa.people.getCapContactByCapID(capId);
+            var capContacts = contactResult.getOutput();
+            var conEmail = "";
+            for (c in capContacts)
             {
-                serviceDate = new Date(serviceDate);
-                var newServiceDate = (serviceDate.getMonth() + 1 + "/" + (serviceDate.getDate()) + "/" + (serviceDate.getFullYear() + 1));
-                editAppSpecific("Next Service Date", newServiceDate, parentCapId);
+                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Agent"))
+                {
+                    if (!matches(capContacts[c].email, null, undefined, ""))
+                    {
+                        conEmail += capContacts[c].email + ";"
+                    }
+                }
             }
+
+            //Gathering LPs from IA Record
+            var licProfResult = aa.licenseScript.getLicenseProf(capId);
+
+            var capLPs = licProfResult.getOutput();
+            for (l in capLPs)
+            {
+                if (capLPs[l].getLicenseType() == "IA Service Provider")
+                {
+                    var busName = capLPs[l].getBusinessName()
+                }
+                if (!matches(capLPs[l].email, null, undefined, ""))
+                {
+                    conEmail += capLPs[l].email + ";"
+                }
+            }
+
+            logDebug("ConEmail = " + conEmail);
+
+            var vEParams = aa.util.newHashtable();
+            var addrResult = getAddressInALine(wwmIA);
+            addParameter(vEParams, "$$altID$$", relCapID);
+            addParameter(vEParams, "$$address$$", addrResult);
+            addParameter(vEParams, "$$busName$$", busName);
+
+            sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
         }
-
-        var use = getAppSpecific("Use", capId);
-        editAppSpecific("Use", use, parentCapId);
-
     }
+
+    if (contractStart != null)
+    {
+        editAppSpecific("Contract Start Date", contractStart, parentCapId);
+        editAppSpecific("Contract Term", term, parentCapId);
+        contractStart = new Date(contractStart);
+        var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
+        editAppSpecific("Contract Expiration Date", newExpDate, parentCapId);
+        updateShortNotes("Contract Expiration: " + newExpDate, parentCapId);
+    }
+
+    if (contractAnualCost != null)
+    {
+        editAppSpecific("Contract Annual Cost", contractAnualCost, parentCapId);
+    }
+
+    if (serviceReport == "CHECKED")
+    {
+        if (serviceDate != null)
+        {
+            serviceDate = new Date(serviceDate);
+            var newServiceDate = (serviceDate.getMonth() + 1 + "/" + (serviceDate.getDate()) + "/" + (serviceDate.getFullYear() + 1));
+            editAppSpecific("Next Service Date", newServiceDate, parentCapId);
+        }
+    }
+
+    var use = getAppSpecific("Use", capId);
+    editAppSpecific("Use", use, parentCapId);
+
 }
+
 
 
 

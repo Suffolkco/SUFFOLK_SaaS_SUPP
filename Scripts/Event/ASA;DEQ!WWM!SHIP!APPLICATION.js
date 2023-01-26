@@ -48,6 +48,7 @@ if (!publicUser)
                 if (lpArray[i].getLicenseType() == "WWM Liquid Waste")
                 {
                     logDebug("license number is: " + lpArray[i].getLicenseNbr());
+                    var licNo = lpArray[i].getLicenseNbr();
                     logDebug("license type is: " + lpArray[i].getLicenseType());
                     logDebug("Professional types are: " + lpArray[i].getAddress3());
                     if (lpArray[i].getAddress3() != null)
@@ -105,21 +106,81 @@ if (!publicUser)
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
     }
-}
-// var contactResult = aa.people.getCapContactByCapID(capId);
-// var capContacts = contactResult.getOutput();
-// var conEmail = "";
-// for (c in capContacts)
-// {
-//     if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
 
-//     {
-//         if (!matches(capContacts[c].email, null, undefined, ""))
-//         {
-//             conEmail += capContacts[c].email + ";"
-//         }
-//     }
-// }
+
+    var contactResult = aa.people.getCapContactByCapID(capId);
+    var capContacts = contactResult.getOutput();
+    var propEmail = "";
+    var conEmail = "";
+    var lpEmail = "";
+
+    var propOwnerName = "";
+    for (c in capContacts)
+    {
+        if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent", "Property Owner"))
+        {
+            if (!matches(capContacts[c].email, null, undefined, ""))
+            {
+                conEmail += capContacts[c].email + ";";
+            }
+        }
+        if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner"))
+        {
+            if (!matches(capContacts[c].email, null, undefined, ""))
+            {
+                propEmail += capContacts[c].email + ";"
+                propOwnerName = capContacts[c].getCapContactModel().getContactName();
+            }
+        }
+    }
+
+    var lpResult = aa.licenseScript.getLicenseProf(capId);
+    if (lpResult.getSuccess())
+    {
+        var lpArr = lpResult.getOutput();
+
+        // Send email to each contact separately.
+        for (var lp in lpArr)
+        {
+            if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+            {
+                lpEmail += lpArr[lp].email + ";";
+            }
+        }
+    }
+    else 
+    {
+        logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+    }
+    var allEmail = conEmail + lpEmail;
+
+
+    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[zz].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+        }
+    }
+
+    var addrResult = getAddressInALine(capId);
+
+    var vEParams = aa.util.newHashtable();
+    var addrResult = getAddressInALine(capId);
+    addParameter(vEParams, "$$altID$$", capId.getCustomID());
+    addParameter(vEParams, "$$address$$", addrResult);
+    addParameter(vEParams, "$$Parcel$$", parcelNumber);
+    addParameter(vEParams, "$$homeowner$$", propOwnerName);
+    logDebug("propemail is: " + propEmail);
+    logDebug("allemail is: " + allEmail);
+    sendNotification("", propEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
+    sendNotification("", allEmail, "", "DEQ_SHIP_APPLICATION_RECEIVED", vEParams, null);
+
+}
+
 
 // var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 // if (capParcelResult.getSuccess())

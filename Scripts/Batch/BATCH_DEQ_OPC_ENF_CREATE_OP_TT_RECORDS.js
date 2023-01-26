@@ -210,7 +210,7 @@ function mainProcess() {
                                 var enfChild = createChildLOCAL("DEQ", "OPC", "Enforcement", "NA", "", capId);
                                 copyParcel(capId, enfChild);
                                 copyAddress(capId, enfChild);
-                                copyConditions(capId);
+                                //copyConditions(capId, enfChild);
                                 var siteAltId = capId.getCustomID();
                                 editAppSpecific("Site/Pool (Parent) Record ID", siteAltId, enfChild);
                                 var fileRefNumber = getAppSpecific("File Reference Number", capId);
