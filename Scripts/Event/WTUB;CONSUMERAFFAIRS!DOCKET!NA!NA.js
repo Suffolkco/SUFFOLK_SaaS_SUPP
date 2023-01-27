@@ -58,6 +58,20 @@ else if (wfTask == "Create Violation Cheat Sheet" && wfStatus == "Complete")
     }
     
 }
+// DOCKET-59: Block the workflow if the hearing information has not been filled in
+else if (wfTask == "Create Violations" && wfStatus == "Complete")
+{
+    if (getAppSpecific("Hearing Date", capId) == null || 
+    getAppSpecific("Hearing Time", capId) == null || 
+    getAppSpecific("Pre-Hearing Conference Date", capId) == null || 
+    getAppSpecific("Pre-Hearing Conference Time", capId))
+    {    
+        cancel = true;
+        showMessage = true;
+        comment("Violation Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
+        
+    }
+}
 // DOCKET#57: Block workflow update on Hearing Report task if there is no hearing officer report
 else if (wfTask == "Hearing Report" && wfStatus == "Complete")
 {
