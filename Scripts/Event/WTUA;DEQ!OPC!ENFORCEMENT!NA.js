@@ -589,7 +589,7 @@ function getAddressInALineCustom() {
 
     if (capAddrResult.getSuccess())
     {
-        var addresses = capAddrResult.getOutput();
+        var addresses = capAddrResult.getOutput(); 
         if (addresses)
         {
             for (zz in addresses)
