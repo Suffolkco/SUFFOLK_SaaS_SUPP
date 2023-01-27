@@ -65,8 +65,7 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
     getAppSpecific("Hearing Time", capId) == null || 
     getAppSpecific("Pre-Hearing Conference Date", capId) == null || 
     getAppSpecific("Pre-Hearing Conference Time", capId))
-    {
-    
+    {    
         cancel = true;
         showMessage = true;
         comment("Violation Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
