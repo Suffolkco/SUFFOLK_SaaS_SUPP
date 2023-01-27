@@ -15,7 +15,7 @@ var fileRefNum = AInfo["File Reference Number/Facility ID"];
 addParameter(emailParams, "$$fileRefNum$$", fileRefNum);
 addParameter(emailParams, "$$altID$$", capId.getCustomID());
 addParameter(emailParams, "$$facilityName$$", appName);
-var addrResult = getAddressInALine(capId);
+var addrResult = getAddressInALineCustom(capId);
 addParameter(emailParams, "$$addressInALine$$", addrResult);
 var dateThirtyDaysOut = dateAdd(new Date(), 30);
 var dateSixtyDaysOut = dateAdd(new Date(), 60);
@@ -581,7 +581,7 @@ function updateAltID(newId) {
         logDebug("Problem updating alt Id: " + result.getErrorMessage());
 }
 
-function getAddressInALine() {
+function getAddressInALineCustom() {
 
     var capAddrResult = aa.address.getAddressByCapId(capId);
     var addressToUse = null;
@@ -589,7 +589,7 @@ function getAddressInALine() {
 
     if (capAddrResult.getSuccess())
     {
-        var addresses = capAddrResult.getOutput();
+        var addresses = capAddrResult.getOutput(); 
         if (addresses)
         {
             for (zz in addresses)
@@ -603,24 +603,31 @@ function getAddressInALine() {
 
             if (addressToUse)
             {
-                strAddress = addressToUse.getHouseNumberStart();
+                strAddress = "";
+                var addPart = addressToUse.getHouseNumberStart();
+                if (addPart && addPart != "" && addPart != null)
+                    strAddress += addPart;
                 var addPart = addressToUse.getStreetDirection();
-                if (addPart && addPart != "")
+                if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart;
                 var addPart = addressToUse.getStreetName();
-                if (addPart && addPart != "")
-                    strAddress += " " + addPart + ",";
-                var addPart = addressToUse.getStreetSuffix();
-                if (addPart && addPart != "")
+                if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart;
+                if (matches(addressToUse.getStreetSuffix(), null, ""))
+                {
+                    strAddress += ",";
+                }
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "" && addPart != null)
+                    strAddress += " " + addPart  + ",";
                 var addPart = addressToUse.getCity();
-                if (addPart && addPart != "")
+                if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart + ",";
                 var addPart = addressToUse.getState();
-                if (addPart && addPart != "")
+                if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart;
                 var addPart = addressToUse.getZip();
-                if (addPart && addPart != "")
+                if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart;
                 return strAddress
             }
