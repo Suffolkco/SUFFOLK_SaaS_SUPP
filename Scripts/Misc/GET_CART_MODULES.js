@@ -43,7 +43,7 @@ function runSQL(transnbr) {
         aa.env.setValue("success", false);
         aa.env.setValue("message", "EMSE ERR: Exception - " + vError.message);
         aa.env.setValue("result", "");
-        aa.print("Runtime error occurred looking up the Accela Modules for transactionID " + transnbr + ". The error was: " + vError);
+        aa.print("Runtime error occurred looking up the Accela Modules for transactionID " + transnbr + ". The error was: " + vError); 
     }
     closeDBQueryObject(rret, sStmt1, conn);
 }
