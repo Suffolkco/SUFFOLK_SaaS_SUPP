@@ -46,16 +46,18 @@ try
 					vioCapId = capIdRes.getOutput();
 					var cap = aa.cap.getCap(vioCapId).getOutput();
 
+					logDebug("Violation current status: " + getAppStatus(vioCapId));
+
 					if (withdrawVoidVio  == 'Withdraw') // What do we do here? Unrelated or just set the Violation status to be withdraw?
 					{
-						if (!matches(getAppStatis[vioCapId], "Withdrawn"))
+						if (!matches(getAppStatus(vioCapId), "Withdrawn"))
 						{
 							updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
 						}
 					}
 					else if (withdrawVoidVio == "Void")
 					{
-						if (!matches(getAppStatis[vioCapId], "VOID"))
+						if (!matches(getAppStatus(vioCapId), "VOID"))
 						{						
 							updateAppStatus("VOID", "Updated through docket violation cheatsheet.", vioCapId);
 						}
