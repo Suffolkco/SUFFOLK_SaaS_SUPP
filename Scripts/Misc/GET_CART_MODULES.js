@@ -6,10 +6,25 @@ var debug = "";
 var br = "";
 var currentUserID = "ADMIN"
 
+eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+eval(getScriptText("INCLUDES_CUSTOM"));
+
 var transNbr = aa.env.getValue("TRANSACTIONID");
+
+logDebug("Transaction to lookup: " + transNbr);
 
 // Execute the update
 runSQL(transNbr);
+
+/*------------------------------------------------------------------------------------------------------/
+| Loads other scripts
+/------------------------------------------------------------------------------------------------------*/
+function getScriptText(vScriptName) {
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
+    return emseScript.getScriptText() + "";
+}
 
 /*------------------------------------------------------------------------------------------------------/
 | Executes SQL
@@ -43,7 +58,7 @@ function runSQL(transnbr) {
         aa.env.setValue("success", false);
         aa.env.setValue("message", "EMSE ERR: Exception - " + vError.message);
         aa.env.setValue("result", "");
-        aa.print("Runtime error occurred looking up the Accela Modules for transactionID " + transnbr + ". The error was: " + vError); 
+        aa.print("Runtime error occurred looking up the Accela Modules for transactionID " + transnbr + ". The error was: " + vError);
     }
     closeDBQueryObject(rret, sStmt1, conn);
 }
