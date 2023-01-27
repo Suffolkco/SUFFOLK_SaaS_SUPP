@@ -14,7 +14,7 @@ try
 		var itemNo = i++;
 		var newRow = new Array();
 		var vioNo = cheatSheet[c]["Reference Violation Number"];
-		var withdrawVoidVio = cheatSheet[c]["Withdraw/ Void Violation"];	  
+		var withdrawVoidVio = cheatSheet[c]["Withdraw/Void Violation"];	  
 		newRow["Violation Date"] = cheatSheet[c]["Violation Date"];
 		newRow["Occurrence Date"] = cheatSheet[c]["Occurrence Date"];
 		newRow["Case Number"] = caseNo;	
@@ -24,9 +24,9 @@ try
 		newRow["Reference Violation Number"] = vioNo;
 		newRow["Abbreviated Description"] = cheatSheet[c]["Abbreviated Description"];
 		newRow["Item"] = itemNo.toString();
-		logDebug("itemNo: " + itemNo);
-		
-		
+		logDebug("itemNo: " + itemNo);		
+		logDebug("withdrawVoidVio: " + withdrawVoidVio);
+
 		if (withdrawVoidVio != null)
 		{
 			if (vioNo != "" || vioNo != null)
@@ -46,13 +46,21 @@ try
 					vioCapId = capIdRes.getOutput();
 					var cap = aa.cap.getCap(vioCapId).getOutput();
 
+					logDebug("Violation current status: " + getAppStatus(vioCapId));
+
 					if (withdrawVoidVio  == 'Withdraw') // What do we do here? Unrelated or just set the Violation status to be withdraw?
 					{
-						updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
+						if (!matches(getAppStatus(vioCapId), "Withdrawn"))
+						{
+							updateAppStatus("Withdrawn", "Updated through docket violation cheatsheet.", vioCapId);
+						}
 					}
 					else if (withdrawVoidVio == "Void")
 					{
-						updateAppStatus("VOID", "Updated through docket violation cheatsheet.", vioCapId);
+						if (!matches(getAppStatus(vioCapId), "VOID"))
+						{						
+							updateAppStatus("VOID", "Updated through docket violation cheatsheet.", vioCapId);
+						}
 					}
 				}
 			
