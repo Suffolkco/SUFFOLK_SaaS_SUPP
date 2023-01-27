@@ -6,25 +6,10 @@ var debug = "";
 var br = "";
 var currentUserID = "ADMIN"
 
-eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS"));
-eval(getScriptText("INCLUDES_CUSTOM"));
-
 var transNbr = aa.env.getValue("TRANSACTIONID");
-
-logDebug("Transaction to lookup: " + transNbr);
 
 // Execute the update
 runSQL(transNbr);
-
-/*------------------------------------------------------------------------------------------------------/
-| Loads other scripts
-/------------------------------------------------------------------------------------------------------*/
-function getScriptText(vScriptName) {
-    vScriptName = vScriptName.toUpperCase();
-    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-    var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
-    return emseScript.getScriptText() + "";
-}
 
 /*------------------------------------------------------------------------------------------------------/
 | Executes SQL
@@ -39,7 +24,7 @@ function runSQL(transnbr) {
 
     try {
         var conn = aa.db.getConnection();
-        
+
         var usql = " Select MODULE_NAME as MODULES from ETRANSACTION_DETAIL where BATCH_TRANSACTION_NBR = '" + transnbr + "' AND SERV_PROV_CODE = '" + servProvCode + "' group by MODULE_NAME";
 
         sStmt1 = conn.prepareStatement(usql);
@@ -50,14 +35,14 @@ function runSQL(transnbr) {
 
         aa.env.setValue("success", true);
         aa.env.setValue("message", count);
-        aa.env.setValue("Result", "Found Module");   
+        aa.env.setValue("Result", "Found Module");
 
         aa.print("Found the Accela Modules for transactionID " + transnbr + ".");
 
     } catch (vError) {
         aa.env.setValue("success", false);
         aa.env.setValue("message", "EMSE ERR: Exception - " + vError.message);
-        aa.env.setValue("result", ""); 
+        aa.env.setValue("result", "");
         aa.print("Runtime error occurred looking up the Accela Modules for transactionID " + transnbr + ". The error was: " + vError);
     }
     closeDBQueryObject(rret, sStmt1, conn);
