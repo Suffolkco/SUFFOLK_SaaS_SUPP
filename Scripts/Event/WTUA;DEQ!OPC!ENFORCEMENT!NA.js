@@ -613,6 +613,10 @@ function getAddressInALineCustom() {
                 var addPart = addressToUse.getStreetName();
                 if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart;
+                if (matches(addressToUse.getStreetSuffix(), null, ""))
+                {
+                    strAddress += ",";
+                }
                 var addPart = addressToUse.getStreetSuffix();
                 if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart  + ",";
