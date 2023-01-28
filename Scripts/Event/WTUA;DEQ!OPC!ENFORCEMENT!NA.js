@@ -244,7 +244,6 @@ if (wfTask == "Enforcement Request Review")
                 break;
         }
         reportParams.put("RecordID", capId.getCustomID());
-        aa.sleep(5000);
         generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
         /*
         not sure why this code is here, as the above code should do the same thing
