@@ -170,6 +170,34 @@ if (wfTask == "Violation Review")
 //Enforcement Request Review
 if (wfTask == "Enforcement Request Review")
 {
+    //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
+    var enfType = AInfo["Enforcement Type"];
+    logDebug("enftype is: " + enfType);
+    var altIdString = String(capId.getCustomID());
+    var altIdLastTwo = capId.getCustomID().slice(-2);
+    logDebug("last two of alt id is " + altIdLastTwo);
+    if (altIdLastTwo != enfType)
+    {
+        //ENF-22-00002-EE
+        if (altIdString.charAt(-3) == "-")
+        {
+            //change last two digits of mask
+            altIdString = altIdString.replace(altIdLastTwo, enfType)
+            logDebug("Updating Alt ID to: " + altIdString);
+            updateAltID(altIdString, capId);
+        }
+        else
+        //ENF-22-00002
+        {
+            //add last two digits to existing altid
+            var altSplit = capId.getCustomID().split("-");
+            altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
+            logDebug("Updating Alt ID to: " + altIdString);
+            updateAltID(altIdString, capId);
+        }
+
+    }
+
     if (wfStatus == "Request Inspection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
@@ -260,33 +288,6 @@ if (wfTask == "Enforcement Request Review")
         //Also gets the record you are on so I commented out the o
         addConditionSiblings(parentCapId);
         addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
-    }
-    //check current record to see if the current mask reflects the current value in the Enforcement Type ASI. If not, update the mask to reflect the current value.
-    var enfType = AInfo["Enforcement Type"];
-    logDebug("enftype is: " + enfType);
-    var altIdString = String(capId.getCustomID());
-    var altIdLastTwo = capId.getCustomID().slice(-2);
-    logDebug("last two of alt id is " + altIdLastTwo);
-    if (altIdLastTwo != enfType)
-    {
-        //ENF-22-00002-EE
-        if (altIdString.charAt(-3) == "-")
-        {
-            //change last two digits of mask
-            altIdString = altIdString.replace(altIdLastTwo, enfType)
-            logDebug("Updating Alt ID to: " + altIdString);
-            updateAltID(altIdString, capId);
-        }
-        else
-        //ENF-22-00002
-        {
-            //add last two digits to existing altid
-            var altSplit = capId.getCustomID().split("-");
-            altIdString = altSplit[0] + "-" + altSplit[1] + "-" + altSplit[2] + "-" + enfType;
-            logDebug("Updating Alt ID to: " + altIdString);
-            updateAltID(altIdString, capId);
-        }
-
     }
 }
 
@@ -589,7 +590,7 @@ function getAddressInALineCustom() {
 
     if (capAddrResult.getSuccess())
     {
-        var addresses = capAddrResult.getOutput(); 
+        var addresses = capAddrResult.getOutput();
         if (addresses)
         {
             for (zz in addresses)
@@ -619,7 +620,7 @@ function getAddressInALineCustom() {
                 }
                 var addPart = addressToUse.getStreetSuffix();
                 if (addPart && addPart != "" && addPart != null)
-                    strAddress += " " + addPart  + ",";
+                    strAddress += " " + addPart + ",";
                 var addPart = addressToUse.getCity();
                 if (addPart && addPart != "" && addPart != null)
                     strAddress += " " + addPart + ",";
