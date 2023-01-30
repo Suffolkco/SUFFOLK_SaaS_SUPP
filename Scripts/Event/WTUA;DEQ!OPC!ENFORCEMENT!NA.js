@@ -164,7 +164,7 @@ if (wfTask == "Violation Review")
 
         addParameter(emailParams, "$$violationDueDate$$", dateSixtyDaysOut);
         addParameter(emailParams, "$$inspDate$$", maxDate);
-        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
+        sendNotification("", conEmailList, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
         updateTaskDueDate("Violation Review", dateThirtyDaysOut);
     }
 }
@@ -293,7 +293,7 @@ if (wfTask == "Preliminary Hearing")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
     if (wfStatus == "Adjourned")
@@ -389,7 +389,7 @@ if (wfTask == "Preliminary Hearing")
         }
 
 
-        if (conEmailListAll == '')
+        if (conEmailList == '')
         {
             aa.print("We found no contacts on the parent record");
             var systemEmail = systemUserObj.getEmail();
@@ -400,8 +400,8 @@ if (wfTask == "Preliminary Hearing")
         else
         {
             aa.print("We found a user on the parent sending email");
-            aa.print(conEmailListAll);
-            sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
+            aa.print(conEmailList);
+            sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
         }
 
 
@@ -415,7 +415,7 @@ if (wfTask == "Formal Hearing")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
     if (wfStatus == "Adjourned")
@@ -468,7 +468,7 @@ if (wfTask == "Formal Hearing")
         }
 
 
-        sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
+        sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REV_WAIVER", emailParams, sendThisReport);
     }
 }
 
@@ -527,7 +527,7 @@ if (wfStatus == "Case Closed")
         addParameter(emailParams, "$$userEmail$$", ccHearingUserEmail);
     }
 
-    sendNotification("", conEmailListAll, "", "DEQ_OPC_ENF_CASE_CLOSED", emailParams, null);
+    sendNotification("", conEmailList, "", "DEQ_OPC_ENF_CASE_CLOSED", emailParams, null);
 }
 
 
