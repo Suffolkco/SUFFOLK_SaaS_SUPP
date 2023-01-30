@@ -229,24 +229,18 @@ if (wfTask == "Enforcement Request Review")
             case "EE":
                 reportToSend = "OPC EE NOPH";
                 break;
-            case "IW":
-                reportToSend = "OPC Waiver Report";
-                break;
-            case "BB":
-                reportToSend = "OPC Waiver Report";
-                break;
             case "T8":
                 reportToSend = "OPC T8 NOPH";
                 break;
             case "WL":
                 reportToSend = "OPC Warning Letter";
                 break;
-            case "LL":
-                reportToSend = "OPC Waiver Report";
-                break;
         }
         reportParams.put("RecordID", capId.getCustomID());
-        generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
+        if (reportToSend != "")
+        {
+            generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
+        }
         /*
         not sure why this code is here, as the above code should do the same thing
         
