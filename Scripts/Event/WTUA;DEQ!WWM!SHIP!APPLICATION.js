@@ -144,7 +144,7 @@ if (wfTask == "Field Consult Required")
     {
         if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
-            otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
+            otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
 
             if (otpReportFile)
@@ -336,7 +336,7 @@ if (wfTask == "Grant Review")
 
             if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
             {
-                otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams);
+                otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams);
                 logDebug("This is the rFile: " + otpReportFile);
                 var otpRFiles = new Array();
 
@@ -453,7 +453,7 @@ if (wfTask == "Inspections")
     {
         if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
-            otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
+            otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
 
             if (otpReportFile)
@@ -986,7 +986,7 @@ if (wfTask == "Final Review")
 //General come here
 if ((wfStatus == "No Inspection Needed") && (wfTask != "Field Consult Required"))
 {
-    otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
+    otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
     logDebug("This is the rFile: " + otpReportFile);
 
     if (otpReportFile)
