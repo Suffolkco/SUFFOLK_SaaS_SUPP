@@ -85,7 +85,7 @@ if (wfTask == "Application Review")
     {
         if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
         {
-            otpReportFile = generateReportBatch(capId, "OK to Proceed", 'DEQ', otpReportParams)
+            otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
 
             if (otpReportFile)
