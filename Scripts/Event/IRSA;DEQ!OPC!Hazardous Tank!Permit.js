@@ -81,7 +81,8 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
             getRecordParams4Notification(emailParams);
             addParameter(emailParams, "$$altID$$", capId.getCustomID());
-            sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);
+            // Per OPC request, do you send email to Mike since daily batch script already does
+            //sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_HAZARDOUS_TANK_INSPECTION", emailParams, rFiles);
         }
     }
 }
