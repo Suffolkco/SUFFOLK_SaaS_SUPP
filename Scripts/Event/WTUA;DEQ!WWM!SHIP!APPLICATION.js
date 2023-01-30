@@ -324,7 +324,7 @@ if (wfTask == "Grant Review")
         }
         if (matches(wfStatus, "No Application Received", "Not Eligible"))
         {
-            editAppSpecific("Part of Septic Improvement Program(SIP)", "No")
+            editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "No")
         }
 
 
@@ -332,7 +332,7 @@ if (wfTask == "Grant Review")
         //End Case of 64
         if (wfStatus == "OK to Proceed")
         {
-            editAppSpecific("Part of Septic Improvement Program(SIP)", "Yes")
+            editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes")
 
             if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
             {
@@ -423,7 +423,7 @@ if (wfTask == "Grant Review")
     }
     if (matches(wfStatus, "Awaiting Client Reply", "Awaiting Grant Issuance"))
     {
-        editAppSpecific("Part of Septic Improvement Program(SIP)", "Yes")
+        editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes");
     }
 }
 
@@ -717,7 +717,7 @@ if (wfTask == "Final Review")
                         editAppSpecificLOCAL("Type", propertyType, iaNew)
                     }
                     var pinNumber = makePIN(8);
-                    editAppSpecific('IA PIN Number', pinNumber, iaNew)
+                    editAppSpecificLOCAL('IA PIN Number', pinNumber, iaNew)
 
 
 
@@ -912,7 +912,7 @@ if (wfTask == "Final Review")
                         editAppSpecificLOCAL("Type", propertyType, iaNew)
                     }
                     var pinNumber = makePIN(8);
-                    editAppSpecific('IA PIN Number', pinNumber, iaNew)
+                    editAppSpecificLOCAL('IA PIN Number', pinNumber, iaNew)
 
                     //Start Notification to Parent Contacts/LPs
                     logDebug("capId = " + capId);
