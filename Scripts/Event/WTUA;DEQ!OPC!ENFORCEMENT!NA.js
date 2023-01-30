@@ -23,7 +23,9 @@ logDebug("date sixty days out is: " + dateSixtyDaysOut);
 var hearingDate = AInfo["Hearing Date"];
 if (!matches(hearingDate, null, "", undefined))
 {
-    var hearingDateLessSeven = (convertDate(hearingDate).getMonth() + 1) + "/" + (convertDate(hearingDate).getDate() - 7) + "/" + (convertDate(hearingDate).getYear() + 1900);
+    var hearingDateLessSeven = (convertDate(hearingDate).getMonth() + 1) + "/" + (convertDate(hearingDate).getDate()) + "/" + (convertDate(hearingDate).getYear() + 1900);
+    hearingDateLessSeven = dateAdd(hearingDateLessSeven, -7);
+    logDebug("hearingdatelessseven is: " + hearingDateLessSeven);
 }
 var hearingTime = AInfo["Hearing Time"];
 var todayDate = new Date();
