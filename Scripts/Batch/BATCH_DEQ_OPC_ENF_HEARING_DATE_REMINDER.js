@@ -209,6 +209,7 @@ function mainProcess(thisType) {
                             var fileRefNum = getAppSpecific("File Reference Number/Facility ID");
                             var hearingDate = getAppSpecific("Hearing Date");
                             var hearingTime = getAppSpecific("Hearing Time");
+                            var enfType = getAppSpecific("Enforcement Type");
                             var vEParams = aa.util.newHashtable();
                             var conEmail;
 
@@ -263,10 +264,22 @@ function mainProcess(thisType) {
                                             conEmail = "";
                                             for (c in capContacts)
                                             {
-                                                addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                                 if (!matches(capContacts[c].email, null, undefined, ""))
                                                 {
-                                                    conEmail += String(capContacts[c].email) + ";";
+                                                    if (enfType == "SP")
+                                                    {
+                                                        if(matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                        {
+                                                            conEmail += String(capContacts[c].email) + ";";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if(matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                        {
+                                                            conEmail += String(capContacts[c].email) + ";";
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -368,10 +381,22 @@ function mainProcess(thisType) {
                                             var conEmail = "";
                                             for (c in capContacts)
                                             {
-                                                addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
                                                 if (!matches(capContacts[c].email, null, undefined, ""))
                                                 {
-                                                    conEmail += capContacts[c].email + ";";
+                                                    if (enfType == "SP")
+                                                    {
+                                                        if(matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                        {
+                                                            conEmail += String(capContacts[c].email) + ";";
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if(matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                        {
+                                                            conEmail += String(capContacts[c].email) + ";";
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
