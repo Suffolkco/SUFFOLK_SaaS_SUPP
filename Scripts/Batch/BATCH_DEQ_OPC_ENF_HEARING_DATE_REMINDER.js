@@ -266,18 +266,21 @@ function mainProcess(thisType) {
                                             {
                                                 if (!matches(capContacts[c].email, null, undefined, ""))
                                                 {
-                                                    if (enfType == "SP")
+                                                    if (capContacts[c].getPeople().getAuditStatus() == "A")
                                                     {
-                                                        if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                        if (enfType == "SP")
                                                         {
-                                                            conEmail += String(capContacts[c].email) + ";";
+                                                            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                            {
+                                                                conEmail += String(capContacts[c].email) + ";";
+                                                            }
                                                         }
-                                                    }
-                                                    else
-                                                    {
-                                                        if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                        else
                                                         {
-                                                            conEmail += String(capContacts[c].email) + ";";
+                                                            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                            {
+                                                                conEmail += String(capContacts[c].email) + ";";
+                                                            }
                                                         }
                                                     }
                                                 }
