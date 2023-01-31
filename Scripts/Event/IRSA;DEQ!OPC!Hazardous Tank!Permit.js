@@ -124,6 +124,8 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
             var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
             var min = inspObj.getInspectionDate().getMinute();
             var sec = inspObj.getInspectionDate().getSecond();
+            var inspectionDateForm = (month) + "/" + day + "/" + (year);
+            logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
             assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
 
             //gathering inspectors name from this current Site inspection
@@ -182,7 +184,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                             newRow["Tank Location Label"] = tankLoc;
                             newRow["Item Number"] = checklistItemNo;
                             newRow["Inspector Finding"] = checklistItemComment;
-                            newRow["Inspection Date"] = inspResultDate;
+                            newRow["Inspection Date"] = inspectionDateForm;
                             newRow["Inspector"] = vInspectorName;
                             newRow["Appendix A"] = "CHECKED";
                             addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
@@ -262,6 +264,8 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
+                var inspectionDateForm = (month) + "/" + day + "/" + (year);
+            logDebug("inspectionDateForm 2 is: " + inspectionDateForm);
                 var prodStorLabel = getAppSpecific("Product Stored Label", capId);
                 var capacity = getAppSpecific("Capacity", capId);
                 var units = getAppSpecific("Units", capId);
@@ -319,7 +323,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                                 newRow["Tank Location Label"] = tankLoc;
                                 newRow["Item Number"] = checklistItemNo;
                                 newRow["Inspector Finding"] = checklistItemComment;
-                                newRow["Inspection Date"] = inspResultDate;
+                                newRow["Inspection Date"] = inspectionDateForm;
                                 newRow["Inspector"] = vInspectorName;
                                 newRow["Appendix A"] = "CHECKED";
                                 addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, childCapToUse);
@@ -362,6 +366,8 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
+                var inspectionDateForm = (month) + "/" + day + "/" + (year);
+            logDebug("inspectionDateForm 3 is: " + inspectionDateForm);
                 var inspInspectorObj = inspObj.getInspector();
                 assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
 
@@ -417,7 +423,7 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                                 newRow["Tank Location Label"] = tankLoc;
                                 newRow["Item Number"] = checklistItemNo;
                                 newRow["Inspector Finding"] = checklistItemComment;
-                                newRow["Inspection Date"] = inspResultDate;
+                                newRow["Inspection Date"] = inspectionDateForm;
                                 newRow["Inspector"] = vInspectorName;
                                 addRowToASITable("ARTICLE 12 TANK VIOLATIONS", newRow, enfChild);
                             }
