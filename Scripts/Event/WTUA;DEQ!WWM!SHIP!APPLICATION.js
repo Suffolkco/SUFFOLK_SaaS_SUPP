@@ -324,7 +324,7 @@ if (wfTask == "Grant Review")
         }
         if (matches(wfStatus, "No Application Received", "Not Eligible"))
         {
-            editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "No")
+            editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "No", capId);
         }
 
 
@@ -332,7 +332,7 @@ if (wfTask == "Grant Review")
         //End Case of 64
         if (wfStatus == "OK to Proceed")
         {
-            editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes")
+            editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes", capId);
 
             if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
             {
@@ -423,7 +423,7 @@ if (wfTask == "Grant Review")
     }
     if (matches(wfStatus, "Awaiting Client Reply", "Awaiting Grant Issuance"))
     {
-        editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes");
+        editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes", capId);
     }
 }
 
