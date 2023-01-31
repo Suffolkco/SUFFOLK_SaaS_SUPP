@@ -105,6 +105,8 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
             var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
             var min = inspObj.getInspectionDate().getMinute();
             var sec = inspObj.getInspectionDate().getSecond();
+            var inspectionDateForm = (month) + "/" + day + "/" + (year);
+            logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
             assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
 
             //gathering inspectors name from this current Site inspection
@@ -163,7 +165,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                             newRow["Tank Location Label"] = "N/A";
                             newRow["Item Number"] = checklistItemNo;
                             newRow["Inspector Finding"] = checklistItemComment;
-                            newRow["Inspection Date"] = inspResultDate;
+                            newRow["Inspection Date"] = inspectionDateForm;
                             newRow["Inspector"] = vInspectorName;
                             newRow["Appendix A"] = "CHECKED";
                             logDebug("newRow appendix a is: " + newRow["Appendix A"]);
@@ -245,6 +247,8 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                 var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
+                var inspectionDateForm = (month) + "/" + day + "/" + (year);
+            logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
                 var inspInspectorObj = inspObj.getInspector();
                 if (inspInspectorObj)
                 {
@@ -298,7 +302,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                                 newRow["Tank Location Label"] = "N/A";
                                 newRow["Item Number"] = checklistItemNo;
                                 newRow["Inspector Finding"] = checklistItemComment;
-                                newRow["Inspection Date"] = inspResultDate;
+                                newRow["Inspection Date"] = inspectionDateForm;
                                 newRow["Inspector"] = vInspectorName;
                                 newRow["Appendix A"] = "CHECKED";
                                 logDebug("newRow appendix a is: " + newRow["Appendix A"]);
@@ -339,6 +343,8 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                 var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
                 var min = inspObj.getInspectionDate().getMinute();
                 var sec = inspObj.getInspectionDate().getSecond();
+                var inspectionDateForm = (month) + "/" + day + "/" + (year);
+            logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
                 assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
 
                 var inspInspectorObj = inspObj.getInspector();
@@ -394,7 +400,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                                 newRow["Tank Location Label"] = "N/A";
                                 newRow["Item Number"] = checklistItemNo;
                                 newRow["Inspector Finding"] = checklistItemComment;
-                                newRow["Inspection Date"] = inspResultDate;
+                                newRow["Inspection Date"] = inspectionDateForm;
                                 newRow["Inspector"] = vInspectorName;
                                 newRow["Appendix A"] = "CHECKED";
                                 logDebug("newRow appendix a is: " + newRow["Appendix A"]);
