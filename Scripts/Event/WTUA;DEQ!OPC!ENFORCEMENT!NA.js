@@ -41,21 +41,40 @@ if (parentCapId)
 { //We are preventing an error if we don't find a Parent ID if we do then we add the contacts 
     //getting contacts by type, and then all
     var conArrayParent = getContactArray(parentCapId);
+    var enfType = getAppSpecific("Enforcement Type", capId);
+
     for (con in conArrayParent)
     {
-
-        if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
+        if (conArrayParent[con].peopleModel.getAuditStatus() == "A")
         {
+            if (enfType == "SP")
+            {
+                if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator", "Property Owner"))
+                {
+                    if (!matches(conArrayParent[con].email, null, undefined, ""))
+                    {
+                        logDebug("Additional contact email: " + conArrayParent[con].email);
+                        conEmailList += conArrayParent[con].email + "; ";
+                    }
+                }
+            }
+            else
+            {
+                if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
+                {
+                    if (!matches(conArrayParent[con].email, null, undefined, ""))
+                    {
+                        logDebug("Contact email: " + conArrayParent[con].email);
+                        conEmailList += conArrayParent[con].email + "; ";
+                    }
+                }
+            }
             if (!matches(conArrayParent[con].email, null, undefined, ""))
             {
                 logDebug("Contact email: " + conArrayParent[con].email);
-                conEmailList += conArrayParent[con].email + "; ";
+                conEmailListAll += conArrayParent[con].email + "; ";
             }
-        }
-        if (!matches(conArrayParent[con].email, null, undefined, ""))
-        {
-            logDebug("Contact email: " + conArrayParent[con].email);
-            conEmailListAll += conArrayParent[con].email + "; ";
+
         }
     }
 }
@@ -311,22 +330,6 @@ if (wfTask == "Preliminary Hearing")
             addParameter(emailParams, "$$userEmail$$", prelimHearingUserEmail);
 
             //adding a couple more contacts from the parent, for SP enforcement types
-            var enfType = getAppSpecific("Enforcement Type", capId);
-            if (enfType == "SP")
-            {
-                for (con in conArrayParent)
-                {
-
-                    if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator"))
-                    {
-                        if (!matches(conArrayParent[con].email, null, undefined, ""))
-                        {
-                            logDebug("Additional contact email: " + conArrayParent[con].email);
-                            conEmailList += conArrayParent[con].email + "; ";
-                        }
-                    }
-                }
-            }
         }
         addParameter(emailParams, "$$hearingDate$$", hearingDate);
         addParameter(emailParams, "$$hearingTime$$", hearingTime);
