@@ -196,6 +196,9 @@ if (wfTask == "Enforcement Request Review")
     logDebug("enftype is: " + enfType);
     var altIdString = String(capId.getCustomID());
     var altIdLastTwo = capId.getCustomID().slice(-2);
+    var oldAltId = capId.getCustomID();
+    var servProvCode = aa.getServiceProviderCode();
+
     logDebug("last two of alt id is " + altIdLastTwo);
     if (altIdLastTwo != enfType)
     {
@@ -216,7 +219,8 @@ if (wfTask == "Enforcement Request Review")
             logDebug("Updating Alt ID to: " + altIdString);
             updateAltID(altIdString, capId);
         }
-
+        var sql = "UPDATE G7MESSAGE_ENTITY SET ENTITY_ID = '" + altIdString + "' WHERE SERV_PROV_CODE= '" + servProvCode + "' AND ENTITY_ID = '" + oldAltId + "'";
+        doSQLUpdate(sql);
     }
 
     if (wfStatus == "Request Inspection")
@@ -278,9 +282,9 @@ if (wfTask == "Enforcement Request Review")
         //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
         if (!matches(parentCapId, "", null, undefined))
         {
-            addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
+            addStdConditionStrictCUSTOM("DEQ", "Open Enforcement Record", parentCapId);
             //Gets siblings by looking at the parent
-            addConditionSiblings(parentCapId)
+            addConditionSiblingsCUSTOM(parentCapId)
         }
 
     }
@@ -288,9 +292,9 @@ if (wfTask == "Enforcement Request Review")
     {
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
         //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
-        addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
+        addStdConditionStrictCUSTOM("DEQ", "Open Enforcement Record", parentCapId);
         //Gets siblings by looking at the parent
-        addConditionSiblings(parentCapId);
+        addConditionSiblingsCUSTOM(parentCapId);
     }
     if (wfStatus == "Warning Letter Sent")
     {
@@ -300,8 +304,8 @@ if (wfTask == "Enforcement Request Review")
         //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
         //Gets siblings by looking at the parent 
         //Also gets the record you are on so I commented out the o
-        addConditionSiblings(parentCapId);
-        addStdConditionStrict("DEQ", "Open Enforcement Record", parentCapId);
+        addConditionSiblingsCUSTOM(parentCapId);
+        addStdConditionStrictCUSTOM("DEQ", "Open Enforcement Record", parentCapId);
     }
 }
 
@@ -660,7 +664,7 @@ function getUserIDAssignedToTask(vCapId, taskName) {
         return false;
     }
 }
-function addStdConditionStrict(cType, cDesc) {
+function addStdConditionStrictCUSTOM(cType, cDesc) {
     var itemCap = capId;
     aa.print("arguments.length:" + arguments.length);
     if (arguments.length == 3)
@@ -799,12 +803,12 @@ function generateReportBatch(itemCap, reportName, module, parameters) {
         return false;
     }
 }
-function addConditionSiblings(ParentCap) {
+function addConditionSiblingsCUSTOM(ParentCap) {
     var childRecords = getChildren("DEQ/OPC/*/*", ParentCap);
     for (child in childRecords)
     {
         aa.print("Adding conditions to " + childRecords[child]);
-        addStdConditionStrict("DEQ", "Open Enforcement Record", childRecords[child]);
+        addStdConditionStrictCUSTOM("DEQ", "Open Enforcement Record", childRecords[child]);
     }
 
 }
@@ -1062,4 +1066,25 @@ function reportRunSaveCustom(reportName, view, edmsSave, storeToDisk, reportModu
         return attachName
     }
     return rFile;
+}
+
+function doSQLUpdate(sql) {
+    try
+    {
+        var array = [];
+        var conn = aa.db.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+
+        if (sql.toUpperCase().indexOf("UPDATE") == 0 || sql.toUpperCase().indexOf("INSERT") == 0)
+        {
+            logDebug("executing update: " + sql);
+            var rOut = sStmt.executeUpdate();
+            logDebug(rOut + " rows updated");
+        }
+        sStmt.close();
+        conn.close();
+    } catch (err)
+    {
+        logDebug(err.message);
+    }
 }
