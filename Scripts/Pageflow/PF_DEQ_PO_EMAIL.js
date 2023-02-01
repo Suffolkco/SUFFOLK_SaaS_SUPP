@@ -73,11 +73,37 @@ try
 				cancel = true;
 				showMessage = true;
 				comment("You have entered the wrong Parcel (Tax Map) Number.");
-				comment ("Parcel (Tax Map) Number must be 19 characters; you entered " + length + " characters.");
-				comment ("Do not include dots or dashes in the parcel number");
+				comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+				comment ("Please see instructional note in Parcel Section.");
 			}				
 		}
 	}
+
+    // Require LP
+var lpList = cap.getLicenseProfessionalList();
+var correctType = false;
+
+if (lpList != null)
+{
+    for (i = 0; i < lpList.size(); i++)
+    {
+        logDebug("license type is: " + lpList.get(i).getLicenseType());
+        if (lpList.get(i).getLicenseType() == "WWM Liquid Waste")
+        {
+            correctType = true;
+                break;
+        }
+    }
+}
+
+if (correctType == false)
+{
+    cancel = true;
+    showMessage = true;
+    comment("The Licensed Professional indicated is not permitted, OR, no license was selected. The Licensed Professional section cannot be changed here and you must begin a new application (click 'Create an Application'). When selecting a license, the license type chosen must be 'WWM Liquid Waste'.");
+}
+
+
 	
 }
 catch (error)
