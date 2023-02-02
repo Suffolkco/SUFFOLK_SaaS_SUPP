@@ -175,9 +175,9 @@ function mainProcess()
 		var dateCheck = dateAdd(null, -1);
         dateCheckString = String(dateCheck).split("/")
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
-        
+        logDebugLocal("dateToCheck: " + dateToCheck);
 		// Pull Docket Type with payment due date for 0-30 days
-		var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as PayDueDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_DESC = 'Payment Due Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'DOCKET' and B1_PER_CATEGORY = 'NA' ";
+		var vSQL = "SELECT DISTINCT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as PayDueDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_DESC = 'Payment Due Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'DOCKET' and B1_PER_CATEGORY = 'NA' ";
 		
 		
         var vSQLResult = doSQLSelect_local(vSQL);
@@ -198,33 +198,86 @@ function mainProcess()
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {							
-					
+					logDebugLocal("Docket #: " + capIDString);
 					licenseNo = getAppSpecific("License Number");	
 					
 					if (licenseNo != null && licenseNo != null)
 					{						
 					
 						licenseCapId = getApplication(licenseNo);
-						
+									
 						var workflowResult = aa.workflow.getTasks(capId);
+
+					
 						if (workflowResult.getSuccess())
 						{
 							var wfObj = workflowResult.getOutput();
 						
 							for (i in wfObj)
 							{
-								if (wfObj[i].getTaskDescription() == "Payment")
+								
+								if (wfObj[i].getTaskDescription() == "Payment" && wfObj[i].getActiveFlag().equals("Y"))
 								{
-									if (wfObj[i].getDisposition() == "Open Violation")
-									{														
+									//logDebugLocal("fTask.getActiveFlag(): " + wfObj[i].getActiveFlag());
+									
+									
+									// Which task status to check to add the condition? 
+									//if (wfObj[i].getDisposition() == "Open Violation")
+									if (wfObj[i].getDisposition() != "Paid" &&
+									wfObj[i].getDisposition() != "Paid-Online" &&
+									wfObj[i].getDisposition() != "Paid-External Collections" && 
+									wfObj[i].getDisposition() != "Withdrawn")
+									{							
+										//logDebugLocal("wfObj[i].getTaskDescription() : " + wfObj[i].getTaskDescription());
+										logDebugLocal("******************************");
+										logDebugLocal("Task Status : " + wfObj[i].getDisposition());							
+										logDebugLocal("Docket record: " + capIDString + " has payment past due since " + dateToCheck);
+
 										var conditionType = "DCA";
 										// Remove existing notice and add condition
-										var conditionName = "Open Violation";																
-										// Add condition
-										addStdCondition("DCA", conditionName, capId);    
-										if (licenseCapId) 
-										{									
-											addStdCondition("DCA", conditionName, licenseCapId);     		   																								
+										var conditionName = "Open Violation";				
+										
+										// Check if condition already exists
+										var docketCpConditions = getCapConditionByCapID(capId);		
+									
+
+										//Check to see which Cap condition is matched in both source and target.
+										for (loopk in docketCpConditions)
+										{
+											logDebugLocal("Condition: " + docketCpConditions[loopk].getConditionDescription() + ", " +
+											docketCpConditions[loopk].getConditionGroup());
+
+											if (docketCpConditions[loopk].getConditionDescription() == conditionName &&
+											docketCpConditions[loopk].getConditionGroup() == conditionType)
+											{
+												logDebugLocal("Condition exists for Docket. Not adding condition.");
+
+
+											}
+											else
+											{
+												addStdConditionStrict("DCA", conditionName, capId);
+											}
+										}
+										if (licenseCapId) 	
+										{							
+											var licCapConditions = getCapConditionByCapID(licenseCapId);
+											for (lic in licCapConditions)
+											{
+												logDebugLocal("Condition: " + licCapConditions[lic].getConditionDescription() + ", " +
+												licCapConditions[lic].getConditionGroup());
+
+												if (licCapConditions[lic].getConditionDescription() == conditionName &&
+												licCapConditions[lic].getConditionGroup() == conditionType)
+												{
+													logDebugLocal("Exist for License. Not adding condition.");
+
+												}
+												else												
+												{									
+													addStdConditionStrict("DCA", conditionName, licenseCapId);     		   																								
+												}
+											}
 										}
 											
 									}
@@ -254,6 +307,40 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function addStdConditionStrict(cType, cDesc) {
+    var itemCap = capId;
+    //aa.print("arguments.length:" + arguments.length);
+    if (arguments.length == 3)
+    {
+        itemCap = arguments[2]; // use cap ID specified in args
+    }
+    if (!aa.capCondition.getStandardConditions)
+    {
+        aa.print("addStdConditionStrict function is not available in this version of Accela Automation.");
+    } else
+    {
+        standardConditions = aa.capCondition.getStandardConditions(cType, cDesc).getOutput();
+        //aa.print("# of Standard Condition Found with matching name:" + standardConditions.length);
+        for (i = 0; i < standardConditions.length; i++)
+        {
+            // Activate strict match
+            if (standardConditions[i].getConditionType().toUpperCase() == cType.toUpperCase() && standardConditions[i].getConditionDesc().toUpperCase() == cDesc.toUpperCase())
+            {
+                standardCondition = standardConditions[i];
+                var addCapCondResult = aa.capCondition.addCapCondition(itemCap, standardCondition.getConditionType(), standardCondition.getConditionDesc(), "OPC staff, see open enforcement record", sysDate, null, sysDate, null, null, standardCondition.getImpactCode(), systemUserObj, systemUserObj, "Applied", currentUserID, "A", null, "Y", standardCondition.getIncludeInConditionName(), standardCondition.getIncludeInShortDescription(), standardCondition.getInheritable(), standardCondition.getLongDescripton(), standardCondition.getPublicDisplayMessage(), standardCondition.getResolutionAction(), null, null, standardCondition.getConditionNbr(), standardCondition.getConditionGroup(), standardCondition.getDisplayNoticeOnACA(), standardCondition.getDisplayNoticeOnACAFee(), standardCondition.getPriority(), standardCondition.getConditionOfApproval());
+
+                if (addCapCondResult.getSuccess())
+                {
+                    aa.print("Successfully added condition (" + standardCondition.getConditionDesc() + ") to " + itemCap.getCustomID());                    
+                } else
+                {
+                    aa.print("**ERROR: adding condition (" + standardCondition.getConditionDesc() + "): " + addCapCondResult.getErrorMessage());
+                }
+            }
+        }
+    }
+}
+
 function isNumeric(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
   }
