@@ -237,6 +237,17 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
     
 }
 
+if (wfTask == "Final Review" && wfStatus == "Approved")
+{
+    var omContractApproval = getAppSpecific("O&M Contract Approved");
+    if (matches(omContractApproval, null, "", undefined))
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Confirm O&M contract approval prior to issuing final approval.");
+    }
+}
+
 function dateDifference(date1, date2)
 {
     return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
