@@ -134,28 +134,23 @@ if (wfTask == "Violation Review")
         var docList = getDocumentList();
         var docDates = [];
         var maxDate;
+        var docFileName;
+        var docToSend;
 
         for (doc in docList)
         {
             if (matches(docList[doc].getDocCategory(), "Inspection Report"))
             {
-                logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                maxDate = Math.max.apply(null, docDates);
-                logDebug("maxdate is: " + maxDate);
+                docFileName = docList[doc].getFileName();
+                docToSend = prepareDocumentForEmailAttachment(capId, "Inspection Report", docFileName);
 
-                if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                {
-                    var docType = docList[doc].getDocCategory();
-                    var docFileName = docList[doc].getFileName();
-                }
+                logDebug("docToSend" + docToSend);
+                docToSend = docToSend === null ? [] : [docToSend];
+                otpRFiles.push(docToSend);
             }
         }
-        var docToSend = prepareDocumentForEmailAttachment(capId, "Inspection Report", docFileName);
 
-        logDebug("docToSend" + docToSend);
-        docToSend = docToSend === null ? [] : [docToSend];
-        otpRFiles.push(docToSend);
+
 
         //gathering inspection date information to push into the parameter in the email
         var inspDates = [];
