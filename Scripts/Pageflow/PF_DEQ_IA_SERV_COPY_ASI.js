@@ -515,7 +515,7 @@ function copyContactFromParent4ACACUSTOM(currentRecordCapModel, parentCapId) {
     capPeopleArr = t.getOutput();
     for (cp in capPeopleArr)
     {
-      if (capPeopleArr[cp].getCapContactModel().getContactType() == "Property Owner")
+      if (matches(capPeopleArr[cp].getCapContactModel().getContactType(), "Property Owner", "Agent"))
       {
         contactAddFromUser4ACACUSTOM(currentRecordCapModel, capPeopleArr[cp].getCapContactModel());
       }
