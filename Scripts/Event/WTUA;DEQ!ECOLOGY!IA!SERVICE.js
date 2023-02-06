@@ -100,8 +100,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		}
 
 		addASITable("LAB RESULTS", labResultsTable, parentId);
-		editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentId);
-
 		
 	}
 	if (conUpdate == "CHECKED")
@@ -158,6 +156,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		 removeUnmatchedProfessionals(capId, parentId);
 		 logDebug("Copied done?");*/
 
+
+
 	}
 	// Service Date
 	if (serviceReport == "CHECKED" || serviceReport == "YES")
@@ -169,6 +169,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		editAppSpecificLOCAL("SERVICE INFORMATION.Next Service Date", nextServiceDate, capId);
 		editAppSpecificLOCAL("CONTRACT INFORMATION.Next Service Date", nextServiceDate, parentId);
 	}
+	editAppSpecificLOCAL("PROPERTY INFORMATION.Use", use, parentId);
+
 }
 
 function addDays(date, days) {
