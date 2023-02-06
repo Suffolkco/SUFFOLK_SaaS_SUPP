@@ -40,7 +40,7 @@ if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
   useSA = true;
   SA = bzr.getOutput().getDescription();
   bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
-  if (bzr.getSuccess()) { SAScript = bzr.getOutput().getDescription(); }
+  if (bzr.getSuccess()) {SAScript = bzr.getOutput().getDescription();}
 }
 if (SA)
 {
@@ -54,8 +54,7 @@ else
 
 eval(getScriptText("INCLUDES_CUSTOM"));
 
-function getScriptText(vScriptName)
-{
+function getScriptText(vScriptName) {
   var servProvCode = aa.getServiceProviderCode();
   if (arguments.length > 1) servProvCode = arguments[1]; // use different serv prov code
   vScriptName = vScriptName.toUpperCase();
@@ -75,7 +74,7 @@ var capId = cap.getCapID();
 var servProvCode = capId.getServiceProviderCode()                          // Service Provider Code
 var publicUser = false;
 var currentUserID = aa.env.getValue("CurrentUserID");
-if (currentUserID.indexOf("PUBLICUSER") == 0) { currentUserID = "ADMIN"; publicUser = true }  // ignore public users
+if (currentUserID.indexOf("PUBLICUSER") == 0) {currentUserID = "ADMIN"; publicUser = true}  // ignore public users
 var capIDString = capId.getCustomID();                                                 // alternate cap id string
 var systemUserObj = aa.person.getUser(currentUserID).getOutput();           // Current User Object
 var appTypeResult = cap.getCapType();
@@ -102,28 +101,30 @@ loadAppSpecific4ACA(AInfo); 						// Add AppSpecific Info
 try
 {
   var parentCapId = null;
-	var parentCapIdString = "" + cap.getParentCapID();
-	if (parentCapIdString) {
-		var pca = parentCapIdString.split("-");
-		parentCapId = aa.cap.getCapID(pca[0],pca[1],pca[2]).getOutput();
+  var parentCapIdString = "" + cap.getParentCapID();
+  if (parentCapIdString)
+  {
+    var pca = parentCapIdString.split("-");
+    parentCapId = aa.cap.getCapID(pca[0], pca[1], pca[2]).getOutput();
   }
-  if (parentCapId) {
+  if (parentCapId)
+  {
     var Manufacturer = getAppSpecific("Manufacturer", parentCapId);
     var model = getAppSpecific("Model", parentCapId);
     var installDate = getAppSpecific("Installation Date", parentCapId);
     var type = getAppSpecific("Type", parentCapId);
 
 
-    populateAmendmentAPOContacts(parentCapId);  
+    populateAmendmentAPOContactsCUSTOM(parentCapId);
   }
 
-    editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
-    editAppSpecific4ACA("Model", model, cap);
-    editAppSpecific4ACA("Installation Date", installDate, cap);
-    editAppSpecific4ACA("Type", type, cap); 
-  
+  editAppSpecific4ACA("Manufacturer", Manufacturer, cap);
+  editAppSpecific4ACA("Model", model, cap);
+  editAppSpecific4ACA("Installation Date", installDate, cap);
+  editAppSpecific4ACA("Type", type, cap);
+
 }
-catch (err) { aa.print("**ERROR : " + err); }
+catch (err) {aa.print("**ERROR : " + err);}
 
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
@@ -153,16 +154,14 @@ else
 /*------------------------------------------------------------------------------------------------------/
 | <===========External Functions (used by Action entries)
 /------------------------------------------------------------------------------------------------------*/
-function populateAmendmentAPOContacts(parent)
-{
+function populateAmendmentAPOContactsCUSTOM(parent) {
   var capModel = aa.env.getValue("CapModel");
   copyAddressFromParent4ACA(capModel, parent);
   copyParcelsFromParent4ACA(capModel, parent);
-  copyContactFromParent4ACA(capModel, parent);
+  copyContactFromParent4ACACUSTOM(capModel, parent);
   aa.env.setValue('CapModel', capModel);
 }
-function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
-{
+function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId) {
 
   var capAddressResult = aa.address.getAddressWithAttributeByCapId(parentCapId).getOutput();
   if (capAddressResult == null || capAddressResult.length == 0)
@@ -176,8 +175,7 @@ function copyAddressFromParent4ACA(currentRecordCapModel, parentCapId)
     currentRecordCapModel.setAddressModel(adrr);
   }
 }
-function getPrimaryOrAddressByType(addresses)
-{
+function getPrimaryOrAddressByType(addresses) {
   var ourTypeAddress = null;
 
   for (a in addresses)
@@ -193,8 +191,7 @@ function getPrimaryOrAddressByType(addresses)
 
   return ourTypeAddress;
 }
-function copyParcelsFromParent4ACA(currentRecordCapModel, parentCapId)
-{
+function copyParcelsFromParent4ACA(currentRecordCapModel, parentCapId) {
 
   //assume primary parcel is at index=0
   var primaryIndex = 0;
@@ -220,8 +217,7 @@ function copyParcelsFromParent4ACA(currentRecordCapModel, parentCapId)
   capParcel.setParcelModel(capParcelResult.get(primaryIndex));
   currentRecordCapModel.setParcelModel(capParcel);
 }
-function copyLicensedProf(sCapId, tCapId)
-{
+function copyLicensedProf(sCapId, tCapId) {
   //Function will copy all licensed professionals from source CapID to target CapID
 
   var licProf = aa.licenseProfessional.getLicensedProfessionalsByCapID(sCapId).getOutput();
@@ -237,8 +233,7 @@ function copyLicensedProf(sCapId, tCapId)
 }
 
 
-function copyPeople(srcCapId, targetCapId)
-{
+function copyPeople(srcCapId, targetCapId) {
   //1. Get people with source CAPID.
   var capPeoples = getPeople(srcCapId);
   aa.print("Source Cap ID:" + srcCapId.getCustomID());
@@ -295,8 +290,7 @@ function copyPeople(srcCapId, targetCapId)
   }
 }
 
-function isMatchPeople(capContactScriptModel, capContactScriptModel2)
-{
+function isMatchPeople(capContactScriptModel, capContactScriptModel2) {
   if (capContactScriptModel == null || capContactScriptModel2 == null)
   {
     return false;
@@ -380,8 +374,7 @@ function isMatchPeople(capContactScriptModel, capContactScriptModel2)
   return true;
 }
 
-function getPeople(inputtedCap)
-{
+function getPeople(inputtedCap) {
   capPeopleArr = null;
   var s_result = aa.people.getCapContactByCapID(inputtedCap);
   if (s_result.getSuccess())
@@ -400,8 +393,7 @@ function getPeople(inputtedCap)
   return capPeopleArr;
 }
 
-function copyLicenseProfessional(srcCapId, targetCapId)
-{
+function copyLicenseProfessional(srcCapId, targetCapId) {
   //1. Get license professionals with source CAPID.
   var capLicenses = getLicenseProfessional(srcCapId);
   if (capLicenses == null || capLicenses.length == 0)
@@ -451,8 +443,7 @@ function copyLicenseProfessional(srcCapId, targetCapId)
   }
 }
 
-function isMatchLicenseProfessional(licProfScriptModel1, licProfScriptModel2)
-{
+function isMatchLicenseProfessional(licProfScriptModel1, licProfScriptModel2) {
   if (licProfScriptModel1 == null || licProfScriptModel2 == null)
   {
     return false;
@@ -471,8 +462,7 @@ function isMatchLicenseProfessional(licProfScriptModel1, licProfScriptModel2)
   return false;
 }
 
-function getLicenseProfessional(capId)
-{
+function getLicenseProfessional(capId) {
   capLicenseArr = null;
   var s_result = aa.licenseProfessional.getLicenseProf(capId);
   if (s_result.getSuccess())
@@ -493,8 +483,7 @@ function getLicenseProfessional(capId)
   return capLicenseArr;
 }
 
-function convertContactAddressModelArr(contactAddressScriptModelArr)
-{
+function convertContactAddressModelArr(contactAddressScriptModelArr) {
   var contactAddressModelArr = null;
 
   if (
@@ -514,8 +503,7 @@ function convertContactAddressModelArr(contactAddressScriptModelArr)
 
   return contactAddressModelArr;
 }
-function copyContactFromParent4ACA(currentRecordCapModel, parentCapId)
-{
+function copyContactFromParent4ACACUSTOM(currentRecordCapModel, parentCapId) {
   contactsGroup = currentRecordCapModel.getContactsGroup();
   if (contactsGroup.size() > 0)
   {
@@ -529,51 +517,51 @@ function copyContactFromParent4ACA(currentRecordCapModel, parentCapId)
     {
       if (capPeopleArr[cp].getCapContactModel().getContactType() == "Property Owner")
       {
-        contactAddFromUser4ACA(currentRecordCapModel, capPeopleArr[cp].getCapContactModel());
+        contactAddFromUser4ACACUSTOM(currentRecordCapModel, capPeopleArr[cp].getCapContactModel());
       }
     }
   }
 }
-function contactAddFromUser4ACA(capModel, contactModel)
-{
+function contactAddFromUser4ACACUSTOM(capModel, contactModel) {
   var theContact = contactModel.getPeople();
-  var capContactModel = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
-  capContactModel.setContactType(theContact.getContactType());
-  capContactModel.setFirstName(theContact.getFirstName());
-  capContactModel.setMiddleName(theContact.getMiddleName());
-  capContactModel.setLastName(theContact.getLastName());
-  capContactModel.setFullName(theContact.getFullName());
-  capContactModel.setEmail(theContact.getEmail());
-  capContactModel.setPhone2(theContact.getPhone2());
-  capContactModel.setPhone1CountryCode(theContact.getPhone1CountryCode());
-  capContactModel.setPhone2CountryCode(theContact.getPhone2CountryCode());
-  capContactModel.setPhone3CountryCode(theContact.getPhone3CountryCode());
-  capContactModel.setCompactAddress(theContact.getCompactAddress());
-  capContactModel.sePreferredChannele(theContact.getPreferredChannel()); // Preferred Channel is used for 'Particiapnt Type' in ePermits. Yes, the function itself is misspelled, just use it like this.
-  capContactModel.setPeople(theContact);
-  var birthDate = theContact.getBirthDate();
-  if (birthDate != null && birthDate != "")
+  if (theContact.getAuditStatus() == "A")
   {
-    capContactModel.setBirthDate(aa.util.parseDate(birthDate));
-  }
-  // clear ACA components so that they display in the correct component per the ACA pageflow.
-  //capContactModel.setComponentName(null);
-  var peopleAttributes = aa.people.getPeopleAttributeByPeople(theContact.getContactSeqNumber(), theContact.getContactType()).getOutput();
-  if (peopleAttributes)
-  {
-    var newPeopleAttributes = aa.util.newArrayList();
-    for (var i in peopleAttributes)
+    var capContactModel = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
+    capContactModel.setContactType(theContact.getContactType());
+    capContactModel.setFirstName(theContact.getFirstName());
+    capContactModel.setMiddleName(theContact.getMiddleName());
+    capContactModel.setLastName(theContact.getLastName());
+    capContactModel.setFullName(theContact.getFullName());
+    capContactModel.setEmail(theContact.getEmail());
+    capContactModel.setPhone2(theContact.getPhone2());
+    capContactModel.setPhone1CountryCode(theContact.getPhone1CountryCode());
+    capContactModel.setPhone2CountryCode(theContact.getPhone2CountryCode());
+    capContactModel.setPhone3CountryCode(theContact.getPhone3CountryCode());
+    capContactModel.setCompactAddress(theContact.getCompactAddress());
+    capContactModel.sePreferredChannele(theContact.getPreferredChannel()); // Preferred Channel is used for 'Particiapnt Type' in ePermits. Yes, the function itself is misspelled, just use it like this.
+    capContactModel.setPeople(theContact);
+    var birthDate = theContact.getBirthDate();
+    if (birthDate != null && birthDate != "")
     {
-      newPeopleAttributes.add(peopleAttributes[i].getPeopleAttributeModel())
+      capContactModel.setBirthDate(aa.util.parseDate(birthDate));
     }
-    capContactModel.getPeople().setAttributes(newPeopleAttributes)
+    // clear ACA components so that they display in the correct component per the ACA pageflow.
+    //capContactModel.setComponentName(null);
+    var peopleAttributes = aa.people.getPeopleAttributeByPeople(theContact.getContactSeqNumber(), theContact.getContactType()).getOutput();
+    if (peopleAttributes)
+    {
+      var newPeopleAttributes = aa.util.newArrayList();
+      for (var i in peopleAttributes)
+      {
+        newPeopleAttributes.add(peopleAttributes[i].getPeopleAttributeModel())
+      }
+      capContactModel.getPeople().setAttributes(newPeopleAttributes)
+    }
+    capModel.getContactsGroup().add(capContactModel);
   }
-  capModel.getContactsGroup().add(capContactModel);
-
 }
 
-function getGuidesheetASIField(inspId, gName, gItem, asiGroup, asiSubGroup, asiLabel, capId) 
-{
+function getGuidesheetASIField(inspId, gName, gItem, asiGroup, asiSubGroup, asiLabel, capId) {
   var asiValue = "";
   var itemCap = capId;
   var r = aa.inspection.getInspections(itemCap);
@@ -644,8 +632,7 @@ function getGuidesheetASIField(inspId, gName, gItem, asiGroup, asiSubGroup, asiL
   aa.print("No updates to the guidesheet made");
   return asiValue;
 }
-function editAppSpecific4ACA(itemName, itemValue, cap)
-{
+function editAppSpecific4ACA(itemName, itemValue, cap) {
 
 
 
@@ -691,8 +678,7 @@ function editAppSpecific4ACA(itemName, itemValue, cap)
 
 
 
-function getCompletedInspectionID(insp2Check, capId)
-{
+function getCompletedInspectionID(insp2Check, capId) {
   // warning, returns only the first scheduled occurrence
   var inspResultObj = aa.inspection.getInspections(capId);
   if (inspResultObj.getSuccess())
@@ -706,8 +692,7 @@ function getCompletedInspectionID(insp2Check, capId)
   return false;
 }
 
-function copyAppName(srcCapId, capModel)
-{
+function copyAppName(srcCapId, capModel) {
   var appName = aa.cap.getCap(srcCapId).getOutput().specialText;
   capModel.setSpecialText(appName);
 
@@ -718,8 +703,7 @@ function copyAppName(srcCapId, capModel)
   }
 }
 
-function copyAddress(srcCapId, targetCapId)
-{
+function copyAddress(srcCapId, targetCapId) {
   //1. Get address with source CAPID.
   var capAddresses = getAddress(srcCapId);
   if (capAddresses == null || capAddresses.length == 0)
@@ -764,8 +748,7 @@ function copyAddress(srcCapId, targetCapId)
   }
 }
 
-function isMatchAddress(addressScriptModel1, addressScriptModel2)
-{
+function isMatchAddress(addressScriptModel1, addressScriptModel2) {
   if (addressScriptModel1 == null || addressScriptModel2 == null)
   {
     return false;
@@ -784,8 +767,7 @@ function isMatchAddress(addressScriptModel1, addressScriptModel2)
   return true;
 }
 
-function getAddress(capId)
-{
+function getAddress(capId) {
   capAddresses = null;
   var s_result = aa.address.getAddressByCapId(capId);
   if (s_result.getSuccess())
@@ -805,8 +787,7 @@ function getAddress(capId)
   return capAddresses;
 }
 
-function copyParcel(srcCapId, targetCapId)
-{
+function copyParcel(srcCapId, targetCapId) {
   //1. Get parcels with source CAPID.
   var copyParcels = getParcel(srcCapId);
   if (copyParcels == null || copyParcels.length == 0)
@@ -859,8 +840,7 @@ function copyParcel(srcCapId, targetCapId)
   }
 }
 
-function isMatchParcel(parcelScriptModel1, parcelScriptModel2)
-{
+function isMatchParcel(parcelScriptModel1, parcelScriptModel2) {
   if (parcelScriptModel1 == null || parcelScriptModel2 == null)
   {
     return false;
@@ -872,8 +852,7 @@ function isMatchParcel(parcelScriptModel1, parcelScriptModel2)
   return false;
 }
 
-function getParcel(capId)
-{
+function getParcel(capId) {
   capParcelArr = null;
   var s_result = aa.parcel.getParcelandAttribute(capId, null);
   if (s_result.getSuccess())
@@ -893,8 +872,7 @@ function getParcel(capId)
   return capParcelArr;
 }
 
-function copyOwner(srcCapId, targetCapId)
-{
+function copyOwner(srcCapId, targetCapId) {
   //1. Get Owners with source CAPID.
   var capOwners = getOwner(srcCapId);
   if (capOwners == null || capOwners.length == 0)
@@ -939,8 +917,7 @@ function copyOwner(srcCapId, targetCapId)
   }
 }
 
-function isMatchOwner(ownerScriptModel1, ownerScriptModel2)
-{
+function isMatchOwner(ownerScriptModel1, ownerScriptModel2) {
   if (ownerScriptModel1 == null || ownerScriptModel2 == null)
   {
     return false;
@@ -959,8 +936,7 @@ function isMatchOwner(ownerScriptModel1, ownerScriptModel2)
   return true;
 }
 
-function getOwner(capId)
-{
+function getOwner(capId) {
   capOwnerArr = null;
   var s_result = aa.owner.getOwnerByCapId(capId);
   if (s_result.getSuccess())
