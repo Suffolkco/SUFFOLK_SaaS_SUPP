@@ -458,6 +458,15 @@ if (wfTask == "Final Review" && wfStatus == "Awaiting O&M Contract")
 	{
 		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
 	}
+	var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+	if (capParcelResult.getSuccess())
+	{
+		var Parcels = capParcelResult.getOutput().toArray();
+		for (zz in Parcels)
+		{
+			var parcelNumber = Parcels[zz].getParcelNumber();
+		}
+	}
 	var vEParams = aa.util.newHashtable();
 	var addrResult = getAddressInALineCustom(capId);
 	var altId = capId.getCustomID();
