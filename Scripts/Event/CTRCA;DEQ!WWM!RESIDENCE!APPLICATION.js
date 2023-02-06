@@ -5,24 +5,33 @@ var methSew = AInfo["Method of Sewage Disposal"];
 var feeEx = AInfo["Fee Exempt"];
 var countyState = AInfo["Is this application part of the County/State I/A OWTS SIP grant/loan program?"]
 
+logDebug("methWat:"  + methWat);
+logDebug("methSew:"  + methSew);
+logDebug("feeEx:"  + feeEx);
+logDebug("countyState:"  + countyState);
+
 if (feeEx == "No" || feeEx == null )
 {
 	if (methSew.equals("Public Sewers")  ||
 	methSew.equals("Construct an STP") ||
 	methSew.equals("Existing STP"))
 	{
+		logDebug("updateFee RES-PW-PS 1");
 		updateFee("RES-PW-PS", "DEQ_SFR", "FINAL", 1, "Y");
 	}
 	else
 	{
+		logDebug("updateFee RES-PW-PS 0");
 		updateFee("RES-PW-PS", "DEQ_SFR", "FINAL", 0, "Y");
 	}
 	if (methWat.equals("Private Well"))
 	{
+		logDebug("updateFee RES-WELL-OWT 1");
 		updateFee("RES-WELL-OWT", "DEQ_SFR", "FINAL", 1, "Y");
 		
 		if (feeExists("RES-PW-OWTS"))
 		{
+			logDebug("updateFee RES-PW-OWTS 0");
 			updateFee("RES-PW-OWTS", "DEQ_SFR", "FINAL", 0, "Y");
 		}
 	}
@@ -30,15 +39,18 @@ if (feeEx == "No" || feeEx == null )
 	{
 		if (feeExists("RES-WELL-OWT"))
 		{
+			logDebug("updateFee RES-WELL-OWT 0");
 			updateFee("RES-WELL-OWT", "DEQ_SFR", "FINAL", 0, "Y");
 		}
 		if (methSew.equals("Conventional Septic System") || methSew.equals("I/A System"))
 		{
+			logDebug("updateFee RES-PW-OWTS 1");
 			updateFee("RES-PW-OWTS", "DEQ_SFR", "FINAL", 1, "Y");
 			
 		}
 		else
 		{
+			logDebug("updateFee RES-PW-OWTS 0");
 			updateFee("RES-PW-OWTS", "DEQ_SFR", "FINAL", 0, "Y");
 		}
 	} 
