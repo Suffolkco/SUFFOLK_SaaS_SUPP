@@ -460,9 +460,10 @@ if (wfTask == "Final Review" && wfStatus == "Awaiting O&M Contract")
 	}
 	var vEParams = aa.util.newHashtable();
 	var addrResult = getAddressInALineCustom(capId);
+	var altId = capId.getCustomID();
 	addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
 	addParameter(vEParams, "$$address$$", addrResult);
-	var iaNumberToCheck = getAppSpecific("IA Number");
+	var iaNumberToCheck = getAppSpecific("IA Number", capId);
 	logDebug("ianumbertocheck is: " + iaNumberToCheck);
 	var iaNumberToFind = aa.cap.getCapID(iaNumberToCheck).getOutput();
 	logDebug("ianumbertofind is: " + iaNumberToFind);
