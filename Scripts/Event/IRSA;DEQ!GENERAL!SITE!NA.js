@@ -207,7 +207,7 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
                     var dateDif = parseFloat(dateDiff(todayDate, childDate));
                     var dateDifRound = Math.floor(dateDif);
                     logDebug("date diff is: " + dateDifRound);
-                    logDebug("record was created less than 7 days ago");
+                    logDebug("Record was created less than 7 days ago");
                     var childRecCapType = aa.cap.getCap(childEnfRecordArray[cr]).getOutput().getCapType();
                     logDebug("childreccaptype is: " + childRecCapType);
                     var presentChildEnfType = getAppSpecific("Enforcement Type", childEnfRecordArray[cr]);
