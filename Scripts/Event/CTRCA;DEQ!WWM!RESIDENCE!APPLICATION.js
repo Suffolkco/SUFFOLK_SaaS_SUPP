@@ -1,7 +1,5 @@
 //CTRCA:DEQ/WWM/RESIDENCE/APPLICATION
 
-//ASA:DEQ/WWM/RESIDENCE/APPLICATION
-
 var methWat = AInfo["Method of Water Supply"];
 var methSew = AInfo["Method of Sewage Disposal"];
 var feeEx = AInfo["Fee Exempt"];
