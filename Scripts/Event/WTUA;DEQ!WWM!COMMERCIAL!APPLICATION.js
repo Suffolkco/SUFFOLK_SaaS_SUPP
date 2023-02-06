@@ -146,6 +146,72 @@ if (wfTask == "Final Review" && wfStatus == "Approved")
 		workflowFinalReviewApprovedWWMWithPin();
 	}
 
+	if (wfTask == "Final Review" && wfStatus == "Awaiting O&M Contract")
+{
+	var contactResult = aa.people.getCapContactByCapID(capId);
+	var capContacts = contactResult.getOutput();
+	var allEmail = "";
+	//getting all contact emails
+	for (c in capContacts)
+	{
+		if (!matches(capContacts[c].email, null, undefined, ""))
+		{
+			allEmail += capContacts[c].email + ";";
+		}
+	}
+	var lpResult = aa.licenseScript.getLicenseProf(capId);
+	if (lpResult.getSuccess())
+	{
+		var lpArr = lpResult.getOutput();
+
+		//getting all LP emails
+		for (var lp in lpArr)
+		{
+			if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+			{
+				allEmail += lpArr[lp].email + ";";
+			}
+		}
+	}
+	else 
+	{
+		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+	}
+	var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+	if (capParcelResult.getSuccess())
+	{
+		logDebug("capparcelresult is successful");
+		var Parcels = capParcelResult.getOutput().toArray();
+		for (zz in Parcels)
+		{
+			var parcelNumber = Parcels[zz].getParcelNumber();
+		}
+		logDebug("parcelnumber is " + parcelNumber);
+
+	}
+	var vEParams = aa.util.newHashtable();
+	var addrResult = getAddressInALineCustom(capId);
+	var altId = capId.getCustomID();
+	addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
+	addParameter(vEParams, "$$address$$", addrResult);
+	var iaNumberToCheck = getAppSpecific("IA Number", capId);
+	logDebug("ianumbertocheck is: " + iaNumberToCheck);
+	if (!matches(iaNumberToCheck, null, "", undefined))
+	{
+	var iaNumberToFind = aa.cap.getCapID(iaNumberToCheck).getOutput();
+	logDebug("ianumbertofind is: " + iaNumberToFind);
+	}
+	if (!matches(iaNumberToFind, null, "", undefined))
+	{
+	var pin = getAppSpecific("IA PIN Number", iaNumberToFind);
+	logDebug("pin is: " + pin);
+	}
+	addParameter(vEParams, "$$pin$$", pin);
+	addParameter(vEParams, "$$wwmAltID$$", altId);
+	addParameter(vEParams, "$$Parcel$$", parcelNumber);
+	sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+}
+
 
 
 function loadTaskSpecific(wfName,itemName)  // optional: itemCap

@@ -14,6 +14,10 @@ var conUpdate = getAppSpecific("Contract Update", capId);
 var serviceReport = getAppSpecific("Service Report", capId);
 var sampleResults = getAppSpecific("Sample Results", capId);
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
+var myCap = capId;
+var myCustomCap = myCap.getCustomID();
+
+
 
 if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete") 
 {
@@ -42,8 +46,8 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
             logDebug("maxdate is: " + maxDate);
             logDebug("maxdateplusthree is: " + maxDatePlusThree);
             maxDatePlusThree = (maxDatePlusThree.getMonth() + 1) + "/" + maxDatePlusThree.getDate() + "/" + (maxDatePlusThree.getFullYear() + 3);
-            editAppSpecific("Next Sample Date", maxDatePlusThree, parentCapId);
-            editAppSpecific("Most Recent MFR Sample", maxDate, parentCapId)
+            editAppSpecificLOCAL("Next Sample Date", maxDatePlusThree, parentCapId);
+            editAppSpecificLOCAL("Most Recent MFR Sample", maxDate, parentCapId)
             var parentReturnArray = new Array();
             var parentRecursiveCheck = getParentRecursive("DEQ/General/Site/NA", capId, 0, parentReturnArray);
             for (par in parentReturnArray)
@@ -51,7 +55,10 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
                 logDebug("parent in parentreturnarray is: " + parentReturnArray[par].getCustomID());
                 var siteParent = parentReturnArray[par];
             }
-            editAppSpecific("O&M Contract Approved", sysDateMMDDYYYY, siteParent);
+            if (siteParent != undefined)
+            {
+                editAppSpecificLOCAL("O&M Contract Approved", sysDateMMDDYYYY, siteParent);
+            }
 
             var phase = getAppSpecific("Phase", capId);
             var collector = getAppSpecific("Collector", capId);
@@ -121,9 +128,6 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         }
 
         copyContacts(capId, parentCapId);
-
-        var myCap = capId;
-        var myCustomCap = myCap.getCustomID();
 
         var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("IA PIN Number", pin);
         if (getCapResult.getSuccess())
@@ -206,17 +210,17 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
     if (contractStart != null)
     {
-        editAppSpecific("Contract Start Date", contractStart, parentCapId);
-        editAppSpecific("Contract Term", term, parentCapId);
+        editAppSpecificLOCAL("Contract Start Date", contractStart, parentCapId);
+        editAppSpecificLOCAL("Contract Term", term, parentCapId);
         contractStart = new Date(contractStart);
         var newExpDate = (contractStart.getMonth() + 1) + "/" + (contractStart.getDate()) + "/" + (contractStart.getFullYear() + Number(term));
-        editAppSpecific("Contract Expiration Date", newExpDate, parentCapId);
+        editAppSpecificLOCAL("Contract Expiration Date", newExpDate, parentCapId);
         updateShortNotes("Contract Expiration: " + newExpDate, parentCapId);
     }
 
     if (contractAnualCost != null)
     {
-        editAppSpecific("Contract Annual Cost", contractAnualCost, parentCapId);
+        editAppSpecificLOCAL("Contract Annual Cost", contractAnualCost, parentCapId);
     }
 
     if (serviceReport == "CHECKED")
@@ -225,12 +229,12 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         {
             serviceDate = new Date(serviceDate);
             var newServiceDate = (serviceDate.getMonth() + 1 + "/" + (serviceDate.getDate()) + "/" + (serviceDate.getFullYear() + 1));
-            editAppSpecific("Next Service Date", newServiceDate, parentCapId);
+            editAppSpecificLOCAL("Next Service Date", newServiceDate, parentCapId);
         }
     }
 
     var use = getAppSpecific("Use", capId);
-    editAppSpecific("Use", use, parentCapId);
+    editAppSpecificLOCAL("Use", use, parentCapId);
 
 }
 
@@ -513,4 +517,52 @@ function getParentRecursive(pCapType, itemCap, depth, retArray) {
         getParentRecursive(pCapType, newParentArray[grand], depthCount, retArray)
     }
     return retArray;
+}
+
+function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
+{
+    var itemCap = capId;
+    var itemGroup = null;
+    if (arguments.length == 3) itemCap = arguments[2]; // use cap ID specified in args
+
+    if (useAppSpecificGroupName)
+    {
+        if (itemName.indexOf(".") < 0) {logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true"); return false}
+
+
+        itemGroup = itemName.substr(0, itemName.indexOf("."));
+        itemName = itemName.substr(itemName.indexOf(".") + 1);
+    }
+    // change 2/2/2018 - update using: aa.appSpecificInfo.editAppSpecInfoValue(asiField)
+    // to avoid issue when updating a blank custom form via script. It was wiping out the field alias 
+    // and replacing with the field name
+
+    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+    if (asiFieldResult.getSuccess())
+    {
+        var asiFieldArray = asiFieldResult.getOutput();
+        if (asiFieldArray.length > 0)
+        {
+            var asiField = asiFieldArray[0];
+            if (asiField)
+            {
+                var origAsiValue = asiField.getChecklistComment();
+                asiField.setChecklistComment(itemValue);
+
+                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                if (updateFieldResult.getSuccess())
+                {
+                    logDebug("Successfully updated custom field on record: " + itemCap.getCustomID() + " on " + itemName + " with value: " + itemValue);
+                    if (arguments.length < 3) //If no capId passed update the ASI Array
+                        AInfo[itemName] = itemValue;
+                }
+                else {logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated.");}
+            }
+            else {logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated.");}
+        }
+    }
+    else
+    {
+        logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
+    }
 }
