@@ -461,11 +461,14 @@ if (wfTask == "Final Review" && wfStatus == "Awaiting O&M Contract")
 	var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 	if (capParcelResult.getSuccess())
 	{
+		logDebug("capparcelresult is successful");
 		var Parcels = capParcelResult.getOutput().toArray();
 		for (zz in Parcels)
 		{
 			var parcelNumber = Parcels[zz].getParcelNumber();
 		}
+		logDebug("parcelnumber is " + parcelNumber);
+
 	}
 	var vEParams = aa.util.newHashtable();
 	var addrResult = getAddressInALineCustom(capId);
@@ -474,10 +477,16 @@ if (wfTask == "Final Review" && wfStatus == "Awaiting O&M Contract")
 	addParameter(vEParams, "$$address$$", addrResult);
 	var iaNumberToCheck = getAppSpecific("IA Number", capId);
 	logDebug("ianumbertocheck is: " + iaNumberToCheck);
+	if (!matches(iaNumberToCheck, null, "", undefined))
+	{
 	var iaNumberToFind = aa.cap.getCapID(iaNumberToCheck).getOutput();
 	logDebug("ianumbertofind is: " + iaNumberToFind);
+	}
+	if (!matches(iaNumberToFind, null, "", undefined))
+	{
 	var pin = getAppSpecific("IA PIN Number", iaNumberToFind);
 	logDebug("pin is: " + pin);
+	}
 	addParameter(vEParams, "$$pin$$", pin);
 	addParameter(vEParams, "$$wwmAltID$$", altId);
 	addParameter(vEParams, "$$Parcel$$", parcelNumber);
