@@ -217,199 +217,230 @@ function mainProcess(thisType) {
 
                             if (matches(getAppStatus(), "OPEN PH", "Open PH"))
                             {
-                                var prelimHearingUserId = getUserIDAssignedToTask(capId, "Preliminary Hearing")
-                                //logDebugLocal("prelimhearing user id is: " + prelimHearingUserId);
-                                var userToSend = aa.person.getUser(prelimHearingUserId).getOutput();
-                                //logDebugLocal("user to send is: " + userToSend);
-                                if (userToSend != null)
+                                var phNotPaid = false;
+                                var workflowResult = aa.workflow.getTasks(capId);
+                                if (workflowResult.getSuccess())
                                 {
-                                    var prelimHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-                                    //logDebugLocal("prelimhearingusername is: " + prelimHearingUserName);
-                                    var prelimHearingUserPhone = userToSend.getPhoneNumber();
-                                    var prelimHearingUserEmail = userToSend.getEmail();
-                                    //logDebugLocal("prelimhearinguser email is: " + prelimHearingUserEmail);
-
-                                    addParameter(vEParams, "$$assignUser$$", prelimHearingUserName);
-                                    addParameter(vEParams, "$$userPhoneNum$$", prelimHearingUserPhone);
-                                    addParameter(vEParams, "$$userEmail$$", prelimHearingUserEmail);
-                                }
-
-                                var statDate = getAppSpecific("Hearing Date");
-                                if (statDate != null)
-                                {
-                                    //logDebugLocal("capidstring is: " + capIDString);
-                                    var dateDif = parseFloat(dateDiff(todayDate, statDate));
-                                    //logDebugLocal("todaydate is: " + todayDate + " and statdate is: " + statDate);
-                                    var dateDifRound = Math.floor(dateDif);
-                                    //logDebugLocal("datediffround is: " + dateDifRound);
-
-                                    //Upcoming Prelim Hearing
-                                    if (matches(dateDifRound, 1, 7))
+                                    var wfObj = workflowResult.getOutput();
+                                    for (w in wfObj)
                                     {
-                                        //logDebugLocal("Checking for Prelim Hearing Reminders...");
-
-                                        addParameter(vEParams, "$$altID$$", capIDString);
-                                        addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
-                                        addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
-                                        addParameter(vEParams, "$$facilityName$$", appName);
-                                        addParameter(vEParams, "$$addressInALine$$", addrResult);
-                                        addParameter(vEParams, "$$hearingDate$$", hearingDate);
-                                        addParameter(vEParams, "$$hearingTime$$", hearingTime);
-
-                                        var parentCapId = getParent(capId);
-                                        var contactResult = aa.people.getCapContactByCapID(parentCapId);
-                                        if (contactResult.getSuccess())
+                                        if (matches(wfObj[w].getTaskDescription(), "Preliminary Hearing") && !matches(wfObj[w].getDisposition(), "Paid") && wfObj[w].getActiveFlag() == "Y")
                                         {
-                                            var capContacts = contactResult.getOutput();
-                                            conEmail = "";
-                                            for (c in capContacts)
-                                            {
-                                                if (!matches(capContacts[c].email, null, undefined, ""))
-                                                {
-                                                    if (capContacts[c].getPeople().getAuditStatus() == "A")
-                                                    {
-                                                        if (enfType == "SP")
-                                                        {
-                                                            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
-                                                            {
-                                                                conEmail += String(capContacts[c].email) + ";";
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
-                                                            {
-                                                                conEmail += String(capContacts[c].email) + ";";
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            phNotPaid = true;
                                         }
-                                        //logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
-                                        sendNotification("", conEmail, "", "DEQ_OPC_ENF_PRELIM_HEARING_REM", vEParams, null);
+                                    }
+                                }
+                                if (phNotPaid)
+                                {
+                                    var prelimHearingUserId = getUserIDAssignedToTask(capId, "Preliminary Hearing")
+                                    //logDebugLocal("prelimhearing user id is: " + prelimHearingUserId);
+                                    var userToSend = aa.person.getUser(prelimHearingUserId).getOutput();
+                                    //logDebugLocal("user to send is: " + userToSend);
+                                    if (userToSend != null)
+                                    {
+                                        var prelimHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+                                        //logDebugLocal("prelimhearingusername is: " + prelimHearingUserName);
+                                        var prelimHearingUserPhone = userToSend.getPhoneNumber();
+                                        var prelimHearingUserEmail = userToSend.getEmail();
+                                        //logDebugLocal("prelimhearinguser email is: " + prelimHearingUserEmail);
 
+                                        addParameter(vEParams, "$$assignUser$$", prelimHearingUserName);
+                                        addParameter(vEParams, "$$userPhoneNum$$", prelimHearingUserPhone);
+                                        addParameter(vEParams, "$$userEmail$$", prelimHearingUserEmail);
                                     }
 
-                                    //Missed Prelim Hearing
-                                    if (matches(dateDifRound, -1))
+                                    var statDate = getAppSpecific("Hearing Date");
+                                    if (statDate != null)
                                     {
-                                        //logDebugLocal("Checking for Prelim Hearing past due...");
+                                        //logDebugLocal("capidstring is: " + capIDString);
+                                        var dateDif = parseFloat(dateDiff(todayDate, statDate));
+                                        //logDebugLocal("todaydate is: " + todayDate + " and statdate is: " + statDate);
+                                        var dateDifRound = Math.floor(dateDif);
+                                        //logDebugLocal("datediffround is: " + dateDifRound);
 
-                                        var workflowResult = aa.workflow.getTasks(capId);
-                                        if (workflowResult.getSuccess())
+                                        //Upcoming Prelim Hearing
+                                        if (matches(dateDifRound, 1, 7))
                                         {
-                                            var workflowResultTsi = aa.workflow.getTask(capId, "Preliminary Hearing");
-                                            var taskObj = workflowResultTsi.getOutput();
-                                            var tsiResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, taskObj.getProcessID(), taskObj.getStepNumber());
+                                            //logDebugLocal("Checking for Prelim Hearing Reminders...");
 
-                                            if (tsiResult.getSuccess())
+                                            addParameter(vEParams, "$$altID$$", capIDString);
+                                            addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+                                            addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
+                                            addParameter(vEParams, "$$facilityName$$", appName);
+                                            addParameter(vEParams, "$$addressInALine$$", addrResult);
+                                            addParameter(vEParams, "$$hearingDate$$", hearingDate);
+                                            addParameter(vEParams, "$$hearingTime$$", hearingTime);
+
+                                            var parentCapId = getParent(capId);
+                                            var contactResult = aa.people.getCapContactByCapID(parentCapId);
+                                            if (contactResult.getSuccess())
                                             {
-                                                var tsiOut = tsiResult.getOutput();
-                                                var hearingDateTsi = "";
-                                                for (t in tsiOut)
+                                                var capContacts = contactResult.getOutput();
+                                                conEmail = "";
+                                                for (c in capContacts)
                                                 {
-                                                    if (tsiOut[t].getCheckboxDesc() == "Preliminary Hearing Date")
+                                                    if (!matches(capContacts[c].email, null, undefined, ""))
                                                     {
-                                                        if (!matches(tsiOut[t].getChecklistComment(), null, undefined, ""))
+                                                        if (capContacts[c].getPeople().getAuditStatus() == "A")
                                                         {
-                                                            hearingDateTsi = tsiOut[t].getChecklistComment().toUpperCase();
+                                                            if (enfType == "SP")
+                                                            {
+                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                {
+                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                {
+                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
+                                            //logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
+                                            sendNotification("", conEmail, "", "DEQ_OPC_ENF_PRELIM_HEARING_REM", vEParams, null);
                                         }
-                                        addParameter(vEParams, "$$altID$$", capIDString);
-                                        addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
-                                        addParameter(vEParams, "$$facilityName$$", appName);
-                                        addParameter(vEParams, "$$prelimHearingDate$$", statDate);
 
-                                        logDebugLocal("sending missed hearing template to " + prelimHearingUserEmail + " as part of " + capId.getCustomID());
+                                        //Missed Prelim Hearing
+                                        if (matches(dateDifRound, -1))
+                                        {
+                                            //logDebugLocal("Checking for Prelim Hearing past due...");
 
-                                        sendNotification("", prelimHearingUserEmail, "", "DEQ_OPC_ENF_MIS_HEARING", vEParams, null);
+                                            var workflowResult = aa.workflow.getTasks(capId);
+                                            if (workflowResult.getSuccess())
+                                            {
+                                                var workflowResultTsi = aa.workflow.getTask(capId, "Preliminary Hearing");
+                                                var taskObj = workflowResultTsi.getOutput();
+                                                var tsiResult = aa.taskSpecificInfo.getTaskSpecificInfoByTask(capId, taskObj.getProcessID(), taskObj.getStepNumber());
+
+                                                if (tsiResult.getSuccess())
+                                                {
+                                                    var tsiOut = tsiResult.getOutput();
+                                                    var hearingDateTsi = "";
+                                                    for (t in tsiOut)
+                                                    {
+                                                        if (tsiOut[t].getCheckboxDesc() == "Preliminary Hearing Date")
+                                                        {
+                                                            if (!matches(tsiOut[t].getChecklistComment(), null, undefined, ""))
+                                                            {
+                                                                hearingDateTsi = tsiOut[t].getChecklistComment().toUpperCase();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            addParameter(vEParams, "$$altID$$", capIDString);
+                                            addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
+                                            addParameter(vEParams, "$$facilityName$$", appName);
+                                            addParameter(vEParams, "$$prelimHearingDate$$", statDate);
+
+                                            logDebugLocal("sending missed hearing template to " + prelimHearingUserEmail + " as part of " + capId.getCustomID());
+
+                                            sendNotification("", prelimHearingUserEmail, "", "DEQ_OPC_ENF_MIS_HEARING", vEParams, null);
+                                        }
                                     }
                                 }
                             }
                             if (matches(getAppStatus(), "OPEN FH", "Open FH"))
                             {
-                                var statDate = getAppSpecific("Hearing Date");
-                                if (statDate != null)
+                                var fhNotPaid = false;
+                                var workflowResult = aa.workflow.getTasks(capId);
+                                if (workflowResult.getSuccess())
                                 {
-                                    var hearingDateMinusWeek = dateAdd(statDate, -7);
-                                    //logDebugLocal("hearingdateminusweek is: " + hearingDateMinusWeek);
-                                    //logDebugLocal("capidstring is: " + capIDString);
-                                    var dateDif = parseFloat(dateDiff(todayDate, statDate));
-                                    //logDebugLocal("todaydate is: " + todayDate + " and statdate is: " + statDate);
-                                    var dateDifRound = Math.floor(dateDif);
-                                    //logDebugLocal("datedifround is: " + dateDifRound);
-
-                                    var formalHearingUserId = getUserIDAssignedToTask(capId, "Formal Hearing")
-                                    //logDebugLocal("formalHearingUserId user id is: " + formalHearingUserId);
-                                    var userToSend = aa.person.getUser(formalHearingUserId).getOutput();
-                                    //logDebugLocal("user to send is: " + userToSend);
-                                    if (userToSend != null)
+                                    var wfObj = workflowResult.getOutput();
+                                    for (w in wfObj)
                                     {
-                                        var formalHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
-                                        //logDebugLocal("formalHearingUserName is: " + formalHearingUserName);
-                                        var formalHearingUserPhone = userToSend.getPhoneNumber();
-                                        var formalHearingUserEmail = userToSend.getEmail();
-                                        //logDebugLocal("formalHearingUserEmail email is: " + formalHearingUserEmail);
-
-                                        addParameter(vEParams, "$$assignUser$$", formalHearingUserName);
-                                        addParameter(vEParams, "$$userPhoneNum$$", formalHearingUserPhone);
-                                        addParameter(vEParams, "$$userEmail$$", formalHearingUserEmail);
-                                    }
-
-                                    //Looking for upcoming Formal Hearing date
-                                    if (matches(dateDifRound, 7, 10, 14))
-                                    {
-                                        logDebugLocal("Checking for Formal Hearing Reminders...");
-                                        logDebugLocal("datedifround is: " + dateDifRound);
-                                        addParameter(vEParams, "$$altID$$", capIDString);
-                                        addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
-                                        addParameter(vEParams, "$$addressInALine$$", addrResult);
-                                        addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
-                                        addParameter(vEParams, "$$facilityName$$", appName);
-                                        addParameter(vEParams, "$$hearingDate$$", statDate);
-                                        addParameter(vEParams, "$$hearingTime$$", hearingTime);
-                                        addParameter(vEParams, "$$hearingDateMinusWeek$$", hearingDateMinusWeek);
-
-
-
-                                        var parentCapId = getParent(capId);
-                                        var contactResult = aa.people.getCapContactByCapID(parentCapId);
-                                        if (contactResult.getSuccess())
+                                        if (matches(wfObj[w].getTaskDescription(), "Formal Hearing") && !matches(wfObj[w].getDisposition(), "Paid") && wfObj[w].getActiveFlag() == "Y")
                                         {
-                                            var capContacts = contactResult.getOutput();
-                                            var conEmail = "";
-                                            for (c in capContacts)
+                                            fhNotPaid = true;
+                                        }
+                                    }
+                                }
+                                if (fhNotPaid)
+                                {
+                                    var statDate = getAppSpecific("Hearing Date");
+                                    if (statDate != null)
+                                    {
+                                        var hearingDateMinusWeek = dateAdd(statDate, -7);
+                                        //logDebugLocal("hearingdateminusweek is: " + hearingDateMinusWeek);
+                                        //logDebugLocal("capidstring is: " + capIDString);
+                                        var dateDif = parseFloat(dateDiff(todayDate, statDate));
+                                        //logDebugLocal("todaydate is: " + todayDate + " and statdate is: " + statDate);
+                                        var dateDifRound = Math.floor(dateDif);
+                                        //logDebugLocal("datedifround is: " + dateDifRound);
+
+                                        var formalHearingUserId = getUserIDAssignedToTask(capId, "Formal Hearing")
+                                        //logDebugLocal("formalHearingUserId user id is: " + formalHearingUserId);
+                                        var userToSend = aa.person.getUser(formalHearingUserId).getOutput();
+                                        //logDebugLocal("user to send is: " + userToSend);
+                                        if (userToSend != null)
+                                        {
+                                            var formalHearingUserName = userToSend.getFirstName() + " " + userToSend.getLastName();
+                                            //logDebugLocal("formalHearingUserName is: " + formalHearingUserName);
+                                            var formalHearingUserPhone = userToSend.getPhoneNumber();
+                                            var formalHearingUserEmail = userToSend.getEmail();
+                                            //logDebugLocal("formalHearingUserEmail email is: " + formalHearingUserEmail);
+
+                                            addParameter(vEParams, "$$assignUser$$", formalHearingUserName);
+                                            addParameter(vEParams, "$$userPhoneNum$$", formalHearingUserPhone);
+                                            addParameter(vEParams, "$$userEmail$$", formalHearingUserEmail);
+                                        }
+
+                                        //Looking for upcoming Formal Hearing date
+                                        if (matches(dateDifRound, 7, 10, 14))
+                                        {
+                                            logDebugLocal("Checking for Formal Hearing Reminders...");
+                                            logDebugLocal("datedifround is: " + dateDifRound);
+                                            addParameter(vEParams, "$$altID$$", capIDString);
+                                            addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
+                                            addParameter(vEParams, "$$addressInALine$$", addrResult);
+                                            addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
+                                            addParameter(vEParams, "$$facilityName$$", appName);
+                                            addParameter(vEParams, "$$hearingDate$$", statDate);
+                                            addParameter(vEParams, "$$hearingTime$$", hearingTime);
+                                            addParameter(vEParams, "$$hearingDateMinusWeek$$", hearingDateMinusWeek);
+
+
+
+                                            var parentCapId = getParent(capId);
+                                            var contactResult = aa.people.getCapContactByCapID(parentCapId);
+                                            if (contactResult.getSuccess())
                                             {
-                                                if (!matches(capContacts[c].email, null, undefined, ""))
+                                                var capContacts = contactResult.getOutput();
+                                                var conEmail = "";
+                                                for (c in capContacts)
                                                 {
-                                                    //logDebugLocal("is this contact active or inactive?: " + capContacts[c].getPeople().getAuditStatus())
-                                                    if (capContacts[c].getPeople().getAuditStatus() == "A")
+                                                    if (!matches(capContacts[c].email, null, undefined, ""))
                                                     {
-                                                        if (enfType == "SP")
+                                                        //logDebugLocal("is this contact active or inactive?: " + capContacts[c].getPeople().getAuditStatus())
+                                                        if (capContacts[c].getPeople().getAuditStatus() == "A")
                                                         {
-                                                            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                            if (enfType == "SP")
                                                             {
-                                                                conEmail += String(capContacts[c].email) + ";";
+                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                {
+                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                }
                                                             }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                            else
                                                             {
-                                                                conEmail += String(capContacts[c].email) + ";";
+                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                {
+                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
-                                        }
-                                        logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
-                                        sendNotification("", conEmail, "", "DEQ_OPC_ENF_FORMAL_HEARING_REM", vEParams, null);
+                                            logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
+                                            sendNotification("", conEmail, "", "DEQ_OPC_ENF_FORMAL_HEARING_REM", vEParams, null);
 
+                                        }
                                     }
                                 }
                             }
