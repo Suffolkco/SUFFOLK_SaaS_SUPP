@@ -137,16 +137,31 @@ if (wfTask == "Violation Review")
         var docFileName;
         var docToSend;
 
-        for (doc in docList)
+        for (doc in documents)
         {
-            if (matches(docList[doc].getDocCategory(), "Inspection Report"))
+            if (matches(documents[doc].getDocCategory(), "Inspection Report"))
             {
-                docFileName = docList[doc].getFileName();
-                docToSend = prepareDocumentForEmailAttachment(capId, "Inspection Report", docFileName);
+                docToPrepare = documents[doc];
+                docFileName = documents[doc].getFileName();
+                //logDebug("docfilename is: " + docFileName);
+                //docToSend = prepareDocumentForEmailAttachmentLOCAL(capId, "Inspection Report", docFileName);
+                var catt = documents[doc].getDocCategory();
 
-                logDebug("docToSend" + docToSend);
-                docToSend = docToSend === null ? [] : [docToSend];
-                otpRFiles.push(docToSend);
+
+                var moduleName = cap.getCapType().getGroup();
+                var toClear = docToPrepare.getFileName();
+                toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(" ", "_");
+                docToPrepare.setFileName(toClear);
+                var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
+                if (downloadRes.getSuccess() && downloadRes.getOutput())
+                {
+                    otpRFiles.push(downloadRes.getOutput().toString());
+
+                } else
+                {
+                    logDebug("**WARN document download failed, " + docToPrepare.getFileName());
+                    logDebug(downloadRes.getErrorMessage());
+                }
             }
         }
 
@@ -254,6 +269,13 @@ if (wfTask == "Enforcement Request Review")
                 reportToSend = "OPC Warning Letter";
                 break;
         }
+        //async script would start here
+
+      /*  var envParameters = aa.util.newHashMap();
+	envParameters.put("BillingParamRecNumber", capId.getCustomID());
+	envParameters.put("EmailNotifyTo", getUserEmail(currentUserID));
+	aa.runAsyncScript("BATCH_EH_BILLING_ASSESSFEES", envParameters);
+    */
         reportParams.put("RecordID", capId.getCustomID());
         if (reportToSend != "")
         {
