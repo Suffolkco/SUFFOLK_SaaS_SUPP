@@ -271,16 +271,15 @@ if (wfTask == "Enforcement Request Review")
         }
         //async script would start here
 
-      /*  var envParameters = aa.util.newHashMap();
-	envParameters.put("BillingParamRecNumber", capId.getCustomID());
-	envParameters.put("EmailNotifyTo", getUserEmail(currentUserID));
-	aa.runAsyncScript("BATCH_EH_BILLING_ASSESSFEES", envParameters);
-    */
-        reportParams.put("RecordID", capId.getCustomID());
+        
+
         if (reportToSend != "")
         {
-            generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
-        }
+            var envParameters = aa.util.newHashMap();
+            envParameters.put("CapId", capId);
+            envParameters.put("reportToSend", reportToSend);
+            aa.runAsyncScript("DEQ_ENF_GENERATE_NOPH_REPORTS", envParameters);
+                }
         /*
         not sure why this code is here, as the above code should do the same thing
         
