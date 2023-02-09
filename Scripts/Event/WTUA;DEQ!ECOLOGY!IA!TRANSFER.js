@@ -236,6 +236,168 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
     var use = getAppSpecific("Use", capId);
     editAppSpecificLOCAL("Use", use, parentCapId);
 
+    //EHIMS2-163
+    var getAParent = getParentByCapId(capId);
+    var shipRecord;
+    var wwmComRecord;
+    var wwmResRecord;
+    logDebug("getparent is returning: " + getAParent.getCustomID());
+
+
+    if (getAParent)
+    {
+        var getGParent = getParentByCapId(getAParent);
+
+        if (getGParent)
+        {
+            logDebug("getGParent is: " + getGParent.getCustomID());
+
+            if (appMatch("DEQ/WWM/SHIP/Application", getGParent))
+            {
+                shipRecord = getGParent;
+                logDebug("app type is a SHIP application");
+                editAppSpecificLOCAL("O&M Contract Approved", sysDateMMDDYYYY, shipRecord);
+                //
+                if (getAppStatus(shipRecord) == "Awaiting O&M Contract")
+                {
+                    var allSHIPEmail = "";
+                    //grabbing contacts from SHIP record and processing them
+                    var contactResult = aa.people.getCapContactByCapID(shipRecord);
+                    var capContacts = contactResult.getOutput();
+                    var vEParams = aa.util.newHashtable();
+                    var addrResult = getAddressInALine(shipRecord);
+                    addParameter(vEParams, "$$altID$$", shipRecord.getCustomID());
+                    addParameter(vEParams, "$$address$$", addrResult);
+                    addParameter(vEParams, "$$wfComment$$", wfComment);
+                    //adding property owner and agent contacts from the SHIP record to the intended email recipients
+                    for (c in capContacts)
+                    {
+                        if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Agent"))
+                        {
+                            if (!matches(capContacts[c].email, null, undefined, ""))
+                            {
+                                allSHIPEmail += capContacts[c].email + ";";
+                            }
+                        }
+                    }
+                    //grabbing LPs from SHIP record and processing them
+                    var lpResult = aa.licenseScript.getLicenseProf(shipRecord);
+                    if (lpResult.getSuccess())
+                    {
+                        var lpArr = lpResult.getOutput();
+
+                        //adding LP emails to var allSHIPEmail so that they also get the email sent below
+                        for (var lp in lpArr)
+                        {
+                            if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+                            {
+                                allSHIPEmail += lpArr[lp].email + ";";
+                            }
+                        }
+                    }
+                    else 
+                    {
+                        logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+                    }
+                    var rcReportParams = aa.util.newHashtable();
+                    var rcReportFile = new Array();
+
+                    addParameter(rcReportParams, "RecordId", shipRecord.getCustomID().toString());
+                    rcReportFile = generateReportBatch(shipRecord, "Registration Complete Report", 'DEQ', rcReportParams)
+                    logDebug("This is the rFile: " + rcReportFile);
+
+                    if (rcReportFile)
+                    {
+                        var rcRFiles = new Array();
+                        //need to store the current cap of the IAT record for now, since for the below code to work, we need to be running some of these functions against the SHIP's capId, and some of these functions do not allow the capid to be passed in
+                        var capTemp = capId;
+                        //switching to ship record id
+                        capId = shipRecord;
+
+                        var docList = getDocumentList();
+                        var docDates = [];
+                        var maxDate;
+
+                        for (doc in docList)
+                        {
+                            if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
+                            {
+                                logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                                docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                                maxDate = Math.max.apply(null, docDates);
+                                logDebug("maxdate is: " + maxDate);
+
+                                if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                                {
+                                    var docType = docList[doc].getDocCategory();
+                                    var docFileName = docList[doc].getFileName();
+                                }
+                            }
+                        }
+                        //preparing most recent sketch document for email attachment
+                        var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
+                        logDebug("docToSend" + docToSend);
+                        docToSend = docToSend === null ? [] : [docToSend];
+                        if (!matches(docToSend, null, undefined, ""))
+                        {
+                            rcRFiles.push(docToSend);
+                        }
+                        rcRFiles.push(rcReportFile);
+                    }
+                    if (rcRFiles != undefined)
+                    {
+                        sendNotification("", allSHIPEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                    }
+                    updateTask("Final Review", "Registration Complete", "", "");
+                    deactivateAllActiveTasks(capId);
+                    capId = capTemp;
+                }
+            }
+        }
+        if (appMatch("DEQ/WWM/Commercial/Application", getGParent) || appMatch("DEQ/WWM/Residence/Application", getGParent))
+        {
+            wwmRecord = getGParent;
+            editAppSpecificLOCAL("O&M Contract Approved", sysDateMMDDYYYY, wwmRecord);
+
+            if (getAppStatus(wwmRecord) == "Awaiting O&M Contract")
+            {
+                var allWWMEmail = "";
+                //grabbing contacts from COM record and processing them
+                var contactResult = aa.people.getCapContactByCapID(wwmRecord);
+                var capContacts = contactResult.getOutput();
+                var vEParams = aa.util.newHashtable();
+                var addrResult = getAddressInALine(wwmRecord);
+                var shortNotes = getShortNotes(wwmRecord);
+                var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+                acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+
+                addParameter(vEParams, "$$acaURL$$", acaSite);
+                addParameter(vEParams, "$$altID$$", wwmRecord.getCustomID());
+                addParameter(vEParams, "$$address$$", addrResult);
+                addParameter(vEParams, "$$wfComment$$", wfComment);
+                addParameter(vEParams, "$$shortNotes$$", shortNotes);
+
+                //adding property owner and agent contacts from the WWM record to the intended email recipients
+                for (c in capContacts)
+                {
+                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Agent", "Applicant", "Designer"))
+                    {
+                        if (!matches(capContacts[c].email, null, undefined, ""))
+                        {
+                            allWWMEmail += capContacts[c].email + ";";
+                        }
+                    }
+                }
+                var capTemp = capId;
+                capId = wwmRecord;
+
+                sendNotification("", allWWMEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", vEParams, null);
+                updateTask("Final Review", "Approved", "", "");
+                deactivateAllActiveTasks(capId);
+                capId = capTemp;
+            }
+        }
+    }
 }
 
 
