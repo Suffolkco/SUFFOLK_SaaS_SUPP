@@ -131,22 +131,37 @@ if (wfTask == "Violation Review")
     {
         //preparing inspection report either from the tank or site (whichever copied to this record) for sending along with the notification here
         var otpRFiles = new Array();
-        var docList = getDocumentList();
+        var documents = getDocumentList();
         var docDates = [];
         var maxDate;
         var docFileName;
         var docToSend;
 
-        for (doc in docList)
+        for (doc in documents)
         {
-            if (matches(docList[doc].getDocCategory(), "Inspection Report"))
+            if (matches(documents[doc].getDocCategory(), "Inspection Report"))
             {
-                docFileName = docList[doc].getFileName();
-                docToSend = prepareDocumentForEmailAttachment(capId, "Inspection Report", docFileName);
+                docToPrepare = documents[doc];
+                docFileName = documents[doc].getFileName();
+                //logDebug("docfilename is: " + docFileName);
+                //docToSend = prepareDocumentForEmailAttachmentLOCAL(capId, "Inspection Report", docFileName);
+                var catt = documents[doc].getDocCategory();
 
-                logDebug("docToSend" + docToSend);
-                docToSend = docToSend === null ? [] : [docToSend];
-                otpRFiles.push(docToSend);
+
+                var moduleName = cap.getCapType().getGroup();
+                var toClear = docToPrepare.getFileName();
+                toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(" ", "_");
+                docToPrepare.setFileName(toClear);
+                var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
+                if (downloadRes.getSuccess() && downloadRes.getOutput())
+                {
+                    otpRFiles.push(downloadRes.getOutput().toString());
+
+                } else
+                {
+                    logDebug("**WARN document download failed, " + docToPrepare.getFileName());
+                    logDebug(downloadRes.getErrorMessage());
+                }
             }
         }
 
@@ -254,11 +269,17 @@ if (wfTask == "Enforcement Request Review")
                 reportToSend = "OPC Warning Letter";
                 break;
         }
-        reportParams.put("RecordID", capId.getCustomID());
+        //async script would start here
+
+        
+
         if (reportToSend != "")
         {
-            generateReportBatch(capId, reportToSend, 'DEQ', reportParams);
-        }
+            var envParameters = aa.util.newHashMap();
+            envParameters.put("CapId", capId);
+            envParameters.put("reportToSend", reportToSend);
+            aa.runAsyncScript("DEQ_ENF_GENERATE_NOPH_REPORTS", envParameters);
+                }
         /*
         not sure why this code is here, as the above code should do the same thing
         
