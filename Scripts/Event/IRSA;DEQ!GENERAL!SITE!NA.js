@@ -189,7 +189,6 @@ if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspecti
         {
             var reportParams = aa.util.newHashtable();
             var childrenToUpdate = new Array();
-
             for (cr in childEnfRecordArray)
             {
                 //get file date of each and take a diff to see if it's been opened in the last 7 days
