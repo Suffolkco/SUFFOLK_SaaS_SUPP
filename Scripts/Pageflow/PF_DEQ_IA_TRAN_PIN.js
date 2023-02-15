@@ -50,18 +50,36 @@ try
     var getCapResult = aa.cap.getCapID(iaNumber);
     if (getCapResult.getSuccess())
     {
-      if (!matches(relCapID, iaNumber))
-      {
-        showMessage = true;
-        cancel = true;
-        message = "PIN and IA Number do not match";
-      }
-      else 
-    {
-        showMessage = false;
-        cancel = false;
-        message = "";
+        if (!matches(relCapID, iaNumber))
+        {
+            showMessage = true;
+            cancel = true;
+            comment("PIN and IA Number do not match.");
+        }
     }
+
+    // Require LP
+    var lpList = cap.getLicenseProfessionalList();
+    var correctType = false;
+
+    if (lpList != null)
+    {
+        for (i = 0; i < lpList.size(); i++)
+        {
+            logDebug("license type is: " + lpList.get(i).getLicenseType());
+            if (lpList.get(i).getLicenseType() == "IA Service Provider")
+            {
+                correctType = true;
+                break;
+            }
+        }
+    }
+
+    if (correctType == false)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("You have chosen the incorrect License Type. Click ‘Create an Application’ to return to the previous page and select the ‘IA Service Provider’ option from the Licenses drop down. If this option is not available, please contact us as IAOWTSRME@suffolkcontyny.gov.");
     }
 }
 catch (error)
@@ -92,8 +110,7 @@ if (debug.indexOf("**ERROR") > 0 || debug.substr(0, 7) == "**ERROR")
 
 
 //ACA Functions 
-function getScriptText(vScriptName, servProvCode, useProductScripts)
-{
+function getScriptText(vScriptName, servProvCode, useProductScripts) {
     if (!servProvCode) servProvCode = aa.getServiceProviderCode();
     vScriptName = vScriptName.toUpperCase();
     var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
