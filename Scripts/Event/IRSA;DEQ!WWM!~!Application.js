@@ -40,7 +40,7 @@ if (sewageDisposal == "I/A System")
             }
 
         }
-        sendNotification("", emailAddress, "", "IA_NOTIFICATION_FOR_PROPERTY_OWNER", params, null);
+        //sendNotification("", emailAddress, "", "IA_NOTIFICATION_FOR_PROPERTY_OWNER", params, null);
         logDebug("E-mail sent successfully!")
     }
 
