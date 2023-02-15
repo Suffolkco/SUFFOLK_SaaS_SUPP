@@ -561,7 +561,7 @@ function makeTable(labResults, resId, inspEmail) {
         rawNumericResult = "" + r[5];
         t["Numeric Result"] = doNullTranslation("NUMBER", r[5]);
         t["Trace Results"] = "";
-        if (r[6] == "INVALID" || r[6] == "Invalid" || r[6] == "LA" || r[6] == "NR" || r[6] == "NA") {
+        if (r[6] == "INVALID" || r[6] == "Invalid" || r[6] == "LA" || r[6] == "NR" || r[6] == "NA"|| r[6] == "N/A") {
             sampleError = true;
         }
         rawTextResult = "" + r[6];
