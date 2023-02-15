@@ -28,7 +28,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 }
 if (wfTask == "Inspections" && (wfStatus == "Inspection Failure" || wfStatus == "Inspection Failure- I/A Installed"))
 {
-	var resultComments = latestInspectionResultWithComments();
+	var resultComments = inspectionResultComments();
 
 	if (resultComments)
 	{
@@ -733,7 +733,7 @@ function inspectionResultComments() {
 				logDebug("inspDate: " + inspDate);
 
 				var year = insps[i].getInspectionDate().getYear();
-				var month = insps[i].getInspectionDate().getMonth() - 1;
+				var month = insps[i].getInspectionDate().getMonth();
 				var day = insps[i].getInspectionDate().getDayOfMonth();
 				var hr = insps[i].getInspectionDate().getHourOfDay();
 				var min = insps[i].getInspectionDate().getMinute();
@@ -757,36 +757,6 @@ function inspectionResultComments() {
 	}
 
 	return inspResultComments;
-}
-function getWorkflowTask(capID, taskName) {
-	var taskHistoryResult = aa.workflow.getWorkflowHistory(capID, taskName, null);
-	if (taskHistoryResult.getSuccess())
-	{
-		var taskArr = taskHistoryResult.getOutput();
-		for (obj in taskArr)
-		{
-			var taskObj = taskArr[obj];
-
-
-			var sysObj = taskObj.getTaskItem().getSysUser();
-			if (sysObj)
-			{
-				var userResult = aa.person.getUser(sysObj.getFirstName(), sysObj.getMiddleName(), sysObj.getLastName());
-				if (userResult.getSuccess())
-				{
-					var userObj = userResult.getOutput();
-					return userObj.getUserID();
-				}
-
-			}
-		}
-	}
-	else
-	{
-		logDebug("No task history.")
-	}
-
-	return null;
 }
 
 function latestCompletedInspection() {
