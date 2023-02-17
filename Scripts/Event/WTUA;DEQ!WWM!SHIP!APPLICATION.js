@@ -83,8 +83,6 @@ if (wfTask == "Application Review")
     }
     if (wfStatus == "Conventional - OK to Proceed")
     {
-        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
-        {
             otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
             logDebug("This is the rFile: " + otpReportFile);
 
@@ -121,7 +119,6 @@ if (wfTask == "Application Review")
                 } otpRFiles.push(otpReportFile);
             }
             sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
-        }
     }
     if (wfStatus == "Full Permit Required")
     {
