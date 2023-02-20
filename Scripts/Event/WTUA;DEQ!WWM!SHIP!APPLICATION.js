@@ -77,6 +77,13 @@ if (wfTask == "Application Review")
     {
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
     }
+    if (wfStatus == "I/A OWTS - Consult Waived")
+    {
+        deactivateTask("Field Consult Required");
+        deactivateTask("Grant Review");
+        activateTask("Preliminary Sketch Review");
+        updateAppStatus("Pending Review");
+    }
     if (wfStatus == "Conventional - Inspection Required")
     {
         //sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
