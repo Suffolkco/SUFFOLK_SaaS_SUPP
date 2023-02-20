@@ -73,7 +73,7 @@ addParameter(rcReportParams, "RecordId", alternateID.toString());
 //Application Review
 if (wfTask == "Application Review")
 {
-    if (wfStatus == "I/A OWTS")
+    if (wfStatus == "I/A OWTS - Consult Required")
     {
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
     }
