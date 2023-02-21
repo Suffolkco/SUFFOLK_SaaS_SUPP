@@ -200,7 +200,7 @@ function mainProcess(){
         rParams.put("p1Value",facilityCapId.getCustomID());
         rParams.put("p2Value","0");
         rParams.put("p3Value","9999999999");
-        rFile = generateReportLocal(facilityCapId,"0256 Account Statement By Record ID","EnvHealth",rParams);
+        rFile = generateReportLocal(facilityCapId,"5005 Invoice Statement SSRS","EnvHealth",rParams);
         if (rFile) {
             var rFiles = new Array();
             rFiles.push(rFile);
@@ -213,7 +213,7 @@ function mainProcess(){
             sendNotification(null,accntReceivEmail,"","EH_BILLING_NOTIFICATION",eParams,[String(rFile)],facilityCapId);
         }else if(getAppSpecific("Send Email",billingParamId) != "CHECKED"){
             // Printing Report
-            runReportAttach(facilityCapId,"0256 Account Statement By Record ID",facilityCapId.getCustomID());
+            runReportAttach(facilityCapId,"5005 Invoice Statement SSRS",facilityCapId.getCustomID());
         }
     }
     if(!matches(EmailNotifyTo,null,undefined,"")){

@@ -78,15 +78,29 @@ function mainProcess() {
     var elementArray = new Array();
     //get program elements from billing range asit
     for (var b in BILLINGRANGE){
-        var thisRow = BILLINGRANGE[b];
-        var startRange = String(thisRow["Program Element Start"]).substr(0, 4);
-        var endRange = String(thisRow["Program Element End"]).substr(0, 4);
+    var thisRow = BILLINGRANGE[b];
+    var startRange = String(thisRow["Program Element Start"]).substr(0, 4);
+    var endRange = String(thisRow["Program Element End"]).substr(0, 4);
+    var isNumber = true;
+    for (var i = 0; i < 4; i++) {
+        if (isNaN(startRange[i])) {
+            isNumber = false;
+            break;
+        }
+    }
+    if (isNumber) {
         var index = Number(startRange);
         while (index <= Number(endRange)){
             elementArray.push(index);
             index++;
         }
+    } else {
+        while (startRange <= endRange) {
+            elementArray.push(startRange);
+            startRange = String.fromCharCode(startRange.charCodeAt(0) + 1);
+        }
     }
+	}
     //get program elements from program element key asit
     for (var p in PROGRAMELEMENTKEY){
         var thisProgram = String(PROGRAMELEMENTKEY[p]["Program Element Key"]);
