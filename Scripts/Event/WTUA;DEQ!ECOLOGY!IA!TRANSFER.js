@@ -392,7 +392,9 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
                 capId = wwmRecord;
 
                 sendNotification("", allWWMEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", vEParams, null);
-                updateTask("Final Review", "Approved", "", "");
+                //this next line needs to be commented out until no more paper applications are received
+                //updateTask("Final Review", "Approved", "", "");
+                updateAppStatus("O&M Contract Approved", "", capId);
                 deactivateAllActiveTasks(capId);
                 capId = capTemp;
             }
