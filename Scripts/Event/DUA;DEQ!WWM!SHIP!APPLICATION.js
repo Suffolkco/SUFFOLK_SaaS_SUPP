@@ -6,30 +6,33 @@ if (publicUser)
 {
     if (cap.isCompleteCap())
     {
-        var wfHist = aa.workflow.getWorkflowHistory(capId, null);
-        var wfHistArray = [];
-        if (wfHist.getSuccess())
+        if (cap.getAuditID().search("SHIP Legacy Import") == -1)
         {
-            wfHist = wfHist.getOutput();
-            for (var h in wfHist)
+            var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+            var wfHistArray = [];
+            if (wfHist.getSuccess())
             {
-                logDebug("wfhist[h] taskdesc is: " + wfHist[h].getTaskDescription());
+                wfHist = wfHist.getOutput();
+                for (var h in wfHist)
+                {
+                    logDebug("wfhist[h] taskdesc is: " + wfHist[h].getTaskDescription());
 
-                wfHistArray.push(wfHist[h].getTaskDescription());
+                    wfHistArray.push(wfHist[h].getTaskDescription());
+                }
+                logDebug("wfhist array length is " + wfHistArray.length);
+            } else
+            {
+                logDebug("not success");
             }
-            logDebug("wfhist array length is " + wfHistArray.length);
-        } else
-        {
-            logDebug("not success");
-        }
 
-        if (wfHistArray.length != 0)
-        {
-            updateAppStatus("Resubmitted");
-        }
-        else
-        {
-            logDebug("not updating today's date");
+            if (wfHistArray.length != 0)
+            {
+                updateAppStatus("Resubmitted");
+            }
+            else
+            {
+                logDebug("not updating today's date");
+            }
         }
     }
 }

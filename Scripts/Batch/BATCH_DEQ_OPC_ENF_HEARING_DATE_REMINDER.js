@@ -252,7 +252,7 @@ function mainProcess(thisType) {
                                     var statDate = getAppSpecific("Hearing Date");
                                     if (statDate != null)
                                     {
-                                        //logDebugLocal("capidstring is: " + capIDString);
+                                        logDebugLocal("capidstring is: " + capIDString);
                                         var dateDif = parseFloat(dateDiff(todayDate, statDate));
                                         //logDebugLocal("todaydate is: " + todayDate + " and statdate is: " + statDate);
                                         var dateDifRound = Math.floor(dateDif);
@@ -272,37 +272,42 @@ function mainProcess(thisType) {
                                             addParameter(vEParams, "$$hearingTime$$", hearingTime);
 
                                             var parentCapId = getParent(capId);
-                                            var contactResult = aa.people.getCapContactByCapID(parentCapId);
-                                            if (contactResult.getSuccess())
+                                            if (parentCapId)
                                             {
-                                                var capContacts = contactResult.getOutput();
-                                                conEmail = "";
-                                                for (c in capContacts)
+                                                var contactResult = aa.people.getCapContactByCapID(parentCapId);
+
+                                                if (contactResult.getSuccess())
                                                 {
-                                                    if (!matches(capContacts[c].email, null, undefined, ""))
+                                                    var capContacts = contactResult.getOutput();
+                                                    conEmail = "";
+                                                    for (c in capContacts)
                                                     {
-                                                        if (capContacts[c].getPeople().getAuditStatus() == "A")
+                                                        if (!matches(capContacts[c].email, null, undefined, ""))
                                                         {
-                                                            if (enfType == "SP")
+                                                            if (capContacts[c].getPeople().getAuditStatus() == "A")
                                                             {
-                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                if (enfType == "SP")
                                                                 {
-                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                    {
+                                                                        conEmail += String(capContacts[c].email) + ";";
+                                                                    }
                                                                 }
-                                                            }
-                                                            else
-                                                            {
-                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                else
                                                                 {
-                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                    {
+                                                                        conEmail += String(capContacts[c].email) + ";";
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
+
+                                                logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
+                                                sendNotification("", conEmail, "", "DEQ_OPC_ENF_PRELIM_HEARING_REM", vEParams, null);
                                             }
-                                            //logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
-                                            sendNotification("", conEmail, "", "DEQ_OPC_ENF_PRELIM_HEARING_REM", vEParams, null);
                                         }
 
                                         //Missed Prelim Hearing
@@ -407,39 +412,41 @@ function mainProcess(thisType) {
 
 
                                             var parentCapId = getParent(capId);
-                                            var contactResult = aa.people.getCapContactByCapID(parentCapId);
-                                            if (contactResult.getSuccess())
+                                            if (parentCapId)
                                             {
-                                                var capContacts = contactResult.getOutput();
-                                                var conEmail = "";
-                                                for (c in capContacts)
+                                                var contactResult = aa.people.getCapContactByCapID(parentCapId);
+                                                if (contactResult.getSuccess())
                                                 {
-                                                    if (!matches(capContacts[c].email, null, undefined, ""))
+                                                    var capContacts = contactResult.getOutput();
+                                                    var conEmail = "";
+                                                    for (c in capContacts)
                                                     {
-                                                        //logDebugLocal("is this contact active or inactive?: " + capContacts[c].getPeople().getAuditStatus())
-                                                        if (capContacts[c].getPeople().getAuditStatus() == "A")
+                                                        if (!matches(capContacts[c].email, null, undefined, ""))
                                                         {
-                                                            if (enfType == "SP")
+                                                            //logDebugLocal("is this contact active or inactive?: " + capContacts[c].getPeople().getAuditStatus())
+                                                            if (capContacts[c].getPeople().getAuditStatus() == "A")
                                                             {
-                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                if (enfType == "SP")
                                                                 {
-                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                    {
+                                                                        conEmail += String(capContacts[c].email) + ";";
+                                                                    }
                                                                 }
-                                                            }
-                                                            else
-                                                            {
-                                                                if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                else
                                                                 {
-                                                                    conEmail += String(capContacts[c].email) + ";";
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                    {
+                                                                        conEmail += String(capContacts[c].email) + ";";
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
+                                                logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
+                                                sendNotification("", conEmail, "", "DEQ_OPC_ENF_FORMAL_HEARING_REM", vEParams, null);
                                             }
-                                            logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
-                                            sendNotification("", conEmail, "", "DEQ_OPC_ENF_FORMAL_HEARING_REM", vEParams, null);
-
                                         }
                                     }
                                 }

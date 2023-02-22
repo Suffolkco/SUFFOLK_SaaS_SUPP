@@ -73,9 +73,16 @@ addParameter(rcReportParams, "RecordId", alternateID.toString());
 //Application Review
 if (wfTask == "Application Review")
 {
-    if (wfStatus == "I/A OWTS")
+    if (wfStatus == "I/A OWTS - Consult Required")
     {
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
+    }
+    if (wfStatus == "I/A OWTS - Consult Waived")
+    {
+        deactivateTask("Field Consult Required");
+        deactivateTask("Grant Review");
+        activateTask("Preliminary Sketch Review");
+        updateAppStatus("Pending Review");
     }
     if (wfStatus == "Conventional - Inspection Required")
     {
@@ -83,45 +90,42 @@ if (wfTask == "Application Review")
     }
     if (wfStatus == "Conventional - OK to Proceed")
     {
-        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
+        otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
+        logDebug("This is the rFile: " + otpReportFile);
+
+        if (otpReportFile)
         {
-            otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
-            logDebug("This is the rFile: " + otpReportFile);
+            var otpRFiles = new Array();
+            var docList = getDocumentList();
+            var docDates = [];
+            var maxDate;
 
-            if (otpReportFile)
+            for (doc in docList)
             {
-                var otpRFiles = new Array();
-                var docList = getDocumentList();
-                var docDates = [];
-                var maxDate;
-
-                for (doc in docList)
+                if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
                 {
-                    if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
-                    {
-                        logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                        docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                        maxDate = Math.max.apply(null, docDates);
-                        logDebug("maxdate is: " + maxDate);
+                    logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                    docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                    maxDate = Math.max.apply(null, docDates);
+                    logDebug("maxdate is: " + maxDate);
 
-                        if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                        {
-                            var docType = docList[doc].getDocCategory();
-                            var docFileName = docList[doc].getFileName();
-                        }
+                    if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                    {
+                        var docType = docList[doc].getDocCategory();
+                        var docFileName = docList[doc].getFileName();
                     }
                 }
-                var docToSend = prepareDocumentForEmailAttachment(capId, docType, docFileName);
-
-                logDebug("docToSend" + docToSend);
-                docToSend = docToSend === null ? [] : [docToSend];
-                if (!matches(docToSend, null, undefined, ""))
-                {
-                    otpRFiles.push(docToSend);
-                } otpRFiles.push(otpReportFile);
             }
-            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+            var docToSend = prepareDocumentForEmailAttachment(capId, docType, docFileName);
+
+            logDebug("docToSend" + docToSend);
+            docToSend = docToSend === null ? [] : [docToSend];
+            if (!matches(docToSend, null, undefined, ""))
+            {
+                otpRFiles.push(docToSend);
+            } otpRFiles.push(otpReportFile);
         }
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
     }
     if (wfStatus == "Full Permit Required")
     {
@@ -140,58 +144,6 @@ if (wfTask == "Field Consult Required")
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_FIELD_CONSULT_REQUIRED", vEParams, null);
     }
 
-    if (wfStatus == "Complete")
-    {
-        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
-        {
-            otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
-            logDebug("This is the rFile: " + otpReportFile);
-
-            if (otpReportFile)
-            {
-                var otpRFiles = new Array();
-                var docList = getDocumentList();
-                var docDates = [];
-                var maxDate;
-                var docPresent = false;
-
-                for (doc in docList)
-                {
-                    if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
-                    {
-                        logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                        docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                        maxDate = Math.max.apply(null, docDates);
-                        logDebug("maxdate is: " + maxDate);
-
-                        if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                        {
-                            var docType = docList[doc].getDocCategory();
-                            var docFileName = docList[doc].getFileName();
-                        }
-                        docPresent = true;
-                    }
-                }
-                if (docPresent)
-                {
-                    var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
-
-                    logDebug("docToSend" + docToSend);
-                    docToSend = docToSend === null ? [] : [docToSend];
-                    if (!matches(docToSend, null, undefined, ""))
-                    {
-                        otpRFiles.push(docToSend);
-                    } otpRFiles.push(otpReportFile);
-                }
-            }
-            var vEParams = aa.util.newHashtable();
-            var altId = capId.getCustomID();
-            addParameter(vEParams, "$$wwmAltID$$", altId);
-            addParameter(vEParams, "$$wfComment$$", wfComment);
-            addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
-            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_ADDITIONAL_DOCUMENTS", vEParams, otpRFiles);
-        }
-    }
     if (wfStatus == "Full Permit Required")
     {
         closeTask("Field Consult Required", "Full Permit Required", "", "");
@@ -293,10 +245,6 @@ if (wfTask == "Preliminary Sketch Review")
 //Grant Review
 if (wfTask == "Grant Review")
 {
-    if (wfStatus == "Awaiting Client Reply")
-    {
-        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_DOC_REQUESTED", vEParams, null);
-    }
     if (matches(wfStatus, "No Application Received", "Not Eligible", "OK to Proceed"))
     {
         if (isTaskActive("Field Consult Required"))
@@ -327,52 +275,10 @@ if (wfTask == "Grant Review")
             editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "No", capId);
         }
 
-
-
         //End Case of 64
         if (wfStatus == "OK to Proceed")
         {
             editAppSpecificLOCAL("Part of Septic Improvement Program(SIP)", "Yes", capId);
-
-            if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
-            {
-                otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams);
-                logDebug("This is the rFile: " + otpReportFile);
-                var otpRFiles = new Array();
-
-                if (otpReportFile)
-                {
-                    var docList = getDocumentList();
-                    var docDates = [];
-                    var maxDate;
-
-                    for (doc in docList)
-                    {
-                        if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
-                        {
-                            logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                            docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                            maxDate = Math.max.apply(null, docDates);
-                            logDebug("maxdate is: " + maxDate);
-
-                            if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                            {
-                                var docType = docList[doc].getDocCategory();
-                                var docFileName = docList[doc].getFileName();
-                            }
-                        }
-                    }
-                    var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
-
-                    logDebug("docToSend" + docToSend);
-                    docToSend = docToSend === null ? [] : [docToSend];
-                    if (!matches(docToSend, null, undefined, ""))
-                    {
-                        otpRFiles.push(docToSend);
-                    } otpRFiles.push(otpReportFile);
-                }
-                sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
-            }
         }
         var wfHist = aa.workflow.getWorkflowHistory(capId, null);
         var wfDates = [];
@@ -400,17 +306,58 @@ if (wfTask == "Grant Review")
                 }
                 if (tasksCompleted)
                 {
+                    //Prelim is OK to Proceed
                     if (wfHist[h].getDisposition() == "OK to Proceed")
                     {
+                        otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams);
+                        logDebug("This is the rFile: " + otpReportFile);
+                        var otpRFiles = new Array();
+
+                        if (otpReportFile)
+                        {
+                            var docList = getDocumentList();
+                            var docDates = [];
+                            var maxDate;
+
+                            for (doc in docList)
+                            {
+                                if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
+                                {
+                                    logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                                    docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                                    maxDate = Math.max.apply(null, docDates);
+                                    logDebug("maxdate is: " + maxDate);
+
+                                    if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                                    {
+                                        var docType = docList[doc].getDocCategory();
+                                        var docFileName = docList[doc].getFileName();
+                                    }
+                                }
+                            }
+                            var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
+
+                            logDebug("docToSend" + docToSend);
+                            docToSend = docToSend === null ? [] : [docToSend];
+                            if (!matches(docToSend, null, undefined, ""))
+                            {
+                                otpRFiles.push(docToSend);
+                            } otpRFiles.push(otpReportFile);
+                        }
+                        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
                         closeTask("Inspections", "No Inspections Needed", "", "");
                         activateTask("Final Review");
                     }
+                    //Prelim task is Inspection Required Prior to Install
                     if (wfHist[h].getDisposition() == "Inspection Required Prior to Install")
                     {
+                        //new email template is coming to be sent here (2/17/23)
                         updateTask("Inspections", "Inspection Required Prior to Install", "", "");
                     }
+                    //Prelim task is Inspection Required Prior to Backfill
                     if (wfHist[h].getDisposition() == "Inspection Required Prior to Backfill")
                     {
+                        //new email template is coming to be sent here (2/17/23)
                         updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
                     }
                 }
@@ -439,7 +386,6 @@ if (wfTask == "Inspections")
         addParameter(vEParams, "$$altID$$", capId.getCustomID());
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_FAILURE", vEParams, null);
     }
-
     if (wfStatus == "Inspection Required Prior to Install")
     {
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
@@ -449,49 +395,45 @@ if (wfTask == "Inspections")
     {
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
     }
-    if (wfStatus == "Complete")
+    if (wfStatus == "No Inspection Needed")
     {
-        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
+        otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams);
+        logDebug("This is the rFile: " + otpReportFile);
+        var otpRFiles = new Array();
+
+        if (otpReportFile)
         {
-            otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
-            logDebug("This is the rFile: " + otpReportFile);
+            var docList = getDocumentList();
+            var docDates = [];
+            var maxDate;
 
-            if (otpReportFile)
+            for (doc in docList)
             {
-                var otpRFiles = new Array();
-                var docList = getDocumentList();
-                var docDates = [];
-                var maxDate;
-
-                for (doc in docList)
+                if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
                 {
-                    if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
-                    {
-                        logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                        docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                        maxDate = Math.max.apply(null, docDates);
-                        logDebug("maxdate is: " + maxDate);
+                    logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                    docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                    maxDate = Math.max.apply(null, docDates);
+                    logDebug("maxdate is: " + maxDate);
 
-                        if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                        {
-                            var docType = docList[doc].getDocCategory();
-                            var docFileName = docList[doc].getFileName();
-                        }
+                    if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                    {
+                        var docType = docList[doc].getDocCategory();
+                        var docFileName = docList[doc].getFileName();
                     }
                 }
-                var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
-
-                logDebug("docToSend" + docToSend);
-                docToSend = docToSend === null ? [] : [docToSend];
-                if (!matches(docToSend, null, undefined, ""))
-                {
-                    otpRFiles.push(docToSend);
-                } otpRFiles.push(otpReportFile);
             }
-            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
-        }
-    }
+            var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
 
+            logDebug("docToSend" + docToSend);
+            docToSend = docToSend === null ? [] : [docToSend];
+            if (!matches(docToSend, null, undefined, ""))
+            {
+                otpRFiles.push(docToSend);
+            } otpRFiles.push(otpReportFile);
+        }
+        sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
+    }
 }
 
 //Final Review
@@ -513,287 +455,278 @@ if (wfTask == "Final Review")
 
         //sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
 
-        if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
+
+        rcReportFile = generateReportBatch(capId, "Registration Complete Report", 'DEQ', rcReportParams)
+        logDebug("This is the rFile: " + rcReportFile);
+
+        if (rcReportFile)
         {
-            rcReportFile = generateReportBatch(capId, "Registration Complete Report", 'DEQ', rcReportParams)
-            logDebug("This is the rFile: " + rcReportFile);
+            var rcRFiles = new Array();
+            var docList = getDocumentList();
+            var docDates = [];
+            var maxDate;
 
-            if (rcReportFile)
+            for (doc in docList)
             {
-                var rcRFiles = new Array();
-                var docList = getDocumentList();
-                var docDates = [];
-                var maxDate;
-
-                for (doc in docList)
+                if (matches(docList[doc].getDocCategory(), "Final Sketch"))
                 {
-                    if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
-                    {
-                        logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
-                        docDates.push(docList[doc].getFileUpLoadDate().getTime());
-                        maxDate = Math.max.apply(null, docDates);
-                        logDebug("maxdate is: " + maxDate);
+                    logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                    docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                    maxDate = Math.max.apply(null, docDates);
+                    logDebug("maxdate is: " + maxDate);
 
-                        if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
-                        {
-                            var docType = docList[doc].getDocCategory();
-                            var docFileName = docList[doc].getFileName();
-                        }
+                    if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                    {
+                        var docType = docList[doc].getDocCategory();
+                        var docFileName = docList[doc].getFileName();
                     }
                 }
-                var docToSend = prepareDocumentForEmailAttachment(capId, "Preliminary Sketch", docFileName);
-
-                logDebug("docToSend" + docToSend);
-                docToSend = docToSend === null ? [] : [docToSend];
-                if (!matches(docToSend, null, undefined, ""))
-                {
-                    rcRFiles.push(docToSend);
-                }
-                rcRFiles.push(rcReportFile);
             }
+            var docToSend = prepareDocumentForEmailAttachment(capId, "Final Sketch", docFileName);
 
-            if (matches(getAppSpecific("IA Number"), null, undefined, ""))
+            logDebug("docToSend" + docToSend);
+            docToSend = docToSend === null ? [] : [docToSend];
+            if (!matches(docToSend, null, undefined, ""))
             {
-                //sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, rcRFiles);
+                rcRFiles.push(docToSend);
             }
+            rcRFiles.push(rcReportFile);
         }
 
-        //begin SHIP SYSTEM DETAILS check
-        var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
-        var checkIANumber = false;
-        if (shipSystemTable.length > 0)
+        if (getAppSpecific("I/A OWTS Installation" != "CHECKED"))
         {
-            for (sstrow in shipSystemTable)
-            {
-                var inspSchedDate = shipSystemTable[sstrow]["Installation Date"];
-                var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
-                var iaModel = shipSystemTable[sstrow]["I/A Model"];
-                var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product/Material"];
-                var iaLeachOtherType = shipSystemTable[sstrow]["Leaching Type"];
-                var iaEffluentPumpPools = shipSystemTable[sstrow]["Effluent Pump"];
-                var OmFlag = false
-                if (iaManufacturer != "N/A") 
-                {
-                    checkIANumber = true;
-                    OmFlag = true;
+            sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+        }
 
-                    if (!matches(getAppSpecific("IA Number"), null, undefined, "") && !matches(getAppSpecific("O&M Contract Approved"), null, undefined, "")) 
+        else if (getAppSpecific("I/A OWTS Installation") == "CHECKED")
+        {
+            //begin SHIP SYSTEM DETAILS check
+            var shipSystemTable = loadASITable("SHIP SYSTEM DETAILS", capId);
+            var checkIANumber = false;
+            if (shipSystemTable.length > 0)
+            {
+                for (sstrow in shipSystemTable)
+                {
+                    var inspSchedDate = shipSystemTable[sstrow]["Installation Date"];
+                    var iaManufacturer = shipSystemTable[sstrow]["I/A Manufacturer"];
+                    var iaModel = shipSystemTable[sstrow]["I/A Model"];
+                    var iaLeachProduct = shipSystemTable[sstrow]["Leaching Product/Material"];
+                    var iaLeachOtherType = shipSystemTable[sstrow]["Leaching Type"];
+                    var iaEffluentPumpPools = shipSystemTable[sstrow]["Effluent Pump"];
+                    var OmFlag = false
+                    if (iaManufacturer != "N/A") 
                     {
+                        checkIANumber = true;
+                        OmFlag = true;
+
+                        if (!matches(getAppSpecific("IA Number"), null, undefined, "") && !matches(getAppSpecific("O&M Contract Approved"), null, undefined, "")) 
+                        {
+                            //updateAppStatus("Registration Complete");
+                            closeTask("Final Review", "Registration Complete", "", "");
+                            deactivateAllActiveTasks(capId);
+                            if (rcRFiles != undefined)
+                            {
+                                sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                            }
+                        }
+                    }
+
+                    if (iaManufacturer == "N/A") 
+                    {
+                        //Emails should only be sent whe task is deactivated
                         //updateAppStatus("Registration Complete");
                         closeTask("Final Review", "Registration Complete", "", "");
                         deactivateAllActiveTasks(capId);
+                        OmFlag = true;
+                        logDebug("rcrfiles is: " + rcRFiles);
                         if (rcRFiles != undefined)
                         {
                             sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                            //Removed Per Edward's comment
+                            //sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
                         }
                     }
-                }
-
-                if (iaManufacturer == "N/A") 
-                {
-                    //Emails should only be sent whe task is deactivated
-                    //updateAppStatus("Registration Complete");
-                    closeTask("Final Review", "Registration Complete", "", "");
-                    deactivateAllActiveTasks(capId);
-                    OmFlag = true;
-                    logDebug("rcrfiles is: " + rcRFiles);
-                    if (rcRFiles != undefined)
-                    {
-                        sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
-                        //Removed Per Edward's comment
-                        //sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
-                    }
-                }
-
-            }
-            if (checkIANumber)
-            {
-                var newInspSchedDate = new Date(inspSchedDate);
-                var inspSchedDatePlusOne = (newInspSchedDate.getMonth() + 1) + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1901);
-                var inspSchedDatePlusThree = (newInspSchedDate.getMonth() + 1) + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1903);
-
-
-                if (!matches(getAppSpecific("IA Number"), null, undefined, "") && matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
-                {
-                    var vEParams = aa.util.newHashtable();
-                    var addrResult = getAddressInALine(capId);
-                    addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
-                    addParameter(vEParams, "$$address$$", addrResult);
-                    var iaNumberToCheck = getAppSpecific("IA Number");
-                    logDebug("ianumbertocheck is: " + iaNumberToCheck);
-                    var iaNumberToFind = aa.cap.getCapID(iaNumberToCheck).getOutput();
-                    logDebug("ianumbertofind is: " + iaNumberToFind);
-                    var pin = getAppSpecific("IA PIN Number", iaNumberToFind);
-                    logDebug("pin is: " + pin);
-                    addParameter(vEParams, "$$pin$$", pin);
-                    addParameter(vEParams, "$$wwmAltID$$", altId);
-                    addParameter(vEParams, "$$Parcel$$", parcelNumber);
-                    updateAppStatus("Awaiting O&M Contract");
-                    sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
 
                 }
-
-                if (matches(getAppSpecific("IA Number"), null, undefined, ""))
+                if (checkIANumber)
                 {
-                    var iaNew = createChild("DEQ", "Ecology", "IA", "Application");
-                    var iaCustom = iaNew.getCustomID();
-                    var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
-                    if (getCapResult.getSuccess())
+                    var newInspSchedDate = new Date(inspSchedDate);
+                    var inspSchedDatePlusOne = (newInspSchedDate.getMonth() + 1) + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1901);
+                    var inspSchedDatePlusThree = (newInspSchedDate.getMonth() + 1) + "/" + newInspSchedDate.getDate() + "/" + (newInspSchedDate.getYear() + 1903);
+
+
+                    if (!matches(getAppSpecific("IA Number"), null, undefined, "") && matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
                     {
-                        var apsArray = getCapResult.getOutput();
-                        for (aps in apsArray)
+                        var vEParams = aa.util.newHashtable();
+                        var addrResult = getAddressInALine(capId);
+                        addParameter(vEParams, "$$altID$$", getAppSpecific("IA Number"));
+                        addParameter(vEParams, "$$address$$", addrResult);
+                        var iaNumberToCheck = getAppSpecific("IA Number");
+                        logDebug("ianumbertocheck is: " + iaNumberToCheck);
+                        var iaNumberToFind = aa.cap.getCapID(iaNumberToCheck).getOutput();
+                        logDebug("ianumbertofind is: " + iaNumberToFind);
+                        var pin = getAppSpecific("IA PIN Number", iaNumberToFind);
+                        logDebug("pin is: " + pin);
+                        addParameter(vEParams, "$$pin$$", pin);
+                        addParameter(vEParams, "$$wwmAltID$$", altId);
+                        addParameter(vEParams, "$$Parcel$$", parcelNumber);
+                        updateAppStatus("Awaiting O&M Contract");
+                        sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+
+                    }
+
+                    if (matches(getAppSpecific("IA Number"), null, undefined, ""))
+                    {
+                        var iaNew = createChild("DEQ", "Ecology", "IA", "Application");
+                        var iaCustom = iaNew.getCustomID();
+                        var getCapResult = aa.cap.getCapIDsByAppSpecificInfoField("Technology Name/Series", iaManufacturer);
+                        if (getCapResult.getSuccess())
                         {
-                            myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
-                            logDebug("apsArray = " + apsArray);
-                            var relCap = myCap.getCapID();
-                            logDebug("relCapID = " + relCap.getCustomID());
-                            var relCapID = relCap.getCustomID();
+                            var apsArray = getCapResult.getOutput();
+                            for (aps in apsArray)
+                            {
+                                myCap = aa.cap.getCap(apsArray[aps].getCapID()).getOutput();
+                                logDebug("apsArray = " + apsArray);
+                                var relCap = myCap.getCapID();
+                                logDebug("relCapID = " + relCap.getCustomID());
+                                var relCapID = relCap.getCustomID();
+                            }
                         }
-                    }
-                    if (relCap != null)
-                    {
-                        copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
-                        copyLicensedProfByType(relCap, iaNew, ["IA Vendor"]);
-                    }
-                    else
-                    {
-                        copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
-                    }
-                    copyContactsByType(capId, iaNew, ["Property Owner"]);
-                    copyAddress(capId, iaNew);
-                    copyParcel(capId, iaNew);
-                    copyDocumentsToCapID(capId, iaNew);
-
-                    editAppSpecificLOCAL("Installation Date", inspSchedDate, iaNew);
-                    editAppSpecificLOCAL("Manufacturer", iaManufacturer, iaNew);
-                    editAppSpecificLOCAL("Model", iaModel, iaNew);
-                    editAppSpecificLOCAL("WWM Application Number", capIDString, iaNew);
-                    editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
-                    editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
-                    editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
-                    var currentIANumber = getAppSpecific("IA Number", capId);
-
-                    if (matches(currentIANumber, undefined, null, "", " "))
-                    {
-                        editAppSpecificLOCAL("IA Number", iaCustom, capId)
-                    }
-                    else
-                    {
-                        editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
-                    }
-                    var newWorkDesc = "";
-                    if (!matches(iaManufacturer, "N/A", undefined, null, " "))
-                    {
-                        newWorkDesc += iaManufacturer + " ";
-                    }
-                    if (!matches(iaModel, "N/A", undefined, null, " "))
-                    {
-                        newWorkDesc += iaModel + " ";
-                    }
-                    if (!matches(iaLeachOtherType, "N/A", undefined, null, " "))
-                    {
-                        newWorkDesc += iaLeachOtherType + " ";
-                    }
-                    if (!matches(iaLeachProduct, "N/A", undefined, null, " "))
-                    {
-                        newWorkDesc += iaLeachProduct + " ";
-                    }
-                    logDebug("newworkdesc is: " + newWorkDesc);
-                    updateWorkDesc(newWorkDesc, iaNew);
-                    editAppName("Installed: " + inspSchedDate, iaNew);
-
-
-                    if (iaLeachOtherType != null)
-                    {
-                        editAppSpecificLOCAL("Leaching", iaLeachOtherType, iaNew);
-                    }
-                    if (iaEffluentPumpPools != null)
-                    {
-                        editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
-                    }
-                    var propertyType = getAppSpecific("Select Property Type", capId);
-                    if (!matches(propertyType, null, undefined, ""))
-                    {
-                        editAppSpecificLOCAL("Type", propertyType, iaNew)
-                    }
-                    var pinNumber = makePIN(8);
-                    editAppSpecificLOCAL('IA PIN Number', pinNumber, iaNew)
-
-
-
-                    //Start Notification to Parent Contacts/LPs
-                    logDebug("capId = " + capId);
-                    var AInfo = new Array();
-                    logDebug("parentCapId = " + parentCapId);
-                    var allEmail = "";
-                    logDebug("iaNew =" + iaNew);
-                    var pin = getAppSpecific('IA PIN Number', iaNew);
-                    logDebug("pin = " + pin);
-                    var altId = capId.getCustomID();
-                    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
-                    if (capParcelResult.getSuccess())
-                    {
-                        var Parcels = capParcelResult.getOutput().toArray();
-                        for (zz in Parcels)
+                        if (relCap != null)
                         {
-                            var parcelNumber = Parcels[zz].getParcelNumber();
-                            logDebug("parcelNumber = " + parcelNumber);
+                            copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
+                            copyLicensedProfByType(relCap, iaNew, ["IA Vendor"]);
                         }
-                    }
-
-                    //gathering LPs from parent
-                    var licProfResult = aa.licenseScript.getLicenseProf(capId);
-                    var capLPs = licProfResult.getOutput();
-                    logDebug("CapLPs = " + capLPs);
-                    for (l in capLPs)
-                    {
-                        logDebug("capLPs = " + capLPs[l]);
-                        if (!matches(capLPs[l].email, null, undefined, ""))
+                        else
                         {
-                            logDebug("LP emails = " + capLPs[l].email);
-                            allEmail += capLPs[l].email + ";"
-                            logDebug("allEmail = " + allEmail);
+                            copyLicensedProfByType(capId, iaNew, ["IA Installer"]);
                         }
-                    }
-                    //gathering contacts from parent
-                    var contactResult = aa.people.getCapContactByCapID(capId);
-                    var capContacts = contactResult.getOutput();
-                    for (c in capContacts)
-                    {
-                        logDebug("capContacts = " + capContacts[c]);
-                        if (!matches(capContacts[c].email, null, undefined, ""))
+                        copyContactsByType(capId, iaNew, ["Property Owner"]);
+                        copyAddress(capId, iaNew);
+                        copyParcel(capId, iaNew);
+                        copyDocumentsToCapID(capId, iaNew);
+
+                        editAppSpecificLOCAL("Installation Date", inspSchedDate, iaNew);
+                        editAppSpecificLOCAL("Manufacturer", iaManufacturer, iaNew);
+                        editAppSpecificLOCAL("Model", iaModel, iaNew);
+                        editAppSpecificLOCAL("WWM Application Number", capIDString, iaNew);
+                        editAppSpecificLOCAL("Leaching Manufacturer", iaLeachProduct, iaNew);
+                        editAppSpecificLOCAL("Next Sample Date", inspSchedDatePlusThree, iaNew);
+                        editAppSpecificLOCAL("Next Service Date", inspSchedDatePlusOne, iaNew);
+                        var currentIANumber = getAppSpecific("IA Number", capId);
+
+                        if (matches(currentIANumber, undefined, null, "", " "))
                         {
-                            logDebug("contact emails = " + capContacts[c].email);
-                            allEmail += capContacts[c].email + ";"
-                            logDebug("allEmail post contacts = " + allEmail);
+                            editAppSpecificLOCAL("IA Number", iaCustom, capId)
                         }
+                        else
+                        {
+                            editAppSpecificLOCAL("IA Number", currentIANumber + " " + iaCustom, capId)
+                        }
+                        var newWorkDesc = "";
+                        if (!matches(iaManufacturer, "N/A", undefined, null, " "))
+                        {
+                            newWorkDesc += iaManufacturer + " ";
+                        }
+                        if (!matches(iaModel, "N/A", undefined, null, " "))
+                        {
+                            newWorkDesc += iaModel + " ";
+                        }
+                        if (!matches(iaLeachOtherType, "N/A", undefined, null, " "))
+                        {
+                            newWorkDesc += iaLeachOtherType + " ";
+                        }
+                        if (!matches(iaLeachProduct, "N/A", undefined, null, " "))
+                        {
+                            newWorkDesc += iaLeachProduct + " ";
+                        }
+                        logDebug("newworkdesc is: " + newWorkDesc);
+                        updateWorkDesc(newWorkDesc, iaNew);
+                        editAppName("Installed: " + inspSchedDate, iaNew);
+
+
+                        if (iaLeachOtherType != null)
+                        {
+                            editAppSpecificLOCAL("Leaching", iaLeachOtherType, iaNew);
+                        }
+                        if (iaEffluentPumpPools != null)
+                        {
+                            editAppSpecificLOCAL("Effluent Pump", iaEffluentPumpPools, iaNew);
+                        }
+                        var propertyType = getAppSpecific("Select Property Type", capId);
+                        if (!matches(propertyType, null, undefined, ""))
+                        {
+                            editAppSpecificLOCAL("Type", propertyType, iaNew)
+                        }
+                        var pinNumber = makePIN(8);
+                        editAppSpecificLOCAL('IA PIN Number', pinNumber, iaNew)
+
+
+
+                        //Start Notification to Parent Contacts/LPs
+                        logDebug("capId = " + capId);
+                        var AInfo = new Array();
+                        logDebug("parentCapId = " + parentCapId);
+                        var allEmail = "";
+                        logDebug("iaNew =" + iaNew);
+                        var pin = getAppSpecific('IA PIN Number', iaNew);
+                        logDebug("pin = " + pin);
+                        var altId = capId.getCustomID();
+                        var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+                        if (capParcelResult.getSuccess())
+                        {
+                            var Parcels = capParcelResult.getOutput().toArray();
+                            for (zz in Parcels)
+                            {
+                                var parcelNumber = Parcels[zz].getParcelNumber();
+                                logDebug("parcelNumber = " + parcelNumber);
+                            }
+                        }
+
+                        //gathering LPs from parent
+                        var licProfResult = aa.licenseScript.getLicenseProf(capId);
+                        var capLPs = licProfResult.getOutput();
+                        logDebug("CapLPs = " + capLPs);
+                        for (l in capLPs)
+                        {
+                            logDebug("capLPs = " + capLPs[l]);
+                            if (!matches(capLPs[l].email, null, undefined, ""))
+                            {
+                                logDebug("LP emails = " + capLPs[l].email);
+                                allEmail += capLPs[l].email + ";"
+                                logDebug("allEmail = " + allEmail);
+                            }
+                        }
+                        //gathering contacts from parent
+                        var contactResult = aa.people.getCapContactByCapID(capId);
+                        var capContacts = contactResult.getOutput();
+                        for (c in capContacts)
+                        {
+                            logDebug("capContacts = " + capContacts[c]);
+                            if (!matches(capContacts[c].email, null, undefined, ""))
+                            {
+                                logDebug("contact emails = " + capContacts[c].email);
+                                allEmail += capContacts[c].email + ";"
+                                logDebug("allEmail post contacts = " + allEmail);
+                            }
+                        }
+
+
+                        //Sending Notification
+
+                        var vEParams = aa.util.newHashtable();
+                        var addrResult = getAddressInALine(capId);
+                        addParameter(vEParams, "$$altID$$", iaCustom);
+                        addParameter(vEParams, "$$address$$", addrResult);
+                        addParameter(vEParams, "$$pin$$", pin);
+                        addParameter(vEParams, "$$wwmAltID$$", altId);
+                        addParameter(vEParams, "$$Parcel$$", parcelNumber);
+                        sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                        updateAppStatus("Awaiting O&M Contract");
                     }
-
-
-                    //Sending Notification
-
-                    var vEParams = aa.util.newHashtable();
-                    var addrResult = getAddressInALine(capId);
-                    addParameter(vEParams, "$$altID$$", iaCustom);
-                    addParameter(vEParams, "$$address$$", addrResult);
-                    addParameter(vEParams, "$$pin$$", pin);
-                    addParameter(vEParams, "$$wwmAltID$$", altId);
-                    addParameter(vEParams, "$$Parcel$$", parcelNumber);
-                    sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-                    updateAppStatus("Awaiting O&M Contract");
                 }
             }
-            /* else(!checkIANumber)
-             {
-               //Eduardo Jira EHIMS2-93 //Ensure that duplicate status does not occur
-                 if(matches(getAppSpecific("O&M Contract Approved"), null, undefined, "") && OmFlag == false)
-                 {
-                     updateAppStatus("Awaiting O&M Contract");
-                 }
-             }
-             */
         }
-
     }
     if (wfStatus == "Awaiting Client Reply")
     {
