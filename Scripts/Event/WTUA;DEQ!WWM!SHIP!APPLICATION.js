@@ -493,7 +493,7 @@ if (wfTask == "Final Review")
             rcRFiles.push(rcReportFile);
         }
 
-        if (getAppSpecific("I/A OWTS Installation" != "CHECKED"))
+        if (getAppSpecific("I/A OWTS Installation") != "CHECKED")
         {
             sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
         }
