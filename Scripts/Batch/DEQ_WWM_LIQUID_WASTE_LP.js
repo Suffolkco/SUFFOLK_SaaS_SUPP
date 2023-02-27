@@ -109,8 +109,8 @@ function processComResSub() {
                 var appStatus = getAppStatus(capId);
 
                 // Only if the application has an "Active" status
-                //if(appStatus == "Active" &&  (capIDString == "LW-198" || capIDString == "LW-62873"))
-                if (appStatus == "Active")
+                //if(appStatus == "Active" &&  (capIDString == "LW-168"))
+                if (appStatus == "Active" || appStatus == "About to Expire" || appStatus == "Temporary License")
                 {
                     if (cap)
                     {
@@ -285,10 +285,11 @@ function findExistingRefLicenseProfByName(refstlic, firstName, middleName, lastN
             if (newLicArray[thisLic].getAuditStatus() == "A")
             {
                 if (!matches(licenseType, null, undefined, ""))
-                {
+                {                    
+
                     // 2. Compare the license type and the business name if they match 
                     if (licenseType.toUpperCase().equals(newLicArray[thisLic].getLicenseType().toUpperCase()) &&
-                        businessName.toUpperCase().equals(newLicArray[thisLic].getBusinessName()))
+                        (businessName != null && businessName.toUpperCase().equals(newLicArray[thisLic].getBusinessName())))
                     {
                         logDebug("3. State License: " + newLicArray[thisLic].getStateLicense().toUpperCase());
                         //3. Compare the State license number with the Liquid Waste Record Id. 
