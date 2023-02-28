@@ -80,7 +80,7 @@ if (wfTask == "Application Review")
     if (wfStatus == "I/A OWTS - Consult Waived")
     {
         deactivateTask("Field Consult Required");
-        deactivateTask("Grant Review");
+        //deactivateTask("Grant Review");
         activateTask("Preliminary Sketch Review");
         updateAppStatus("Pending Review");
     }
