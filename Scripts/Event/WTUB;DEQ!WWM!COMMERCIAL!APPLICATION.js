@@ -240,7 +240,8 @@ if ((wfTask == "Final Review" && wfStatus == "Awaiting Client Reply") ||
 if (wfTask == "Final Review" && wfStatus == "Approved")
 {
     var omContractApproval = getAppSpecific("O&M Contract Approved");
-    if (matches(omContractApproval, null, "", undefined))
+    var iaNumber = getAppSpecific("IA Number");
+    if (matches(omContractApproval, null, "", undefined) && !matches(iaNumber, null, "", undefined))
     {
         cancel = true;
         showMessage = true;

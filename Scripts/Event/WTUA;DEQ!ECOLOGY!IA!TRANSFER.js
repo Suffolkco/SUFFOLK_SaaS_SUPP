@@ -390,12 +390,12 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
                 }
                 var capTemp = capId;
                 capId = wwmRecord;
+                //this next section needs to be commented out until no more paper applications are received
 
-                sendNotification("", allWWMEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", vEParams, null);
-                //this next line needs to be commented out until no more paper applications are received
+                //sendNotification("", allWWMEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", vEParams, null);
                 //updateTask("Final Review", "Approved", "", "");
-                updateAppStatus("O&M Contract Approved", "", capId);
-                deactivateAllActiveTasks(capId);
+                //updateAppStatus("O&M Contract Approved", "", capId);
+                //deactivateAllActiveTasks(capId);
                 capId = capTemp;
             }
         }
