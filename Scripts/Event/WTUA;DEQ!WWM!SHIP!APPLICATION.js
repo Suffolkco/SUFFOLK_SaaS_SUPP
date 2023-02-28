@@ -162,25 +162,13 @@ if (wfTask == "Field Consult Required")
 //Preliminary Sketch Review
 if (wfTask == "Preliminary Sketch Review")
 {
+    var tasksCompleted = false;
+
     if (matches(wfStatus, "OK to Proceed", "Inspection Required Prior to Install", "Inspection Required Prior to Backfill"))
     {
-        if (wfStatus == "OK to Proceed") 
-        {
-            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_OK_PENDING_GRANT_REVIEW", vEParams, null);
-        }
-        if (wfStatus == "Inspection Required Prior to Install") 
-        {
-            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
-        }
-        if (wfStatus == "Inspection Required Prior to Backfill")
-        {
-            sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
-        }
-
         var wfHist = aa.workflow.getWorkflowHistory(capId, null);
         var wfDates = [];
         var maxWfDate;
-        var tasksCompleted = false;
         if (wfHist.getSuccess())
         {
             wfHist = wfHist.getOutput();
@@ -209,16 +197,19 @@ if (wfTask == "Preliminary Sketch Review")
         {
             if (wfStatus == "OK to Proceed")
             {
+                sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, null);
                 closeTask("Inspections", "No Inspections Needed", "", "");
                 activateTask("Final Review");
                 updateAppStatus("OK to Proceed");
             }
             if (wfStatus == "Inspection Required Prior to Install")
             {
+                sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
                 updateTask("Inspections", "Inspection Required Prior to Install", "", "");
             }
             if (wfStatus == "Inspection Required Prior to Backfill")
             {
+                sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
                 updateTask("Inspections", "Inspection Required Prior to Backfill", "", "");
             }
         }
@@ -226,11 +217,20 @@ if (wfTask == "Preliminary Sketch Review")
         {
             if (wfStatus == "Inspection Required Prior to Install")
             {
+                sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED", vEParams, null);
                 updateAppStatus("Insp Required Pending Grant");
             }
             if (matches(wfStatus, "OK to Proceed", "Inspection Required Prior to Backfill"))
             {
                 updateAppStatus("OK Pending Grant Review");
+                if (wfStatus == "OK to Proceed") 
+                {
+                    sendNotification("", lpAgentEmail, "", "DEQ_SHIP_OK_PENDING_GRANT_REVIEW", vEParams, null);
+                }
+                if (wfStatus == "Inspection Required Prior to Backfill")
+                {
+                    sendNotification("", lpAgentEmail, "", "DEQ_SHIP_INSPECTION_REQUIRED_BACKFILL", vEParams, null);
+                }
             }
             deactivateTask("Inspections");
         }
