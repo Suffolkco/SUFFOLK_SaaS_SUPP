@@ -394,7 +394,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
                 //sendNotification("", allWWMEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", vEParams, null);
                 //updateTask("Final Review", "Approved", "", "");
-                //updateAppStatus("O&M Contract Approved", "", capId);
+                updateAppStatus("O&M Contract Approved", "", capId);
                 //deactivateAllActiveTasks(capId);
                 capId = capTemp;
             }
@@ -729,4 +729,125 @@ function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
     {
         logDebug("ERROR: (editAppSpecific)" + asiFieldResult.getErrorMessage());
     }
+}
+function generateReportBatch(itemCap, reportName, module, parameters) {
+    //returns the report file which can be attached to an email.
+    var user = currentUserID; // Setting the User Name
+    var report = aa.reportManager.getReportInfoModelByName(reportName);
+    if (!report.getSuccess() || report.getOutput() == null)
+    {
+        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
+        return false;
+    }
+    report = report.getOutput();
+    report.setModule(module);
+    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName, user);
+
+    if (permit.getOutput().booleanValue())
+    {
+        var reportResult = aa.reportManager.getReportResult(report);
+        if (reportResult.getSuccess())
+        {
+            reportOutput = reportResult.getOutput();
+            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
+            reportFile = reportFile.getOutput();
+            return reportFile;
+        } else
+        {
+            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
+            return false;
+        }
+    } else
+    {
+        logDebug("You have no permission.");
+        return false;
+    }
+}
+function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFileName) {
+    if ((!documentType || documentType == "" || documentType == null) && (!documentFileName || documentFileName == "" || documentFileName == null))
+    {
+        logDebug("**WARN at least docType or docName should be provided, abort...!");
+        return null;
+    }
+    var documents = aa.document.getCapDocumentList(itemCapId, aa.getAuditID());
+    if (!documents.getSuccess())
+    {
+        logDebug("**WARN get cap documents error:" + documents.getErrorMessage());
+        return null;
+    } //get docs error
+    documents = documents.getOutput();
+    //sort (from new to old)
+    documents.sort(function (d1, d2) {
+        if (d1.getFileUpLoadDate().getTime() > d2.getFileUpLoadDate().getTime())
+            return -1;
+        else if (d1.getFileUpLoadDate().getTime() < d2.getFileUpLoadDate().getTime())
+            return 1;
+        else
+            return 0;
+    });
+    //find doc by type or name
+    var docToPrepare = null;
+    for (var d in documents)
+    {
+        var catt = documents[d].getDocCategory();
+        var namee = documents[d].getFileName();
+        if (documentType && documentType != null && documentType != "" && documentType == catt)
+        {
+            docToPrepare = documents[d];
+            break;
+        }
+        if (documentFileName && documentFileName != null && documentFileName != "" && namee.indexOf(documentFileName) > -1)
+        {
+            docToPrepare = documents[d];
+            break;
+        }
+    } //for all docs
+    //download to disk
+    if (docToPrepare == null)
+    {
+        logDebug("**WARN No documents of type or name found");
+        return null;
+    } //no docs of type or name
+    var thisCap = aa.cap.getCap(itemCapId).getOutput();
+    var moduleName = thisCap.getCapType().getGroup();
+    var toClear = docToPrepare.getFileName();
+    toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(".", "").replace(" ", "_");
+    docToPrepare.setFileName(toClear);
+    var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
+    if (downloadRes.getSuccess() && downloadRes.getOutput())
+    {
+        return downloadRes.getOutput().toString();
+    } else
+    {
+        logDebug("**WARN document download failed, " + docToPrepare.getFileName());
+        logDebug(downloadRes.getErrorMessage());
+        return null;
+    } //download failed
+    return null;
+}
+function deactivateAllActiveTasks(targetCapId) {
+    var t = aa.workflow.getTasks(targetCapId);
+    if (t.getSuccess())
+        wfObj = t.getOutput();
+    else
+    {
+        logDebug("**INFO: deactivateAllActiveTasks() Failed to get workflow Tasks: " + t.getErrorMessage());
+        return false;
+    }
+    for (i in wfObj)
+    {
+        fTask = wfObj[i];
+        if (fTask.getActiveFlag().equals("Y"))
+        {
+            var deact = aa.workflow.adjustTask(targetCapId, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
+            if (!deact.getSuccess())
+            {
+                logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
+            }
+        }
+    }
+    return true;
 }
