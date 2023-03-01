@@ -244,7 +244,7 @@ function latestCompletedInspection() {
     var inspCompleted = false;
     var inspections = aa.inspection.getInspections(capId);
     var shortestdays = null;
-    var inspIdToUse;
+    var inspIdToUse = null;
 
     if (inspections.getSuccess()) 
     {

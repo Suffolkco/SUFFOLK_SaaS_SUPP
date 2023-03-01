@@ -483,7 +483,7 @@ function latestInspectionResultWithComments()
 	var inspResultComments = false;
 	var inspections = aa.inspection.getInspections(capId);
 	var shortestdays = null;
-	var inspIdToUse;
+	var inspIdToUse = null;
 
 	logDebugLocal("Has Inspections: " + inspections.getSuccess());
 	if (inspections.getSuccess()) 
@@ -536,17 +536,20 @@ function latestInspectionResultWithComments()
 		}	
 
 		// Only look at the most recent inspection with status "Incomplete"
-		var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
-		logDebugLocal("Inspection ID:" + inspIdToUse);		
-
-		if (inspResultObj.getSuccess()) 
+		if (inspIdToUse != null)
 		{
-			var inspObj = inspResultObj.getOutput();
-			logDebugLocal("Inspection Status:" + inspObj.getInspectionStatus());	
-			if (inspObj && inspObj.getInspectionStatus() == "Incomplete")
+			var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
+			logDebugLocal("Inspection ID:" + inspIdToUse);		
+
+			if (inspResultObj.getSuccess()) 
 			{
-				inspResultComments = true;
-				logDebugLocal("Inspection ID is used:" + inspIdToUse);		
+				var inspObj = inspResultObj.getOutput();
+				logDebugLocal("Inspection Status:" + inspObj.getInspectionStatus());	
+				if (inspObj && inspObj.getInspectionStatus() == "Incomplete")
+				{
+					inspResultComments = true;
+					logDebugLocal("Inspection ID is used:" + inspIdToUse);		
+				}
 			}
 		}
 	}
