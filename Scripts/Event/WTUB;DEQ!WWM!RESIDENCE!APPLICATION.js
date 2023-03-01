@@ -291,17 +291,20 @@ function latestCompletedInspection() {
         }
 
         // Only look at the most recent inspection with status "Incomplete"
-        var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
-        logDebug("Inspection ID:" + inspIdToUse);
-
-        if (inspResultObj.getSuccess()) 
+        if (inspIdToUse != null)
         {
-            var inspObj = inspResultObj.getOutput();
-            logDebug("Inspection Status:" + inspObj.getInspectionStatus());
-            if (inspObj && inspObj.getInspectionStatus() == "Complete")
+            var inspResultObj = aa.inspection.getInspection(capId, inspIdToUse);
+            logDebug("Inspection ID:" + inspIdToUse);
+
+            if (inspResultObj.getSuccess()) 
             {
-                inspCompleted = true;
-                logDebug("Inspection ID is used:" + inspIdToUse);
+                var inspObj = inspResultObj.getOutput();
+                logDebug("Inspection Status:" + inspObj.getInspectionStatus());
+                if (inspObj && inspObj.getInspectionStatus() == "Complete")
+                {
+                    inspCompleted = true;
+                    logDebug("Inspection ID is used:" + inspIdToUse);
+                }
             }
         }
     }
