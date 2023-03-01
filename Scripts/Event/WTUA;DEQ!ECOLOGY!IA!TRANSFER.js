@@ -394,7 +394,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
                 //sendNotification("", allWWMEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", vEParams, null);
                 //updateTask("Final Review", "Approved", "", "");
-                //updateAppStatus("O&M Contract Approved", "", capId);
+                updateAppStatus("O&M Contract Approved", "", capId);
                 //deactivateAllActiveTasks(capId);
                 capId = capTemp;
             }
