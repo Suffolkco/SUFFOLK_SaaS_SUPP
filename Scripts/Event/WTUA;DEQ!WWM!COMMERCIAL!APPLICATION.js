@@ -484,7 +484,6 @@ function latestInspectionResultWithComments()
 	var inspections = aa.inspection.getInspections(capId);
 	var shortestdays = null;
 	var inspIdToUse = null;
-
 	logDebugLocal("Has Inspections: " + inspections.getSuccess());
 	if (inspections.getSuccess()) 
 	{

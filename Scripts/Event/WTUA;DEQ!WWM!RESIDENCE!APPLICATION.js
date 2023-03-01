@@ -785,7 +785,6 @@ function latestCompletedInspection() {
 					shortestdays = dateDiff;
 				}
 
-
 			}
 			if (shortestdays != null)
 			{
