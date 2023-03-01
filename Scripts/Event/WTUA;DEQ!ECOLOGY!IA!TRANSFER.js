@@ -828,3 +828,26 @@ function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFile
     } //download failed
     return null;
 }
+function deactivateAllActiveTasks(targetCapId) {
+    var t = aa.workflow.getTasks(targetCapId);
+    if (t.getSuccess())
+        wfObj = t.getOutput();
+    else
+    {
+        logDebug("**INFO: deactivateAllActiveTasks() Failed to get workflow Tasks: " + t.getErrorMessage());
+        return false;
+    }
+    for (i in wfObj)
+    {
+        fTask = wfObj[i];
+        if (fTask.getActiveFlag().equals("Y"))
+        {
+            var deact = aa.workflow.adjustTask(targetCapId, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
+            if (!deact.getSuccess())
+            {
+                logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
+            }
+        }
+    }
+    return true;
+}
