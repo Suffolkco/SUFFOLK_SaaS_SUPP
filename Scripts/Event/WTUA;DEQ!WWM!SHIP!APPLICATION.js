@@ -917,7 +917,7 @@ if (wfTask == "Final Review")
 }
 
 //General come here
-if ((wfStatus == "No Inspection Needed") && (wfTask != "Field Consult Required"))
+if ((wfStatus == "No Inspection Needed") && (!matches(wfTask, "Field Consult Required", "Inspections")))
 {
     otpReportFile = generateReportBatch(capId, "SHIP OK to Proceed", 'DEQ', otpReportParams)
     logDebug("This is the rFile: " + otpReportFile);
