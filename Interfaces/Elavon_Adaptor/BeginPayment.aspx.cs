@@ -66,7 +66,23 @@ namespace Elavon_Adaptor
                  return;
             }
 
-            _logger.Debug("Request from ACA " + queryString);
+            // Scan: Fixed
+            string queryStringLog = System.Security.SecurityElement.Escape(queryString);
+            _logger.Debug("Request from ACA " + queryStringLog);
+
+            PaymentHelper.SetDataToCache<string>(PaymentConstant.REDIRECT_URL, redirectURL, 120);
+
+            var moduleCount = new EmseResultObject<string>();
+            moduleCount = AccelaRestHandler.GetCartModules(transactionID);
+
+            if (moduleCount.Message != "1.0")
+            {
+                // Scan: Fixed
+                string transactionIDLog = System.Security.SecurityElement.Escape(transactionID);
+                _logger.Info(" Transaction ID " + transactionIDLog + " as items from more than one module.");
+                PaymentHelper.HandleErrorRedirect("Paying for items from multiple departments is not supported. Please ensure you only have items from one department in your cart.", PaymentConstant.FAILURE_CODE);
+                return;
+            }
 
             // Get the pay amount 
             string amount = ParameterHelper.GetParameterByKey(parameters, PaymentConstant.PAYMENT_AMOUNT);
@@ -81,7 +97,10 @@ namespace Elavon_Adaptor
                     conFee = "0.00";
                 }
                 PaymentHelper.SetDataToCache<string>(transactionID + "ConvFee", conFee, 120);
-                _logger.DebugFormat("Setting {0}:{1} to cache ", transactionID + "ConvFee", conFee);
+                // Scan: Fixed
+                string conFeeLog = System.Security.SecurityElement.Escape(conFee);
+                string transactionIDLog = System.Security.SecurityElement.Escape(transactionID);
+                _logger.DebugFormat("Setting {0}:{1} to cache ", transactionIDLog + "ConvFee", conFeeLog);
             }
             catch (Exception ec) { };
             
@@ -134,7 +153,10 @@ namespace Elavon_Adaptor
 
             if (!merchantResult.Success)
             {
-                _logger.Debug($"Provided Transaction ID {transactionID} return error {merchantResult.Message} from the specified Accela environment.");
+                // Scan: Fixed
+                string merchantResultLog = System.Security.SecurityElement.Escape(merchantResult.Message);
+                string transactionIDLog = System.Security.SecurityElement.Escape(transactionID);
+                _logger.Debug($"Provided Transaction ID {transactionIDLog} return error {merchantResultLog} from the specified Accela environment.");
                 return;
             }
 
@@ -163,14 +185,22 @@ namespace Elavon_Adaptor
                 if (matches.Success) {
                     token = matches.Groups[1].ToString();
                 }
-                _logger.DebugFormat("Token received from Converge is {0}", token);
-
+                // Scan: Fixed
+                string tokenLog = System.Security.SecurityElement.Escape(token);
+                _logger.DebugFormat("Token received from Converge is {0}", tokenLog);
                 // redirect to Converge webpage
                 Hashtable urlParams = new Hashtable();
                 urlParams.Add("$$TOKEN$$", HttpUtility.UrlEncode(token));
                 string url = PaymentHelper.BuildOnlinePaymentURL(urlParams);
-                _logger.Debug("Redirecting to " + url);
-                Response.Redirect(url);
+                // Scan: Fixed
+                string urlLog = System.Security.SecurityElement.Escape(url);
+                _logger.Debug("Redirecting to " + urlLog);
+
+                // Scan: Redirect
+                if (IsValidConvergeUrl(url))
+                {
+                    Response.Redirect(url);
+                }
             }
             else {
                 PaymentHelper.HandleErrorRedirect("Error getting token from Converge", "-1");
@@ -179,6 +209,25 @@ namespace Elavon_Adaptor
 
         }
 
+        private bool IsValidConvergeUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+            else
+            {
+                Uri myUri = new Uri(url);
+                string host = myUri.Host;
+
+                if (host.EndsWith(".convergepay.com"))
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
         public String getUTCDateTime() {
             DateTime time = DateTime.Now.ToUniversalTime();
             return time.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");

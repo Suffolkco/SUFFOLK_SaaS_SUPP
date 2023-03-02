@@ -88,7 +88,9 @@ namespace Accela.ACA.PaymentAdapter
         {
             ASCIIEncoding encoding = new ASCIIEncoding();
 
-            _logger.DebugFormat("postData = {0}", postData);
+            // Scan: Fixed
+            string postDataLog = System.Security.SecurityElement.Escape(postData);
+            _logger.DebugFormat("postData = {0}", postDataLog);
             byte[] data = encoding.GetBytes(postData);
 
             // Prepare web request...
@@ -101,8 +103,9 @@ namespace Accela.ACA.PaymentAdapter
 
 
             // Ignore Certificate Validation
-            ServicePointManager.ServerCertificateValidationCallback = 
-                delegate(Object obj, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) { return (true); };
+            // Scan: Comment out as per Accela
+            //ServicePointManager.ServerCertificateValidationCallback = 
+            //    delegate(Object obj, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors) { return (true); };
             ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             using (Stream newStream = myRequest.GetRequestStream())
             {
@@ -134,6 +137,7 @@ namespace Accela.ACA.PaymentAdapter
         }
 
         public static string getHostURL() {
+                        
             string hostURL = PaymentUtil.GetConfig("HostURL");
             if (String.IsNullOrEmpty(hostURL)) {
                 throw new Exception("Can not find HostURL or RedirectURLParameters in Adapter.config file, be sure you have configured them.");

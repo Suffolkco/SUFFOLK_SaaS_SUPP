@@ -20,7 +20,10 @@ namespace Elavon_Adaptor
         protected void Page_Load(object sender, EventArgs e)
         {
             string qString = ParameterHelper.GetReqeustParameters();
-            _logger.DebugFormat("PaymentResponse - Query string is {0}", qString);
+
+            // Scan: Fixed
+            string qStringLog = System.Security.SecurityElement.Escape(qString);
+            _logger.DebugFormat("PaymentResponse - Query string is {0}", qStringLog);
             PaymentHelper.HandleErrorRedirect("The 3rd party payment is cancelled", PaymentConstant.FAILURE_CODE);
         }
     }

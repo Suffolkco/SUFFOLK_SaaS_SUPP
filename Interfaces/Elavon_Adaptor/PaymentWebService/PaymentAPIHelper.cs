@@ -24,7 +24,9 @@ namespace InterfaceLib.Common.Service
 
         public OnlinePaymentTransactionModel getTransModels(string applicationId, string aatransid)
         {
-            NameValueCollection avConfig = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            // Scan: Encryption
+            //NameValueCollection avConfig = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            NameValueCollection avConfig = ConfigurationManager.AppSettings;
 
             TokenAPIHelper tokenHelper = new TokenAPIHelper();
             string token = tokenHelper.Signon(avConfig["av.agency"],

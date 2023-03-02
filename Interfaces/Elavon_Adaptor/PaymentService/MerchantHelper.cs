@@ -20,7 +20,11 @@ namespace Accela.ACA.PaymentAdapter {
         /// </summary>
         private static string MappingFilePath {
             get {
-                var adapterName = GetConfig("AdapterName");
+
+                // Scan Ecnription
+                // var adapterName = GetConfig("AdapterName");
+                string adapterName = ConfigurationManager.AppSettings["AdapterName"].ToString();
+                
                 var filePath = Path.Combine(HttpContext.Current.Server.MapPath("~"), adapterName + "\\MerchantMapping.xml");
                 return filePath;
             }
@@ -32,7 +36,10 @@ namespace Accela.ACA.PaymentAdapter {
         /// <param name="key">the session key</param>
         /// <returns>the session value</returns>
         internal static string GetConfig(string key) {
-            var parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+
+           // Scan: Encryption
+           // var parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            NameValueCollection parameters = ConfigurationManager.AppSettings;
             return parameters[key];
         }
 

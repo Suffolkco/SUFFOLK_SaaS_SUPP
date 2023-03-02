@@ -76,8 +76,9 @@ namespace Elavon_Adaptor.Utilities {
 
         public static string GetConfig(string configName)
         {
-
-            NameValueCollection avConfig = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            // Scan: Encryption
+            //NameValueCollection avConfig = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            NameValueCollection avConfig = ConfigurationManager.AppSettings;
             return avConfig[configName];
         }
 

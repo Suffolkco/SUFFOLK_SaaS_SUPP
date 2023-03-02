@@ -43,10 +43,16 @@ namespace Elavon_Adaptor  {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             string postBackData = String.Empty;
-            string redirectUrl = GetConfig("ACARedirectURL");
+
+            // Scan: Encription
+            //string redirectUrl = GetConfig("ACARedirectURL");
+            string redirectUrl = AdapterUtil.GetConfig("ACARedirectURL");
+            
             string applicationID = PaymentHelper.GetDataFromCache<string>(PaymentConstant.APPLICATION_ID);
             string qString = ParameterHelper.GetReqeustParameters();
-            _logger.DebugFormat("PaymentResponse - Query string is {0}", qString);
+            // Scan: Fixed
+            string qStringLog = System.Security.SecurityElement.Escape(qString);
+            _logger.DebugFormat("PaymentResponse - Query string is {0}", qStringLog);
             string transactionID = ParameterHelper.GetParameterByKey("ssl_invoice_number");
             string convergeID = ParameterHelper.GetParameterByKey("ssl_txn_id");
             string transType = ParameterHelper.GetParameterByKey("ssl_transaction_type");
@@ -58,7 +64,10 @@ namespace Elavon_Adaptor  {
             string result = ParameterHelper.GetParameterByKey("ssl_result");
             string resultMessage = ParameterHelper.GetParameterByKey("ssl_result_message");
             StringBuilder paramToACA;
-            _logger.DebugFormat("Result {0}, result message {1}", result, resultMessage);
+            // Scan: Fixed
+            string resultLog = System.Security.SecurityElement.Escape(result);
+            string resultMessageLog = System.Security.SecurityElement.Escape(resultMessage);
+            _logger.DebugFormat("Result {0}, result message {1}", resultLog, resultMessageLog);
             if (result == "0") {
 
                 if (transType == "SALE")
@@ -76,19 +85,30 @@ namespace Elavon_Adaptor  {
                  paramToACA.AppendFormat("&{0}={1}", PaymentConstant.APPLICATION_ID, applicationID);
                  paramToACA.AppendFormat("&{0}={1}", PaymentConstant.TRANSACTION_ID, transactionID);
                  redirectUrl = String.Format("{0}?{1}", redirectUrl, paramToACA.ToString());
-                 if (!String.IsNullOrEmpty(redirectUrl)) {
-                     _logger.DebugFormat("Redirecting to {0} ", redirectUrl);
-                     Response.Redirect(redirectUrl);
+                if (!String.IsNullOrEmpty(redirectUrl)) {
+                    // Scan: Fixed
+                    string redirectUrlLog = System.Security.SecurityElement.Escape(redirectUrl);
+                    _logger.DebugFormat("Redirecting to {0} ", redirectUrlLog);
+                    // Scan: Redirect
+                    if (IsValidAccelaUrl(redirectUrl))
+                    {
+                        Response.Redirect(redirectUrl);
+                    }
                  }
             }
             else {
-                 _logger.DebugFormat("Payment Error received from Converge, result = {0}, resultMessage = {1}", result, resultMessage);
+                // Scan: Fixed
+                string resultLg = System.Security.SecurityElement.Escape(result);
+                string resultMessageLg = System.Security.SecurityElement.Escape(resultMessage);
+
+                _logger.DebugFormat("Payment Error received from Converge, result = {0}, resultMessage = {1}", resultLg, resultMessageLg);
                  string errorMessage = "General decline";
                  try {
                      errorMessage = AdapterUtil.GetConfig(resultMessage);
                  }
                  catch (Exception ex) {
-                     _logger.DebugFormat("Exception getting error message, reason code {0}, {1}", resultMessage, ex.Message);
+                    string resultMsgLg = System.Security.SecurityElement.Escape(resultMessage);
+                    _logger.DebugFormat("Exception getting error message, reason code {0}, {1}", resultMsgLg, ex.Message);
                  }
                  paramToACA = new StringBuilder();
                  paramToACA.AppendFormat("{0}={1}", PaymentConstant.RETURN_CODE, PaymentConstant.FAILURE_CODE);
@@ -97,12 +117,38 @@ namespace Elavon_Adaptor  {
                  paramToACA.AppendFormat("&{0}={1}", PaymentConstant.USER_MESSAGE, errorMessage);
                  redirectUrl = String.Format("{0}?{1}", redirectUrl, paramToACA.ToString());
                  if (!String.IsNullOrEmpty(redirectUrl)) {
-                     _logger.DebugFormat("Redirecting to {0} ", redirectUrl);
-                     Response.Redirect(redirectUrl);
+                    // Scan: Fixed
+                    string redirectUrlLog = System.Security.SecurityElement.Escape(redirectUrl);
+                    _logger.DebugFormat("Redirecting to {0} ", redirectUrlLog);
+                    // Scan: Redirect
+                    if (IsValidAccelaUrl(redirectUrl))
+                    {
+                        Response.Redirect(redirectUrl);
+                    }
                  }
 
             }
-        }    
+        }
+
+        private bool IsValidAccelaUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+            else
+            {
+                Uri myUri = new Uri(url);
+                string host = myUri.Host;
+
+                if (host.EndsWith(".accela.com"))
+                {
+                    return true;
+                }
+                else
+                    return false;
+            }
+        }
 
         private string postPayment(string transactionID, string payType, string security_id) {
             string transAmt = ParameterHelper.GetParameterByKey("ssl_amount");
@@ -161,13 +207,19 @@ namespace Elavon_Adaptor  {
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.CC_TYPE, cardType.Substring(0, Math.Min(cardType.Length, 30)));
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_ID, security_id);
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_TYPE, paymentMethod);
-                _logger.DebugFormat("Posting payment of amount {0}, payment method {1}", amtPaid, paymentMethod);
+                               
+                _logger.DebugFormat("Posting payment of amount {0}, payment method {2}", amtPaid, paymentMethod);
 
                 string respData = responseData.ToString();
-                _logger.DebugFormat("responseData = {0}", respData);
+                // Scan: Fixed
+                string respDataLog = System.Security.SecurityElement.Escape(respData);
+
+                _logger.DebugFormat("responseData = {0}", respDataLog);
                 _logger.DebugFormat("Doing postback to {0}", AdapterUtil.GetConfig("ACAPostbackURL"));
                 data = PaymentHelper.DoPostBack(AdapterUtil.GetConfig("ACAPostbackURL"), respData);
-                _logger.DebugFormat("Return from postback = {0}", data);
+                // Scan: Fixed
+                string dataLog = System.Security.SecurityElement.Escape(data);
+                _logger.DebugFormat("Return from postback = {0}", dataLog);
                 return data;
             }
             else {
@@ -181,16 +233,22 @@ namespace Elavon_Adaptor  {
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.CONVENIENCE_FEE, 0.28);
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_TYPE, paymentMethod);
                 responseData.AppendFormat("&{0}={1}", PaymentConstant.PROC_TRANS_ID, security_id);
+                               
                 _logger.DebugFormat("Posting payment of amount {0}, payment method {2}", amtPaid, paymentMethod);
+                               
                 data = PaymentHelper.DoPostBack(AdapterUtil.GetConfig("ACAPostbackURL"), responseData.ToString());
-                _logger.DebugFormat("return from postback = {0}", data);
+                // Scan: Fixed
+                string dataLog = System.Security.SecurityElement.Escape(data);
+                _logger.DebugFormat("return from postback = {0}", dataLog);
                 return data;
             }
             return string.Empty;
         }
 
         private string GetConfig(string key) {
-            NameValueCollection parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            // Scan: Encryption
+            //NameValueCollection parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            NameValueCollection parameters = ConfigurationManager.AppSettings;
             return parameters[key].ToString();
         }
 
@@ -215,7 +273,11 @@ namespace Elavon_Adaptor  {
             paramToACA.AppendFormat("&{0}={1}", PaymentConstant.APPLICATION_ID, applicationID);
             paramToACA.AppendFormat("&{0}={1}", PaymentConstant.TRANSACTION_ID, transactionID);
             paramToACA.AppendFormat("&{0}={1}", PaymentConstant.USER_MESSAGE, message);
-            _logger.Debug("GetRedirectUrlParamToACA " + paramToACA.ToString());
+
+            // Scan: Fixed
+            string paramLog = System.Security.SecurityElement.Escape(paramToACA.ToString());
+            _logger.Debug("GetRedirectUrlParamToACA " + paramLog);
+            //_logger.Debug("GetRedirectUrlParamToACA " + paramToACA.ToString());
             return paramToACA.ToString();
         }
 
@@ -230,7 +292,12 @@ namespace Elavon_Adaptor  {
                 message = HttpUtility.UrlEncode(message);
                 PaymentHelper.SetDataToCache<string>(transactionId, message, 120);
             }
-            _logger.DebugFormat("success={0}&user_message={1}&remittance_id={2}", success, message, transactionId);
+
+            //Scan: Fixed
+            string successLog = System.Security.SecurityElement.Escape(success);
+            string messageLog = System.Security.SecurityElement.Escape(message);
+            string transactionIdLog = System.Security.SecurityElement.Escape(transactionId);
+            _logger.DebugFormat("success={0}&user_message={1}&remittance_id={2}", successLog, messageLog, transactionIdLog);
             return String.Format("success={0}&user_message={1}&remittance_id={2}", success, message, transactionId);
         }
     }

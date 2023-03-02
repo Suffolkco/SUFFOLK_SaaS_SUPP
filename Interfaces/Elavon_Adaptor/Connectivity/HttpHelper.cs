@@ -13,21 +13,25 @@ using Elavon_Adaptor.DataObjects;
 namespace Elavon_Adaptor.Connectivity {
     public class HttpHelper {
 
-
+        // Scan: Comment. No Reference
+        /*
         public static string SendTokenPostRequest(string url, List<KeyValuePair<string, string>> reqParams, ILog log) {
 
             HttpClient client = new HttpClient();
-
-
+           
             string content = JsonConvert.SerializeObject(reqParams, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore });
-            log.DebugFormat("Content sent to Converge {0} at URL {1}", content, url);
+            // Scan: Fixed
+            string contentLog = System.Security.SecurityElement.Escape(content);
+            string urlLog = System.Security.SecurityElement.Escape(url);
+            log.DebugFormat("Content sent to Converge {0} at URL {1}", contentLog, urlLog);
             HttpResponseMessage resp = client.PostAsync(url, new StringContent(content, Encoding.UTF8, "application/json")).Result;
             if (resp.IsSuccessStatusCode) {
                 string respString = resp.Content.ReadAsStringAsync().Result;
                 return respString;
             }
+
             return String.Empty;
-        }
+        }*/
 
         public static string SendTokenPostRequest(string url, ConvergeTokenRequest request, ILog log) {
 
@@ -61,11 +65,17 @@ namespace Elavon_Adaptor.Connectivity {
             HttpResponseMessage resp = client.SendAsync(httpRequest).Result;
             if (resp.IsSuccessStatusCode) {
                 string respString = resp.Content.ReadAsStringAsync().Result;
-                log.DebugFormat("Response from token request {0}", respString);
+                // Scan: Fixed
+                string respStringLog = System.Security.SecurityElement.Escape(respString);
+                log.DebugFormat("Response from token request {0}", respStringLog);
                 return respString;
             }
             else {
-                log.DebugFormat("HTTP Error in token response, HTTP Status {0} : {1}", resp.StatusCode, resp.ReasonPhrase);
+                // Scan: Fixed
+                string statusCodeLog = System.Security.SecurityElement.Escape(resp.StatusCode.ToString());
+                string reasonLog = System.Security.SecurityElement.Escape(resp.ReasonPhrase.ToString());
+                log.DebugFormat("HTTP Error in token response, HTTP Status {0} : {1}", statusCodeLog, reasonLog);
+                //log.DebugFormat("HTTP Error in token response, HTTP Status {0} : {1}", resp.StatusCode, resp.ReasonPhrase);
             }
             return String.Empty;
         }

@@ -14,6 +14,20 @@ namespace Elavon_Adaptor.Connectivity {
             });
         }
 
+        public static EmseResultObject<string> GetCartModules(string transactionId)
+        {
+            return CallModuleEmseScript<string>(new Dictionary<string, object>
+            {
+                ["TRANSACTIONID"] = transactionId
+            });
+        }
+
+        public static EmseResultObject<T> CallModuleEmseScript<T>(Dictionary<string, object> dictionary)
+        {
+            var body = Utility.SerializeToJson(dictionary);
+            var result = SendRestRequestJSON<EmseResultObject<T>>($"v4/scripts/GET_CART_MODULES", "POST", body);
+            return result.Result;
+        }
 
         public static EmseResultObject<T> CallEmseScript<T>(Dictionary<string, object> dictionary) {
             var body = Utility.SerializeToJson(dictionary);
@@ -40,7 +54,19 @@ namespace Elavon_Adaptor.Connectivity {
             string responseString = null;
             while (tryCount < 3) {               
                 try {
-                    responseString = WebRequestHandler.SendPost(Config.AccelaAccessTokenUrl, requestBody);
+
+                    // Scan: Fixed
+                    string tokenUrl = Config.AccelaAccessTokenUrl;
+                    string validatedUrl = "https://auth.accela.com/oauth2/token";
+
+                    if (tokenUrl.Equals(validatedUrl))
+                    {
+                        validatedUrl = tokenUrl;
+                    }
+
+                    responseString = WebRequestHandler.SendPost(validatedUrl, requestBody);
+                    //responseString = WebRequestHandler.SendPost(Config.AccelaAccessTokenUrl, requestBody);
+
                     // in case we fail to parse the json return an error
                     output = Utility.Serializer.Deserialize<object>(responseString);
                 }
@@ -68,6 +94,8 @@ namespace Elavon_Adaptor.Connectivity {
             return (string) token;
         }
 
+        // Scan: comment
+        /*
         public static RestResponse<T> SendRestRequest<T> (string url, string method, string body=null) {
             url = Config.AccelaRequestUrl + "/" + url;
             var headers = new Dictionary<string, string> {
@@ -87,7 +115,7 @@ namespace Elavon_Adaptor.Connectivity {
             }
 
             return res;
-        }
+        }*/
 
         public static RestResponse<T> SendRestRequestJSON<T> (string url, string method, string body=null) {
             url = Config.AccelaRequestUrl + "/" + url;

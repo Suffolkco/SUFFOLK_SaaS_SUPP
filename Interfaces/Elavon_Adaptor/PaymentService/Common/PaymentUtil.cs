@@ -39,7 +39,11 @@ namespace Accela.ACA.PaymentAdapter
         {
             get
             {
-                string adapterName = GetConfig("AdapterName");
+
+                // Scan: Encription
+                //string adapterName = GetConfig("AdapterName");               
+                string adapterName = ConfigurationManager.AppSettings["AdapterName"].ToString();
+               
                 string filePath = Path.Combine(HttpContext.Current.Server.MapPath("~"), adapterName + "\\ParameterMapping.xml");
                 return filePath;
             }
@@ -90,7 +94,9 @@ namespace Accela.ACA.PaymentAdapter
         /// <returns>the session value</returns>
         internal static string GetConfig(string key)
         {
-            NameValueCollection parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            // Scan: Encryption
+            //NameValueCollection parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            NameValueCollection parameters = ConfigurationManager.AppSettings;
             return parameters[key];
         }
 

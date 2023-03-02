@@ -13,7 +13,10 @@ namespace Elavon_Adaptor {
 
     public class AdapterUtil {
          public static string GetConfig(string key) {
-            NameValueCollection parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+            // Scan: Encryption
+            //NameValueCollection parameters = ConfigurationManager.GetSection(@"paymentAdapter") as NameValueCollection;
+
+            NameValueCollection parameters = ConfigurationManager.AppSettings;
             return parameters[key].ToString();
         }
 
