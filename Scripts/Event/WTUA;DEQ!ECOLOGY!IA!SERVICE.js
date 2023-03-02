@@ -21,7 +21,31 @@ var serviceDate = new Date(AInfo["Service Date"]);
 var maxDate;
 var maxDatePlusThree;
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
-if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
+var vEParams = aa.util.newHashtable();
+var lpEmail = "";
+var lpResult = aa.licenseScript.getLicenseProf(capId);
+if (lpResult.getSuccess())
+{
+	var lpArr = lpResult.getOutput();
+
+	// Send email to each contact separately.
+	for (var lp in lpArr)
+	{
+		if (lpArr[lp].getLicenseType() == "IA Service Provider")
+		{
+			if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+			{
+				lpEmail = lpArr[lp].email + ";";
+
+			}
+		}
+	}
+}
+else 
+{
+	logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+}
+if (wfTask == "Document Review" && wfStatus == "Complete")
 {
 	if (sampleResults == "CHECKED")
 	{
@@ -100,7 +124,7 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 		}
 
 		addASITable("LAB RESULTS", labResultsTable, parentId);
-		
+
 	}
 	if (conUpdate == "CHECKED")
 	{
@@ -173,12 +197,93 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
 
 }
 
+
+if (wfTask == "Document Review" && matches(wfStatus, "Resubmission Required", "Incomplete"))
+{
+	//these two notifications share parameters, so it makes sense to just define them for both rather than doing it twice
+	var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+	if (capParcelResult.getSuccess())
+	{
+		var Parcels = capParcelResult.getOutput().toArray();
+	}
+	else
+	{
+		logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage());
+	}
+	for (zz in Parcels)
+	{
+		var ParcelValidatedNumber = Parcels[zz].getParcelNumber();
+	}
+	var parentAddr = getAddressInALine(parentCapId);
+	addParameter(vEParams, "$$altID$$", capId.getCustomID());
+	addParameter(vEParams, "$$addressInALine$$", parentAddr);
+	addParameter(vEParams, "$$parentIA$$", parentCapId.getCustomID());
+	addParameter(vEParams, "$$iaParcelNum$$", ParcelValidatedNumber);
+	addParameter(vEParams, "$$wfComment$$", wfComment);
+
+	//sending a different template depending on the status chosen
+	if (wfStatus == "Resubmission Required")
+	{
+		sendNotification("", lpEmail, "", "DEQ_IA_SERV_TRAN_RESUBMISSION_NOTICE", vEParams, null);
+	}
+	if (wfStatus == "Incomplete")
+	{
+		sendNotification("", lpEmail, "", "DEQ_IA_SERV_TRAN_REJECTION_NOTICE", vEParams, null);
+	}
+}
+
 function addDays(date, days) {
 	var result = new Date(date);
 	result.setDate(result.getDate() + days);
 	return result;
 }
+function getAddressInALine(capId) {
 
+	var capAddrResult = aa.address.getAddressByCapId(capId);
+	var addressToUse = null;
+	var strAddress = "";
+
+	if (capAddrResult.getSuccess())
+	{
+		var addresses = capAddrResult.getOutput();
+		if (addresses)
+		{
+			for (zz in addresses)
+			{
+				capAddress = addresses[zz];
+				if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+					addressToUse = capAddress;
+			}
+			if (addressToUse == null)
+				addressToUse = addresses[0];
+
+			if (addressToUse)
+			{
+				strAddress = addressToUse.getHouseNumberStart();
+				var addPart = addressToUse.getStreetDirection();
+				if (addPart && addPart != "")
+					strAddress += " " + addPart;
+				var addPart = addressToUse.getStreetName();
+				if (addPart && addPart != "")
+					strAddress += " " + addPart;
+				var addPart = addressToUse.getStreetSuffix();
+				if (addPart && addPart != "")
+					strAddress += " " + addPart;
+				var addPart = addressToUse.getCity();
+				if (addPart && addPart != "")
+					strAddress += " " + addPart + ",";
+				var addPart = addressToUse.getState();
+				if (addPart && addPart != "")
+					strAddress += " " + addPart;
+				var addPart = addressToUse.getZip();
+				if (addPart && addPart != "")
+					strAddress += " " + addPart;
+				return strAddress
+			}
+		}
+	}
+	return null;
+}
 function copyLicenseProfessionalForLic(srcCapId, targetCapId) {
 
 	logDebug("copyLicenseProfessionalForLic. ");
