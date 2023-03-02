@@ -928,6 +928,7 @@ if ((wfStatus == "No Inspection Needed") && (wfTask != "Field Consult Required")
         var docList = getDocumentList();
         var docDates = [];
         var maxDate;
+        var docPresent = false;
         for (doc in docList)
         {
             if (matches(docList[doc].getDocCategory(), "Design Professional Sketch", "Preliminary Sketch"))
