@@ -425,6 +425,8 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
 }
 if (wfTask == "Document Review" && matches(wfStatus, "Resubmission Required", "Incomplete"))
 {
+    var vEParams = aa.util.newHashtable();
+
 	//these two notifications share parameters, so it makes sense to just define them for both rather than doing it twice
 	var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 	if (capParcelResult.getSuccess())
