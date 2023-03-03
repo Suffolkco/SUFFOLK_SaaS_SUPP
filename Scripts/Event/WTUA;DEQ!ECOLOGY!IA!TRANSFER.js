@@ -17,7 +17,7 @@ var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
 var myCap = capId;
 var myCustomCap = myCap.getCustomID();
 var lpEmail = "";
-var lpResult = aa.licenseScript.getLicenseProf(capId);
+var lpResult = aa.licenseScript.getLicenseProf(parentCapId);
 if (lpResult.getSuccess())
 {
 	var lpArr = lpResult.getOutput();

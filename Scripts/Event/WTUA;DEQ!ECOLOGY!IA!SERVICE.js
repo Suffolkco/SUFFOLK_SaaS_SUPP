@@ -23,7 +23,7 @@ var maxDatePlusThree;
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
 var vEParams = aa.util.newHashtable();
 var lpEmail = "";
-var lpResult = aa.licenseScript.getLicenseProf(capId);
+var lpResult = aa.licenseScript.getLicenseProf(parentCapId);
 if (lpResult.getSuccess())
 {
 	var lpArr = lpResult.getOutput();
