@@ -1,6 +1,7 @@
 //IRSA:DEQ/GENERAL/SITE/NA
 
 // EHIMS-4948:
+showDebug = true;
 if (inspResult == "Completed" || inspResult == "Incomplete")
 {
     var primEmailAddress = "";
