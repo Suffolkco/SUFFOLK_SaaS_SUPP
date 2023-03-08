@@ -2,7 +2,7 @@
 
 // EHIMS-4948:
 showDebug = true;
-if (inspResult == "Completed" || inspResult == "Incomplete")
+if (inspResult == "Complete" || inspResult == "Incomplete")
 {
     var primEmailAddress = "";
     var secEmailAddress = "";
@@ -153,7 +153,9 @@ if (inspResult == "Completed" || inspResult == "Incomplete")
             addParameter(emailParams, "$$address$$", capAddresses[0]);
         }
          // Send email to the corresponding contact
-         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
+         // enable to rfiles when the report is fixed by WIll
+         //sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
+         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, null);
 
     }
 }
