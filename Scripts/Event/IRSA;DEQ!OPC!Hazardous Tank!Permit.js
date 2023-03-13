@@ -89,7 +89,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
         logDebug("capId: " + capId);
         logDebug("inspectionDateCon: " + inspectionDateCon);       
-        addParameter(reportParams, "SiteRecordID", alternateID.toString());
+        addParameter(reportParams, "RecordID", alternateID.toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
         addParameter(reportParams, "InspectionType", inspType);
 
