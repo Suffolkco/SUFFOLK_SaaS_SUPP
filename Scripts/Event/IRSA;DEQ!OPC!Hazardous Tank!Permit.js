@@ -84,11 +84,13 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
        
-        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0");
 
-        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0";
         logDebug("capId: " + capId);
         logDebug("inspectionDateCon: " + inspectionDateCon);       
+        logDebug("Record ID: " + alternateID);     
+        logDebug("Insepction Type: " + inspType);
         addParameter(reportParams, "RecordID", alternateID.toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
         addParameter(reportParams, "InspectionType", inspType);
