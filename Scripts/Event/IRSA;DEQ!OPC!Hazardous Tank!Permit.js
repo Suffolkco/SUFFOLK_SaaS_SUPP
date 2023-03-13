@@ -15,6 +15,186 @@ var inspectionUpdate = todaysDate + " " + inspType;
 editASITableRowViaRowIdentifer(parentCap, "TANK INFORMATION", "Last Inspection", inspectionUpdate, tankNumber, "Tank #");
 
 
+// EHIMS-4948:
+showDebug = true;
+if (inspResult == "Complete" || inspResult == "Incomplete")
+{
+    var primEmailAddress = "";
+    var secEmailAddress = "";
+    var lastEmailAddress = "";
+    var params = aa.util.newHashtable();
+    getRecordParams4Notification(params);
+    //addParameter(params, "$$inspection$$", inspSeq);
+    var contactArray = getContactArray(capId);
+        
+    // For SPDES: SPDES contact first, if not then Property Owner, If not then Operator.
+    if (inspType == "OPC SPDES Inspection")
+    {                   
+        for (iCon in contactArray)
+        {
+            if (contactArray[iCon].contactType == "SPDES Site Contact")
+            {                
+                primEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType == "Property Owner")
+            {                
+                secEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType == "Operator")
+            {               
+                lastEmailAddress  = contactArray[iCon].email;            
+            } 
+        }            
+       
+        logDebug("Found email from SPDES Site Contact, Property Owner, Operator " + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
+        
+    }
+    else if (inspType == "OPC Dry Cleaner Inspection")
+    {    
+        // Dry Cleaner: Dry Cleaner contact first, if not then Operator, if not then Property owner,            
+        for (iCon in contactArray)
+        {
+            if (contactArray[iCon].contactType == "Dry Cleaner Business Owner")
+            {                
+                primEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType == "Operator")
+            {                
+                secEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType ==  "Property Owner")
+            {               
+                lastEmailAddress  = contactArray[iCon].email;            
+            } 
+        }
+        logDebug("Found email from Dry Cleaner Business Owner, Operator, Property Owner" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
+    }
+    else if (inspType == "Tank Closure Inspection")
+    {    
+        // Dry Cleaner: Dry Cleaner contact first, if not then Operator, if not then Property owner,            
+        for (iCon in contactArray)
+        {
+            if (contactArray[iCon].contactType == "Tank Owner")
+            {                
+                primEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType == "Property Owner")
+            {                
+                secEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType ==  "Operator")
+            {               
+                lastEmailAddress  = contactArray[iCon].email;            
+            } 
+        }
+        logDebug("Found email from Tank Owner, Property Owner, Operator" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
+    }
+    // Find the correct email
+    if (primEmailAddress != "")
+    {
+        emailAddress = primEmailAddress;
+        logDebug("Primary contact email is being used: " + emailAddress);
+    }
+    else if (primEmailAddress == "" && secEmailAddress != "")
+    {
+        emailAddress = secEmailAddress;
+        logDebug("Secondary email is being used: " + emailAddress);
+    }
+    else if (primEmailAddress == "" && secEmailAddress == "" && lastEmailAddress != "")
+    {
+        emailAddress = primEmailAddress
+        logDebug("Third email is being used: " + emailAddress);
+    }
+    else
+    {
+        logDebug("No contact or email is found to send email.");
+    }
+
+    // Prepare to attach report and send email to contact
+    if (emailAddress != "")
+    {
+        var emailParams = aa.util.newHashtable();
+        var reportParams = aa.util.newHashtable();
+        var reportFile = new Array();
+        var rFiles = new Array();
+        var alternateID = capId.getCustomID();
+
+        var year = inspObj.getInspectionDate().getYear();
+        var month = inspObj.getInspectionDate().getMonth();
+        var day = inspObj.getInspectionDate().getDayOfMonth();
+        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+        var min = inspObj.getInspectionDate().getMinute();
+        var sec = inspObj.getInspectionDate().getSecond();
+       
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
+
+        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
+        logDebug("capId: " + capId);
+        logDebug("inspectionDateCon: " + inspectionDateCon);       
+        addParameter(reportParams, "SiteRecordID", alternateID.toString());
+        addParameter(reportParams, "InspectionDate", inspectionDateCon);
+        addParameter(reportParams, "InspectionType", inspType);
+
+        rFile = generateReportBatch(capId, "OPC Inspection Summary", 'DEQ', reportParams)
+        logDebug("This is the rFile: " + rFile);
+
+        if (rFile)
+        {            
+            rFiles.push(rFile);
+            getRecordParams4Notification(emailParams);
+            addParameter(emailParams, "$$altID$$", capId.getCustomID());           
+           
+        }
+        // Send email 
+        var s_result = aa.address.getAddressByCapId(capId);
+        if (s_result.getSuccess())
+        {
+            capAddresses = s_result.getOutput();
+        }
+
+        addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
+        addParameter(emailParams, "$$altID$$", capId.getCustomID());
+        //var fileRefNo = getAppSpecific("File Reference Number", capId);
+        addParameter(emailParams, "$$fileRefNum$$", parentAltId);
+        var appName = cap.getSpecialText();
+        addParameter(emailParams, "$$FacName$$", appName);
+        
+
+        //gathering inspectors name from this current Site inspection
+        var inspInspObj = inspObj.getInspector();
+        if (inspInspObj)
+        {
+            var inspInspector = inspInspObj.getUserID();
+            if (inspInspector)
+            {
+                inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                if (inspInspectorObj != null)
+                {
+                    var vInspectorName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                    logDebug("vinspectorname is: " + vInspectorName);
+                    addParameter(emailParams, "$$AssignInspector$$", vInspectorName);                 
+                    var vInspectorPhone = inspInspectorObj.getPhoneNumber();
+                    logDebug("vInspectorPhone is: " + vInspectorPhone);
+                    addParameter(emailParams, "$$phone$$", vInspectorPhone);         
+                    var vInspectorEmail = inspInspectorObj.getEmail();
+                    logDebug("vInspectorEmail is: " + vInspectorEmail);
+                    addParameter(emailParams, "$$email$$", vInspectorEmail);       
+                }
+            }
+        }
+
+        if (capAddresses != null)
+        {
+            addParameter(emailParams, "$$address$$", capAddresses[0]);
+        }
+         // Send email to the corresponding contact
+         // enable to rfiles when the report is fixed by WIll
+         //sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
+         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
+
+    }
+}
+
 //EHIMS-4805
 if (inspResult == "Completed" || inspResult == "Fail")
 {

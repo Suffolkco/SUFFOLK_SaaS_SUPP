@@ -13,7 +13,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
     var contactArray = getContactArray(capId);
         
     // For SPDES: SPDES contact first, if not then Property Owner, If not then Operator.
-    if (inspType == "OPC Dry Cleaner Inspection")
+    if (inspType == "OPC SPDES Inspection")
     {                   
         for (iCon in contactArray)
         {
@@ -54,6 +54,26 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         }
         logDebug("Found email from Dry Cleaner Business Owner, Operator, Property Owner" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
     }
+    else if (inspType == "Tank Closure Inspection")
+    {    
+        // Dry Cleaner: Dry Cleaner contact first, if not then Operator, if not then Property owner,            
+        for (iCon in contactArray)
+        {
+            if (contactArray[iCon].contactType == "Tank Owner")
+            {                
+                primEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType == "Property Owner")
+            {                
+                secEmailAddress = contactArray[iCon].email;
+            }
+            else if (contactArray[iCon].contactType ==  "Operator")
+            {               
+                lastEmailAddress  = contactArray[iCon].email;            
+            } 
+        }
+        logDebug("Found email from Tank Owner, Property Owne, Operator" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
+    }
     // Find the correct email
     if (primEmailAddress != "")
     {
@@ -81,6 +101,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         var emailParams = aa.util.newHashtable();
         var reportParams = aa.util.newHashtable();
         var reportFile = new Array();
+        var rFiles = new Array();
         var alternateID = capId.getCustomID();
 
         var year = inspObj.getInspectionDate().getYear();
@@ -103,8 +124,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         logDebug("This is the rFile: " + rFile);
 
         if (rFile)
-        {
-            var rFiles = new Array();
+        {            
             rFiles.push(rFile);
             getRecordParams4Notification(emailParams);
             addParameter(emailParams, "$$altID$$", capId.getCustomID());           
@@ -119,8 +139,8 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
 
         addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
-        var fileRefNo = getAppSpecific("File Reference Number", capId);
-        addParameter(emailParams, "$$fileRefNum$$", fileRefNo);
+        //var fileRefNo = getAppSpecific("File Reference Number", capId);
+        addParameter(emailParams, "$$fileRefNum$$", capId.getCustomID());
         var appName = cap.getSpecialText();
         addParameter(emailParams, "$$FacName$$", appName);
         
@@ -155,7 +175,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
          // Send email to the corresponding contact
          // enable to rfiles when the report is fixed by WIll
          //sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
-         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, null);
+         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
 
     }
 }
