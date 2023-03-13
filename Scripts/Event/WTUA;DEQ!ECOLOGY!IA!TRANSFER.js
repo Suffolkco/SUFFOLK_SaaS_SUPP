@@ -269,7 +269,16 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
     if (getAParent)
     {
         var getGParent = getParentByCapId(getAParent);
+        if (getAppStatus(getAParent) == "Awaiting Contract Submission")
+        {
+            var tempCap = capId;
+            capId = getAParent;
+            updateTask("Tracking", "System Valid", "", "");
+            updateAppStatus("Active", "", capId);
 
+            capId = tempCap;
+
+        }
         if (getGParent)
         {
             logDebug("getGParent is: " + getGParent.getCustomID());
