@@ -27,51 +27,8 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
     //addParameter(params, "$$inspection$$", inspSeq);
     var contactArray = getContactArray(capId);
         
-    // For SPDES: SPDES contact first, if not then Property Owner, If not then Operator.
-    if (inspType == "OPC SPDES Inspection")
-    {                   
-        for (iCon in contactArray)
-        {
-            if (contactArray[iCon].contactType == "SPDES Site Contact")
-            {                
-                primEmailAddress = contactArray[iCon].email;
-            }
-            else if (contactArray[iCon].contactType == "Property Owner")
-            {                
-                secEmailAddress = contactArray[iCon].email;
-            }
-            else if (contactArray[iCon].contactType == "Operator")
-            {               
-                lastEmailAddress  = contactArray[iCon].email;            
-            } 
-        }            
-       
-        logDebug("Found email from SPDES Site Contact, Property Owner, Operator " + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
-        
-    }
-    else if (inspType == "OPC Dry Cleaner Inspection")
-    {    
-        // Dry Cleaner: Dry Cleaner contact first, if not then Operator, if not then Property owner,            
-        for (iCon in contactArray)
-        {
-            if (contactArray[iCon].contactType == "Dry Cleaner Business Owner")
-            {                
-                primEmailAddress = contactArray[iCon].email;
-            }
-            else if (contactArray[iCon].contactType == "Operator")
-            {                
-                secEmailAddress = contactArray[iCon].email;
-            }
-            else if (contactArray[iCon].contactType ==  "Property Owner")
-            {               
-                lastEmailAddress  = contactArray[iCon].email;            
-            } 
-        }
-        logDebug("Found email from Dry Cleaner Business Owner, Operator, Property Owner" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
-    }
-    else if (inspType == "Tank Closure Inspection")
-    {    
-        // Dry Cleaner: Dry Cleaner contact first, if not then Operator, if not then Property owner,            
+    if (inspType == "Tank Closure Inspection" || inspType == "OPC Tank Inspection")
+    {           
         for (iCon in contactArray)
         {
             if (contactArray[iCon].contactType == "Tank Owner")
@@ -89,6 +46,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         }
         logDebug("Found email from Tank Owner, Property Owner, Operator" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
     }
+   
     // Find the correct email
     if (primEmailAddress != "")
     {

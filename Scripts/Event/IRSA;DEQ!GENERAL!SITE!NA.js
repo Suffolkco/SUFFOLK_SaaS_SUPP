@@ -53,27 +53,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
             } 
         }
         logDebug("Found email from Dry Cleaner Business Owner, Operator, Property Owner" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
-    }
-    else if (inspType == "Tank Closure Inspection")
-    {    
-        // Dry Cleaner: Dry Cleaner contact first, if not then Operator, if not then Property owner,            
-        for (iCon in contactArray)
-        {
-            if (contactArray[iCon].contactType == "Tank Owner")
-            {                
-                primEmailAddress = contactArray[iCon].email;
-            }
-            else if (contactArray[iCon].contactType == "Property Owner")
-            {                
-                secEmailAddress = contactArray[iCon].email;
-            }
-            else if (contactArray[iCon].contactType ==  "Operator")
-            {               
-                lastEmailAddress  = contactArray[iCon].email;            
-            } 
-        }
-        logDebug("Found email from Tank Owner, Property Owne, Operator" + primEmailAddress + ": " + secEmailAddress + ": " + lastEmailAddress);
-    }
+    }   
     // Find the correct email
     if (primEmailAddress != "")
     {
