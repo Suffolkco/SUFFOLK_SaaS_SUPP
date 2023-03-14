@@ -158,8 +158,12 @@ if(violationsAryNew.length > 0 ){
     //Create the Enforcement Case
     var newEnfCapId = createChild("EnvHealth", "Enforcement", "Violation", "NA", "",parentFacilityID);
     var sourceCap = aa.cap.getCap(capId).getOutput();
+	var sourceCapAppName = aa.cap.getCap(capId).getOutput().specialText;
     var newEnfCapAlias = sourceCap.getCapType().getAlias();
     editAppSpecific("Case Initiated Date",dateAdd(null,0),newEnfCapId);
+	editAppSpecific("Facility ID",sourceCapAppName,newEnfCapId);
+	editAppSpecific("Facility Name",sourceCapAppName,newEnfCapId);
+	editAppName(sourceCapAppName, newEnfCapId);
     if(!matches(newEnfCapAlias,null,undefined)){
         editAppSpecific("Parent Record Type",newEnfCapAlias,newEnfCapId);
     }
