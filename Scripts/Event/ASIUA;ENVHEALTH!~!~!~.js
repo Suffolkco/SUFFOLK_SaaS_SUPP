@@ -1,11 +1,17 @@
+//specific to suffolkco, update appName with ASI:facility name value on any given record in the module
+editAppName(AInfo["Facility Name"]);
+
+
+/*
 // Find Parent Facility and update current record with Facility Name and ID
 if(!appMatch("EnvHealth/Facility/NA/NA")){
     var facilityID = getFacilityId(capId);
     if(facilityID != false){
         updateFacilityInfo(capId,facilityID);
     }
+	editAppName(AInfo["Facility Name"]);
 }
-
+*/
 
 //Relate EnvHealth Records as children to entered Facility Record
 if (appMatch("EnvHealth/*/*/*")) {
@@ -20,7 +26,7 @@ if (appMatch("EnvHealth/*/*/*")) {
 	//var parentId = cap.getParentCapID();
 }
 
-
+//helper functions
 function editRecordStatus(targetCapId, strStatus){
     var capModel = aa.cap.getCap(targetCapId).getOutput();
     capModel.setCapStatus(strStatus);

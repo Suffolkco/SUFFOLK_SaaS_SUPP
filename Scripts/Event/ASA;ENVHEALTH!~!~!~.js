@@ -1,3 +1,8 @@
+if (!publicUser) {
+    createupdateRefLPFromRecordLP(capId);
+createRefContactsFromCapContactsAndLink(capId, null, null, null, true, comparePeopleMatchCriteria);
+}
+
 if (appMatch("EnvHealth/Health Program/Food Protection/Application")) {
 	var numberOfSeats = getAppSpecific("Number of Seats");
 	var typeOfEstablishment = getAppSpecific("Type of Establishment");
@@ -236,15 +241,13 @@ if (appMatch("EnvHealth/Temporary Event/Vendor/Application")) {
 	var numberOfEvents = getAppSpecific("Number of Events");
 	var multFlag = getAppSpecific("Will you be applying for more than one event?");
 	var invFee = "Y";
-	if (multFlag == ("No")) {
-	updateFee("TEVND01", "EH_FP_APP", "FINAL", 1, invFee);
+
+	if (multFlag == "No" || (multFlag == "Yes" && numberOfEvents == "1")) {
+	  updateFee("TEVND01", "EH_FP_APP", "FINAL", 1, invFee);
 	}
-	//base fee mult
-	var numberOfEvents = getAppSpecific("Number of Events");
-	var multFlag = getAppSpecific("Will you be applying for more than one event?");
-	var invFee = "Y";
-	if (multFlag == ("Yes") && numberOfEvents > 1) {
-	updateFee("TEMULT01", "EH_FP_APP", "FINAL", parseInt(numberOfEvents), invFee);
+
+	if (multFlag == "Yes" && numberOfEvents > 1) {
+	  updateFee("TEMULT01", "EH_FP_APP", "FINAL", parseInt(numberOfEvents), invFee);
 	}
 	
 	//Late Fees for Multiple Temporary Event
