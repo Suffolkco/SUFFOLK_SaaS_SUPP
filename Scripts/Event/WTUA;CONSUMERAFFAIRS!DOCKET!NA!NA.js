@@ -79,6 +79,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				
 				//function editASITableRowViaRowIdentifer(tableCapId, tableName, editName, editValue, rowValue, rowIdentifier) {
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
+				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Case Number", complaintNumber, item, "Item");
 				
 			}
 		}
