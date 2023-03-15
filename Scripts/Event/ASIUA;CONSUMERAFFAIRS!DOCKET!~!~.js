@@ -39,7 +39,7 @@ try
 				//GET CAP ID, if result returns an error then don't process this record.
 				if (!capIdRes.getSuccess()) 
 				{
-					logDebugLocal("ERROR getting capId for record " + vioNo + ". Err: " + capIdRes.getOutput()); 
+					logDebug("ERROR getting capId for record " + vioNo + ". Err: " + capIdRes.getOutput()); 
 				}
 				else
 				{
