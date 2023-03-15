@@ -159,7 +159,7 @@ else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Defa
     {
         cancel = true;
         showMessage = true;
-        comment("Hearing Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
+        comment("Hearing Information section(Vendor/Consumer/Attorney/Translator) in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
         
     }
 
