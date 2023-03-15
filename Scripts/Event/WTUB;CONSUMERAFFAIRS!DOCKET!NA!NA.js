@@ -33,7 +33,7 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
     }
 }
 // DOCKET #12: Block the workflow task "Create Violation Cheat Sheet" from proceeding if all documents have not been attached.
-else if (wfTask == "Create Violation Cheat Sheet" && wfStatus == "Complete")
+else if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
 {
     exhibitA = determineDocumentAttached("Contract");
     exhibitB = determineDocumentAttached("Canceled Checks");
@@ -64,10 +64,11 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
     if (getAppSpecific("Hearing Date", capId) == null || 
     getAppSpecific("Hearing Time", capId) == null || 
     getAppSpecific("Pre-Hearing Conference Date", capId) == null || 
-    getAppSpecific("Pre-Hearing Conference Time", capId))
+    getAppSpecific("Pre-Hearing Conference Time", capId)== null)
     {    
         cancel = true;
         showMessage = true;
+        logDebug(getAppSpecific("Hearing Date", capId) + getAppSpecific("Hearing Time", capId) + getAppSpecific("Pre-Hearing Conference Date", capId) + getAppSpecific("Pre-Hearing Conference Time", capId))
         comment("Violation Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
         
     }
@@ -144,6 +145,24 @@ else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Defa
         showMessage = true;
         comment("No audio hearing recording has been attached. Please upload before proceeding. Unable to move to the next task.");
     }
+
+    // Check if Hearing custom fields have been filled in
+    var vendorAttorn =  AInfo["Vendor Attorney Present"]
+	var conAttorn =  AInfo["Consumer Attorney Present"]
+	var vp =  AInfo["Vendor Present"]
+    var cp =  AInfo["Consumer Present"]
+    var vw =  AInfo["Vendor Witnessess"]
+    var cw = AInfo["Consumer Witnesses"]
+    var tu = AInfo["Translator Used"]
+
+    if(vendorAttorn == null || conAttorn == null || vp == null || cp == null || vw == null || cw == null || tu == null)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Hearing Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
+        
+    }
+
 }
 
 function determineDocumentAttached(docType) 
