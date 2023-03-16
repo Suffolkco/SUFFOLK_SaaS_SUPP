@@ -99,8 +99,8 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         logDebug("Record ID: " + alternateID);     
         logDebug("Insepction Type: " + inspType);
         addParameter(reportParams, "RecordID", alternateID.toString());
-        addParameter(reportParams, "InspectionDate", inspectionDateCon);
-        addParameter(reportParams, "InspectionType", inspType);
+        addParameter(reportParams, "InspDate", inspectionDateCon);
+        addParameter(reportParams, "InspType", inspType);
         
         rFile = generateReportBatch(capId, "OPC Inspection Summary", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);
