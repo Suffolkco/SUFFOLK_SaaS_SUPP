@@ -90,7 +90,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         logDebug("day.length: " + day.toString().length);
         if (month.toString().length < 2) 
         month = '0' + month;
-        if (day.toString().length) 
+        if (day.toString().length < 2) 
             day = '0' + day;
 
         var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0";
