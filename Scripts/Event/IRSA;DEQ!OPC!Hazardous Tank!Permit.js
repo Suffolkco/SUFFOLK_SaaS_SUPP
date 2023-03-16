@@ -86,6 +86,11 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
        
         logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0");
 
+        if (month.length < 2) 
+        month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+
         var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0";
         logDebug("capId: " + capId);
         logDebug("inspectionDateCon: " + inspectionDateCon);       
@@ -94,7 +99,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         addParameter(reportParams, "RecordID", alternateID.toString());
         addParameter(reportParams, "InspectionDate", inspectionDateCon);
         addParameter(reportParams, "InspectionType", inspType);
-
+        
         rFile = generateReportBatch(capId, "OPC Inspection Summary", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);
 
@@ -115,7 +120,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
         //var fileRefNo = getAppSpecific("File Reference Number", capId);
-        addParameter(emailParams, "$$fileRefNum$$", parentAltId);
+        addParameter(emailParams, "$$fileRefNum$$", parentCap.getCustomID());
         var appName = cap.getSpecialText();
         addParameter(emailParams, "$$FacName$$", appName);
         
