@@ -170,7 +170,7 @@ function mainProcess()
         dateCheckString1 = dateToCheck.replace(/\b0/g, '');            
         logDebugLocal("Date to check 1: " + dateCheckString1);     
 
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT IN ('" + dateToCheck + "','" + dateCheckString1 + "')  WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1_PER_CATEGORY = 'NA' ";
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE = 'LICENSE DATES' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT IN ('" + dateToCheck + "','" + dateCheckString1 + "')  WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1_PER_CATEGORY = 'NA'";
         //  
         var output = "Record ID | Expiration Date \n";
         var vResult = doSQLSelect_local(vSQL);
@@ -191,7 +191,8 @@ function mainProcess()
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
-                    if (!matches(getAppStatus(), "Expired", "About to Expire"))
+                    var appStatus = getAppStatus();
+                    if (!matches(appStatus, "Expired", "About to Expire"))
                     {
                         b1ExpResult = aa.expiration.getLicensesByCapID(capId)
                         if (b1ExpResult.getSuccess())
@@ -221,6 +222,7 @@ function mainProcess()
                             var wfObj = workflowResult.getOutput();
                             var vEParams = aa.util.newHashtable();
                             var vRParams = aa.util.newHashtable();
+                            var vRParams1 = aa.util.newHashtable();
                             var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
                             var AInfo = new Array();
                             loadAppSpecific(AInfo);
@@ -271,13 +273,24 @@ function mainProcess()
 
                                                 conEmail += capContacts[c].email;
                                                 logDebugLocal("Conemail is: " + conEmail);
-
+                                                var caReports = new Array();
                                                 var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
-                                                if (caReport)
-                                                {
-                                                    var caReports = new Array();
+                                                if (caReport)                                                {
+                                                    
                                                     caReports.push(caReport);
                                                 }
+                                                if (appStatus == 'Shelved')
+                                                {
+                                                    addParameter(vRParams1, "RecordId", capIDString);
+                                                    caReport = generateReportBatch(capId, "License Shelving Application", "ConsumerAffairs", vRParams1);
+
+                                                    if (caReport)                                                
+                                                    {
+                                                        logDebugLocal("capIDString is: " + capIDString);                                                      
+                                                        caReports.push(caReport);
+                                                    }
+                                                }
+
                                                 sendNotification("", conEmail, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, caReports);
                                             }
                                             if (appTypeArray[2] == "Polygraph Examiner")

@@ -190,7 +190,8 @@ function mainProcess()
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
-                    if (!matches(getAppStatus(), "Expired", "About to Expire"))
+                    var appStatus = getAppStatus();
+                    if (!matches(appStatus, "Expired", "About to Expire"))
                     {
                         b1ExpResult = aa.expiration.getLicensesByCapID(capId)
                         if (b1ExpResult.getSuccess())
@@ -220,6 +221,7 @@ function mainProcess()
                             var wfObj = workflowResult.getOutput();
                             var vEParams = aa.util.newHashtable();
                             var vRParams = aa.util.newHashtable();
+                            var vRParams1 = aa.util.newHashtable();
                             var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
                             acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
                             var AInfo = new Array();
@@ -269,11 +271,23 @@ function mainProcess()
                                             conEmail += capContacts[c].email;
                                             logDebugLocal("Conemail is: " + conEmail);
 
+                                            var caReports = new Array();
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
                                             if (caReport)
-                                            {
-                                                var caReports = new Array();
+                                            {                                                
                                                 caReports.push(caReport);
+                                            }
+
+                                            if (appStatus == 'Shelved')
+                                            {
+                                                addParameter(vRParams1, "RecordId", capIDString);
+                                                caReport = generateReportBatch(capId, "License Shelving Application", "ConsumerAffairs", vRParams1);
+
+                                                if (caReport)                                                
+                                                {
+                                                    logDebugLocal("capIDString is: " + capIDString);                                                      
+                                                    caReports.push(caReport);
+                                                }
                                             }
 
                                             sendNotification("", conEmail, "", "CA_LICENSE_ABOUT_TO_EXPIRE", vEParams, caReports);
