@@ -156,7 +156,7 @@ function mainProcess()
                                         if (curExp != null)
                                         {
                                             var curSt = b1Exp.getExpStatus();
-                                            if (curSt != null)BS-64856
+                                            if (curSt != null)
                                             {
                                                 if (curSt == "About to Expire")
                                                 {
