@@ -86,6 +86,8 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
        
         logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0");
 
+        logDebug("month.length: " + month.length);
+        logDebug("day.length: " + day.length);
         if (month.length < 2) 
         month = '0' + month;
         if (day.length < 2) 
