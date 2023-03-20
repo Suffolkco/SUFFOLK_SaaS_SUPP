@@ -39,11 +39,15 @@ if (vInspectionInsp.getSuccess())
         var vEParams = aa.util.newHashtable();
         var schedDate = vInspection.getInspection().getScheduledDate();
         logDebug("sched date is: " + schedDate);
-        var schedDateConverted = convertDate(schedDate);
-        var newSchedDateFormatted = (schedDateConverted.getMonth() + 2) + "/" + schedDateConverted.getDate() + "/" + (schedDateConverted.getFullYear() + 1900);
-        logDebug("newSchedDateFormatted is: " + newSchedDateFormatted);
+        var schedDateConverted = new Date(schedDate.getTime());
+        exploreObject(schedDateConverted);
 
-        addParameter(vEParams, "$$inspSchedDate$$", newSchedDateFormatted);
+        logDebug("schedDateConverted is: " + schedDateConverted);
+        var newSchedDateFormatted = (String(schedDateConverted).split(" 00"));
+        logDebug("newSchedDateFormatted is: " + newSchedDateFormatted);
+        logDebug("newSchedDateFormatted entry is: " + newSchedDateFormatted[0]);
+
+        addParameter(vEParams, "$$inspSchedDate$$", newSchedDateFormatted[0]);
         addParameter(vEParams, "$$addressInALine$$", addressInALine);
 
         sendNotification("", conEmail, "", "DEQ_IA_ROUTINE_SEPTIC_SYSTEM_SAMPLING", vEParams, null);
