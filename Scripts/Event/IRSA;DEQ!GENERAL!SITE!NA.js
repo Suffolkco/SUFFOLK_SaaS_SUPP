@@ -92,15 +92,15 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         var sec = inspObj.getInspectionDate().getSecond();
        
         logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
-
+       
         var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
         logDebug("capId: " + capId);
         logDebug("inspectionDateCon: " + inspectionDateCon);       
-        addParameter(reportParams, "SiteRecordID", alternateID.toString());
-        addParameter(reportParams, "InspectionDate", inspectionDateCon);
-        addParameter(reportParams, "InspectionType", inspType);
+        addParameter(reportParams, "RecordID", alternateID.toString());
+        addParameter(reportParams, "InspDate", inspectionDateCon);
+        addParameter(reportParams, "InspType", inspType);
 
-        rFile = generateReportBatch(capId, "Facility Inspection Summary Report", 'DEQ', reportParams)
+        rFile = generateReportBatch(capId, "OPC Inspection Summary Script", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);
 
         if (rFile)

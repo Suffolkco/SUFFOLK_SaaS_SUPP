@@ -84,16 +84,10 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
        
-        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0");
+        logDebug("Inspection DateTime: " + year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0");
 
-        logDebug("month.length: " + month.toString().length);
-        logDebug("day.length: " + day.toString().length);
-        if (month.toString().length < 2) 
-        month = '0' + month;
-        if (day.toString().length < 2) 
-            day = '0' + day;
-
-        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + "0.0";
+        
+        var inspectionDateCon = year + "-" + month + "-" + day + " " + hr + ':' + min + ":" + sec + ".0";
         logDebug("capId: " + capId);
         logDebug("inspectionDateCon: " + inspectionDateCon);       
         logDebug("Record ID: " + alternateID);     
@@ -102,7 +96,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         addParameter(reportParams, "InspDate", inspectionDateCon);
         addParameter(reportParams, "InspType", inspType);
         
-        rFile = generateReportBatch(capId, "OPC Inspection Summary", 'DEQ', reportParams)
+        rFile = generateReportBatch(capId, "OPC Inspection Summary Script", 'DEQ', reportParams)
         logDebug("This is the rFile: " + rFile);
 
         if (rFile)
