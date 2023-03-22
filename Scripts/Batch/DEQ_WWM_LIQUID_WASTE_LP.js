@@ -110,7 +110,7 @@ function processComResSub() {
 
                 // Only if the application has an "Active" status
                 //if(appStatus == "Active" &&  (capIDString == "LW-168"))
-                if (appStatus == "Active" || appStatus == "About to Expire" || appStatus == "Temporary License")
+                if (appStatus == "Active" || appStatus == "About to Expire" || appStatus == "Temporary License" || appStatus == "Expired")
                 {
                     if (cap)
                     {
