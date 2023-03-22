@@ -22,6 +22,14 @@ var maxDate;
 var maxDatePlusThree;
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
 var vEParams = aa.util.newHashtable();
+var thisCap = aa.cap.getCap(capId).getOutput().getCapModel();
+var pUser = (thisCap.getCreatedBy());
+logDebug("puser is: " + pUser);
+
+var puserObj = aa.publicUser.getPublicUserByPUser(pUser).getOutput();
+logDebug("puserobj is: " + puserObj);
+logDebug("puserobj email is: " + puserObj.getEmail());
+var pUserObjEmail = puserObj.getEmail();
 var lpEmail = "";
 var lpResult = aa.licenseScript.getLicenseProf(parentCapId);
 if (lpResult.getSuccess())
@@ -224,11 +232,11 @@ if (wfTask == "Document Review" && matches(wfStatus, "Resubmission Required", "I
 	//sending a different template depending on the status chosen
 	if (wfStatus == "Resubmission Required")
 	{
-		sendNotification("", lpEmail, "", "DEQ_IA_SERV_TRAN_RESUBMISSION_NOTICE", vEParams, null);
+		sendNotification("", pUserObjEmail, "", "DEQ_IA_SERV_TRAN_RESUBMISSION_NOTICE", vEParams, null);
 	}
 	if (wfStatus == "Incomplete")
 	{
-		sendNotification("", lpEmail, "", "DEQ_IA_SERV_TRAN_REJECTION_NOTICE", vEParams, null);
+		sendNotification("", pUserObjEmail, "", "DEQ_IA_SERV_TRAN_REJECTION_NOTICE", vEParams, null);
 	}
 }
 
