@@ -151,7 +151,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
          // Send email to the corresponding contact
          // enable to rfiles when the report is fixed by WIll
          //sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
-         sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
+         sendNotification("", emailAddress, "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);
 
     }
 }
