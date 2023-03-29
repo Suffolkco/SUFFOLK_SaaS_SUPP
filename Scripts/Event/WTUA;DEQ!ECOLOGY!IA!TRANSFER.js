@@ -28,29 +28,40 @@ var lpEmail = "";
 var lpResult = aa.licenseScript.getLicenseProf(parentCapId);
 if (lpResult.getSuccess())
 {
-	var lpArr = lpResult.getOutput();
+    var lpArr = lpResult.getOutput();
 
-	// Send email to each contact separately.
-	for (var lp in lpArr)
-	{
-		if (lpArr[lp].getLicenseType() == "IA Service Provider")
-		{
-			if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
-			{
-				lpEmail = lpArr[lp].email + ";";
+    // Send email to each contact separately.
+    for (var lp in lpArr)
+    {
+        if (lpArr[lp].getLicenseType() == "IA Service Provider")
+        {
+            if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+            {
+                lpEmail = lpArr[lp].email + ";";
 
-			}
-		}
-	}
+            }
+        }
+    }
 }
 else 
 {
-	logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+    logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
 }
 
 
 if (wfTask == "Document Review" && wfStatus == "Complete") 
 {
+
+    if (!matches(iaNumber, "", null, undefined))
+    {
+        var capParent = getParent(capId);
+
+        if (!capParent)
+        {
+            addParent(iaNumber);
+        }
+    }
+    
     if (sampleResults == "CHECKED")
     {
         if (labResultFieldDataTable)
@@ -444,36 +455,36 @@ if (wfTask == "Document Review" && matches(wfStatus, "Resubmission Required", "I
 {
     var vEParams = aa.util.newHashtable();
 
-	//these two notifications share parameters, so it makes sense to just define them for both rather than doing it twice
-	var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
-	if (capParcelResult.getSuccess())
-	{
-		var Parcels = capParcelResult.getOutput().toArray();
-	}
-	else
-	{
-		logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage());
-	}
-	for (zz in Parcels)
-	{
-		var ParcelValidatedNumber = Parcels[zz].getParcelNumber();
-	}
-	var parentAddr = getAddressInALine(parentCapId);
-	addParameter(vEParams, "$$altID$$", capId.getCustomID());
-	addParameter(vEParams, "$$addressInALine$$", parentAddr);
-	addParameter(vEParams, "$$parentIA$$", parentCapId.getCustomID());
-	addParameter(vEParams, "$$iaParcelNum$$", ParcelValidatedNumber);
-	addParameter(vEParams, "$$wfComment$$", wfComment);
+    //these two notifications share parameters, so it makes sense to just define them for both rather than doing it twice
+    var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+    }
+    else
+    {
+        logDebug("**ERROR: getting parcels by cap ID: " + capParcelResult.getErrorMessage());
+    }
+    for (zz in Parcels)
+    {
+        var ParcelValidatedNumber = Parcels[zz].getParcelNumber();
+    }
+    var parentAddr = getAddressInALine(parentCapId);
+    addParameter(vEParams, "$$altID$$", capId.getCustomID());
+    addParameter(vEParams, "$$addressInALine$$", parentAddr);
+    addParameter(vEParams, "$$parentIA$$", parentCapId.getCustomID());
+    addParameter(vEParams, "$$iaParcelNum$$", ParcelValidatedNumber);
+    addParameter(vEParams, "$$wfComment$$", wfComment);
 
-	//sending a different template depending on the status chosen
-	if (wfStatus == "Resubmission Required")
-	{
-		sendNotification("", pUserObjEmail, "", "DEQ_IA_SERV_TRAN_RESUBMISSION_NOTICE", vEParams, null);
-	}
-	if (wfStatus == "Incomplete")
-	{
-		sendNotification("", pUserObjEmail, "", "DEQ_IA_SERV_TRAN_REJECTION_NOTICE", vEParams, null);
-	}
+    //sending a different template depending on the status chosen
+    if (wfStatus == "Resubmission Required")
+    {
+        sendNotification("", pUserObjEmail, "", "DEQ_IA_SERV_TRAN_RESUBMISSION_NOTICE", vEParams, null);
+    }
+    if (wfStatus == "Incomplete")
+    {
+        sendNotification("", pUserObjEmail, "", "DEQ_IA_SERV_TRAN_REJECTION_NOTICE", vEParams, null);
+    }
 }
 
 

@@ -1,7 +1,7 @@
 //WTUB:DEQ/ECOLOGY/IA/TRANSFER
 
 
-if (wfTask == "Review form and check that documents are correct" && wfStatus == "Complete")
+if (wfTask == "Document Review" && wfStatus == "Complete")
 {
     var sampleResults = AInfo["Sample Results"];
     var phase = AInfo["Phase"];
@@ -10,5 +10,14 @@ if (wfTask == "Review form and check that documents are correct" && wfStatus == 
         cancel = true;
         showMessage = true;
         comment("SELECT THE APPROPRIATE APPROVAL PHASE FOR THE SUBMITTED SAMPLE RESULT");
+    }
+
+    var iaRecNum = AInfo["IA Record Number"];
+
+    if (matches(iaRecNum, "", null, undefined))
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Enter IA Record Number.");
     }
 }
