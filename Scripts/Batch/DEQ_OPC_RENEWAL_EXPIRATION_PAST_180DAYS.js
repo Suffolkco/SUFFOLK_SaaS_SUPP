@@ -308,14 +308,13 @@ function mainProcess()
 													addParameter(emailParams, "$$city$$", city);
 													addParameter(emailParams, "$$state$$", state);
 													addParameter(emailParams, "$$zip$$", zip);	                                                    
-													addParameter(emailParams, "$$expireDate$$", past180DateCon);	 
+													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 													addParameter(emailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
-													{
-														logDebug("past180DateCon is: " + past180DateCon);
+													{														
 														logDebug("Sending email to contact: " + conEmail2); 
 														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_180_DAYS", emailParams, null);
 													}
@@ -347,14 +346,13 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$city$$", city);
 													addParameter(lpEmailParams, "$$state$$", state);
 													addParameter(lpEmailParams, "$$zip$$", zip);	                                                    
-													addParameter(lpEmailParams, "$$expireDate$$", past180DateCon);	                                                    
+													addParameter(lpEmailParams, "$$expireDate$$", expDateCon);	                                                    
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
 													addParameter(lpEmailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
 													if (lpEmail != null)
-													{
-													
-														logDebug("past180DateCon is: " + past180DateCon);
+													{												
+														
 														logDebug("Sending email to: " + lpEmail); 
 														sendNotification("", lpEmail, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_180_DAYS", lpEmailParams, null);
 													}                                                

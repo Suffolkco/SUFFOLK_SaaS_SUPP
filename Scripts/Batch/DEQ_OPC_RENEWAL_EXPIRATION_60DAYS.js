@@ -243,7 +243,7 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$city$$", city);
 													addParameter(lpEmailParams, "$$state$$", state);
 													addParameter(lpEmailParams, "$$zip$$", zip);	                                                    
-													addParameter(lpEmailParams, "$$expireDateD$$", expDateCon);	                                                    
+													addParameter(lpEmailParams, "$$expireDate$$", expDateCon);	                                                    
 													addParameter(lpEmailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
