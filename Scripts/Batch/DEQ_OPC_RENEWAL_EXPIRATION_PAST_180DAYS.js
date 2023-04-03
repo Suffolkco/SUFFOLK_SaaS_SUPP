@@ -137,8 +137,7 @@ function mainProcess()
 								 var ninetyDay = new Date(dateAdd(curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear(), 90));
 								 var ninetyDayCon = (ninetyDay.getMonth() + 1) + "/" + ninetyDay.getDate() + "/" + ninetyDay.getFullYear();
 								 //logDebug("90 days after expiration date is: " + ninetyDayCon);
- 
-                               
+ 								
                                 // more than 180 days expired
                                 var longExpDate = new Date(dateAdd((startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear(), -180));                                    
                                 var past180DateCon = (longExpDate.getMonth() + 1) + "/" + longExpDate.getDate() + "/" + longExpDate.getFullYear();
@@ -221,9 +220,9 @@ function mainProcess()
 		
 														if (newConditionResult.getSuccess()) {
 															var newConditionObj = newConditionResult.getOutput();
-															logDebug ("**********");
-															debugObject(newConditionObj);	
-															logDebug ("**********");																									
+															//logDebug ("**********");
+															//debugObject(newConditionObj);	
+															//logDebug ("**********");																									
 															logDebug(newConditionObj.toString());
 														}
 													
@@ -316,6 +315,7 @@ function mainProcess()
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{
+														logDebug("past180DateCon is: " + past180DateCon);
 														logDebug("Sending email to contact: " + conEmail2); 
 														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_180_DAYS", emailParams, null);
 													}
@@ -347,12 +347,14 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$city$$", city);
 													addParameter(lpEmailParams, "$$state$$", state);
 													addParameter(lpEmailParams, "$$zip$$", zip);	                                                    
-													addParameter(lpEmailParams, "$$expireDateD$$", past180DateCon);	                                                    
+													addParameter(lpEmailParams, "$$expireDate$$", past180DateCon);	                                                    
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
 													addParameter(lpEmailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
 													if (lpEmail != null)
 													{
+													
+														logDebug("past180DateCon is: " + past180DateCon);
 														logDebug("Sending email to: " + lpEmail); 
 														sendNotification("", lpEmail, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_180_DAYS", lpEmailParams, null);
 													}                                                
