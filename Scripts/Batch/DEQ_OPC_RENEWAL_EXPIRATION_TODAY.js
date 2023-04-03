@@ -84,6 +84,7 @@ function mainProcess()
     logDebug("Batch script will run");
     try 
     {
+		var count = 0; 
         for (var i in rtArray) 
         {
             var thisType = rtArray[i];
@@ -115,9 +116,9 @@ function mainProcess()
                 cap = aa.cap.getCap(capId).getOutput();	
                 // TEST only: Use these 3 records for TESTING ONLY. TO BE REMOVED.
                 //if (cap && ((capIDString == "T-HM-21-00082" || capIDString == "GC-21-00001" || capIDString == "SP-21-00008")))
-				if (cap && capIDString == "SP-21-00008")
+				if (cap)
                 {
-                    logDebug("Looping to record: " + capIDString);
+                    logDebug("-> Looping to record: " + capIDString);
                     var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                     if(capmodel.isCompleteCap())
                     {
@@ -146,6 +147,8 @@ function mainProcess()
 
                                 if (expDateCon == todDateCon)   // The expiration date is today                                    
                                 {                                
+									logDebug("*** " + capIDString + " will expire TODAY on " + todDateCon + "***");
+									count++;
                                     var workflowResult = aa.workflow.getTasks(capId);
                 
                                     if (workflowResult.getSuccess())
@@ -197,6 +200,10 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 													addParameter(emailParams, "$$DAY$$", "EXPIRING TODAY");
+
+													addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
+													addACAUrlsVarToEmail(emailParams);
+
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{
@@ -261,6 +268,7 @@ function mainProcess()
     {
         logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
+	logDebug("Total of " + count + " records have expired today");
     logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
 }
 
@@ -433,7 +441,7 @@ function addFee(fcode, fsched, fperiod, fqty, finvoice)
 		if (finvoice == "Y" && arguments.length == 5) // use current CAP
 		{
 			feeSeqList.push(feeSeq);
-			paymentPeriodList.push(fperiod);
+			paymentPeriod_L.push(fperiod);
 		}
 		if (finvoice == "Y" && arguments.length > 5) // use CAP in args
 		{
@@ -475,7 +483,20 @@ function updateFeeItemInvoiceFlag(feeSeq, finvoice)
 	}
 }
 
+function addACAUrlsVarToEmail(vEParams) {
+	//Get base ACA site from standard choices
+	var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+	acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 
+	//Save Base ACA URL
+	addParameter(vEParams,"$$acaURL$$",acaSite);
+
+	//Save Record Direct URL
+	addParameter(vEParams,"$$acaRecordURL$$",acaSite + getACAUrl());
+	var paymentUrl = vEParams.get("$$acaRecordURL$$");
+	paymentUrl = paymentUrl.replace("type=1000", "type=1009");
+	addParameter(vEParams, "$$acaPaymentUrl$$", paymentUrl);
+}
 function getAppSpecific(itemName) { // optional: itemCap
 	var updated = false;
 	var i=0;
@@ -739,6 +760,27 @@ function getOutput(result, object) {
         return null;
     }
 }
+
+function getACAUrl(){
+
+	// returns the path to the record on ACA.  Needs to be appended to the site
+
+	itemCap = (arguments.length == 1) ? arguments[0] : capId;
+	var enableCustomWrapper = lookup("ACA_CONFIGS","ENABLE_CUSTOMIZATION_PER_PAGE");
+   	var acaUrl = "";
+	var id1 = itemCap.getID1();
+	var id2 = itemCap.getID2();
+	var id3 = itemCap.getID3();
+	var itemCapModel = aa.cap.getCap(itemCap).getOutput().getCapModel();
+
+	acaUrl += "/urlrouting.ashx?type=1000";
+	acaUrl += "&Module=" + itemCapModel.getModuleName();
+	acaUrl += "&capID1=" + id1 + "&capID2=" + id2 + "&capID3=" + id3;
+	acaUrl += "&agencyCode=" + aa.getServiceProviderCode();
+	if(matches(enableCustomWrapper,"Yes","YES")) acaUrl += "&FromACA=Y";
+
+	return acaUrl;
+} 
 
 function getContactArray()
 {

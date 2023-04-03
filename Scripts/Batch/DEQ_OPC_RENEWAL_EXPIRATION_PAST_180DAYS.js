@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: DEQ_OPC_RENEWAL_EXPIRATION.js  Trigger: Batch| 
+| Program: DEQ_OPC_RENEWAL_EXPIRATION_180DAYS.js  Trigger: Batch| 
 | 
 | This batch script will run daily to send email notification to all contacts and :Past 180 days 
 | the expiration 
@@ -84,6 +84,7 @@ function mainProcess()
     logDebug("Batch script will run");
     try 
     {
+		var count = 0; 
         for (var i in rtArray) 
         {
             var thisType = rtArray[i];
@@ -115,9 +116,9 @@ function mainProcess()
                 cap = aa.cap.getCap(capId).getOutput();	
                 // TEST only: Use these 3 records for TESTING ONLY. TO BE REMOVED.
                 //if (cap && ((capIDString == "T-HM-21-00082" || capIDString == "GC-21-00001" || capIDString == "SP-21-00008")))
-				if (cap && capIDString == "SP-21-00008")
+				if (cap)
                 {
-                    logDebug("Looping to record: " + capIDString);
+                    logDebug("-> Looping to record: " + capIDString);
                     var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                     if(capmodel.isCompleteCap())
                     {
@@ -135,14 +136,14 @@ function mainProcess()
 								 // 90 days after expiration for condition
 								 var ninetyDay = new Date(dateAdd(curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear(), 90));
 								 var ninetyDayCon = (ninetyDay.getMonth() + 1) + "/" + ninetyDay.getDate() + "/" + ninetyDay.getFullYear();
-								 logDebug("90 days after expiration date is: " + ninetyDayCon);
+								 //logDebug("90 days after expiration date is: " + ninetyDayCon);
  
                                
                                 // more than 180 days expired
-                                var longExpDate = new Date(dateAdd((startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear(), 180));                                    
+                                var longExpDate = new Date(dateAdd((startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear(), -180));                                    
                                 var past180DateCon = (longExpDate.getMonth() + 1) + "/" + longExpDate.getDate() + "/" + longExpDate.getFullYear();
                                 logDebug("past180DateCon: " + past180DateCon);
-                                
+                                var todaysDate = new Date();	
 								var todayDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
 
                                 // Past 180 days or more
@@ -150,9 +151,10 @@ function mainProcess()
                                 logDebug("Day difference is: " + dateDiff);
                                                
 
-                                if (dateDiff == 180) // The expiration date passed exactly 180 days 
+                                if (dateDiff == -180) // The expiration date passed exactly 180 days 
                                 {
-                                
+									logDebug("*** " + capIDString + " has expired 180 days on " + todayDateCon + "***");
+									count++;
                                     var workflowResult = aa.workflow.getTasks(capId);
                 
                                     if (workflowResult.getSuccess())
@@ -315,7 +317,7 @@ function mainProcess()
 													if (conEmail2 != null)
 													{
 														logDebug("Sending email to contact: " + conEmail2); 
-														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", emailParams, null);
+														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_180_DAYS", emailParams, null);
 													}
 																			
 												}	
@@ -375,6 +377,7 @@ function mainProcess()
     {
         logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
+	logDebug("Total of " + count + " records have expired at 180 days");
     logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
 }
 
