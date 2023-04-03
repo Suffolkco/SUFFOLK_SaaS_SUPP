@@ -309,7 +309,7 @@ function mainProcess()
 													addParameter(emailParams, "$$city$$", city);
 													addParameter(emailParams, "$$state$$", state);
 													addParameter(emailParams, "$$zip$$", zip);	                                                    
-													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
+													addParameter(emailParams, "$$expireDate$$", past180DateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 													addParameter(emailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
@@ -347,7 +347,7 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$city$$", city);
 													addParameter(lpEmailParams, "$$state$$", state);
 													addParameter(lpEmailParams, "$$zip$$", zip);	                                                    
-													addParameter(lpEmailParams, "$$expireDateD$$", expDateCon);	                                                    
+													addParameter(lpEmailParams, "$$expireDateD$$", past180DateCon);	                                                    
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
 													addParameter(lpEmailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
