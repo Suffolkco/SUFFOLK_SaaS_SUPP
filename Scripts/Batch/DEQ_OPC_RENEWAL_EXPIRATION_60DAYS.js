@@ -213,7 +213,7 @@ function mainProcess()
 													if (conEmail2 != null)
 													{
 														logDebug("Sending email to contact: " + conEmail2); 
-														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", emailParams, null);
+														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_60_DAYS", emailParams, null);
 													}
 																			
 												}	
