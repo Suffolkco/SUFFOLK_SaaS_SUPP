@@ -207,8 +207,10 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
 													//Save Base ACA URL
-													addParameter(emailParams, "$$acaURL$$", acaSite);
-	
+													addParameter(emailParams, "$$acaURL$$", acaSite);													
+													addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
+													addACAUrlsVarToEmail(emailParams);
+
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{

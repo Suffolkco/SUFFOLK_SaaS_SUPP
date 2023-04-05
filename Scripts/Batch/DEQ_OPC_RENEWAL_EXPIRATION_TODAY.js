@@ -242,6 +242,11 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);                                  
 													addParameter(lpEmailParams, "$$DAY$$", "EXPIRING TODAY");
+
+																						
+													addParameter(lpEmailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
+													addACAUrlsVarToEmail(lpEmailParams);
+
 													if (lpEmail != null)
 													{
 														logDebug("Sending email to: " + lpEmail); 
