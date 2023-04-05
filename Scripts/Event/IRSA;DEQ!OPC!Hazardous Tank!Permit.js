@@ -138,6 +138,13 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
                     logDebug("vInspectorPhone is: " + vInspectorPhone);
                     addParameter(emailParams, "$$phone$$", vInspectorPhone);         
                     var vInspectorEmail = inspInspectorObj.getEmail();
+                    logDebug("notification emailAddress is: " + emailAddress);
+                     // Send to inspector if no email is found
+                     if (emailAddress == "" || emailAddress == null)
+                    {
+                        emailAddress = vInspectorEmail;
+                        logDebug("No contact email is found. Use inspector email: " + vInspectorEmail);
+                    }
                     logDebug("vInspectorEmail is: " + vInspectorEmail);
                     addParameter(emailParams, "$$email$$", vInspectorEmail);       
                 }
@@ -148,6 +155,7 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
         {
             addParameter(emailParams, "$$address$$", capAddresses[0]);
         }
+       
          // Send email to the corresponding contact
          // enable to rfiles when the report is fixed by WIll
          //sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_OPC_INSPECTION_REPORT", emailParams, rFiles);

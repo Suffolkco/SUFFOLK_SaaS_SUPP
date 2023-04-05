@@ -142,6 +142,13 @@ if (inspResult == "Complete" || inspResult == "Incomplete")
                     logDebug("vInspectorPhone is: " + vInspectorPhone);
                     addParameter(emailParams, "$$phone$$", vInspectorPhone);         
                     var vInspectorEmail = inspInspectorObj.getEmail();
+
+                    if (emailAddress == "" || emailAddress == null)
+                    {
+                        emailAddress = vInspectorEmail;
+                        logDebug("No contact email is found. Use inspector email: " + vInspectorEmail);
+                    }
+                    
                     logDebug("vInspectorEmail is: " + vInspectorEmail);
                     addParameter(emailParams, "$$email$$", vInspectorEmail);       
                 }
