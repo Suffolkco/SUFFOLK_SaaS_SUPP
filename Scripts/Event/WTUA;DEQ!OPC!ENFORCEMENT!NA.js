@@ -278,7 +278,7 @@ if (wfTask == "Enforcement Request Review")
             var envParameters = aa.util.newHashMap();
             envParameters.put("CapId", capId);
             envParameters.put("reportToSend", reportToSend);
-            aa.runAsyncScript("DEQ_ENF_GENERATE_NOPH_REPORTS", envParameters);
+            //aa.runAsyncScript("DEQ_ENF_GENERATE_NOPH_REPORTS", envParameters);
                 }
         /*
         not sure why this code is here, as the above code should do the same thing
@@ -315,7 +315,7 @@ if (wfTask == "Enforcement Request Review")
     if (wfStatus == "Warning Letter Sent")
     {
         //need to confirm that this report information is correct, below:
-        generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
+        //generateReportBatch(capId, "OPC Warning Letter", 'DEQ', reportParams);
         //set task due date to the date found in the TSI Hearing Date on the Formal Hearing task
         //addStdConditionStrict("DEQ", "Notice of Hearing", capId);
         //Gets siblings by looking at the parent 
