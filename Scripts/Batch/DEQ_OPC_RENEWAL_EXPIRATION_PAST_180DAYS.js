@@ -317,8 +317,7 @@ function mainProcess()
 													{														
 														logDebug("Sending email to contact: " + conEmail2); 
 														sendNotification("", conEmail2, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL_180_DAYS", emailParams, null);
-													}
-																			
+													}																			
 												}	
 
 												var lpEmail = "";												

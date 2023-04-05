@@ -251,8 +251,7 @@ function mainProcess()
 													{
 														logDebug("Sending email to: " + lpEmail); 
 														sendNotification("", lpEmail, "", "DEQ_OPC_PERMIT_TO_CONSTRUCT_RENEWAL", lpEmailParams, null);
-													}                                                
-																							
+													}   									
 												}
 											}
 
