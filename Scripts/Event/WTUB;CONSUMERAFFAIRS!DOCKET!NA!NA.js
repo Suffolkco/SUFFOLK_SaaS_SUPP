@@ -137,7 +137,7 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
     var a76 =  AInfo["A76 Adjournment Letter"]*/
     var a63 = loadTaskSpecific(wfTask, "A63 Unlicensed");
     var a64 = loadTaskSpecific(wfTask, "A64 Unlicensed");
-    var a65 = loadTaskSpecific(wfTask, "A65 Unlicensed");
+    var a65 = loadTaskSpecific(wfTask, "A65 Licensed");
     var a66 =loadTaskSpecific(wfTask, "A66 Unlicensed");
     var a67 = loadTaskSpecific(wfTask, "A67 Adjournment Letter");
     var a67a = loadTaskSpecific(wfTask, "A67a COVID19 Adjournment Letter");
