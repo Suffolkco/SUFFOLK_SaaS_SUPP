@@ -9,12 +9,17 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 	var complaintNumber = loadTaskSpecific(wfTask, "Complaint Number");
 	logDebug("licenseNumber TSI: " + licenseNumber);
 	logDebug("complaintNumber TSI: " + complaintNumber);
+	
+	
 	// License is always the parent. Link Docket and Complaint Number as the child of license
 	if (licenseNumber != null || complaintNumber != null)
 	{		
 		// Map the TSI to ASI as well.
 		editAppSpecific("License Number", licenseNumber, capId);	
 		editAppSpecific("Complaint Number", complaintNumber, capId);
+
+		logDebug("license number ASI 1: " + loadAppSpecific("License Number"));
+		logDebug("complaint number ASI 1: " + loadAppSpecific("Complaint Number"));
 
 		include("CA_LINK_LICENSE_NUMBER");
 	}
