@@ -135,22 +135,22 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
     var a74 =  AInfo["A74 Adjournment Letter"]
     var a75 =  AInfo["A75 Adjournment Letter"]
     var a76 =  AInfo["A76 Adjournment Letter"]*/
-    
-    var a63 = loadTaskSpecific(wfTask, "A63 Unlicensed");
-    var a64 = loadTaskSpecific(wfTask, "A64 Unlicensed");
-    var a65 = loadTaskSpecific(wfTask, "A65 Licensed");
-    var a66 =loadTaskSpecific(wfTask, "A66 Unlicensed");
-    var a67 = loadTaskSpecific(wfTask, "A67 Adjournment Letter");
-    var a67a = loadTaskSpecific(wfTask, "A67a COVID19 Adjournment Letter");
-    var a68 = loadTaskSpecific(wfTask, "A68 Adjournment Letter");
-    var a69 = loadTaskSpecific(wfTask, "A69 Notification");
-    var a70 = loadTaskSpecific(wfTask, "A70 Notification");
-    var a71 = loadTaskSpecific(wfTask, "A71 Notification");
-    var a72 = loadTaskSpecific(wfTask, "A72 Notification");
-    var a73 = loadTaskSpecific(wfTask, "A73 Adjournment Letter");
-    var a74 = loadTaskSpecific(wfTask, "A74 Adjournment Letter");
-    var a75 = loadTaskSpecific(wfTask, "A75 Adjournment Letter");
-    var a76 = loadTaskSpecific(wfTask, "A76 Adjournment Letter");
+
+    var a63 = AInfo["Updated.A63 Unlicensed"];
+    var a64 = AInfo["Updated.A64 Unlicensed"];
+    var a65 = AInfo["Updated.A65 Licensed"];
+    var a66 = AInfo["Updated.A66 Unlicensed"];
+    var a67 = AInfo["Updated.A67 Adjournment Letter"];
+    var a67a = AInfo["Updated.A67a COVID19 Adjournment Letter"];
+    var a68 = AInfo["Updated.A68 Adjournment Letter"];
+    var a69 = AInfo["Updated.A69 Notification"];
+    var a70 = AInfo["Updated.A70 Notification"];
+    var a71 = AInfo["Updated.A71 Notification"];
+    var a72 = AInfo["Updated.A72 Notification"];
+    var a73 = AInfo["Updated.A73 Adjournment Letter"];
+    var a74 = AInfo["Updated.A74 Adjournment Letter"];
+    var a75 = AInfo["Updated.A75 Adjournment Letter"];
+    var a76 = AInfo["Updated.A76 Adjournment Letter"];
 
 	if (a63 == 'CHECKED' || a64 == 'CHECKED' || a65 == 'CHECKED' || a66 == 'CHECKED' || a67 == 'CHECKED' || a67a == 'CHECKED' ||
     a68 == 'CHECKED' || a69 == 'CHECKED' || a70 == 'CHECKED' || a71 == 'CHECKED'
