@@ -183,13 +183,14 @@ else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Defa
     }
 
     // Check if Hearing custom fields have been filled in
-    var vendorAttorn =  AInfo["Vendor Attorney Present"]
-	var conAttorn =  AInfo["Consumer Attorney Present"]
-	var vp =  AInfo["Vendor Present"]
-    var cp =  AInfo["Consumer Present"]
-    var vw =  AInfo["Vendor Witnessess"]
-    var cw = AInfo["Consumer Witnesses"]
-    var tu = AInfo["Translator Used"]
+    /*
+    var vendorAttorn =  AInfo["Update.Vendor Attorney Present"]
+	var conAttorn =  AInfo["Update.Consumer Attorney Present"]
+	var vp =  AInfo["Update.Vendor Present"]
+    var cp =  AInfo["Update.Consumer Present"]
+    var vw =  AInfo["Update.Vendor Witnessess"]
+    var cw = AInfo["Update.Consumer Witnesses"]
+    var tu = AInfo["Update.Translator Used"]
 
     if(vendorAttorn == null || conAttorn == null || vp == null || cp == null || vw == null || cw == null || tu == null)
     {
@@ -197,7 +198,7 @@ else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Defa
         showMessage = true;
         comment("Hearing Information section(Vendor/Consumer/Attorney/Translator) in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
         
-    }
+    } */
 
 }
 

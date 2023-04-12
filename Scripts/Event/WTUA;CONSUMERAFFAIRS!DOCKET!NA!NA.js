@@ -142,10 +142,28 @@ else if (wfTask == "Hearing")
 	if (wfStatus == "Withdrawn" || wfStatus == "AOD" || wfStatus == "Licensed Waiver" || wfStatus == "Unlicensed Waiver")
 	{	
 		var staffEmailsToSend = lookup("DCA_Docket_Email_List", "All");   	
-		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_HEARING", emailParams, null);
-		
+		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_HEARING", emailParams, null);	
 		
 	}
+
+	// Map All TSI to ASI as well.
+	editAppSpecific("Vendor Attorney Present", loadTaskSpecific(wfTask, "Vendor Attorney Present"), capId);	
+	editAppSpecific("Consumer Attorney Present", loadTaskSpecific(wfTask, "Consumer Attorney Present"), capId);
+	editAppSpecific("Vendor Present", loadTaskSpecific(wfTask, "Vendor Present"), capId);	
+	editAppSpecific("Consumer Present", loadTaskSpecific(wfTask, "Consumer Present"), capId);	
+	editAppSpecific("Vendor Witnesses", loadTaskSpecific(wfTask, "Vendor Witnesses"), capId);
+	editAppSpecific("Consumer Witnessess", loadTaskSpecific(wfTask, "Consumer Witnessess"), capId);	
+	editAppSpecific("Translator Used", loadTaskSpecific(wfTask, "Translator Used"), capId);
+
+	editAppSpecific("Waiver Due Date Amount", loadTaskSpecific(wfTask, "Waiver Due Date Amount"), capId);
+	editAppSpecific("Number of Default Hearings", loadTaskSpecific(wfTask, "Number of Default Hearings"), capId);
+	editAppSpecific("Waiver Due Date License", loadTaskSpecific(wfTask, "Waiver Due Date License"), capId);
+	editAppSpecific("Settlement Due Date", loadTaskSpecific(wfTask, "Settlement Due Date"), capId);
+	editAppSpecific("Number of Full Hearings", loadTaskSpecific(wfTask, "Number of Full Hearings"), capId);
+	editAppSpecific("AOD Date Signed", loadTaskSpecific(wfTask, "AOD Date Signed"), capId);
+	editAppSpecific("AOD Date Due Amount", loadTaskSpecific(wfTask, "AOD Date Due Amount"), capId);
+
+
 }
 //DOCKET # 39 Script to assign the record to the director automatically if the status is set to “Review for Amendment”
 else if (wfStatus == "Review for Amendment")
