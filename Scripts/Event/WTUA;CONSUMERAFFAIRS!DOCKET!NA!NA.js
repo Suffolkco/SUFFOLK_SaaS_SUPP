@@ -4,14 +4,54 @@ showDebug = true;
 // DOCKET #19: Look up custom field entry to relate Complaints and License Records
 if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 {
-	// Link Complaint and License Number
-	include("CA_LINK_LICENSE_NUMBER");
+
+	var licenseNumber = loadTaskSpecific(wfTask, "License Number");
+	var complaintNumber = loadTaskSpecific(wfTask, "Complaint Number");
+	logDebug("licenseNumber TSI: " + licenseNumber);
+	logDebug("complaintNumber TSI: " + complaintNumber);
+	// License is always the parent. Link Docket and Complaint Number as the child of license
+	if (licenseNumber != null || complaintNumber != null)
+	{		
+		// Map the TSI to ASI as well.
+		editAppSpecific("License Number", licenseNumber, capId);	
+		editAppSpecific("Complaint Number", complaintNumber, capId);
+
+		include("CA_LINK_LICENSE_NUMBER");
+	}
+
+	// Map All TSI to ASI as well.
+	editAppSpecific("Hearing Date", loadTaskSpecific(wfTask, "Hearing Date"), capId);	
+	editAppSpecific("Hearing Time", loadTaskSpecific(wfTask, "Hearing Time"), capId);
+
+	editAppSpecific("Pre-Hearing Conference Date", loadTaskSpecific(wfTask, "Pre-Hearing Conference Date"), capId);	
+	editAppSpecific("Pre-Hearing Conference Time", loadTaskSpecific(wfTask, "Pre-Hearing Conference Time"), capId);
+
+	
+	editAppSpecific("License Expiration Date", loadTaskSpecific(wfTask, "License Expiration Date"), capId);
+
+	editAppSpecific("Payment Due Date", loadTaskSpecific(wfTask, "Payment Due Date"), capId);	
+	editAppSpecific("License Obtained Due Date", loadTaskSpecific(wfTask, "License Obtained Due Date"), capId);
+
+	
 
 
 	//DOCKET #29: Update License Status
-	// Get license Number
-	include("CA_UPDATE_LICENSE_STATUS");
+	if (licenseNumber != null)
+	{
+		var licenseNumber = getAppSpecific("License Number", capId);
+		logDebug("licenseNumber ASI: " + licenseNumber);
 
+		// This is pulling the license number from ASI License Number which we have already mapped.
+		include("CA_UPDATE_LICENSE_STATUS");
+		var licenseStatus = getAppSpecific("License Status", capId);
+		logDebug("licenseStatus ASI: " + licenseStatus);
+
+		editTaskSpecific(wfTask, "License Status", licenseStatus, capId);
+
+		// The CA_UPDATE_LICENSE_STATUS already set the ASI field.
+		//editAppSpecific("License Status", loadTaskSpecific(wfTask, "License Status"), capId);	
+
+	}
 	
 
 	//DOCKET #11: Add a meeting in calendar based on the hearing time and date
@@ -37,10 +77,13 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
    //logDebug("Amount of swimming pools on this record are: " + swimPools.length);
    
    var complaintNumber = getAppSpecific("Complaint Number", capId);
-		
+   logDebug("complaintNumber: " + complaintNumber);
 	// License as Parent -> Complaint -> Violation
 	var capComplaintResult = aa.cap.getCapID(complaintNumber);
-	
+
+	cmpCapId = getApplication(complaintNumber);
+
+	logDebug("cmpCapId " + cmpCapId);
    for (c in cheatSheet)
    {
 	
@@ -60,7 +103,6 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   // Only if they enable the flag and the field is empty
 	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
 	   {
-			
 			if (capComplaintResult.getSuccess()) {
 				cmpCapId = capComplaintResult.getOutput();		
 				logDebug("cmpCapId: " + cmpCapId);			
@@ -138,6 +180,7 @@ else if (wfTask == "Director Review" && wfStatus == "Complete")
 	var startTime = startDate.getTime();
 	var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
 
+	editTaskSpecific("Director Review", "Payment Due Date", todayDate);
 	editAppSpecific("Payment Due Date", todayDate);
 }
 // DOCKET #42: Email the vendor the task has been set to 'Complete'
@@ -163,6 +206,57 @@ else if (wfTask == 'Payment')
 
 	}
 } 
+
+function loadTaskSpecific(wfName,itemName)  // optional: itemCap
+{
+	var updated = false;
+	var i=0;
+	itemCap = capId;
+	if (arguments.length == 4) itemCap = arguments[3]; // use cap ID specified in args
+	//
+	// Get the workflows
+	//
+	var workflowResult = aa.workflow.getTaskItems(itemCap, wfName, null, null, null, null);
+	if (workflowResult.getSuccess())
+		wfObj = workflowResult.getOutput();
+	else
+		{ logDebug("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage()); return false; }
+
+	//
+	// Loop through workflow tasks
+	//
+	for (i in wfObj)
+		{
+		fTask = wfObj[i];
+		stepnumber = fTask.getStepNumber();
+		processID = fTask.getProcessID();
+		if (wfName.equals(fTask.getTaskDescription())) // Found the right Workflow Task
+			{
+		TSIResult = aa.taskSpecificInfo.getTaskSpecifiInfoByDesc(itemCap,processID,stepnumber,itemName);
+			if (TSIResult.getSuccess())
+				{
+				var TSI = TSIResult.getOutput();
+				if (TSI != null)
+					{
+					var TSIArray = new Array();
+					TSInfoModel = TSI.getTaskSpecificInfoModel();
+					var readValue = TSInfoModel.getChecklistComment();
+					return readValue;
+					}
+				else
+					logDebug("No task specific info field called "+itemName+" found for task "+wfName);
+					return null
+				}
+			else
+				{
+				logDebug("**ERROR: Failed to get Task Specific Info objects: " + TSIResult.getErrorMessage());
+				return null
+				}
+			}  // found workflow task
+		} // each task
+		return null
+}
+
 
 function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
 {
