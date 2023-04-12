@@ -27,6 +27,9 @@ if (publicUser)
   }
   else
   {
+    /*
+opted not to use parcel search method and just to link via ASI entry instead - Ryan Littlefield, 4/12/2023, per Jen Freese
+
     var parcelTest = aa.parcel.getParcelByCapId(capId, null)
     logDebug("parcelTest = " + parcelTest);
     logDebug("parcelTest output = " + parcelTest.getOutput());
@@ -88,12 +91,12 @@ if (publicUser)
         iaCap = relCap;
       }
     }
-
+*/
     logDebug("foundIA = " + foundIA);
-    if (foundIA)
+    if (iaNumber != "")
     {
-      logDebug("We found a matching IA record: " + iaCap);
-      addParent(iaCap);
+      logDebug("We found a matching IA record: " + iaNumber);
+      addParent(iaNumber);
     }
   }
 }
