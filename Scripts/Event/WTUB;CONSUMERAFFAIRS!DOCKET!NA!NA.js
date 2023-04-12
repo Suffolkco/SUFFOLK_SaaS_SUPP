@@ -2,15 +2,10 @@
 
 if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 {		
-
-    
-    AInfo = new Array();
-    loadTaskSpecific(AInfo);
-
     logDebug("*** " + AInfo["License Number"]);
     logDebug("*** " + AInfo["Complaint Number"]);
 
-    var licenseNumber = loadTaskSpecific(wfTask, "License Number");
+    var licenseNumber = AInfo["License Number"];
     licenseCapId = getApplication(licenseNumber);
     if (licenseCapId)
     {
@@ -23,7 +18,7 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
         comment("The License Number entered is invalid. Please enter a valid License Number.");
 	}
 
-	var complaintNumber = loadTaskSpecific(wfTask, "Complaint Number");
+	var complaintNumber = AInfo["Complaint Number"];
     cmpCapId = getApplication(complaintNumber);
     if (!cmpCapId)   
     {
