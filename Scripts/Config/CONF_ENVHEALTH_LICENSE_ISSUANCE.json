@@ -15,7 +15,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Health Program/Food Protection/Permit",
-          "issuedStatus": "Active",
+          "issuedStatus": "Active, billable",
           "copyCustomFields": [
             "ALL"
           ],
@@ -27,10 +27,12 @@
           "copyContacts": [
             "ALL"
           ],
-          "createLP": false,
+          "copyRecordName": true,
+          "copyRecordDetails": true,
+          "createLP": true,
           "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
+          "refLPType": "Food Facility",
+          "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
         "postScript": ""
@@ -53,7 +55,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Health Program/Mobile/Permit",
-          "issuedStatus": "Active",
+          "issuedStatus": "Active, billable",
           "copyCustomFields": [
             "ALL"
           ],
@@ -65,10 +67,12 @@
           "copyContacts": [
             "ALL"
           ],
-          "createLP": false,
+          "copyRecordName": true,
+          "copyRecordDetails": true,
+          "createLP": true,
           "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
+          "refLPType": "Food Facility",
+          "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
         "postScript": ""
@@ -94,7 +98,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Temporary Event/Annual Molluscan Shellfish/Permit",
-          "issuedStatus": "Active",
+          "issuedStatus": "Active, billable",
           "copyCustomFields": [
             "ALL"
           ],
@@ -106,10 +110,12 @@
           "copyContacts": [
             "ALL"
           ],
-          "createLP": false,
+          "copyRecordName": true,
+          "copyRecordDetails": true,
+          "createLP": true,
           "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
+          "refLPType": "Food Facility",
+          "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
         "postScript": ""
@@ -134,7 +140,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Temporary Event/Annual Sampling/Permit",
-          "issuedStatus": "Active",
+          "issuedStatus": "Active, billable",
           "copyCustomFields": [
             "ALL"
           ],
@@ -146,10 +152,12 @@
           "copyContacts": [
             "ALL"
           ],
-          "createLP": false,
+          "copyRecordName": true,
+          "copyRecordDetails": true,
+          "createLP": true,
           "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
+          "refLPType": "Food Facility",
+          "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
         "postScript": ""
@@ -175,7 +183,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Temporary Event/NA/NA",
-          "issuedStatus": "Active",
+          "issuedStatus": "Active, billable",
           "copyCustomFields": [
             "ALL"
           ],
@@ -187,10 +195,12 @@
           "copyContacts": [
             "ALL"
           ],
-          "createLP": false,
+          "copyRecordName": true,
+          "copyRecordDetails": true,
+          "createLP": true,
           "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
+          "refLPType": "Food Facility",
+          "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
         "postScript": ""
@@ -216,7 +226,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Temporary Event/NA/NA",
-          "issuedStatus": "Active",
+          "issuedStatus": "Active, billable",
           "copyCustomFields": [
             "ALL"
           ],
@@ -228,10 +238,12 @@
           "copyContacts": [
             "ALL"
           ],
-          "createLP": false,
+          "copyRecordName": true,
+          "copyRecordDetails": true,
+          "createLP": true,
           "licenseTable": "",
-          "refLPType": "Business",
-          "contactType": "Applicant",
+          "refLPType": "Food Facility",
+          "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
         "postScript": ""

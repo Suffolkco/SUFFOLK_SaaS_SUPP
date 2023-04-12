@@ -30,7 +30,8 @@
   "InspectionResultSubmitAfter": {
     "StandardScripts": [
       "STDBASE_INSPECTION_AUTOMATION",
-      "STDBASE_SEND_CONTACT_EMAILS"
+      "STDBASE_SEND_CONTACT_EMAILS",
+      "STDBASE_RUNREPORTANDATTACHASYNC"
     ]
   },
   "InspectionScheduleAfter": {
@@ -46,7 +47,8 @@
   "V360InspectionResultSubmitAfter": {
     "StandardScripts": [
       "STDBASE_INSPECTION_AUTOMATION",
-      "STDBASE_SEND_CONTACT_EMAILS"
+      "STDBASE_SEND_CONTACT_EMAILS",
+      "STDBASE_RUNREPORTANDATTACHASYNC"
     ]
   },
   "Pageflow": {

@@ -76,31 +76,18 @@ function mainProcess() {
     logDebug("Billing month for this billing record is: " + billingMonth);
     //program elements array
     var elementArray = new Array();
-    //get program elements from billing range asit
-    for (var b in BILLINGRANGE){
+// Get program elements from billing range
+for (var b in BILLINGRANGE) {
     var thisRow = BILLINGRANGE[b];
     var startRange = String(thisRow["Program Element Start"]).substr(0, 4);
     var endRange = String(thisRow["Program Element End"]).substr(0, 4);
-    var isNumber = true;
-    for (var i = 0; i < 4; i++) {
-        if (isNaN(startRange[i])) {
-            isNumber = false;
-            break;
-        }
+
+    var currentValue = startRange;
+    while (compareValues(currentValue, endRange) <= 0) {
+        elementArray.push(currentValue);
+        currentValue = incrementValue(currentValue);
     }
-    if (isNumber) {
-        var index = Number(startRange);
-        while (index <= Number(endRange)){
-            elementArray.push(index);
-            index++;
-        }
-    } else {
-        while (startRange <= endRange) {
-            elementArray.push(startRange);
-            startRange = String.fromCharCode(startRange.charCodeAt(0) + 1);
-        }
-    }
-	}
+}
     //get program elements from program element key asit
     for (var p in PROGRAMELEMENTKEY){
         var thisProgram = String(PROGRAMELEMENTKEY[p]["Program Element Key"]);
@@ -257,67 +244,45 @@ function getFacilitiesByAnnDate(annDate){
         return new Array();
     }
 }
-function addPermitToSet(itemCap){
+function addPermitToSet(itemCap) {
     capId = itemCap;
     var cap = aa.cap.getCap(capId).getOutput();
     altId = capId.getCustomID();
     var capStatus = getAppStatus();
-    if(!matches(recordStatus,undefined,null,"")){
-        if (!recordStatus.equalsIgnoreCase(capStatus)){
+    if (!matches(recordStatus, undefined, null, "")) {
+        if (!recordStatus.equalsIgnoreCase(capStatus)) {
             logDebug(altId + ": is not " + recordStatus + " status, skipping...");
             return false;
         }
     }
-    if ("CHECKED".equals(annBilling)){
-        var setName = billingParamRec.getCustomID();
-        var set = new capSet(setName, setName, "Billing");
-        set.type = "Billing";
-        set.status = "Open";
+    var nextBillingDate = getAppSpecific("Next Billing Date") || false;
+    if (!nextBillingDate) {
+        logDebug(altId + ": does not have a billing date, skipping...");
+        return false;
+    }
+    logDebug(altId + ": Got next billing date of " + nextBillingDate);
+    var thisBillDate = new Date(nextBillingDate);
+    var thisBillDateIndex = Number(thisBillDate.getMonth());
+    var currentYear = new Date().getFullYear();
+    if (thisBillDateIndex != billingMonthIndex || thisBillDate.getFullYear() != currentYear) {
+        logDebug(altId + ": has a billing month(" + (thisBillDateIndex + 1) + ") not equal to the billing parameter bill month(" + (billingMonthIndex + 1) + ") or is not in the current year");
+        return false;
+    }
+    var setName = billingParamRec.getCustomID();
+    var set = new capSet(setName, setName, "Billing");
+    if (!isCapExists(set.setId, capId)) {
+        set.add(capId);
         set.update();
-        set.refresh(); 
-        if (!isCapExists(set.setId, capId)){
-            set.add(capId);
-            set.update();
-            logDebug(altId +": added to set " + setName);
-        }
-        resultWorkflowTask("Renewal Set Processing", "Set Review in Progress", "", "", null, billingParamRec);
-        var taskAssignedTo = getUserAssignedToTask(billingParamRec, "Renewal Set Processing");
-        if (taskAssignedTo && !isBlank(taskAssignedTo.getEmail())){
-            var template = "EH_BILLING_TASK_UPDATE";
-            var params = aa.util.newHashtable();
-            addParameter(params, "$$taskName$$", "Renewal Set Processing");
-            addParameter(params, "$$taskStatus$$", "Set Review in Progress");
-            sendNotification("", taskAssignedTo.getEmail(), "", template, params, new Array());
-        }
-    }else{
-        var nextBillingDate = getAppSpecific("Next Billing Date") || false;
-        if (!nextBillingDate){
-            logDebug(altId + ": does not have a billing date, skipping...");
-            return false;
-        }
-        logDebug(altId + ": Got next billing date of " + nextBillingDate);
-        var thisBillDate = new Date(nextBillingDate);
-        var thisBillDateIndex = Number(thisBillDate.getMonth());
-        if (thisBillDateIndex != billingMonthIndex){
-            logDebug(altId + ": has a billing month(" + (thisBillDateIndex + 1) + ") not equal to the billing parameter bill month(" + (billingMonthIndex + 1) +")");
-            return false;
-        }
-        var setName = billingParamRec.getCustomID();
-        var set = new capSet(setName, setName, "Billing");
-        if (!isCapExists(set.setId, capId)){
-            set.add(capId);
-            set.update();
-            logDebug(altId +": added to set " + setName);
-        }
-        resultWorkflowTask("Renewal Set Processing", "Set Review in Progress", "", "", null, billingParamRec);
-        var taskAssignedTo = getUserAssignedToTask(billingParamRec, "Renewal Set Processing");
-        if (taskAssignedTo && !isBlank(taskAssignedTo.getEmail())){
-            var template = "EH_BILLING_TASK_UPDATE";
-            var params = aa.util.newHashtable();
-            addParameter(params, "$$taskName$$", "Renewal Set Processing");
-            addParameter(params, "$$taskStatus$$", "Set Review in Progress");
-            sendNotification("", taskAssignedTo.getEmail(), "", template, params, new Array());
-        }
+        logDebug(altId + ": added to set " + setName);
+    }
+    resultWorkflowTask("Renewal Set Processing", "Set Review in Progress", "", "", null, billingParamRec);
+    var taskAssignedTo = getUserAssignedToTask(billingParamRec, "Renewal Set Processing");
+    if (taskAssignedTo && !isBlank(taskAssignedTo.getEmail())) {
+        var template = "EH_BILLING_TASK_UPDATE";
+        var params = aa.util.newHashtable();
+        addParameter(params, "$$taskName$$", "Renewal Set Processing");
+        addParameter(params, "$$taskStatus$$", "Set Review in Progress");
+        sendNotification("", taskAssignedTo.getEmail(), "", template, params, new Array());
     }
 }
 function getAppStatus(){
@@ -348,4 +313,26 @@ function getUserAssignedToTask(vCapId,taskName){
         return false;
     }
 }
+function incrementChar(char) {
+    var code = char.charCodeAt(0);
+    return String.fromCharCode(code + 1);
+}
+
+function compareValues(a, b) {
+    var alphaNumericRegex = /^[a-zA-Z0-9]*$/;
+    if (alphaNumericRegex.test(a) && alphaNumericRegex.test(b)) {
+        var numericA = parseInt(a, 36);
+        var numericB = parseInt(b, 36);
+        return numericA - numericB;
+    } else {
+        return a.localeCompare(b);
+    }
+}
+
+function incrementValue(value) {
+    var numericValue = parseInt(value, 36);
+    numericValue++;
+    return numericValue.toString(36).toUpperCase();
+}
+
 //#endregion

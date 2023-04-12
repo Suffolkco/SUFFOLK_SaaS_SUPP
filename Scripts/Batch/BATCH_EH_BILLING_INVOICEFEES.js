@@ -160,10 +160,16 @@ function mainProcess(){
         var nextJSDate = new Date(nextDateStr);
 		var setCap = aa.cap.getCap(setMembers[b].ID1, setMembers[b].ID2, setMembers[b].ID3).getOutput();
 		var EnvhProgramCapId = setCap.getCapID();
+		
+		// Load the AInfo values for the set member
+		var AInfo = new Array();
+		loadAppSpecific(AInfo, EnvhProgramCapId);
+		
+		
         //Update App Specific
-        showDebug = false;
-        editAppSpecific("Next Billing Date",aa.util.formatDate(nextJSDate, "MM/dd/YYYY"),EnvhProgramCapId);
-        showDebug = true;
+        //showDebug = false;
+        //editAppSpecific("Next Billing Date",aa.util.formatDate(nextJSDate, "MM/dd/YYYY"),EnvhProgramCapId);
+        //showDebug = true;
         //While here in this loop, update Invoice Date
         //if custom field Applied Date is  populated, use that date as the invoice date
         //else use batch run date Will need to be reset
@@ -200,21 +206,28 @@ function mainProcess(){
         rParams.put("p1Value",facilityCapId.getCustomID());
         rParams.put("p2Value","0");
         rParams.put("p3Value","9999999999");
-        rFile = generateReportLocal(facilityCapId,"5005 Invoice Statement SSRS","EnvHealth",rParams);
+        rFile = generateReportLocal(facilityCapId,"0256 Account Statement By Record ID","EnvHealth",rParams);
         if (rFile) {
             var rFiles = new Array();
             rFiles.push(rFile);
         }
-        // Email Params
-        var eParams = aa.util.newHashtable();
-        eParams.put("$$altID$$",facilityCapId.getCustomID());
-        if(getAppSpecific("Send Email",billingParamId) == "CHECKED" && !matches(accntReceivEmail,null,undefined,"")){
-            // Emailing Report
-            sendNotification(null,accntReceivEmail,"","EH_BILLING_NOTIFICATION",eParams,[String(rFile)],facilityCapId);
-        }else if(getAppSpecific("Send Email",billingParamId) != "CHECKED"){
-            // Printing Report
-            runReportAttach(facilityCapId,"5005 Invoice Statement SSRS",facilityCapId.getCustomID());
-        }
+		// Email Params
+		var PIN = AInfo["PIN Number"];
+		var expirationDate = AInfo["To Date"];
+		var eParams = aa.util.newHashtable();
+		addParameter(eParams, "$$altID$$", EnvhProgramCapId.getCustomID());
+		//addParameter(eParams, "$$capAlias$$", cap.getCapType().getAlias());
+		addParameter(eParams, "$$expirDate$$", expirationDate);
+		addParameter(eParams, "$$PINNumber$$", PIN);
+		addACAUrlsVarToEmail(eParams, EnvhProgramCapId);
+
+		if (getAppSpecific("Send Email", billingParamId) == "CHECKED" && !matches(accntReceivEmail, null, undefined, "")) {
+			// Emailing Report
+			sendNotification(null, accntReceivEmail, "", "PHP_PERMIT_ABOUT_TO_EXPIRE", eParams, [String(rFile)], facilityCapId);
+		} else if (getAppSpecific("Send Email", billingParamId) != "CHECKED") {
+			// Printing Report
+			runReportAttach(facilityCapId, "0256 Account Statement By Record ID", facilityCapId.getCustomID());
+		}
     }
     if(!matches(EmailNotifyTo,null,undefined,"")){
         aa.sendMail("NoReply@accela.com",EmailNotifyTo, "", "Batch Job - EH Monthly Billing Invoice Fees", emailText);
@@ -483,5 +496,61 @@ function getParentLOC(vCapId) {
 	}else{ 
 		logDebug( "**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
 		return false;
+	}
+}
+
+function addACAUrlsVarToEmail(vEParams, capId) {
+    // Get base ACA site from standard choices
+    var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+    acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+
+    // Save Base ACA URL
+    addParameter(vEParams, "$$acaURL$$", acaSite);
+
+    // Save Record Direct URL
+    addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl(capId));
+
+    var paymentUrl = vEParams.get("$$acaRecordURL$$");
+    paymentUrl = paymentUrl.replace("type=1000", "type=1009");
+    addParameter(vEParams, "$$acaPaymentUrl$$", paymentUrl);
+}
+
+function getACAUrl(capId) {
+    itemCap = capId;
+    if (arguments.length == 1) itemCap = arguments[0];
+    var acaUrl = "";
+    var id1 = capId.getID1();
+    var id2 = capId.getID2();
+    var id3 = capId.getID3();
+    var cap = aa.cap.getCap(capId).getOutput().getCapModel();
+
+    acaUrl += "/urlrouting.ashx?type=1000";
+    acaUrl += "&Module=" + cap.getModuleName();
+    acaUrl += "&capID1=" + id1 + "&capID2=" + id2 + "&capID3=" + id3;
+    acaUrl += "&agencyCode=" + aa.getServiceProviderCode();
+    return acaUrl;
+}
+
+function loadAppSpecific(thisArr) {
+	// 
+	// Returns an associative array of App Specific Info
+	// Optional second parameter, cap ID to load from
+	//
+	
+var itemCap = capId;
+if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
+
+	var appSpecInfoResult = aa.appSpecificInfo.getByCapID(itemCap);
+if (appSpecInfoResult.getSuccess())
+	{
+	var fAppSpecInfoObj = appSpecInfoResult.getOutput();
+
+	for (loopk in fAppSpecInfoObj)
+		{
+		if (useAppSpecificGroupName)
+			thisArr[fAppSpecInfoObj[loopk].getCheckboxType() + "." + fAppSpecInfoObj[loopk].checkboxDesc] = fAppSpecInfoObj[loopk].checklistComment;
+		else
+			thisArr[fAppSpecInfoObj[loopk].checkboxDesc] = fAppSpecInfoObj[loopk].checklistComment;
+		}
 	}
 }
