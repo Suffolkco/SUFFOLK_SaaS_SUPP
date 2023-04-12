@@ -3,9 +3,15 @@
 if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 {		
 
-    licenseNumber = getAppSpecific("License Number", capId)
-    licenseCapId = getApplication(licenseNumber);
+    
+    AInfo = new Array();
+    loadTaskSpecific(AInfo);
 
+    logDebug("*** " + AInfo["License Number"]);
+    logDebug("*** " + AInfo["Complaint Number"]);
+
+    var licenseNumber = loadTaskSpecific(wfTask, "License Number");
+    licenseCapId = getApplication(licenseNumber);
     if (licenseCapId)
     {
         // Valid license number
@@ -14,11 +20,21 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
     {
         cancel = true;
         showMessage = true;
-        comment("License Number in ASI/Custom Field is not valid. Please enter valid License Number.");
+        comment("The License Number entered is invalid. Please enter a valid License Number.");
 	}
 
+	var complaintNumber = loadTaskSpecific(wfTask, "Complaint Number");
+    cmpCapId = getApplication(complaintNumber);
+    if (!cmpCapId)   
+    {
+        cancel = true;
+        showMessage = true;
+        comment("The Complaint Number entered is invalid. Please enter a valid Complaint Number.");
+	}
+
+
     // DOCKET - 23/30: Custom Field required fields
-    if (getAppSpecific("Consumer Attorney Present", capId) == null || 
+    /*if (getAppSpecific("Consumer Attorney Present", capId) == null || 
     getAppSpecific("Vendor Present", capId) == null || 
     getAppSpecific("Consumer Present", capId) == null || 
     getAppSpecific("Vendor Witnesses", capId) == null || 
@@ -30,10 +46,10 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
         showMessage = true;
         comment("Hearing section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
         
-    }
+    }*/
 }
 // DOCKET #12: Block the workflow task "Create Violation Cheat Sheet" from proceeding if all documents have not been attached.
-else if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
+if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
 {
     exhibitA = determineDocumentAttached("Contract");
     exhibitB = determineDocumentAttached("Canceled Checks");
@@ -54,11 +70,27 @@ else if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
     {
         cancel = true;
         showMessage = true;
-        comment("All Exhibit document types have not been attached.");
+       
+        comment("All Exhibit document types have not been attached: ");
+        if (!exhibitA) {comment("Missing Exhibit document: Contract");}
+        if (!exhibitB) {comment("Missing Exhibit document: Canceled Checks");}
+        if (!exhibitC) {comment("Missing Exhibit document: Affidavit");}
+        if (!exhibitD) {comment("Missing Exhibit document: DMV Search");}
+        if (!exhibitE) {comment("Missing Exhibit document: TLO Search");}
+        if (!exhibitF) {comment("Missing Exhibit document: NYS DOS Search");}
+        if (!exhibitG) {comment("Missing Exhibit document: DBA Search Cert. County Clerk");}
+        if (!exhibitH) {comment("Missing Exhibit document: Consumer Complaint Form");}
+        if (!exhibitI) {comment("Missing Exhibit document: Judgment");}
+        if (!exhibitJ) {comment("Missing Exhibit document: License Search Printout");}
+        if (!exhibitK) {comment("Missing Exhibit document: 2nd Vendor Estimates");}
+        if (!exhibitL) {comment("Missing Exhibit document: Past NOD for 2nd Counts");}
+        if (!exhibitM) {comment("Town Building Dept. Inspection Certificates");}
+        
     }
     
 }
 // DOCKET-59: Block the workflow if the hearing information has not been filled in
+/*
 else if (wfTask == "Create Violations" && wfStatus == "Complete")
 {
     if (getAppSpecific("Hearing Date", capId) == null || 
@@ -72,7 +104,7 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
         comment("Violation Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
         
     }
-}
+}*/
 // DOCKET#57: Block workflow update on Hearing Report task if there is no hearing officer report
 else if (wfTask == "Hearing Report" && wfStatus == "Complete")
 {
@@ -100,7 +132,7 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
     }
 
     // DOCKET #9: lBlock letter has not been mailed
-    var a63 =  AInfo["A63 Unlicensed"]
+    /*var a63 =  AInfo["A63 Unlicensed"]
 	var a64 =  AInfo["A64 Unlicensed"]
 	var a65 =  AInfo["A65 Unlicensed"]
     var a66 =  AInfo["A66 Unlicensed"]
@@ -114,7 +146,23 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
     var a73 =  AInfo["A73 Adjournment Letter"]
     var a74 =  AInfo["A74 Adjournment Letter"]
     var a75 =  AInfo["A75 Adjournment Letter"]
-    var a76 =  AInfo["A76 Adjournment Letter"]
+    var a76 =  AInfo["A76 Adjournment Letter"]*/
+
+    var a63 = loadTaskSpecific(wfTask, "A63 Unlicensed");
+    var a64 = loadTaskSpecific(wfTask, "A64 Unlicensed");
+    var a64 = loadTaskSpecific(wfTask, "A65 Unlicensed");
+    var a65 =loadTaskSpecific(wfTask, "A66 Unlicensed");
+    var a66 = loadTaskSpecific(wfTask, "A67 Adjournment Letter");
+    var a67 = loadTaskSpecific(wfTask, "A67a COVID19 Adjournment Letter");
+    var a67a = loadTaskSpecific(wfTask, "A68 Adjournment Letter");
+    var a68 = loadTaskSpecific(wfTask, "A69 Notification");
+    var a69 = loadTaskSpecific(wfTask, "A70 Notification");
+    var a70 = loadTaskSpecific(wfTask, "A71 Notification");
+    var a71 = loadTaskSpecific(wfTask, "A72 Notification");
+    var a72 = loadTaskSpecific(wfTask, "A73 Adjournment Letter");
+    var a73 = loadTaskSpecific(wfTask, "A74 Adjournment Letter");
+    var a74 = loadTaskSpecific(wfTask, "A75 Adjournment Letter");
+    var a75 = loadTaskSpecific(wfTask, "A76 Adjournment Letter");
 
 	if (a63 == 'CHECKED' || a64 == 'CHECKED' || a65 == 'CHECKED' || a66 == 'CHECKED' || a67 == 'CHECKED' || a67a == 'CHECKED' ||
     a68 == 'CHECKED' || a69 == 'CHECKED' || a70 == 'CHECKED' || a71 == 'CHECKED'
@@ -171,7 +219,7 @@ function determineDocumentAttached(docType)
     if (docList.getSuccess()) 
 	{
         docsOut = docList.getOutput();
-		logDebug("Docs Out " + docsOut.isEmpty());
+		//logDebug("Docs Out " + docsOut.isEmpty());
         if (docsOut.isEmpty()) 
 		{
             logDebug("here");
@@ -207,3 +255,52 @@ function determineDocumentAttached(docType)
     }
 }
 
+function loadTaskSpecific(wfName,itemName)  // optional: itemCap
+{
+	var updated = false;
+	var i=0;
+	itemCap = capId;
+	if (arguments.length == 4) itemCap = arguments[3]; // use cap ID specified in args
+	//
+	// Get the workflows
+	//
+	var workflowResult = aa.workflow.getTaskItems(itemCap, wfName, null, null, null, null);
+	if (workflowResult.getSuccess())
+		wfObj = workflowResult.getOutput();
+	else
+		{ logDebug("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage()); return false; }
+
+	//
+	// Loop through workflow tasks
+	//
+	for (i in wfObj)
+		{
+		fTask = wfObj[i];
+		stepnumber = fTask.getStepNumber();
+		processID = fTask.getProcessID();
+		if (wfName.equals(fTask.getTaskDescription())) // Found the right Workflow Task
+			{
+		TSIResult = aa.taskSpecificInfo.getTaskSpecifiInfoByDesc(itemCap,processID,stepnumber,itemName);
+			if (TSIResult.getSuccess())
+				{
+				var TSI = TSIResult.getOutput();
+				if (TSI != null)
+					{
+					var TSIArray = new Array();
+					TSInfoModel = TSI.getTaskSpecificInfoModel();
+					var readValue = TSInfoModel.getChecklistComment();
+					return readValue;
+					}
+				else
+					logDebug("No task specific info field called "+itemName+" found for task "+wfName);
+					return null
+				}
+			else
+				{
+				logDebug("**ERROR: Failed to get Task Specific Info objects: " + TSIResult.getErrorMessage());
+				return null
+				}
+			}  // found workflow task
+		} // each task
+		return null
+}
