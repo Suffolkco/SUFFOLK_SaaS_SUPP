@@ -91,8 +91,11 @@ opted not to use parcel search method and just to link via ASI entry instead - R
         iaCap = relCap;
       }
     }
-*/
+
     logDebug("foundIA = " + foundIA);
+
+    */
+   
     if (iaNumber != "")
     {
       logDebug("We found a matching IA record: " + iaNumber);
