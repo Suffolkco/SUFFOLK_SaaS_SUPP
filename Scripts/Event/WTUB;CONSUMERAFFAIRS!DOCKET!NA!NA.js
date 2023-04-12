@@ -2,29 +2,22 @@
 
 if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 {		
-    logDebug("*** " + AInfo["License Number"]);
-    logDebug("*** " + AInfo["Complaint Number"]);
-
-    var licenseNumber = AInfo["License Number"];
+    var licenseNumber = AInfo["Updated.License Number"];
     licenseCapId = getApplication(licenseNumber);
-    if (licenseCapId)
-    {
-        // Valid license number
-    }
-    else
-    {
+    if (!licenseCapId)
+    {    
         cancel = true;
         showMessage = true;
-        comment("The License Number entered is invalid. Please enter a valid License Number.");
+        comment("The License Number entered '" + licenseNumber + "'is invalid. Please enter a valid License Number.");
 	}
 
-	var complaintNumber = AInfo["Complaint Number"];
+	var complaintNumber = AInfo["Updated.Complaint Number"];
     cmpCapId = getApplication(complaintNumber);
     if (!cmpCapId)   
     {
         cancel = true;
         showMessage = true;
-        comment("The Complaint Number entered is invalid. Please enter a valid Complaint Number.");
+        comment("The Complaint Number entered '" + complaintNumber + "'is invalid. Please enter a valid Complaint Number.");
 	}
 
 
@@ -249,6 +242,14 @@ function determineDocumentAttached(docType)
         return false;
     }
 }
+function debugObject(object) {
+    var output = '';
+    for (property in object) {
+        output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" + '; ' + "<BR>";
+    }
+    logDebug(output);
+}
+
 
 function loadTaskSpecific(wfName,itemName)  // optional: itemCap
 {
