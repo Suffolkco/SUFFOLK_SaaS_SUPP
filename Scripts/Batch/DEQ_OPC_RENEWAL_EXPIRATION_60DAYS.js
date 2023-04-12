@@ -146,7 +146,7 @@ function mainProcess()
 
                                 if (expDateCon == sixtyDueDate) // The expiration date matches 60 days                                 
                                 {                                
-									logDebug("*** " + capIDString + " has expired 180 days on " + sixtyDueDate + "***");
+									logDebug("*** " + capIDString + " has expired 60 days on " + sixtyDueDate + "***");
 									count++;
 
                                     var workflowResult = aa.workflow.getTasks(capId);
