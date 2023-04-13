@@ -218,6 +218,15 @@ function mainProcess()
 									addParameter(emailParams, "$$altID$$", capIDString);
 									addParameter(emailParams, "$$name$$", firstName);
 									addParameter(emailParams, "$$date$$", paymentDueDate);
+
+									var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+									acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+									//Save Base ACA URL
+									addParameter(emailParams, "$$acaURL$$", acaSite);
+									//Save Record Direct URL
+									addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
+									addACAUrlsVarToEmail(emailParams);
+
 									logDebugLocal("Conemail is: " + conEmail);
 
 									
