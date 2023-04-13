@@ -177,7 +177,7 @@ function mainProcess()
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
         
 		// Pull Docket Type with obtained due date from yesterday
-		var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ObtainedDueDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_DESC = 'License Obtained Due Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'DOCKET' and B1_PER_CATEGORY = 'NA' ";
+		var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ObtainedDueDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_DESC = 'License Obtained Due Date' and BC.B1_CHECKLIST_COMMENT = '" + dateToCheck + "'   WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'DOCKET' and B1_PER_CATEGORY = 'NA'";
 		
 		var docketNumbers = "";
 
@@ -237,8 +237,7 @@ function mainProcess()
 		addParameter(emailParams, "$$date$$", obtainedDueDate);
 		
 		var staffEmailsToSend = lookup("DCA_Docket_Email_List", "All");   	
-		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_LICENSE_OBTAINED_DUE", emailParams, null);
-		
+		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_LICENSE_OBTAINED_DUE", emailParams, null);		
 	
 	}
     catch (err) 
