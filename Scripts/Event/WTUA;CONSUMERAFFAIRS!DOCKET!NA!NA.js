@@ -218,10 +218,12 @@ else if (wfTask == "Director Review" && wfStatus == "Complete")
 {
 	var startDate = new Date();
 	var startTime = startDate.getTime();
-	var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+	var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();	
+	var dateAdd = addDays(todayDate, 40);
+	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);  
 
-	editTaskSpecific("Director Review", "Payment Due Date", todayDate);
-	editAppSpecific("Payment Due Date", todayDate);
+	editAppSpecific("Payment Due Date", dateMMDDYYY);
+	editTaskSpecific("Enter Hearing Info", "Payment Due Date", dateMMDDYYY, capId);
 }
 // DOCKET #42: Email the vendor the task has been set to 'Complete'
 else if (wfTask == 'NOD' && wfStatus == 'Complete')
@@ -232,7 +234,7 @@ else if (wfTask == 'NOD' && wfStatus == 'Complete')
 	editAppSpecific("NOD Due Date", loadTaskSpecific(wfTask, "NOD Due Date"), capId);
 
 	include("CA_SEND_VENDOR_EMAIL_TASK_COMPLETED");
-	// Automatically update the Payment Due Date + 40!!!!!!!!!!!!!!!!!!! To do Ada??
+	
 }
 // DOCKET #15: Send email notification when payment has been made
 else if (wfTask == 'Payment')
