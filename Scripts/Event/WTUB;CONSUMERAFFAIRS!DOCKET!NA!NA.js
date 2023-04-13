@@ -78,48 +78,9 @@ if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
     
 }
 // DOCKET-59: Block the workflow if the hearing information has not been filled in
-/*
 else if (wfTask == "Create Violations" && wfStatus == "Complete")
 {
-    if (getAppSpecific("Hearing Date", capId) == null || 
-    getAppSpecific("Hearing Time", capId) == null || 
-    getAppSpecific("Pre-Hearing Conference Date", capId) == null || 
-    getAppSpecific("Pre-Hearing Conference Time", capId)== null)
-    {    
-        cancel = true;
-        showMessage = true;
-        logDebug(getAppSpecific("Hearing Date", capId) + getAppSpecific("Hearing Time", capId) + getAppSpecific("Pre-Hearing Conference Date", capId) + getAppSpecific("Pre-Hearing Conference Time", capId))
-        comment("Violation Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
-        
-    }
-}*/
-// DOCKET#57: Block workflow update on Hearing Report task if there is no hearing officer report
-else if (wfTask == "Hearing Report" && wfStatus == "Complete")
-{
-    //Check if the Hearing Report has not been attached
-    offCheck = determineDocumentAttached("Hearing Officer Report and Recommendation");
-    
-    if(!offCheck)
-    {
-        cancel = true;
-        showMessage = true;
-        comment("No Hearing Officer Report and Recommendation document has been attached. Please attach document before proceeding. Unable to move to the next task.");
-    }
-}
-// DOCKET #7: Docket Type Script: Block to proceed if AOS has not been scanned at workflow task Notice of Hearing -> next step
-else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
-{
-    //Check if the AOS has not been scanned 
-    aosCheck = determineDocumentAttached("Affidavit");
-    
-    if(!aosCheck)
-    {
-        cancel = true;
-        showMessage = true;
-        comment("No AOS document has been attached. Please attach Affidavit document before proceeding. Unable to move to the next task.");
-    }
-
-    // DOCKET #9: lBlock letter has not been mailed
+     // DOCKET #9: lBlock letter has not been mailed
     /*var a63 =  AInfo["A63 Unlicensed"]
 	var a64 =  AInfo["A64 Unlicensed"]
 	var a65 =  AInfo["A65 Unlicensed"]
@@ -166,6 +127,44 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 		comment("At least one letter has to be mailed. Please check the respective letter choices to indicate. Unable to proceed.");		
     }
 		
+    /*
+    if (getAppSpecific("Hearing Date", capId) == null || 
+    getAppSpecific("Hearing Time", capId) == null || 
+    getAppSpecific("Pre-Hearing Conference Date", capId) == null || 
+    getAppSpecific("Pre-Hearing Conference Time", capId)== null)
+    {    
+        cancel = true;
+        showMessage = true;
+        logDebug(getAppSpecific("Hearing Date", capId) + getAppSpecific("Hearing Time", capId) + getAppSpecific("Pre-Hearing Conference Date", capId) + getAppSpecific("Pre-Hearing Conference Time", capId))
+        comment("Violation Information section in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
+        
+    } */
+}
+// DOCKET#57: Block workflow update on Hearing Report task if there is no hearing officer report
+else if (wfTask == "Hearing Report" && wfStatus == "Complete")
+{
+    //Check if the Hearing Report has not been attached
+    offCheck = determineDocumentAttached("Hearing Officer Report and Recommendation");
+    
+    if(!offCheck)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("No Hearing Officer Report and Recommendation document has been attached. Please attach document before proceeding. Unable to move to the next task.");
+    }
+}
+// DOCKET #7: Docket Type Script: Block to proceed if AOS has not been scanned at workflow task Notice of Hearing -> next step
+else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
+{
+    //Check if the AOS has not been scanned 
+    aosCheck = determineDocumentAttached("Affidavit");
+    
+    if(!aosCheck)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("No AOS document has been attached. Please attach Affidavit document before proceeding. Unable to move to the next task.");
+    }  
 
 
 }
