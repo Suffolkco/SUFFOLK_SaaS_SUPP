@@ -163,6 +163,22 @@ else if (wfTask == "Hearing")
 	editAppSpecific("AOD Date Signed", loadTaskSpecific(wfTask, "AOD Date Signed"), capId);
 	editAppSpecific("AOD Date Due Amount", loadTaskSpecific(wfTask, "AOD Date Due Amount"), capId);
 
+	editAppSpecific("A63 Unlicensed", loadTaskSpecific(wfTask, "A63 Unlicensed"));
+	editAppSpecific("A64 Unlicensed", loadTaskSpecific(wfTask, "A64 Unlicensed"));
+	editAppSpecific("A65 Licensed", loadTaskSpecific(wfTask, "A65 Licensed"));
+	editAppSpecific("A66 Unlicensed", loadTaskSpecific(wfTask, "A66 Unlicensed"));
+	editAppSpecific("A67 Adjournment Letter", loadTaskSpecific(wfTask, "A67 Adjournment Letter"));
+	editAppSpecific("A67a COVID19 Adjournment Letter", loadTaskSpecific(wfTask, "A67a COVID19 Adjournment Letter"));
+	editAppSpecific("A68 Adjournment Letter", loadTaskSpecific(wfTask, "A68 Adjournment Letter"));
+	editAppSpecific("A69 Notification", loadTaskSpecific(wfTask, "A69 Notification"));
+	editAppSpecific("A63 Unlicensed", loadTaskSpecific(wfTask, "A70 Notification"));
+	editAppSpecific("A71 Notification", loadTaskSpecific(wfTask, "A71 Notification"))
+	editAppSpecific("A72 Notification", loadTaskSpecific(wfTask, "A72 Notification"))
+	editAppSpecific("A73 Adjournment Letter", loadTaskSpecific(wfTask, "A73 Adjournment Letter"))
+	editAppSpecific("A74 Adjournment Letter", loadTaskSpecific(wfTask, "A74 Adjournment Letter"))
+	editAppSpecific("A75 Adjournment Letter", loadTaskSpecific(wfTask, "A75 Adjournment Letter"))
+	editAppSpecific("A76 Adjournment Letter", loadTaskSpecific(wfTask, "A76 Adjournment Letter"))
+    
 
 }
 //DOCKET # 39 Script to assign the record to the director automatically if the status is set to “Review for Amendment”

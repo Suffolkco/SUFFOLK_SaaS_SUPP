@@ -163,7 +163,7 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 	{		
 		cancel = true;
 		showMessage = true;
-		comment("At least one letter has to be mailed. Please check ASI Letter choices to indicate. Unable to proceed.");		
+		comment("At least one letter has to be mailed. Please check the respective letter choices to indicate. Unable to proceed.");		
     }
 		
 
