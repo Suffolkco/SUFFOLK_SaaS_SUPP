@@ -39,6 +39,22 @@ var emailText = ""
 		addParameter(emailParams, "$$zip$$", vZip);
 		addParameter(emailParams, "$$date$$", todayDate);
 
+		var nodDate = loadAppSpecific("NOD Date", capId);
+		var nodAmt = loadAppSpecific("NOD Amount", capId);
+		var nodDueDate = loadAppSpecific("NOD Amount Due Date", capId);
+
+		addParameter(emailParams, "$$nodDate$$", nodDate);
+		addParameter(emailParams, "$$nodAmt$$", nodAmt);
+		addParameter(emailParams, "$$nodAmtDue$$", nodDueDate);
+		var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+		acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+		//Save Base ACA URL
+		addParameter(emailParams, "$$acaURL$$", acaSite);
+		//Save Record Direct URL
+		addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
+		addACAUrlsVarToEmail(emailParams);
+
+
 		var success = sendNotification("", email, "", "DCA_DOCKET_VENDOR_TASK_COMPLETE_NOTIFICATION", emailParams, reportFile);	
 		logDebug("success:" + success + ", to: " + email);		
     }
