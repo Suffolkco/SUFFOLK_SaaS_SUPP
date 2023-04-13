@@ -1034,7 +1034,7 @@ function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFile
     var thisCap = aa.cap.getCap(itemCapId).getOutput();
     var moduleName = thisCap.getCapType().getGroup();
     var toClear = docToPrepare.getFileName();
-    toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(".", "").replace(" ", "_");
+    toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(" ", "_");
     docToPrepare.setFileName(toClear);
     var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
     if (downloadRes.getSuccess() && downloadRes.getOutput())

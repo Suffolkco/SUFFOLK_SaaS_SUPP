@@ -28,6 +28,7 @@ eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 var cap = aa.env.getValue("CapModel");
 var capId = cap.getCapID();
 var AInfo = new Array();
+var messageList = "";
 loadAppSpecific4ACA(AInfo);
 try
 {
@@ -52,12 +53,17 @@ try
     {
         if (!matches(relCapID, iaNumber))
         {
-            showMessage = true;
-            cancel = true;
-            comment("PIN and IA Number do not match.");
+            messageList += "PIN and IA Number do not match.  Please try entering the PIN Number and IA Record Number again or, if you do not have this information, you may continue the form by leaving these fields blank and clicking ‘Continue Application’." + br;
         }
     }
 
+    if (iaNumber != null && iaNumber != "")
+    {
+        var isValidRec = validateRecordExist(iaNumber, "DEQ/Ecology/IA/Application");
+        if (isValidRec == "NOT_FOUND") {
+            messageList += "IA Record Number does not exist. Please try entering the IA Record Number again or, if you do not have this information, you may continue the form by leaving this field blank and clicking ‘Continue Application’." + br
+        }
+    }
     // Require LP
     var lpList = cap.getLicenseProfessionalList();
     var correctType = false;
@@ -77,9 +83,14 @@ try
 
     if (correctType == false)
     {
-        cancel = true;
+        messageList += "You have chosen the incorrect License Type. Click ‘Create an Application’ to return to the previous page and select the ‘IA Service Provider’ option from the Licenses drop down. If this option is not available, please contact us as IAOWTSRME@suffolkcontyny.gov." + br;
+    }
+
+    if (messageList != "")
+    {
         showMessage = true;
-        comment("You have chosen the incorrect License Type. Click ‘Create an Application’ to return to the previous page and select the ‘IA Service Provider’ option from the Licenses drop down. If this option is not available, please contact us as IAOWTSRME@suffolkcontyny.gov.");
+        cancel = true;
+        comment(messageList);
     }
 }
 catch (error)
@@ -128,4 +139,30 @@ function getScriptText(vScriptName, servProvCode, useProductScripts) {
     {
         return "";
     }
+}
+function validateRecordExist(recordNum, recType, reqCapStatus) {
+    var truckLocCapId = aa.cap.getCapID(recordNum);
+    if (truckLocCapId.getSuccess())
+    {
+        truckLocCapId = truckLocCapId.getOutput();
+        if (truckLocCapId != null)
+        {
+            var truckLocCap = aa.cap.getCap(truckLocCapId);
+            truckLocCap = truckLocCap.getOutput();
+            if (truckLocCap.getCapType().getValue() == recType)
+            {
+                if (truckLocCap.getCapStatus() == reqCapStatus)
+                {
+                    return "VALID";
+                } else
+                {
+                    return "NOT_VALID";
+                }
+            } else
+            {
+                return "NOT_FOUND";
+            }
+        }//truckLocCapId !null
+    }//truckLocCapId success
+    return "NOT_FOUND";
 }
