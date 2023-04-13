@@ -228,10 +228,9 @@ else if (wfTask == "Director Review" && wfStatus == "Complete")
 // DOCKET #42: Email the vendor the task has been set to 'Complete'
 else if (wfTask == 'NOD' && wfStatus == 'Complete')
 {
-
 	editAppSpecific("NOD Date", loadTaskSpecific(wfTask, "NOD Date"), capId);
 	editAppSpecific("NOD Amount", loadTaskSpecific(wfTask, "NOD Amount"), capId);
-	editAppSpecific("NOD Due Date", loadTaskSpecific(wfTask, "NOD Due Date"), capId);
+	editAppSpecific("NOD Amount Due Date", loadTaskSpecific(wfTask, "NOD Amount Due Date"), capId);
 
 	include("CA_SEND_VENDOR_EMAIL_TASK_COMPLETED");
 	
