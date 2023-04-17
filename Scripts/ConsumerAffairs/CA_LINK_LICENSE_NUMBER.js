@@ -1,7 +1,6 @@
 var complaintNumber = getAppSpecific("Complaint Number", capId);
 var licenseNumber = getAppSpecific("License Number", capId);
     
-
 	// Link License Number to Complaint and Docket
 	if (!matches(licenseNumber, null, ""))
 	{

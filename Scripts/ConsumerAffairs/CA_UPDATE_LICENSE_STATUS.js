@@ -32,7 +32,6 @@ if (!matches(licenseNumber, null, ""))
             editAppSpecific("License Status", licStatus, capId);
         }
 
-
         // Copy License Expiration Date
         var expDate = getAppSpecific("Expiration Date", appId);
 

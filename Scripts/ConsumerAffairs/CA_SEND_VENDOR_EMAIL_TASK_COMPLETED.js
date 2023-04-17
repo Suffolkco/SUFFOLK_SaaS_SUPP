@@ -62,7 +62,6 @@ var emailText = ""
 		addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
 		addACAUrlsVarToEmail(emailParams);
 
-
 		var success = sendNotification("", email, "", "DCA_DOCKET_VENDOR_TASK_COMPLETE_NOTIFICATION", emailParams, reportFile);	
 		logDebug("success:" + success + ", to: " + email);		
     }
