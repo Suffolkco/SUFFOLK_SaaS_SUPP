@@ -104,6 +104,25 @@ if (!publicUser)
     {
         addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
         addParameter(emailParams, "$$altID$$", capId.getCustomID());
+        var endorsement = "";
+        if ((lw9Req && !lw9Found))
+        {
+            endorsement = 'LW9 - Conventional Septic Systems Installation';
+        }
+        //
+        if ((lw10Req && !lw10Found))
+        {
+            endorsement = endorsement + ' LW10 - Innovation/Alternative Treatment System Installation';
+        }
+        // Applied for Pump Out
+        if (lw127Req && !lw127Found)
+        {            
+            endorsement = endorsement + ' LW1 - Septic Tank PUmping Clean and Maintenace/ LW2 - Grease Trap/Inceptor/ LW7- Vactor (Pump/Vacuum) Services';
+        }
+
+        addParameter(emailParams, "$$altID$$", capId.getCustomID());
+        addParameter(emailParams, "$$endorsement$$", endorsement);
+        
         sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
     }
 
