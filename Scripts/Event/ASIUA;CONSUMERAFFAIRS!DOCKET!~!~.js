@@ -3,7 +3,7 @@
 var showDebug = true;
 try
 {
-
+	
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
 	var caseNo = getAppSpecific("Complaint Number");
 
@@ -30,9 +30,7 @@ try
 		if (withdrawVoidVio != null)
 		{
 			if (vioNo != "" || vioNo != null)
-			{
-				logDebug("Withdraw violation request: " + vioNo);
-
+			{				
 				// get cap id from alt id
 				var capIdRes = aa.cap.getCapID(vioNo);
 

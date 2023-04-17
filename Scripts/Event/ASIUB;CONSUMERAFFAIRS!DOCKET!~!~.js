@@ -1,10 +1,15 @@
-// /ASIUA:
+// /ASIUB:
 // This is to add the unique ID to the custom list VIOLATION CHEAT SHEET
 var showDebug = true;
 
 try
 {
-	var AInfo = new Array();						// Create array for tokenized variables
+	//var AInfo = new Array();						// Create array for tokenized variables
+	// Update Payment Due Date in workflow if the ASI Payment Due Date has been updated
+	var paymentDueDate = AInfo["Payment Due Date"]
+	logDebug("paymentDueDate: " + paymentDueDate);		
+	editTaskSpecific("Hearing", "Payment Due date", paymentDueDate);
+
 
 	
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");

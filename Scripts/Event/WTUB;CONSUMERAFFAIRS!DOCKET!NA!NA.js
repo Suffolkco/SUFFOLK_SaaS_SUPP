@@ -3,13 +3,17 @@
 if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 {		
     var licenseNumber = AInfo["Updated.License Number"];
-    licenseCapId = getApplication(licenseNumber);
-    if (!licenseCapId)
-    {    
-        cancel = true;
-        showMessage = true;
-        comment("The License Number entered '" + licenseNumber + "' is invalid. Please enter a valid License Number.");
-	}
+
+    if (!matches(licenseNumber, null, ""))
+    {
+        licenseCapId = getApplication(licenseNumber);
+        if (!licenseCapId)
+        {    
+            cancel = true;
+            showMessage = true;
+            comment("The License Number entered '" + licenseNumber + "' is invalid. Please enter a valid License Number.");
+        }
+    }
 
 	var complaintNumber = AInfo["Updated.Complaint Number"];
     cmpCapId = getApplication(complaintNumber);
@@ -39,6 +43,8 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
 // DOCKET #12: Block the workflow task "Create Violation Cheat Sheet" from proceeding if all documents have not been attached.
 if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
 {
+    /* As per Greg, do not check for all document attached 
+
     exhibitA = determineDocumentAttached("Contract");
     exhibitB = determineDocumentAttached("Canceled Checks");
     exhibitC = determineDocumentAttached("Affidavit");
@@ -73,8 +79,8 @@ if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
         if (!exhibitK) {comment("Missing Exhibit document: 2nd Vendor Estimates");}
         if (!exhibitL) {comment("Missing Exhibit document: Past NOD for 2nd Counts");}
         if (!exhibitM) {comment("Town Building Dept. Inspection Certificates");}
-        
-    }
+         
+    } */
     
 }
 // DOCKET-59: Block the workflow if the hearing information has not been filled in
@@ -181,6 +187,33 @@ else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Defa
         comment("No audio hearing recording has been attached. Please upload before proceeding. Unable to move to the next task.");
     }
 
+    // For reference
+    /*
+    Those come from the values stored in "aa.env.getValue("TaskSpecificInfoModels")"
+
+    You can extract them like they do in the WorkflowTaskUpdateBefore Master Script:
+    
+    var wfTSI = aa.env.getValue("TaskSpecificInfoModels");
+
+    if (wfTSI != "")
+    {
+
+        for (TSIm in wfTSI)
+        {
+
+            if (useTaskSpecificGroupName)
+
+                AInfo["Updated." + wfProcess + "." + wfTask + "." + wfTSI[TSIm].getCheckboxDesc()] = wfTSI[TSIm].getChecklistComment();
+
+            else
+
+                AInfo["Updated." + wfTSI[TSIm].getCheckboxDesc()] = wfTSI[TSIm].getChecklistComment();
+
+        }
+
+    }
+    */
+
     // Check if Hearing custom fields have been filled in
     /*
     var vendorAttorn =  AInfo["Update.Vendor Attorney Present"]
@@ -222,10 +255,13 @@ function determineDocumentAttached(docType)
                 doc = docsOuti.next();
 				//debugObject(doc);
                 docCat = doc.getDocCategory();
-                if (docCat.equals(docType)) 
-				{
-                    attach = true;
-                }
+                if (docCat != null)
+                {
+                    if (docCat.equals(docType)) 
+                    {
+                        attach = true;
+                    }
+                 }
             }
             if (attach) 
 			{
