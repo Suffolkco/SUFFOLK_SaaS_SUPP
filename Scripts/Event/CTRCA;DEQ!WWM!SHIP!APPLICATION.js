@@ -173,6 +173,25 @@ if (lpList && lpList != null)
 if (conditionAddAndEmail)
 {
     addStdCondition("LP", "Check WWM Liquid Waste LP Endorsement", capId);
+
+    var endorsement = "";
+    if ((lw9Req && !lw9Found))
+    {
+        endorsement = 'LW9 - Conventional Septic Systems Installation';
+    }
+    //
+    if ((lw10Req && !lw10Found))
+    {
+        endorsement = endorsement + ' LW10 - Innovation/Alternative Treatment System Installation';
+    }
+    // Applied for Pump Out
+    if (lw127Req && !lw127Found)
+    {            
+        endorsement = endorsement + ' LW1 - Septic Tank PUmping Clean and Maintenace/ LW2 - Grease Trap/Inceptor/ LW7- Vactor (Pump/Vacuum) Services';
+    }
+   
+    addParameter(emailParams, "$$endorsement$$", endorsement);
+
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
     var recipientEmail = lookup("DCA_Docket_Email_List", "LW");
     sendNotification("", recipientEmail, "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
