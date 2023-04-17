@@ -59,6 +59,7 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
         if (!capParent)
         {
             addParent(iaNumber);
+            parentCapId = getParent(capId);
         }
     }
     
