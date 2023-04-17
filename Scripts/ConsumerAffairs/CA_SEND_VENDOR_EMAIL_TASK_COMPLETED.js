@@ -42,6 +42,14 @@ var emailText = ""
 		var nodDate = loadAppSpecific("NOD Date", capId);
 		var nodAmt = loadAppSpecific("NOD Amount", capId);
 		var nodDueDate = loadAppSpecific("NOD Amount Due Date", capId);
+	
+		logDebug("nodDate:" + nodDate)
+		logDebug("nodAmt:" +  nodAmt)
+		logDebug("nodDueDate:" + nodDueDate);
+		
+		logDebug(loadTaskSpecific(wfTask, "NOD Date"), capId);
+		logDebug(loadTaskSpecific(wfTask, "NOD Amount"), capId);
+		logDebug(loadTaskSpecific(wfTask, "NOD Amount Due Date"), capId);
 
 		addParameter(emailParams, "$$nodDate$$", nodDate);
 		addParameter(emailParams, "$$nodAmt$$", nodAmt);
