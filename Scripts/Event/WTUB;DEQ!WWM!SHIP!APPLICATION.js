@@ -12,19 +12,6 @@ var pumpOut = AInfo["Pump Out ONLY"]
 
 logDebug("iaInstall = " + iaInstall); 
 
-
-
-if ((iaInstall == "CHECKED" || ikGrease == "CHECKED" || stInstall == "CHECKED" || lpgInstall == "CHECKED" || psdInstall == "CHECKED" || gravInstall == "CHECKED") && other == "CHECKED")
-{
-    if (wfTask == "Final Review" && wfStatus == "Registration Complete")
-    {
-        cancel = true;
-        showMessage = true;
-        comment("Please Submit an Amendment");
-
-
-    }
-}
 if (wfTask == "Final Review" && wfStatus == "Registration Complete")
 {
     loadASITables();

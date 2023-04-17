@@ -398,7 +398,7 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
                     {
                         sendNotification("", allSHIPEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
                     }
-                    updateTask("Final Review", "Registration Complete", "", "");
+                    closeTask("Final Review", "Registration Complete", "", "");
                     deactivateAllActiveTasks(capId);
                     capId = capTemp;
                 }
