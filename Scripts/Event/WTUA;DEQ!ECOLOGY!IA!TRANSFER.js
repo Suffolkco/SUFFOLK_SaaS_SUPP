@@ -185,8 +185,11 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
         }
 
         var getCapResult = aa.cap.getCapID(iaNumber);
-        if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
-        {
+        //if (getCapResult.getSuccess() && matches(relCapID, iaNumber))
+        //{
+            //this code used to enforce the IA number in the record matching the record that the system found which shared a pin.
+            //since we are no longer requiring a related record at submission, any record that it may be related to may not always have a pin value
+            //4/18/2023, RL
             var wwmIA = getCapResult.getOutput();
 
             logDebug("wwmIA = " + wwmIA.getCustomID());
@@ -247,7 +250,7 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
             addParameter(vEParams, "$$busName$$", busName);
 
             sendNotification("", conEmail, "", "DEQ_IA_SEPTIC_REGISTRATION", vEParams, null);
-        }
+       // }
     }
 
     if (contractStart != null)
