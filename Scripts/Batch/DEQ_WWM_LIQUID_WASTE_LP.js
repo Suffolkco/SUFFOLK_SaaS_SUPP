@@ -317,7 +317,7 @@ function findExistingRefLicenseProfByName(refstlic, firstName, middleName, lastN
                                 refLicObj = newLicArray[thisLic];
                                 logDebug("4. Capid, business license # and SSN matched!");
                             }
-                            else if (ss == null) // 4b. It's OK if SSN is null. 
+                            else if (ssn == null) // 4b. It's OK if SSN is null. 
                             {
                                 refLicObj = newLicArray[thisLic];
                                 logDebug("4. Capid, business license # a matched but SSN is NULL.");
