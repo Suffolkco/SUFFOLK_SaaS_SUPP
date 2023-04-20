@@ -56,6 +56,8 @@ if (contactResult.getSuccess())
        
     var lastPayment = recPayments[0];
     
+    logDebug("lastPayment is: " + lastPayment.getPaymentSeqNbr() + " , " + lastPayment.getPaymentDate() + ", " + lastPayment.getReceiptNbr());
+
     for (c in capContacts) 
     {
         logDebug("capContacts[c].getCapContactModel().getContactType(): " + capContacts[c].getCapContactModel().getContactType());
@@ -70,7 +72,9 @@ if (contactResult.getSuccess())
                 
                 var batchTransCode = lastPayment.getBatchTransCode(); 
                 var tranCode = batchTransCode.toString();  
-                logDebug("batchTransCode: " + batchTransCode);
+                logDebug("BATCH_TRANSACTION_NBR is : " + batchTransCode);
+                logDebug("RECEIPT_NBR is : " + lastPayment.getReceiptNbr());
+
 				addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
 				addParameter(vEParams, '$$altID$$', capId.getCustomID());
 				addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
