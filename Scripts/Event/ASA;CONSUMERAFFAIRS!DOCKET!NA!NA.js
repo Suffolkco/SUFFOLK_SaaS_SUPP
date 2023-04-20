@@ -1,11 +1,9 @@
 //ASA;CONSUMERAFFAIRS!DOCKET!NA!NA
 try {
 
+	if (!publicUser) {
 	var currentUserID = aa.env.getValue("CurrentUserID");
 
-	
-	
-	
 	// DOCKET -22 Email vendor the docket application has been created
 	include("CA_SEND_VENDOR_EMAIL");
 	
@@ -43,7 +41,8 @@ try {
 		// Record Assigned to
 		var assignedUserid = cd.getAsgnStaff();
 		if (assignedUserid ==  null)
-		{			
+		{		
+			cd.setAsgnDept(assignedUserid.getDeptOfUser());	
 			cd.setAsgnStaff(thisUser);
 
 			cdWrite = aa.cap.editCapDetail(cd)
@@ -53,9 +52,14 @@ try {
 			else
 				{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; }
 		}
+
+		logDebugLocal("updateCapDetailsResult at record: " + updateCapDetailsResult.getSuccess());
+
 	}
 
+}
 }
 catch(err){
 	logDebug("**WARN: Error in ASA updating short notes and address -  " + err.message);
 }
+
