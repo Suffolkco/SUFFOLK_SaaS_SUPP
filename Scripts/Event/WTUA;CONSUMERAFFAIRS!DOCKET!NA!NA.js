@@ -137,6 +137,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 		
 	}
 
+	// VENODR
 	editAppSpecific("A63 Unlicensed", loadTaskSpecific(wfTask, "A63 Unlicensed"));
 	editAppSpecific("A64 Unlicensed", loadTaskSpecific(wfTask, "A64 Unlicensed"));
 	editAppSpecific("A65 Licensed", loadTaskSpecific(wfTask, "A65 Licensed"));
@@ -144,6 +145,8 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	editAppSpecific("A67 Adjournment Letter", loadTaskSpecific(wfTask, "A67 Adjournment Letter"));
 	editAppSpecific("A67a COVID19 Adjournment Letter", loadTaskSpecific(wfTask, "A67a COVID19 Adjournment Letter"));
 	editAppSpecific("A68 Adjournment Letter", loadTaskSpecific(wfTask, "A68 Adjournment Letter"));
+
+	//CONSUMERS
 	editAppSpecific("A69 Notification", loadTaskSpecific(wfTask, "A69 Notification"));
 	editAppSpecific("A70 Notification", loadTaskSpecific(wfTask, "A70 Notification"));
 	editAppSpecific("A71 Notification", loadTaskSpecific(wfTask, "A71 Notification"))
