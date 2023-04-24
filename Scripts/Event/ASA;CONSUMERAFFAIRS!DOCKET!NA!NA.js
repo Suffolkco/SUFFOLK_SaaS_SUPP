@@ -53,7 +53,7 @@ try {
 				{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; }
 		}
 
-		logDebug("updateCapDetailsResult at record: " + updateCapDetailsResult.getSuccess());
+		logDebug("updateCapDetailsResult at record: " + cdWrite.getSuccess());
 
 	}
 

@@ -15,8 +15,10 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 	if (licenseNumber != null || complaintNumber != null)
 	{		
 		// Map the TSI to ASI as well.
-		editAppSpecific("License Number", licenseNumber, capId);	
-		editAppSpecific("Complaint Number", complaintNumber, capId);
+		if (licenseNumber != null)
+			editAppSpecific("License Number", licenseNumber, capId);	
+		if (complaintNumber != null)
+			editAppSpecific("Complaint Number", complaintNumber, capId);
 
 		logDebug("license number ASI 1: " + loadAppSpecific("License Number"));
 		logDebug("complaint number ASI 1: " + loadAppSpecific("Complaint Number"));
