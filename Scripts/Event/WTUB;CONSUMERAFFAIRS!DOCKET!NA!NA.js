@@ -47,7 +47,7 @@ if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
 
     exhibitA = determineDocumentAttached("Contract");
     exhibitB = determineDocumentAttached("Canceled Checks");
-    exhibitC = determineDocumentAttached("Affidavit");
+    exhibitC = determineDocumentAttached("Affidavit of Service");
     exhibitD = determineDocumentAttached("DMV Search");
     exhibitE = determineDocumentAttached("TLO Search");
     exhibitF = determineDocumentAttached("NYS DOS Search");
@@ -68,7 +68,7 @@ if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
         comment("All Exhibit document types have not been attached: ");
         if (!exhibitA) {comment("Missing Exhibit document: Contract");}
         if (!exhibitB) {comment("Missing Exhibit document: Canceled Checks");}
-        if (!exhibitC) {comment("Missing Exhibit document: Affidavit");}
+        if (!exhibitC) {comment("Missing Exhibit document: Affidavit of Service");}
         if (!exhibitD) {comment("Missing Exhibit document: DMV Search");}
         if (!exhibitE) {comment("Missing Exhibit document: TLO Search");}
         if (!exhibitF) {comment("Missing Exhibit document: NYS DOS Search");}
@@ -163,13 +163,13 @@ else if (wfTask == "Hearing Report" && wfStatus == "Complete")
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 {
     //Check if the AOS has not been scanned 
-    aosCheck = determineDocumentAttached("Affidavit");
+    aosCheck = determineDocumentAttached("Affidavit of Service");
     
     if(!aosCheck)
     {
         cancel = true;
         showMessage = true;
-        comment("No AOS document has been attached. Please attach Affidavit document before proceeding. Unable to move to the next task.");
+        comment("No AOS document has been attached. Please attach Affidavit of Service document before proceeding. Unable to move to the next task.");
     }  
 
 

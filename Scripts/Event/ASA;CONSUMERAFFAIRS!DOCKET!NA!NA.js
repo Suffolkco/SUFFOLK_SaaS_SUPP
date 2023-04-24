@@ -8,11 +8,11 @@ try {
 	include("CA_SEND_VENDOR_EMAIL");
 	
 	// Link Complaint and License Number
-	include("CA_LINK_LICENSE_NUMBER");
+	//include("CA_LINK_LICENSE_NUMBER");
 
 	//DOCKET #29: Update License Status
 	// Get license Number
-	include("CA_UPDATE_LICENSE_STATUS");
+	//include("CA_UPDATE_LICENSE_STATUS");
 
 
 	// DOCKET -21 Assign record to the creator after submission
@@ -37,12 +37,12 @@ try {
 			{ logDebug("**ERROR: No cap detail script object") ; }
 
 		cd = cdScriptObj.getCapDetailModel();
-
-		// Record Assigned to
-		var assignedUserid = cd.getAsgnStaff();
-		if (assignedUserid ==  null)
-		{		
-			cd.setAsgnDept(assignedUserid.getDeptOfUser());	
+		var assignedUser = aa.person.getUser(thisUser).getOutput();
+		// Record Assigned to	
+		if (assignedUser !=  null)
+		{	
+			logDebug("Dept: " + assignedUser.getDeptOfUser());			
+			cd.setAsgnDept(assignedUser.getDeptOfUser());	
 			cd.setAsgnStaff(thisUser);
 
 			cdWrite = aa.cap.editCapDetail(cd)
@@ -53,13 +53,13 @@ try {
 				{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; }
 		}
 
-		logDebugLocal("updateCapDetailsResult at record: " + updateCapDetailsResult.getSuccess());
+		logDebug("updateCapDetailsResult at record: " + updateCapDetailsResult.getSuccess());
 
 	}
 
 }
 }
 catch(err){
-	logDebug("**WARN: Error in ASA updating short notes and address -  " + err.message);
+	logDebug("**WARN: Error in ASA assigning -  " + err.message);
 }
 

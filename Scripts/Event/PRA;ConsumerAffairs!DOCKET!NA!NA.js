@@ -13,7 +13,9 @@ if (balanceDue <= 0) {
 		updateAppStatus("Paid-Online", "Status Updated by Automation Script", capId); 	
         logDebug("updateAppStatus");
 		//var staffEmailsToSend = lookup("DCA_Docket_Email_List", "All");   	
-        var staffEmailsToSend = lookup("DCA_Docket_Email_List", "LW");   	
+        
+        // Will send to Greg - only for testing only
+        var staffEmailsToSend = lookup("DCA_Docket_Email_List", "Investigations");   
         logDebug("staffEmailsToSend" + staffEmailsToSend);
         addParameter(emailParams, "$$altID$$", capId.getCustomID());        	
 		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_PAYMENT_MADE", emailParams, null);	
@@ -43,7 +45,7 @@ if (contactResult.getSuccess())
 {
     var capContacts = contactResult.getOutput();
     var conEmail = "";
-    
+    var recPayments = new Array;
     var recPayments = aa.finance.getPaymentByCapID(capId, null).getOutput();
 
     recPayments.sort(sortPayments);
@@ -51,12 +53,22 @@ if (contactResult.getSuccess())
     // Get the Last Payment on the record
     for (i in recPayments) 
     {
-        logDebug(recPayments[i].getPaymentSeqNbr() + " , " + recPayments[i].getPaymentDate() + ", " + recPayments[i].getReceiptNbr());
+        logDebug(i + " - Payment Sequence Number: " + recPayments[i].getPaymentSeqNbr() + " , Reciept Number: "  + recPayments[i].getReceiptNbr());
     }
        
     var lastPayment = recPayments[0];
     
+    var batchTransCode = lastPayment.getBatchTransCode(); 
+    var tranCode = batchTransCode.toString();  
+
     logDebug("lastPayment is: " + lastPayment.getPaymentSeqNbr() + " , " + lastPayment.getPaymentDate() + ", " + lastPayment.getReceiptNbr());
+    logDebug("BatchTransCode: " + tranCode);
+
+    // Check db if the entry exists so the report can pull 
+    var vSQL = "SELECT * FROM F4PAYMENT WHERE BATCH_TRANSACTION_NBR = '" + tranCode + "'";
+    var vResult = doSQLSelect_local(vSQL);
+    logDebug("Found matching row trancode in db: " + vResult.length);
+    var result = vResult.length;
 
     for (c in capContacts) 
     {
@@ -69,30 +81,31 @@ if (contactResult.getSuccess())
 
             if (!matches(capContacts[c].email, null, undefined, ""))
             {
-                
-                var batchTransCode = lastPayment.getBatchTransCode(); 
-                var tranCode = batchTransCode.toString();  
                 logDebug("BATCH_TRANSACTION_NBR is : " + batchTransCode);
                 logDebug("RECEIPT_NBR is : " + lastPayment.getReceiptNbr());
 
 				addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
 				addParameter(vEParams, '$$altID$$', capId.getCustomID());
 				addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
-				addParameter(vRParams, "capid", "-1");
+                // Report Params
+                addParameter(vRParams, "capid", "-1");
 				//addParameter(vRParams, "batchtransactionnbr", "-1");
                 addParameter(vRParams, "batchtransactionnbr", tranCode);
+
 				conEmail += capContacts[c].email + "; ";
 				logDebug("Email addresses: " + conEmail);
+                var caReports = new Array();
 
-                
-				var caReport = generateReportBatch(capId, "ACA Receipt", appTypeArray[0], vRParams)
-				if (caReport)
-				{
-					var caReports = new Array();
-					caReports.push(caReport);
-					logDebug("CaReport valid and send to " + conEmail);
+                if (result == 1)
+                {
+                    var caReport = generateReportBatch(capId, "ACA Receipt", appTypeArray[0], vRParams)
+                    if (caReport)
+                    {                        
+                        caReports.push(caReport);
+                        logDebug("CaReport valid and send to " + conEmail);
 
-				}
+                    }
+                }
 
 				sendNotification ("", conEmail, "", "DCA_DOCKET_PAYMENT_MADE_NOTIFICATION", vEParams, caReports);
                
@@ -178,9 +191,47 @@ bankName =
     aa.env.setValue("ErrorMessage", err.message);
     showMessage = true;
     cancel = true;
-    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "PRA DOCKET",  err.message);
+    aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "CATCH PRA DOCKET",  err.message);
 }
 
+function doSQLSelect_local(sql)
+{
+    try
+    {
+        //logdebug("iNSIDE FUNCTION");
+        var array = [];
+        var conn = aa.db.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+        if (sql.toUpperCase().indexOf("SELECT") == 0)
+        {
+            //logdebug("executing " + sql);
+            var rSet = sStmt.executeQuery();
+            while (rSet.next())
+            {
+                var obj = {};
+                var md = rSet.getMetaData();
+                var columns = md.getColumnCount();
+                for (i = 1; i <= columns; i++)
+                {
+                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
+                    //logdebug(rSet.getString(md.getColumnName(i)));
+                }
+                obj.count = rSet.getRow();
+                array.push(obj)
+            }
+            rSet.close();
+            //logdebug("...returned " + array.length + " rows");
+            //logdebug(JSON.stringify(array));
+        }
+        sStmt.close();
+        conn.close();
+        return array
+    } catch (err)
+    {
+        //logdebug("ERROR: "+ err.message);
+        return array
+    }
+}
 
 function sortPayments(a, b) {
     return b.getPaymentSeqNbr() - a.getPaymentSeqNbr();

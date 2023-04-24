@@ -1,6 +1,6 @@
 //WTUA;CONSUMERAFFAIRS!DOCKET!NA!NA
 showDebug = true;
-
+var emailParams = aa.util.newHashtable();
 // DOCKET #19: Look up custom field entry to relate Complaints and License Records
 if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 {
@@ -59,6 +59,11 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 	//MeetingScript
 
 }
+else if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete" )
+{
+	editAppSpecific("All required exhibit documents have been attached", loadTaskSpecific(wfTask, "All required exhibit documents have been attached"), capId);	
+	editAppSpecific("Number of exhibit entered", loadTaskSpecific(wfTask, "Number of exhibit entered"), capId);	
+}
 //DOCKET #8: Script to create violation automatically based on the violation cheatsheet custom list
 else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 {
@@ -79,7 +84,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
    
    var complaintNumber = getAppSpecific("Complaint Number", capId);
    logDebug("complaintNumber: " + complaintNumber);
-	// License as Parent -> Complaint -> Violation
+	// License as Parent(if exists) -> Complaint -> Violation
 	var capComplaintResult = aa.cap.getCapID(complaintNumber);
 
 	cmpCapId = getApplication(complaintNumber);
@@ -138,7 +143,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	editAppSpecific("A67a COVID19 Adjournment Letter", loadTaskSpecific(wfTask, "A67a COVID19 Adjournment Letter"));
 	editAppSpecific("A68 Adjournment Letter", loadTaskSpecific(wfTask, "A68 Adjournment Letter"));
 	editAppSpecific("A69 Notification", loadTaskSpecific(wfTask, "A69 Notification"));
-	editAppSpecific("A63 Unlicensed", loadTaskSpecific(wfTask, "A70 Notification"));
+	editAppSpecific("A70 Notification", loadTaskSpecific(wfTask, "A70 Notification"));
 	editAppSpecific("A71 Notification", loadTaskSpecific(wfTask, "A71 Notification"))
 	editAppSpecific("A72 Notification", loadTaskSpecific(wfTask, "A72 Notification"))
 	editAppSpecific("A73 Adjournment Letter", loadTaskSpecific(wfTask, "A73 Adjournment Letter"))
@@ -153,11 +158,39 @@ else if (wfTask == "Hearing")
 {
 	if (wfStatus == "Withdrawn" || wfStatus == "AOD" || wfStatus == "Licensed Waiver" || wfStatus == "Unlicensed Waiver")
 	{	
-		var staffEmailsToSend = lookup("DCA_Docket_Email_List", "All");   	
+		// Uncomment when ready to go live
+		//var staffEmailsToSend = lookup("DCA_Docket_Email_List", "All");   	
+		var staffEmailsToSend = lookup("DCA_Docket_Email_List", "Investigations");   	
 		sendNotification("", staffEmailsToSend, "", "DCA_DOCKET_HEARING", emailParams, null);	
 		
 	}
+	if (wfStatus == "Licensed Waiver" || wfStatus == "Unlicensed Waiver")
+	{
+		var nodDate = AInfo["NOD Date"];
+		var nodeAmt = AInfo["NOD Amount"];
+		var nodDueDate = AInfo["NOD Amount Due Date"];
+		editAppSpecific("NOD Date", nodDate);
+		editAppSpecific("NOD Amount", nodeAmt);
+		editAppSpecific("NOD Amount Due Date", nodDueDate);
 
+		logDebug("nodDate :" + nodDate);
+		logDebug("nodeAmt: " +  nodeAmt);
+		logDebug("nodDueDate: " + nodDueDate);
+
+		var startDate = new Date();
+		var startTime = startDate.getTime();
+		var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();	
+		var dateAdd = addDays(todayDate, 30);
+		var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);  
+
+		editAppSpecific("Payment Due Date", dateMMDDYYY);
+		editTaskSpecific("NOD", "Payment Due Date", dateMMDDYYY, capId);
+		editAppSpecific("Payment Due Date", loadTaskSpecific(wfTask, "Payment Due Date"), capId);	
+
+		// TO DO: Attached the waiver report too
+		sendVendorEmail(nodDate, nodeAmt, nodDueDate, dateMMDDYYY);
+
+	}
 	// Map All TSI to ASI as well.
 	editAppSpecific("Vendor Attorney Present", loadTaskSpecific(wfTask, "Vendor Attorney Present"), capId);	
 	editAppSpecific("Consumer Attorney Present", loadTaskSpecific(wfTask, "Consumer Attorney Present"), capId);
@@ -175,7 +208,7 @@ else if (wfTask == "Hearing")
 	editAppSpecific("AOD Date Signed", loadTaskSpecific(wfTask, "AOD Date Signed"), capId);
 	editAppSpecific("AOD Date Due Amount", loadTaskSpecific(wfTask, "AOD Date Due Amount"), capId);
 
-	editAppSpecific("Payment Due Date", loadTaskSpecific(wfTask, "Payment Due Date"), capId);	
+	
 	editAppSpecific("License Obtained Due Date", loadTaskSpecific(wfTask, "License Obtained Due Date"), capId);
 	   
 
@@ -214,23 +247,36 @@ else if (wfStatus == "Review for Amendment")
 // DOCKET # 54 @NOD task, a script to automatically populate the Payment due date
 else if (wfTask == "Director Review" && wfStatus == "Complete")
 {
-	var startDate = new Date();
-	var startTime = startDate.getTime();
-	var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();	
-	var dateAdd = addDays(todayDate, 40);
-	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);  
 
-	editAppSpecific("Payment Due Date", dateMMDDYYY);
-	editTaskSpecific("Enter Hearing Info", "Payment Due Date", dateMMDDYYY, capId);
+
 }
 // DOCKET #42: Email the vendor the task has been set to 'Complete'
 else if (wfTask == 'NOD' && wfStatus == 'Complete')
 {
-	editAppSpecific("NOD Date", loadTaskSpecific(wfTask, "NOD Date"), capId);
-	editAppSpecific("NOD Amount", loadTaskSpecific(wfTask, "NOD Amount"), capId);
-	editAppSpecific("NOD Amount Due Date", loadTaskSpecific(wfTask, "NOD Amount Due Date"), capId);
 
-	include("CA_SEND_VENDOR_EMAIL_TASK_COMPLETED");
+	var nodDate = AInfo["NOD Date"];
+	var nodeAmt = AInfo["NOD Amount"];
+	var nodDueDate = AInfo["NOD Amount Due Date"];
+	editAppSpecific("NOD Date", nodDate);
+	editAppSpecific("NOD Amount", nodeAmt);
+	editAppSpecific("NOD Amount Due Date", nodDueDate);
+
+	logDebug("nodDate :" + nodDate);
+	logDebug("nodeAmt: " +  nodeAmt);
+	logDebug("nodDueDate: " + nodDueDate);
+
+	var startDate = new Date();
+	var startTime = startDate.getTime();
+	var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();	
+	var dateAdd = addDays(todayDate, 30);
+	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);  
+
+	editAppSpecific("Payment Due Date", dateMMDDYYY);
+	editTaskSpecific("NOD", "Payment Due Date", dateMMDDYYY, capId);
+	editAppSpecific("Payment Due Date", loadTaskSpecific(wfTask, "Payment Due Date"), capId);	
+
+	sendVendorEmail(nodDate, nodeAmt, nodDueDate, dateMMDDYYY);
+
 	
 }
 // DOCKET #15: Send email notification when payment has been made
@@ -301,6 +347,114 @@ function loadTaskSpecific(wfName,itemName)  // optional: itemCap
 		return null
 }
 
+function sendVendorEmail(nodDate, nodAmt, nodDueDate, paymentDueDate)
+{
+	// Send email notification to Vendor task has been completed
+	var emailText = ""
+		var emailParams = aa.util.newHashtable();
+		var reportFile = new Array();
+			
+		var contactType = "Vendor";
+		var contactInfo = getContactInfo(contactType, capId);
+		if(contactInfo == false){
+			logDebug("No vendor contact exists on this record");
+		}else{
+			
+			var vAddrLine1 = contactInfo[0];
+			var vCity = contactInfo[1];
+			var vState = contactInfo[2];
+			var vZip = contactInfo[3];
+			var vAddress = new Array();
+			vAddress.push(vAddrLine1);
+			vAddress.push(vCity);
+			vAddress.push(vState);
+			vAddress.push(vZip);
+			logDebug("Address: " + vAddrLine1 + ", City: " +  vCity + ", State: " +  vState + ", Zip: " +  vZip);
+			// copy Vendor name, org name & phone to short notes
+			var fName = contactInfo[4];
+			var lName = contactInfo[5];					
+			var email = contactInfo[8];	
+	
+			var startDate = new Date();
+			var startTime = startDate.getTime(); // Start timer
+			var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+	
+			getRecordParams4Notification(emailParams);
+			addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			addParameter(emailParams, "$$name$$", fName + " " + lName);
+			addParameter(emailParams, "$$address", vAddrLine1);
+			addParameter(emailParams, "$$city$$", vCity);
+			addParameter(emailParams, "$$state$$", vState);
+			addParameter(emailParams, "$$zip$$", vZip);
+			addParameter(emailParams, "$$date$$", todayDate);		
+	
+			addParameter(emailParams, "$$nodDate$$", nodDate);
+			addParameter(emailParams, "$$nodAmt$$", nodAmt);
+			addParameter(emailParams, "$$nodAmtDue$$", nodDueDate);
+			addParameter(emailParams, "$$paymentDueDate$$", paymentDueDate);
+			var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
+			acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
+
+			logDebug("acaSite: " + acaSite);
+			//Save Base ACA URL
+			addParameter(emailParams, "$$acaURL$$", acaSite);
+			//Save Record Direct URL
+			logDebug("acaRecordURL: " + acaSite + getACAUrl());
+			addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
+			addACAUrlsVarToEmail(emailParams);
+	
+	
+			var success = sendNotification("", email, "", "DCA_DOCKET_VENDOR_TASK_COMPLETE_NOTIFICATION", emailParams, reportFile);	
+			logDebug("success:" + success + ", to: " + email);	
+		}	
+		
+}
+
+function getContactInfo(cType, capId) {
+	var returnArray = new Array();
+	var haveCType = false;
+	
+	var contModel = null; 
+	var consResult = aa.people.getCapContactByCapID(capId);	
+	if (consResult.getSuccess()) {
+		var cons = consResult.getOutput();
+		for (thisCon in cons) {
+			var capContactType = cons[thisCon].getCapContactModel().getPeople().getContactType();
+			if (capContactType == cType) {				
+				var contModel = cons[thisCon].getCapContactModel(); 
+				
+				var firstName = contModel.getFirstName();
+				var lastName = contModel.getLastName();
+				var business = contModel.getBusinessName();
+				var phone = contModel.getPhone1();
+				var addr1 = contModel.getAddressLine1();
+				var city = contModel.getCity();
+				var state = contModel.getState();
+				var zip = contModel.getZip();
+				var email = contModel.getPeople().getEmail();
+
+			
+				// build returnArray
+				returnArray.push(addr1);
+				returnArray.push(city);
+				returnArray.push(state);
+				returnArray.push(zip);
+				returnArray.push(firstName);
+				returnArray.push(lastName);
+				returnArray.push(business);
+				returnArray.push(phone);
+				returnArray.push(email);
+				return returnArray;
+				haveCType = true;
+			}
+		}
+	}
+	if (haveCType == false){
+		return false;
+	}
+}
+
+
 
 function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
 {
@@ -338,4 +492,10 @@ function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
     {
         logDebug("**ERROR: adding child App: " + appCreateResult.getErrorMessage());
     }
+}
+function addDays(date, days) 
+{
+	var result = new Date(date);
+	result.setDate(result.getDate() + days);
+	return result;
 }
