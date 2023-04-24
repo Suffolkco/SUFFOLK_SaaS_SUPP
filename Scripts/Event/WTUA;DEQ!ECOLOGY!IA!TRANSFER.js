@@ -16,6 +16,9 @@ var sampleResults = getAppSpecific("Sample Results", capId);
 var labResultFieldDataTable = loadASITable("LAB RESULTS AND FIELD DATA");
 var myCap = capId;
 var myCustomCap = myCap.getCustomID();
+logDebug("myCap is: " + myCap );
+logDebug("myCustomCap is: " + myCustomCap );
+
 var thisCap = aa.cap.getCap(capId).getOutput().getCapModel();
 var pUser = (thisCap.getCreatedBy());
 logDebug("puser is: " + pUser);
@@ -25,7 +28,9 @@ logDebug("puserobj is: " + puserObj);
 logDebug("puserobj email is: " + puserObj.getEmail());
 var pUserObjEmail = puserObj.getEmail();
 var lpEmail = "";
+logDebug("parentCapId is: " + parentCapId);
 var lpResult = aa.licenseScript.getLicenseProf(parentCapId);
+logDebug("lpResult.getSuccess() is: " + lpResult.getSuccess());
 if (lpResult.getSuccess())
 {
     var lpArr = lpResult.getOutput();
@@ -52,8 +57,11 @@ else
 if (wfTask == "Document Review" && wfStatus == "Complete") 
 {
 
+    logDebug("iaNumber is: " + iaNumber);
     if (!matches(iaNumber, "", null, undefined))
     {
+        logDebug("capId is: " + capId);
+
         var capParent = getParent(capId);
 
         if (!capParent)
@@ -938,4 +946,41 @@ function deactivateAllActiveTasks(targetCapId) {
         }
     }
     return true;
+}
+
+function addParent(parentAppNum)
+//
+// adds the current application to the parent
+//
+{
+    logDebug( "parentAppNum: " + parentAppNum);
+    logDebug( "parentAppNum.getID1: " + parentAppNum.getID1);
+
+    if (parentAppNum.getID1 == undefined)  // is this one an object or string?
+        {
+        var getCapResult = aa.cap.getCapID(parentAppNum);
+
+    logDebug( "getCapResult.getSuccess(): " + getCapResult.getSuccess());
+
+        if (getCapResult.getSuccess())
+            {
+            var parentId = getCapResult.getOutput();
+            }
+        else
+            { logDebug( "**ERROR: getting parent cap id (" + parentAppNum + "): " + getCapResult.getErrorMessage());
+                return false;}
+        }
+    else
+        {
+        parentId = parentAppNum;
+        }
+
+    logDebug( "parentId: " + parentId);
+    logDebug( "capId: " + capId);
+    var linkResult = aa.cap.createAppHierarchy(parentId, capId);
+    if (linkResult.getSuccess())
+        logDebug("Successfully linked to Parent Application : " + parentAppNum);
+    else
+        logDebug( "**ERROR: linking to parent application parent cap id (" + parentAppNum + "): " + linkResult.getErrorMessage());
+
 }
