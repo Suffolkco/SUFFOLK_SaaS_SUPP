@@ -154,6 +154,11 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	editAppSpecific("A76 Adjournment Letter", loadTaskSpecific(wfTask, "A76 Adjournment Letter"))
 
 }
+else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
+{
+    editAppSpecific("Mailed Letter", loadTaskSpecific(wfTask, "Mailed Letter"));
+
+}
 
 // DOCKET #52: A script to send notification to account (Greg, Matt, Danielle, Carolyn, James)clerks/director of the unit. License to “Revoke” automatically and notify James and Matt on licensing?
 else if (wfTask == "Hearing")
