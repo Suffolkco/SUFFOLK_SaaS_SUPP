@@ -5,16 +5,10 @@ try {
 	var currentUserID = aa.env.getValue("CurrentUserID");
 
 	// DOCKET -22 Email vendor the docket application has been created
-	include("CA_SEND_VENDOR_EMAIL");
+	// Greg will let us know if we need to send email to the vendor. Comment it for now.
+	//include("CA_SEND_VENDOR_EMAIL");
 	
-	// Link Complaint and License Number
-	//include("CA_LINK_LICENSE_NUMBER");
-
-	//DOCKET #29: Update License Status
-	// Get license Number
-	//include("CA_UPDATE_LICENSE_STATUS");
-
-
+	
 	// DOCKET -21 Assign record to the creator after submission
 	var thisUser = currentUserID;
 	logDebug("currentUserID: " + currentUserID);			

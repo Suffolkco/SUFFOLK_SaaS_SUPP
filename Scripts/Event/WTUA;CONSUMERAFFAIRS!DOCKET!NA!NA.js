@@ -223,6 +223,10 @@ else if (wfTask == "Hearing")
 	   
 
 }
+else if (wfTask == "Hearing Report")
+{
+	editAppSpecific("Hearing Officers", loadTaskSpecific(wfTask, "Hearing Officers"), capId);		
+}
 //DOCKET # 39 Script to assign the record to the director automatically if the status is set to “Review for Amendment”
 else if (wfStatus == "Review for Amendment")
 {	
@@ -253,12 +257,6 @@ else if (wfStatus == "Review for Amendment")
 			{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; }
 	}
 	
-}
-// DOCKET # 54 @NOD task, a script to automatically populate the Payment due date
-else if (wfTask == "Director Review" && wfStatus == "Complete")
-{
-
-
 }
 // DOCKET #42: Email the vendor the task has been set to 'Complete'
 else if (wfTask == 'NOD' && wfStatus == 'Complete')
