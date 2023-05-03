@@ -228,6 +228,23 @@ try
 	}
 	logDebug("Debug info: " + (debug.indexOf("**ERROR")));
 	aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "ACA TAX MAP VALIDATION", emailText);
+	
+	
+		//Adding Min 1 row validation for SIP records on property owners
+	//Checking SIP Record
+	if(appMatch("DEQ/Ecology/SIP/Application"))
+	{	
+		var appSpecificInfo = new Array();
+		loadAppSpecific4ACA(appSpecificInfo);
+			var asitRows = getASITable4ACA("DEQ_SIP_PROPERTY_OWNER");
+			if (!asitRows || asitRows.length == 0) 
+			{
+				cancel = true;
+				showMessage = true;
+				comment("Please enter at least one deeded property owner information below in order to continue");
+			}
+	}
+}
 }
 catch (ex)
 {
