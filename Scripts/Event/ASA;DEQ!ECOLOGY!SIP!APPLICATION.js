@@ -1,8 +1,8 @@
 // Enter your script here...
 //showDebug = true;
-//EHIMS2-287
-try{
 
+try{
+//EHIMS2-287
 
                     var rowArray = [];
 					rowArray["Document Type"] = "Certificate of Occupancy"
@@ -72,8 +72,17 @@ try{
 					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
 					rowArrayPayment["Document Type"] = "Final Payment Packet"
 					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  	
-										
-					 }
+					
+					
+					//Add WWM num and town based on Parcel num
+					//EIHMs282
+					var parcelNumber= getFirstParcelFromCapId(capId);
+					editAppSpecific("WWM Ref #", parcelNumber);
+					var townIdentifier = parcelNumber.slice(0, 2);
+
+					var town = lookup("TaxNumTownMapping", townIdentifier);
+					editAppSpecific("Town", parcelNumber);
+	}
 catch (ex)
   {
 		logDebug("**ERROR** runtime error " + ex.message);
@@ -82,7 +91,23 @@ catch (ex)
   
   
   
-  
+  function getFirstParcelFromCapId(capId)
+{
+		var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+							if (capParcelResult.getSuccess())
+							{
+								var Parcels = capParcelResult.getOutput().toArray();
+							}
+
+							for ( i in Parcels)
+							{
+							var parcelNumber = Parcels[0].getParcelNumber();
+							}
+
+		return parcelNumber;
+}
+
+
 function addRowToASITable(tableName, tableValues) //optional capId
 {
 	//tableName is the name of the ASI table
