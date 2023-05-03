@@ -81,7 +81,7 @@ try{
 					var townIdentifier = parcelNumber.slice(0, 2);
 
 					var town = lookup("TaxNumTownMapping", townIdentifier);
-					editAppSpecific("Town", parcelNumber);
+					editAppSpecific("Town", town);
 	}
 catch (ex)
   {
