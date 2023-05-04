@@ -77,9 +77,10 @@ try{
 					//Add WWM num and town based on Parcel num
 					//EIHMs282
 					var parcelNumber= getFirstParcelFromCapId(capId);
-					editAppSpecific("WWM Ref #", parcelNumber);
+					 var latestRecordID = checkForRelatedWWMRecord(parcelNumber);
+					 if(latestRecordID !=null)
+					editAppSpecific("WWM Ref #", latestRecordID);
 					var townIdentifier = parcelNumber.slice(0, 2);
-
 					var town = lookup("TaxNumTownMapping", townIdentifier);
 					editAppSpecific("Town", town);
 	}
@@ -89,7 +90,116 @@ catch (ex)
 		
   }
   
-  
+
+
+function checkForRelatedWWMRecord(parcelNumber) {
+		
+		var listOfRelatedRecorsdFromParcel = capIdsGetByParcel(parcelNumber);
+		var wwmRecord = new Array();
+		var resArray = new Array();
+	
+
+    for (record in listOfRelatedRecorsdFromParcel) 
+	{
+
+        var itemCap = listOfRelatedRecorsdFromParcel[record];
+        var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
+        //aa.print("We found this record: " + itemCap.getCustomID() + " which is a: " + itemCapType);
+        if (itemCapType == "DEQ/WWM/SHIP/Application" || itemCapType == "DEQ/WWM/Residence/Application" || itemCapType== "DEQ/WWM/Commercial/Application")
+		{
+           wwmRecord.push(itemCap);
+        }
+    }
+	for( i in wwmRecord)
+	{
+
+		var altId= wwmRecord[i].getCustomID();
+
+		 var taskHistoryResult = aa.workflow.getWorkflowHistory(wwmRecord[i],null);
+			if(taskHistoryResult.getSuccess())
+			{
+				var taskArr = taskHistoryResult.getOutput();
+				for(obj in taskArr)
+				{
+					var taskObj = taskArr[taskArr.length-1];
+					var ddate = taskObj.getDispositionDate();
+					scheduledDate = dateFormatted(ddate.getMonth(), ddate.getDayOfMonth(), ddate.getYear(), "MM/DD/YYYY");
+
+					var tempArr = new Array();
+					tempArr['altId'] = wwmRecord[i].getCustomID();
+					tempArr['date'] = convertDate(taskObj.getDispositionDate());
+					resArray.push(tempArr);
+					break;
+           
+                }
+			}
+	}
+
+			resArray.sort(function(a,b){
+			  // Turn your strings into dates, and then subtract them
+			  // to get a value that is either negative, positive, or zero.
+			  return new Date(b.date) - new Date(a.date);
+			});
+
+			return resArray[0].altId;
+
+	}
+
+
+
+function convertDate(thisDate)
+	{
+
+	if (typeof(thisDate) == "string")
+		{
+		var retVal = new Date(String(thisDate));
+		if (!retVal.toString().equals("Invalid Date"))
+			return retVal;
+		}
+
+	if (typeof(thisDate)== "object")
+		{
+
+		if (!thisDate.getClass) // object without getClass, assume that this is a javascript date already
+			{
+			return thisDate;
+			}
+
+		if (thisDate.getClass().toString().equals("class com.accela.aa.emse.dom.ScriptDateTime"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDayOfMonth() + "/" + thisDate.getYear());
+			}
+			
+		if (thisDate.getClass().toString().equals("class com.accela.aa.emse.util.ScriptDateTime"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDayOfMonth() + "/" + thisDate.getYear());
+			}			
+
+		if (thisDate.getClass().toString().equals("class java.util.Date"))
+			{
+			return new Date(thisDate.getTime());
+			}
+
+		if (thisDate.getClass().toString().equals("class java.lang.String"))
+			{
+			return new Date(String(thisDate));
+			}
+		if (thisDate.getClass().toString().equals("class java.sql.Timestamp"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDate() + "/" + thisDate.getYear());
+			}
+		}
+
+	if (typeof(thisDate) == "number")
+		{
+		return new Date(thisDate);  // assume milliseconds
+		}
+
+	logDebug("**WARNING** convertDate cannot parse date : " + thisDate);
+	return null;
+
+	}
+
   
   function getFirstParcelFromCapId(capId)
 {
