@@ -183,7 +183,7 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("parentAltID: " + parentAltID);
         logDebug("parentCapId.getCustomID(): " + parentCapId.getCustomID());
         
-        addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
+        addParameter(vEParams, '$$altID$$', parentAltID);
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", emailTemplate, vEParams, null);
