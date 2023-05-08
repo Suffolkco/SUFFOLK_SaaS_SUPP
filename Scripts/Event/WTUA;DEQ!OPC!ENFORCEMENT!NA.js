@@ -116,18 +116,21 @@ for (i in wfObj)
     }
 }
 
+logDebug("wfTask: " + wfTask);
+logDebug("wfStatus: " + wfStatus);
 //Violation Review
 if (wfTask == "Violation Review") 
 {
+
     if (wfStatus == "Request Inspection")
     {
         //
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         updateTaskDueDate("Violation Review", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
     }
-    if (wfStatus == "NOV Letter Sent")
+    else if (wfStatus == "NOV Letter Sent" || wfStatus == 'Enforcement Request Sent')
     {
         //preparing inspection report either from the tank or site (whichever copied to this record) for sending along with the notification here
         var otpRFiles = new Array();
@@ -143,16 +146,18 @@ if (wfTask == "Violation Review")
             {
                 docToPrepare = documents[doc];
                 docFileName = documents[doc].getFileName();
-                //logDebug("docfilename is: " + docFileName);
+                logDebug("docfilename is: " + docFileName);
                 //docToSend = prepareDocumentForEmailAttachmentLOCAL(capId, "Inspection Report", docFileName);
                 var catt = documents[doc].getDocCategory();
-
+                logDebug("doccatt is: " + catt);
 
                 var moduleName = cap.getCapType().getGroup();
                 var toClear = docToPrepare.getFileName();
                 toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(" ", "_");
                 docToPrepare.setFileName(toClear);
                 var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
+                logDebug("downloadRes is: " + downloadRes.getSuccess());
+                logDebug("downloadRes getOutput is: " + downloadRes.getOutput());
                 if (downloadRes.getSuccess() && downloadRes.getOutput())
                 {
                     otpRFiles.push(downloadRes.getOutput().toString());
@@ -170,6 +175,8 @@ if (wfTask == "Violation Review")
         //gathering inspection date information to push into the parameter in the email
         var inspDates = [];
         var aTwelveSite = loadASITable("ARTICLE 12 TANK VIOLATIONS", capId);
+        logDebug("aTwelveSite  is: " + aTwelveSite);
+
         if (aTwelveSite)
         {
             if (aTwelveSite.length >= 1)
@@ -193,8 +200,16 @@ if (wfTask == "Violation Review")
 
         addParameter(emailParams, "$$violationDueDate$$", dateSixtyDaysOut);
         addParameter(emailParams, "$$inspDate$$", maxDate);
-        sendNotification("", conEmailList, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
-        updateTaskDueDate("Violation Review", dateThirtyDaysOut);
+
+        if (wfStatus == 'Enforcement Request Sent')
+        {
+            sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
+        }
+        else if (wfStatus == 'NOV Letter Sent')
+        {
+            sendNotification("", conEmailList, "", "DEQ_OPC_ENF_NOV_LETTER", emailParams, otpRFiles);
+            updateTaskDueDate("Violation Review", dateThirtyDaysOut);
+        }
     }
 }
 
