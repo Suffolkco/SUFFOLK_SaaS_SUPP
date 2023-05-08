@@ -20,7 +20,7 @@ if (wfTask == "Issuance" && wfStatus == "Issued")
             copyASIFields(capId, parentId);
             copyASITables(capId, parentId);
             copyDocuments(capId, parentId);
-            aa.cap.updateAccessByACA(capId, "N");
+            aa.cap.updateAccessByACA(capId, "Y");
             //Updating Expiration Date of License
             logDebug("ASI Expdate is: " + issueDateASI);
             issueDateASI = new Date(issueDateASI);
