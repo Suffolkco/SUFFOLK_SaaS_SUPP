@@ -203,7 +203,10 @@ if (wfTask == "Violation Review")
 
         if (wfStatus == 'Enforcement Request Sent')
         {
-            sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
+            if (otpRFiles.length > 0)
+            {
+                sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
+            }
         }
         else if (wfStatus == 'NOV Letter Sent')
         {
