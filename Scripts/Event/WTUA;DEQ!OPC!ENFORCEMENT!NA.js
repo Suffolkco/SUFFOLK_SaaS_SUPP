@@ -203,6 +203,8 @@ if (wfTask == "Violation Review")
 
         if (wfStatus == 'Enforcement Request Sent')
         {
+            logDebug("otpRFiles.length is: " + otpRFiles.length);
+
             if (otpRFiles.length > 0)
             {
                 sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
