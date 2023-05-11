@@ -584,7 +584,8 @@ function makeTable(labResults, resId, inspEmail) {
             t["Results"] = doNullTranslation("STRING", r[8]);
         }
         //   else {    // 1016 per Josh
-        if (analyteName == "Colilert" || analyteName == "E.Coli") {
+        if (analyteName == "Colilert" || analyteName == "E.Coli" ||
+            analyteName == "Total Coliform" || analyteName == "E.coli (Qualitative)") {
             if (textResult == "N") {
                 t["Results"] = "0";
                 t["Flag"] = "";     // 10/16/19 changed from * to blank per Josh
