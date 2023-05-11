@@ -561,7 +561,7 @@ function makeTable(labResults, resId, inspEmail) {
         rawNumericResult = "" + r[5];
         t["Numeric Result"] = doNullTranslation("NUMBER", r[5]);
         t["Trace Results"] = "";
-        if (r[6] == "INVALID" || r[6] == "Invalid" || r[6] == "LA" || r[6] == "NR" || r[6] == "NA") {
+        if (r[6] == "INVALID" || r[6] == "Invalid" || r[6] == "LA" || r[6] == "NR" || r[6] == "NA" || r[6] == "N/A") {
             sampleError = true;
         }
         rawTextResult = "" + r[6];
@@ -738,92 +738,92 @@ function processCombos(resId) {
                 */
 
             // PFAS6 Group
-             /****** Uncomment this to include total
-            case "PFOS (Perfluorooctanesulfonic acid)":
-            case "PFOA (Perfluorooctanoic acid)":
-            case "PFHxS (Perfluorohexanesulfonic acid)":
-            case "PFHpA (Perfluoroheptanoic acid)":
-            case "PFNA (Perfluorononanoic acid)":
-            case "PFDA (Perfluorodecanoic acid)":
-             /****** Uncomment this to include total
-            // Case sensitive
-            case "PFOS (Perfluorooctanesulfonic Acid)":
-            case "PFOA (Perfluorooctanoic Acid)":
-            case "PFHxS (Perfluorohexanesulfonic Acid)":
-            case "PFHpA (Perfluoroheptanoic Acid)":
-            case "PFNA (Perfluorononanoic Acid)":
-            case "PFDA (Perfluorodecanoic Acid)":
-                // Find the group to decide which combo to add
+            /****** Uncomment this to include total
+           case "PFOS (Perfluorooctanesulfonic acid)":
+           case "PFOA (Perfluorooctanoic acid)":
+           case "PFHxS (Perfluorohexanesulfonic acid)":
+           case "PFHpA (Perfluoroheptanoic acid)":
+           case "PFNA (Perfluorononanoic acid)":
+           case "PFDA (Perfluorodecanoic acid)":
+            /****** Uncomment this to include total
+           // Case sensitive
+           case "PFOS (Perfluorooctanesulfonic Acid)":
+           case "PFOA (Perfluorooctanoic Acid)":
+           case "PFHxS (Perfluorohexanesulfonic Acid)":
+           case "PFHpA (Perfluoroheptanoic Acid)":
+           case "PFNA (Perfluorononanoic Acid)":
+           case "PFDA (Perfluorodecanoic Acid)":
+               // Find the group to decide which combo to add
 
-                analysisCode = row["Lab Analysis Code"];
-                cMethod = getCertifiedMethod(analysisCode);
-                if (cMethod == GROUP_NAME_1) {
-                    pFAS6Combos533.push(row);
-                }
-                if (cMethod == GROUP_NAME_2) {
-                    pFAS6Combos537.push(row);
-                }
+               analysisCode = row["Lab Analysis Code"];
+               cMethod = getCertifiedMethod(analysisCode);
+               if (cMethod == GROUP_NAME_1) {
+                   pFAS6Combos533.push(row);
+               }
+               if (cMethod == GROUP_NAME_2) {
+                   pFAS6Combos537.push(row);
+               }
 
-                originalTable.push(row);
-                break;
-            // Case senstivie
-            case "PFHpS (Perfluoroheptanesulfonic acid)":
-            case "PFHpS (Perfluoroheptanesulfonic Acid)":
-            // Case senstivie
-            case "PFUnA (Perfluoroundecanoic acid)":
-            case "PFUnA (Perfluoroundecanoic Acid)":
-            // Case sensitive
-            case "PFDoA (Perfluorododecanoic acid)":           
-            case "PFDoA (Perfluorododecanoic Acid)":
-                                       
-            case "HFPO-DA/GenX (Hexafluoropropylene oxide dimer acid)":
-            // Case sensitive  
-            case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)":                  
-            case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-Oxaundecane-1-Sulfonic Acid)":
-            // Case sensitive    
-            case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)":           
-            case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-Oxanonane-1-Sulfonic Acid)":
+               originalTable.push(row);
+               break;
+           // Case senstivie
+           case "PFHpS (Perfluoroheptanesulfonic acid)":
+           case "PFHpS (Perfluoroheptanesulfonic Acid)":
+           // Case senstivie
+           case "PFUnA (Perfluoroundecanoic acid)":
+           case "PFUnA (Perfluoroundecanoic Acid)":
+           // Case sensitive
+           case "PFDoA (Perfluorododecanoic acid)":           
+           case "PFDoA (Perfluorododecanoic Acid)":
+                                      
+           case "HFPO-DA/GenX (Hexafluoropropylene oxide dimer acid)":
+           // Case sensitive  
+           case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-oxaundecane-1-sulfonic acid)":                  
+           case "11Cl-PF3OUdS (11-Chloroeicosafluoro-3-Oxaundecane-1-Sulfonic Acid)":
+           // Case sensitive    
+           case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-oxanonane-1-sulfonic acid)":           
+           case "9Cl-PF3ONS (9-Chlorohexadecafluoro-3-Oxanonane-1-Sulfonic Acid)":
 
-                analysisCode = row["Lab Analysis Code"];
-                cMethod = getCertifiedMethod(analysisCode);
-                if (cMethod == GROUP_NAME_1) {
-                    pfaCatogory1Combos533.push(row);
-                }
-                if (cMethod == GROUP_NAME_2) {
-                    pfaCatogory1Combos537.push(row);
-                }
+               analysisCode = row["Lab Analysis Code"];
+               cMethod = getCertifiedMethod(analysisCode);
+               if (cMethod == GROUP_NAME_1) {
+                   pfaCatogory1Combos533.push(row);
+               }
+               if (cMethod == GROUP_NAME_2) {
+                   pfaCatogory1Combos537.push(row);
+               }
 
-                originalTable.push(row);
-                break;
+               originalTable.push(row);
+               break;
+        
+        
+           case "PFBA (Perfluorobutanoic acid)":
+           case "PFBS (Perfluorobutanesulfonic acid)":
+           case "PFPeA (Perfluoropentanoic acid)":
+           case "PFPeS (Perfluoropentanesulfonic acid)":
+           case "PFHxA (Perfluorohexanoic acid)":
+           case "ADONA (4,8-Dioxa-3H-perfluorononanoic acid)":
+           case "4:2FTS (1H, 1H, 2H, 2H-Perfluorohexane sulfonic acid)":
+           case "6:2FTS (1H, 1H, 2H, 2H-Perfluorooctane sulfonic acid)":
+           case "8:2FTS (1H, 1H, 2H, 2H-Perfluorodecane sulfonic acid)":
+           case "NFDHA (Nonafluoro-3,6-dioxaheptanoic acid)":          
+           case "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)":
+           case "PFMPA (Perfluoro-3-methoxypropanoic acid)":
+           case "PFMBA (Perfluoro-4-methoxybutanoic acid)":          
          
-         
-            case "PFBA (Perfluorobutanoic acid)":
-            case "PFBS (Perfluorobutanesulfonic acid)":
-            case "PFPeA (Perfluoropentanoic acid)":
-            case "PFPeS (Perfluoropentanesulfonic acid)":
-            case "PFHxA (Perfluorohexanoic acid)":
-            case "ADONA (4,8-Dioxa-3H-perfluorononanoic acid)":
-            case "4:2FTS (1H, 1H, 2H, 2H-Perfluorohexane sulfonic acid)":
-            case "6:2FTS (1H, 1H, 2H, 2H-Perfluorooctane sulfonic acid)":
-            case "8:2FTS (1H, 1H, 2H, 2H-Perfluorodecane sulfonic acid)":
-            case "NFDHA (Nonafluoro-3,6-dioxaheptanoic acid)":          
-            case "PFEESA (Perfluoro(2-ethoxyethane)sulfonic acid)":
-            case "PFMPA (Perfluoro-3-methoxypropanoic acid)":
-            case "PFMBA (Perfluoro-4-methoxybutanoic acid)":          
-          
-                                   
-                analysisCode = row["Lab Analysis Code"];
-                cMethod = getCertifiedMethod(analysisCode);
-                if (cMethod == GROUP_NAME_1) {
-                    pfaCatogory2Combos533.push(row);
-                }
-                if (cMethod == GROUP_NAME_2) {
-                    pfaCatogory2Combos537.push(row);
-                }
+                                  
+               analysisCode = row["Lab Analysis Code"];
+               cMethod = getCertifiedMethod(analysisCode);
+               if (cMethod == GROUP_NAME_1) {
+                   pfaCatogory2Combos533.push(row);
+               }
+               if (cMethod == GROUP_NAME_2) {
+                   pfaCatogory2Combos537.push(row);
+               }
 
-                originalTable.push(row);
-                break;
-                */
+               originalTable.push(row);
+               break;
+               */
             case "Total Aldicarb(calc)":
                 aldiComboFound = true;
                 aldiComboRow = row;
