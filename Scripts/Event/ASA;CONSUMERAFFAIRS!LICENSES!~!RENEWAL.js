@@ -61,41 +61,41 @@ if (conArray.length < 1) {
   --adding publicUser logic, uncommenting, and removing from contact logic
   --since it runs twice, changing "addFee" to "updateFee" so they are not duplicated
 */
+
+ // DAP-533
+ if (getAppStatus(parentCapId) == "Shelved")
+ {
+     logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
+     updateFee("SLS_08", "CA_SALES", "FINAL", 1, "Y", "N", null) 
+
+ }
+
 try{
 	if(publicUser){
-        // DAP-533
-        if (getAppStatus(parentCapId) == "Shelved")
+        if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
         {
-            logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
-            updateFee("SLS_08", "CA_SALES", "FINAL", 1, "Y", "N", null) 
-
+            logDebug("Not Dry Cleaning, RE or RP")
+            updateFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y", "N", null)
         }
-        else
+        if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
         {
-            if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
+            var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
+
+
+            if (!dryCleanerExempt) 
             {
-                logDebug("Not Dry Cleaning, RE or RP")
                 updateFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y", "N", null)
             }
-            if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
-            {
-                var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
-
-
-                if (!dryCleanerExempt) 
-                {
-                    updateFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y", "N", null)
-                }
-            }
-            if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
-            {
-                updateFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y", "N", null) 
-            }
-            if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
-            {
-                updateFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y", "N", null); 
-            }
         }
+        if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
+        {
+            updateFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y", "N", null) 
+        }
+        if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
+        {
+            updateFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y", "N", null); 
+        }
+        
 	}
 }catch (err){
  	logDebug("A JavaScript Error occurred: ASA;CONSUMERAFFAIRS!LICENSES!~!RENEWAL: Add fees: " + err.message);
