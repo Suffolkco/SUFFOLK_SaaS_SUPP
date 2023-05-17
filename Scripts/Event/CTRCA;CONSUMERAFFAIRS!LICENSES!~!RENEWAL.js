@@ -4,15 +4,23 @@ include("CA_REN_TO_LIC_SUBMITTAL");
 
 aa.cap.updateAccessByACA(capId, "Y");
 
+
 if (!publicUser)
 {
-    if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
+    // DAP-533
+    if (getAppStatus(parentCapId) == "Shelved")
+    {
+        logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
+        updateFee("SLS_08", "CA_SALES", "FINAL", 1, "Y", "N", null) 
+    }
+
+    else if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
     {
         logDebug("app is not Dry Cleaning");
         addFee("LIC_REN_01", "CA_LIC_REN", "FINAL", 1, "Y");
         logDebug("Added Renewal Fee");
     }
-    if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
+    else if (appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal"))
     {
         logDebug("app is Dry Cleaning");
         var dryCleanerExempt = checkForFee(parentCapId, "LIC_25")
@@ -25,11 +33,11 @@ if (!publicUser)
             logDebug("Added Renewal Fee") 
         }
     }
-    if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
+    else if (appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal"))
     {
         addFee("LIC_09", "CA_LICENSE", "FINAL", 1, "Y") 
     }
-    if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
+    else if (appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal")) 
     {
         addFee("LIC_18", "CA_LICENSE", "FINAL", 1, "Y") 
     }
