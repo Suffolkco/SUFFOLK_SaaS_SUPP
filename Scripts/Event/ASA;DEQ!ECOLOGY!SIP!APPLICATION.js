@@ -108,7 +108,24 @@ try{
 					  editAppSpecific("SCORE", 70); 
 					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
 					  editAppSpecific("SCORE", 60); 
-
+                    
+					//EIHMS2 299
+					
+				if (AInfo["Previously installed IA OWTS"] == "Yes"||   
+				    AInfo["Tax liens"] == "Yes"||
+				    AInfo["Foreclosure"] == "Yes"  ||
+				    AInfo["C.O."] == "No")
+					{
+						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Ineligible");
+					}
+					  
+				else
+				  {
+						 editAppSpecific("County Status", "Undetermined");
+						 editAppSpecific("State Status", "Undetermined");
+				  }
+			 
 
 
 	}
