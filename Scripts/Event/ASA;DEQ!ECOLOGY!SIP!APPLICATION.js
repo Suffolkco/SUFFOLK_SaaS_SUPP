@@ -111,10 +111,16 @@ try{
                     
 					//EIHMS2 299
 					
-				if (AInfo["Previously installed IA OWTS"] == "Yes"||   
-				    AInfo["Tax liens"] == "Yes"||
-				    AInfo["Foreclosure"] == "Yes"  ||
+					if (AInfo["Previously installed IA OWTS"] == "Yes")
+					{
+						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Undetermined");
+					}
+					
+				if (AInfo["Tax liens"] == "Yes"||
+				    AInfo["Foreclosure"] == "Yes"||
 				    AInfo["C.O."] == "No")
+					
 					{
 						editAppSpecific("County Status", "Ineligible");
 						editAppSpecific("State Status", "Ineligible");
