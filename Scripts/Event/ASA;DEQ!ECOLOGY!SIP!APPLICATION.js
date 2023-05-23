@@ -117,7 +117,7 @@ try{
 						editAppSpecific("State Status", "Undetermined");
 					}
 					
-				if (AInfo["Tax liens"] == "Yes"||
+				else if (AInfo["Tax liens"] == "Yes"||
 				    AInfo["Foreclosure"] == "Yes"||
 				    AInfo["C.O."] == "No")
 					
