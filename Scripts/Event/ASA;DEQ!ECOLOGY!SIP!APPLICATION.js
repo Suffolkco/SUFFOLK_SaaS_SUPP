@@ -83,6 +83,60 @@ try{
 					var townIdentifier = parcelNumber.slice(0, 2);
 					var town = lookup("TaxNumTownMapping", townIdentifier);
 					editAppSpecific("Town", town);
+					
+					
+                  // EHIMS2-295
+                  // Sewer District
+                  editAppSpecific("Sewer District", getGISInfo("SUFFOLKCO","SanitationDistrictPolygon","SHORTNAME")); 
+
+                  // Legislative District
+                  editAppSpecific("Legislative District", getGISInfo("SUFFOLKCO","LegislativeDistrict","NAME")); 
+
+                  // Priority Area 
+                  editAppSpecific("Priority Area", getGISInfo("SUFFOLKCO","ReclaimWaterPolygon","PRIORITY")); 
+
+					
+					//EIHMS2 298
+
+					if (AInfo["Catastrophic Failure"] == "Yes")
+					  editAppSpecific("SCORE", 100); 
+					if (AInfo["Non-Catastrophic"] == "Yes" && AInfo["Catastrophic Failure"] == "No")
+					  editAppSpecific("SCORE", 90); 
+					if (AInfo["Priority Area"] == "Priority 1" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
+					  editAppSpecific("SCORE", 80); 
+					if (AInfo["Priority Area"] == "Priority 2" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
+					  editAppSpecific("SCORE", 70); 
+					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
+					  editAppSpecific("SCORE", 60); 
+                    
+					//EIHMS2 299
+					
+					if (AInfo["Previously installed IA OWTS"] == "Yes")
+					{
+						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Undetermined");
+						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+					}
+					
+				else if (AInfo["Tax liens"] == "Yes"||
+				    AInfo["Foreclosure"] == "Yes"||
+				    AInfo["C.O."] == "No")
+					
+					{
+						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Ineligible");
+						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+					}
+					  
+				else
+				  {
+						 editAppSpecific("County Status", "Undetermined");
+						 editAppSpecific("State Status", "Undetermined");
+						 sendEmailsOnSIPRecord("DEQ_SIP_APP_RCVD");
+				  }
+			 
+
+
 	}
 catch (ex)
   {
@@ -140,7 +194,7 @@ function checkForRelatedWWMRecord(parcelNumber) {
 			  // to get a value that is either negative, positive, or zero.
 			  return new Date(b.date) - new Date(a.date);
 			});
-
+if(resArray[0] != undefined)
 			return resArray[0].altId;
 
 	}
