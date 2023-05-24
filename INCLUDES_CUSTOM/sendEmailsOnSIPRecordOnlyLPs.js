@@ -1,4 +1,4 @@
-function sendEmailsOnSIPRecord(templateName)
+function sendEmailsOnSIPRecordOnlyLPs(templateName)
 {
 
 		var sipPO = loadASITable("DEQ_SIP_PROPERTY_OWNER");
@@ -20,21 +20,7 @@ function sendEmailsOnSIPRecord(templateName)
 			  fromEmail = "";
 			}
 			
-			//Contact Emails
-			for (con in conArray)
-			{
-			  if (!matches(conArray[con].email, null, undefined, ""))
-			  {
-				logDebug("Contact email: " + conArray[con].email);
-				conEmail = conArray[con].email;
-				 if (conEmail && dubCheckemails.indexOf(conEmail) == -1) {
-					if(dubCheckemails)
-						dubCheckemails = dubCheckemails + "||" + conEmail;
-					 else
-						dubCheckemails = "" + conEmail;
-				}
-			  }
-			}
+			
 			//Lp emails
 			
 			var lpResult = aa.licenseScript.getLicenseProf(capId);
@@ -61,21 +47,7 @@ function sendEmailsOnSIPRecord(templateName)
 			  }
 			}
 			
-			//Email from ASIT table
 			
-						for (var k = 0; k < sipPO.length; k++)
-			{
-					  var poEmail = sipPO[k]["Email Address"];
-					  if (!matches(poEmail, null, undefined, ""))
-					 {
-						  if (poEmail && dubCheckemails.indexOf(poEmail) == -1) {
-					if(dubCheckemails)
-						dubCheckemails = dubCheckemails + ";" + poEmail;
-					 else
-						dubCheckemails = "" + poEmail;
-				}
-					 }
-		   }
 			  //getRecordParams4Notification(emailParams);
 				  
 			 //addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
@@ -88,6 +60,8 @@ function sendEmailsOnSIPRecord(templateName)
 				logDebug("Record address:" +capAddresses[0]);
 				  addParameter(emailParams, "$$address$$", capAddresses[0]);
 			  }*/
+			  
+			  
 
 			if (dubCheckemails != null)
 			{
