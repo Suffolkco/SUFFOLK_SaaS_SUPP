@@ -19,7 +19,7 @@ try
 		sendEmailsOnSIPRecord("DEQ_SIP_WITHDRAWN");
 	}
 	
-	if ((wfTask == "Application Review" || wfTask == "Grant Review" wfTask == "Application Review") && (wfStatus == "Ineligible"))
+	if ((wfTask == "Application Review" || wfTask == "Grant Review" || wfTask == "Application Review") && (wfStatus == "Ineligible"))
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 	}
