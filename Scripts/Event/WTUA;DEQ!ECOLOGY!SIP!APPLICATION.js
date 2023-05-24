@@ -5,7 +5,7 @@ try
 {
 	if (wfTask == "Application Review" && wfStatus == "Document Request")
 	{
-		sendEmailsOnSIPRecord("DEQ_SIP_APP_RCVD");
+		sendEmailsOnSIPRecord("DEQ_SIP_DOC_REQUEST");
 	}
 	
 	if ((wfTask == "Application Review" || wfTask == "Grant Review") && (wfStatus == "Applicant Clarification"))
