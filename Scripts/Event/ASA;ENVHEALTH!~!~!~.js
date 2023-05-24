@@ -4,7 +4,6 @@ if (!publicUser) {
 createRefContactsFromCapContactsAndLink(capId, null, null, null, true, comparePeopleMatchCriteria);
 }
 
-
 if (!publicUser)
 {
     if (appMatch("EnvHealth/Health Program/Food Protection/Application") || appMatch("EnvHealth/Health Program/Mobile/Application"))
