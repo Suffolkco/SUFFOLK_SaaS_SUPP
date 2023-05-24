@@ -1,7 +1,42 @@
+
 if (!publicUser) {
     createupdateRefLPFromRecordLP(capId);
 createRefContactsFromCapContactsAndLink(capId, null, null, null, true, comparePeopleMatchCriteria);
 }
+
+
+if (!publicUser)
+{
+    if (appMatch("EnvHealth/Health Program/Food Protection/Application") || appMatch("EnvHealth/Health Program/Mobile/Application"))
+    {
+        // Check if the ASI field "Does this application require a new facility?" is set to "Yes"
+        var requireNewFacility = getAppSpecific("Does this application require a new facility?");
+		logDebug("Create New Facility? " + requireNewFacility);
+        if (requireNewFacility == "Yes") {
+            // Create a new Facility Record and make it a parent
+            var parentRecResult = createParent("EnvHealth", "Facility", "NA", "NA");
+            if (parentRecResult) {
+                // Copy Address, Parcel, Owner, and Contacts to the parent Facility Record
+                copyAddresses(capId, parentRecResult);
+                copyParcels(capId, parentRecResult);
+                copyOwner(capId, parentRecResult);
+                //copyASIFields(capId, parentRecResult);
+                //copyUniqueContacts(capId, parentRecResult);
+
+                logDebug("Parent Facility Record created and related: " + parentRecResult.getCustomID());
+
+                // Update "Does this application require a new facility?" back to "No"
+                editAppSpecific("Does this application require a new facility?", "No");
+
+                // Populate the "Facility ID" on the application with the ID of the newly created Facility record
+                editAppSpecific("Facility ID", parentRecResult.getCustomID());
+            } else {
+                logDebug("Error: Unable to create parent Facility Record.");
+            }
+        }
+    }
+}
+
 
 if (appMatch("EnvHealth/Health Program/Food Protection/Application")) {
 	var numberOfSeats = getAppSpecific("Number of Seats");
@@ -293,6 +328,8 @@ if (appMatch("EnvHealth/Temporary Event/Vendor/Application")) {
 	}
 }
 
+
+
 function convertDate(thisDate) {
 	//converts date to javascript date
 	if (typeof thisDate == "string") {
@@ -352,6 +389,16 @@ if (appMatch("EnvHealth/*/*/*")) {
 function dateDiff(date1, date2) {
 
     return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
 }
 
 /*
