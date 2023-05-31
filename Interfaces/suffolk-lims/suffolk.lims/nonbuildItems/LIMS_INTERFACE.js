@@ -42,6 +42,7 @@ var infoLog = [];
 var warningLog = [];
 var errorLog = [];
 var content = "";
+const pfoa = "$PFOA";
 const GROUP_NAME = "PERFLUORINATED COMPOUNDS";
 const GROUP_NAME_1 = "PFAS 533";
 const GROUP_NAME_2 = "PFAS 537.1";
@@ -505,6 +506,7 @@ function makeTable(labResults, resId, inspEmail) {
             r[3] == GROUP_NAME_1 ||
             r[3] == GROUP_NAME_2 ||
             r[3] == GROUP_NAME_3) {
+            // Wiat for josh to let us know if we need to check that r[3] == pfoa) {
 
             if (r[18]) {
                 logInfo("A lab name has been found in the PFAS EDT file: " + r[18]);
@@ -518,7 +520,12 @@ function makeTable(labResults, resId, inspEmail) {
         t["Lab Name"] = labName;
 
         ac = "" + r[3];
-        analysisCode = r[3];
+        if (r[3] == pfoa) {
+            analysisCode = GROUP_NAME_1
+        }
+        else {
+            analysisCode = r[3];
+        }
         analyteName = r[4];
 
         // This is for drinking water ammonia. We need special handling since the analyte name for both drinking water ammonia and marine ammonia
@@ -539,6 +546,9 @@ function makeTable(labResults, resId, inspEmail) {
 
         if (r[3] == GROUP_NAME || r[3] == GROUP_NAME_1 || r[3] == GROUP_NAME_2 || r[3] == GROUP_NAME_3) {
             t["Group Name"] = r[3];
+        }
+        else if (r[3] == pfoa) {
+            t["Group Name"] = GROUP_NAME_1;
         }
         else {
             t["Group Name"] = getGroupNameValue(key);
