@@ -75,6 +75,7 @@ if (balanceDue <= 0) {
 		  editAppSpecific("From Date", newPermitFromDt);
 		  editAppSpecific("To Date", newPermitToDt);
 		  editAppSpecific("Next Billing Date", newNextBillingDate);
+		  updateTask("Permit Status","Permit Issued","Updated via script","")
 		  showMessage = true;
 		  comment("<B><Font Color=BLUE>" + annualPermitCounter + " annual fee(s) have been paid in this transaction. The Permit To Date has been updated to " + newPermitToDt + "</Font></B>");
 		}
