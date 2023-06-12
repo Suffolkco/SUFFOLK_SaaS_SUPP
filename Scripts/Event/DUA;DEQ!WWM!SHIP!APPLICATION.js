@@ -6,6 +6,15 @@ if (publicUser)
 {
     if (cap.isCompleteCap())
     {
+        // EHIMS2-302 - have to put this logic at the beginning
+
+        var appStatus = getAppStatus(capId);
+
+        if (appStatus == 'Registration Complete')
+        {            
+            activateTask("Final Review");
+        }
+
         if (cap.getAuditID().search("SHIP Legacy Import") == -1)
         {
             var wfHist = aa.workflow.getWorkflowHistory(capId, null);
@@ -34,12 +43,11 @@ if (publicUser)
                 logDebug("not updating today's date");
             }
         }
-        // EHIMS-5036
-        var appStatus = getAppStatus(capId);
-        
+        // EHIMS-5036  
         if (appStatus != "Received" && appStatus != "Resubmitted")
         {
             updateAppStatus("Resubmitted");        
         }
+
     }
 }
