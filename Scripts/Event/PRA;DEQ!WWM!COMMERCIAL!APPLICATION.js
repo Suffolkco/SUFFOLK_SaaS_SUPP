@@ -21,13 +21,14 @@ if (publicUser)
         updateTask("Final Review", "Resubmitted", "Additional payment submitted by Applicant", "Additional payment submitted by Applicant");        
     }
 
-    var appStatus = getAppStatus(capId);
+     // EHIMS-5036
+     var appStatus = getAppStatus(capId);
     
-    // Only if the application has been reviewed
-    if(appStatus != "Received")
-    {
-        updateAppStatus("Resubmitted");
-    }
+     // Only if the application has been reviewed
+     if(appStatus != "Resubmitted" && appStatus != "Received")
+     {
+         updateAppStatus("Resubmitted");
+     } 
 }
 
 

@@ -31,7 +31,11 @@ if (publicUser)
     {
         updateAppStatus("Resubmitted");        
     }
-   
+    // EHIMS-5036
+    if (appStatus != "Received" && appStatus != "Resubmitted")
+    {
+        updateAppStatus("Resubmitted");        
+    }
 
 }
 

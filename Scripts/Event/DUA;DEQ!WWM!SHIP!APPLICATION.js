@@ -34,5 +34,12 @@ if (publicUser)
                 logDebug("not updating today's date");
             }
         }
+        // EHIMS-5036
+        var appStatus = getAppStatus(capId);
+        
+        if (appStatus != "Received" && appStatus != "Resubmitted")
+        {
+            updateAppStatus("Resubmitted");        
+        }
     }
 }
