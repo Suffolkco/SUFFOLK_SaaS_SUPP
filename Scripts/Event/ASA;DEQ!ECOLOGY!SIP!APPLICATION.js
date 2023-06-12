@@ -109,18 +109,41 @@ try{
 					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
 					  editAppSpecific("SCORE", 60); 
                     
+					
 					//EIHMS2 299
 					
-					if (AInfo["Previously installed IA OWTS"] == "Yes")
+					if (AInfo["Previously installed IA OWTS"] == "Yes" && AInfo["Tax liens"] == "No" &&
+				    AInfo["Foreclosure"] == "No" &&
+				    AInfo["C.O."] == "Yes")
 					{
 						editAppSpecific("County Status", "Ineligible");
 						editAppSpecific("State Status", "Undetermined");
 						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
 					
-				else if (AInfo["Tax liens"] == "Yes"||
-				    AInfo["Foreclosure"] == "Yes"||
-				    AInfo["C.O."] == "No")
+				if (AInfo["Tax liens"] == "Yes" &&
+				    (AInfo["Foreclosure"] == "Yes" ||  AInfo["Foreclosure"] == "No") &&
+				    (AInfo["C.O."] == "No" || AInfo["C.O."] == "Yes") && (AInfo["Previously installed IA OWTS"] == "Yes" || AInfo["Previously installed IA OWTS"] == "No"))
+					
+					{
+						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Ineligible");
+						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+					}
+ 
+                  if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
+				    AInfo["Foreclosure"] == "Yes" &&
+				    (AInfo["C.O."] == "No" || AInfo["C.O."] == "Yes") && (AInfo["Previously installed IA OWTS"] == "Yes" || AInfo["Previously installed IA OWTS"] == "No"))
+					
+					{
+						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Ineligible");
+						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+					}
+
+                 if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
+				      (AInfo["Foreclosure"] == "Yes" ||  AInfo["Foreclosure"] == "No") &&
+				    AInfo["C.O."] == "No" && (AInfo["Previously installed IA OWTS"] == "Yes" || AInfo["Previously installed IA OWTS"] == "No"))
 					
 					{
 						editAppSpecific("County Status", "Ineligible");
@@ -128,12 +151,15 @@ try{
 						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
 					  
-				else
+				if (AInfo["Previously installed IA OWTS"] == "No" && AInfo["Tax liens"] == "No" &&
+				    AInfo["Foreclosure"] == "No" &&
+				    AInfo["C.O."] == "Yes")
 				  {
 						 editAppSpecific("County Status", "Undetermined");
 						 editAppSpecific("State Status", "Undetermined");
 						 sendEmailsOnSIPRecord("DEQ_SIP_APP_RCVD");
 				  }
+			 
 			 
 
 
