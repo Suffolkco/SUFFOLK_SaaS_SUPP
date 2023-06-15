@@ -462,12 +462,12 @@ if (wfTask == "Final Review")
         var iaOwts = getAppSpecific("I/A OWTS Installation");
         if (iaOwts == "CHECKED")
         {
-            deactivateTask("Inspections");     
+            deactivateTask("Final Review");     
             activateTask("Preliminary Sketch Review");
         }
         else
         {
-            deactivateTask("Inspections");     
+            deactivateTask("Final Review");     
             activateTask("Application Review");
         }
      
