@@ -49,7 +49,7 @@ if (parentCapId)
         {
             if (enfType == "SP")
             {
-                if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator", "Property Owner", "Attorney"))
+                if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator", "Property Owner"))
                 {
                     if (!matches(conArrayParent[con].email, null, undefined, ""))
                     {
@@ -60,7 +60,7 @@ if (parentCapId)
             }
             else
             {
-                if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator", "Attorney"))
+                if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
                 {
                     if (!matches(conArrayParent[con].email, null, undefined, ""))
                     {
@@ -78,6 +78,25 @@ if (parentCapId)
         }
     }
 }
+
+// EHIMS2-304 Add Attorney to the email list
+var conArrayEnf = getContactArray(capId);
+
+for (conEnf in conArrayEnf)
+{
+    if (conArrayEnf[conEnf].peopleModel.getAuditStatus() == "A")
+    {
+        if (matches(conArrayEnf[conEnf]["contactType"], "Attorney"))
+        {
+            if (!matches(conArrayEnf[conEnf].email, null, undefined, ""))
+            {
+                logDebug("Additional Enf Attorney contact email: " + conArrayEnf[conEnf].email);
+                conEmailList += conArrayEnf[conEnf].email + "; ";              
+            }
+        }
+    }
+}
+        
 
 
 //grabbing the due date of the Enforcement Request Review task in the current workflow, for use in multiple other task/statuses
