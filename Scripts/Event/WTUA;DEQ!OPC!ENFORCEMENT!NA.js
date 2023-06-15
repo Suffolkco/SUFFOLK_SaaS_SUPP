@@ -49,7 +49,7 @@ if (parentCapId)
         {
             if (enfType == "SP")
             {
-                if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator", "Property Owner"))
+                if (matches(conArrayParent[con]["contactType"], "Pool Owner", "Pool Operator", "Property Owner", "Attorney"))
                 {
                     if (!matches(conArrayParent[con].email, null, undefined, ""))
                     {
@@ -60,7 +60,7 @@ if (parentCapId)
             }
             else
             {
-                if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator"))
+                if (matches(conArrayParent[con]["contactType"], "Property Owner", "Tank Owner", "Operator", "Attorney"))
                 {
                     if (!matches(conArrayParent[con].email, null, undefined, ""))
                     {
