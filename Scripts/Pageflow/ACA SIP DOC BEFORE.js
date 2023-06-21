@@ -50,7 +50,7 @@ try
 	{
 		if (!determineACADocumentAttached("Current, Signed Tax Return"))
 		{
-			docComments += "Passport Photo" + "<br>";
+			docComments += "Current, Signed Tax Return" + "<br>";
 		}
 	
 	}
