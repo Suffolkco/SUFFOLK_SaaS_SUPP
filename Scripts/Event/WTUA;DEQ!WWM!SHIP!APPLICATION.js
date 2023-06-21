@@ -434,11 +434,45 @@ if (wfTask == "Inspections")
         }
         sendNotification("", lpAgentEmail, "", "DEQ_SHIP_14_DAY_OK_PROCEED", vEParams, otpRFiles);
     }
+    
+    //EHIMS2-303
+    if (wfStatus == "Plan Changed")
+    {       
+        var iaOwts = getAppSpecific("I/A OWTS Installation");
+        if (iaOwts == "CHECKED")
+        {
+            deactivateTask("Inspections");     
+            activateTask("Preliminary Sketch Review");
+        }
+        else
+        {
+            deactivateTask("Inspections");     
+            activateTask("Application Review");
+        }
+     
+    }
 }
 
 //Final Review
 if (wfTask == "Final Review")
 {
+    //EHIMS2-303
+    if (wfStatus == "Plan Changed")
+    {       
+        var iaOwts = getAppSpecific("I/A OWTS Installation");
+        if (iaOwts == "CHECKED")
+        {
+            deactivateTask("Final Review");     
+            activateTask("Preliminary Sketch Review");
+        }
+        else
+        {
+            deactivateTask("Final Review");     
+            activateTask("Application Review");
+        }
+     
+    }
+
     if (wfStatus == "Registration Complete")
     {
         var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);

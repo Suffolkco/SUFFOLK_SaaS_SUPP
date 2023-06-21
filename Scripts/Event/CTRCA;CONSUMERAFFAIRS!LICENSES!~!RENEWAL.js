@@ -8,10 +8,12 @@ aa.cap.updateAccessByACA(capId, "Y");
 if (!publicUser)
 {
     // DAP-533
+    var parentCapId = getParentCapID4Renewal();
+    logDebug("parentCapId: " + parentCapId);
     if (getAppStatus(parentCapId) == "Shelved")
     {
-        logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
-        updateFee("SLS_08", "CA_SALES", "FINAL", 1, "Y", "N", null) 
+        logDebug("Parent record has a status of Shelved. SLS_38 fee code instead.")
+        updateFee("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null) 
     }
 
     else if (!appMatch("ConsumerAffairs/Licenses/Dry Cleaning/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Electrical/Renewal") && !appMatch("ConsumerAffairs/Licenses/Restricted Plumbing/Renewal"))
@@ -85,6 +87,23 @@ if (!publicUser)
         }
     }
 
+}
+
+function getAppStatus(pcapId) {
+	var itemCap = pcapId;
+    logDebug("pcapId: " + pcapId);
+
+	var appStatus = null;
+    var capResult = aa.cap.getCap(itemCap);
+   if (capResult.getSuccess()) {
+      licCap = capResult.getOutput();
+      if (licCap != null) {
+         appStatus = "" + licCap.getCapStatus();
+      }
+   } else {
+		logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
+	}
+	return appStatus;
 }
 
 function getContactInfo(cType, capId) {

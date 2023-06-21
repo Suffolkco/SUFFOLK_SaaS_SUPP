@@ -17,6 +17,47 @@ if (requireNewFacility == "Yes") {
 
         logDebug("Parent Facility Record created and related: " + parentRecResult.getCustomID());
 
+        // Copy Days/Hours of operation from Application to Facility
+        var daysOp = getAppSpecific("Days of Operation",capId);
+        editAppSpecific("Days of Operation", daysOp, parentRecResult);
+        logDebug("Updated Days of operation ASI to: " + getAppSpecific("Days of Operation", parentRecResult));
+        var hrsOp = getAppSpecific("Hours of Operation",capId);
+        editAppSpecific("Hours of Operation", hrsOp, parentRecResult);
+        logDebug("Updated Hours of operation ASI to: " + getAppSpecific("Hours of Operation", parentRecResult));
+
+        // Copy the Facility DBA Name
+        var dbaName = getAppSpecific("Facility Name",capId);				
+        editAppSpecific("Facility Name", dbaName, parentRecResult);
+        logDebug("Updated Facility Name ASI to: " + getAppSpecific("Facility Name", parentRecResult));
+
+        // Copy the Water Supply
+        var waterSupply = getAppSpecific("Water Supply",capId);				
+        editAppSpecific("Water Supply", waterSupply, parentRecResult);
+        logDebug("Updated Water Supply ASI to: " + getAppSpecific("Water Supply", parentRecResult));
+
+
+        // Copy the Septic/Sewage
+        var ss = getAppSpecific("Septic/Sewage",capId);				
+        editAppSpecific("Septic/Sewage", ss, parentRecResult);
+        logDebug("Updated Septic/Sewage ASI to: " + getAppSpecific("Septic/Sewage", parentRecResult));
+
+        // Copy the Number of seats
+        var noOfSeats = getAppSpecific("Number of Seats",capId);				
+        editAppSpecific("Number of Seats", noOfSeats, parentRecResult);
+        logDebug("Updated Number of Seats ASI to: " + getAppSpecific("Number of Seats", parentRecResult));
+
+        // Copy the Type of Establishment
+        var noOfSeats = getAppSpecific("Type of Establishment",capId);				
+        editAppSpecific("Type of Establishment", noOfSeats, parentRecResult);
+        logDebug("Updated Type of Establishment ASI to: " + getAppSpecific("Type of Establishment", parentRecResult));
+
+
+        // Copy the Type of Ownership
+        var noOfSeats = getAppSpecific("Type of Ownership",capId);				
+        editAppSpecific("Type of Ownership", noOfSeats, parentRecResult);
+        logDebug("Updated Type of Ownership ASI to: " + getAppSpecific("Type of Ownership", parentRecResult));
+
+
         // Update "Does this application require a new facility?" back to "No"
         editAppSpecific("Does this application require a new facility?", "No");
 

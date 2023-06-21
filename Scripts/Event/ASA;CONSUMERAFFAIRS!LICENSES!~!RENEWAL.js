@@ -68,7 +68,7 @@ try{
         if (getAppStatus(parentCapId) == "Shelved")
         {
             logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
-            updateFee("SLS_08", "CA_SALES", "FINAL", 1, "Y", "N", null) 
+            updateFee("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null) 
 
         }
         else
@@ -156,6 +156,22 @@ try{
         }
     }
 */
+
+function getAppStatus(pcapId) {
+	var itemCap = pcapId;
+	
+	var appStatus = null;
+   var capResult = aa.cap.getCap(itemCap);
+   if (capResult.getSuccess()) {
+      licCap = capResult.getOutput();
+      if (licCap != null) {
+         appStatus = "" + licCap.getCapStatus();
+      }
+   } else {
+		logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
+	}
+	return appStatus;
+}
 
 function checkForFee(pCapId, pFeeCode){
 try{
