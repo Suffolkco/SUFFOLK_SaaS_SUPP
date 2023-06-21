@@ -41,7 +41,7 @@ try
 	{
 		if (!determineACADocumentAttached("Proof of Failure"))
 		{
-			docComments += "Passport Photo" + "<br>";
+			docComments += "Proof of Failure" + "<br>";
 		}
 	
 	}
