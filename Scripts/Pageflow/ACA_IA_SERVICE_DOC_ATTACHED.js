@@ -181,7 +181,7 @@ try
 
     if(serviceType == "Start Up" || conUp == "CHECKED")
     {
-        var conCheck = determineACADocumentAttached("O&M Contract");
+        var conCheck = determineACADocumentAttached("O&M Contract/Registration");
         if(!conCheck)
         {
             if (serviceType == "Start Up")
