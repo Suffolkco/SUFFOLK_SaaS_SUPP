@@ -16,8 +16,8 @@ if (!guideSheetsAry || guideSheetsAry.length == 0) {
             var guideSheetItemName = guideSheetItem.text;
             logDebug("guideSheetItemName " + guideSheetItemName + " " + guideSheetItemStatus);
             var guideSheetSeqNo = ggsheetitem.guideItemSeqNbr.toString();
-            var guideSheetItemObsDate = getGuideSheetFieldValue("Observation Date",capId,inspId,ggsheetitem.guideItemSeqNbr);
-            var guideSheetItemDegree = getGuideSheetFieldValue("Degree of Violation",capId,inspId,ggsheetitem.guideItemSeqNbr); 
+            //var guideSheetItemObsDate = getGuideSheetFieldValue("Observation Date",capId,inspId,ggsheetitem.guideItemSeqNbr);
+            //var guideSheetItemDegree = getGuideSheetFieldValue("Degree of Violation",capId,inspId,ggsheetitem.guideItemSeqNbr); 
             var guideSheetItemComplyBy = getGuideSheetFieldValue("Comply By",capId,inspId,ggsheetitem.guideItemSeqNbr);
             var guideSheetItemReturntoComplianceDate = getGuideSheetFieldValue("Return to Compliance Date",capId,inspId,ggsheetitem.guideItemSeqNbr);
             var guideSheetItemReturntoComplianceQualifier = getGuideSheetFieldValue("Return to Compliance Qualifier",capId,inspId,ggsheetitem.guideItemSeqNbr);
@@ -31,11 +31,12 @@ if (!guideSheetsAry || guideSheetsAry.length == 0) {
                 //This code used to update existing rows in the ASIT instead of adding new ones if a match is found
                 logDebug("Updating existing Violation Rows on the table " + vTableName);
                 editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Status",guideSheetItemStatus);
-                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Degree",guideSheetItemDegree);
+                //editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Degree",guideSheetItemDegree);
                 editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Comply By",guideSheetItemComplyBy);
-                editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Compliance Type", guideSheetItemReturntoComplianceQualifier);
+                //editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Compliance Type", guideSheetItemReturntoComplianceQualifier);
                 editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Complied On", guideSheetItemReturntoComplianceDate);
                 editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Checklist Comment", guideSheetItemComment);
+				editSpecificASITableRow2Column(capId, "VIOLATIONS", "Checklist Item ID", parseInt(guideSheetSeqNo),"Complied On","","Date of Violation", getTodayDate());
             }
     
             if(!flagSkipGS && guideSheetItemStatus == GSNonComStatusLkp){
@@ -46,14 +47,15 @@ if (!guideSheetsAry || guideSheetsAry.length == 0) {
                 asitRow["Enf Case #"] = new asiTableValObj("Enf Case #", "", "N");
                 asitRow["Violation Name"] = new asiTableValObj("Violation Name", guideSheetItemName, "Y");
                 asitRow["Status"] = new asiTableValObj("Status", guideSheetItemStatus, "Y");
-                asitRow["Degree"] = new asiTableValObj("Degree", guideSheetItemDegree, "Y");
-                asitRow["Observed Date"] = new asiTableValObj("Observed Date", guideSheetItemObsDate, "Y");
+                //asitRow["Degree"] = new asiTableValObj("Degree", guideSheetItemDegree, "Y");
+                //asitRow["Observed Date"] = new asiTableValObj("Observed Date", guideSheetItemObsDate, "Y");
                 asitRow["Comply By"] = new asiTableValObj("Comply By",guideSheetItemComplyBy,"N");
                 asitRow["Complied On"] = new asiTableValObj("Complied On",guideSheetItemReturntoComplianceDate,"N");
-                asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",guideSheetItemReturntoComplianceQualifier,"N");
+                //asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",guideSheetItemReturntoComplianceQualifier,"N");
                 asitRow["Checklist Comment"] = new asiTableValObj("Checklist Comment", guideSheetItemComment, "Y");
                 asitRow["Checklist Item ID"] = new asiTableValObj("Checklist Item ID", guideSheetSeqNo, "Y");
                 asitRow["Inspection ID"] = new asiTableValObj("Inspection ID", inspId.toString(), "Y");
+				asitRow["Date of Violation"] = new asiTableValObj("Date of Violation", getTodayDate(), "N");
                 violationsAry.push(asitRow);
                 addASITable(vTableName, violationsAry, capId);
             }
@@ -853,4 +855,14 @@ function updateFacilityInfo(targetCapId,vFacilityId){
 			logDebug( "WARNING: " + itemName + " was not updated."); 
 		}
 	}
+}
+
+function getTodayDate() {
+	var today = new Date();
+	today.setDate(today.getDate());
+	var dd = today.getDate();
+	var mm = today.getMonth() + 1;
+	var yy = today.getFullYear();
+	formatedDate = mm + '/' + dd + '/' + yy;
+	return formatedDate;
 }

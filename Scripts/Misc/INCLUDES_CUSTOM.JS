@@ -2018,10 +2018,6 @@ function determineACADocumentAttached(docType) {
 }
 
 
-
-//function doConfigurableScriptActions() {
-
-//}
 function editASITableRow(tableCapId, tableName, editName, editValue) {
 	logDebug("In editASITableRow with parameters:" + "|" + tableCapId + "|" + tableName + "|" + editName + "|" + editValue);
 	var tableArr = loadASITable(tableName, tableCapId);
@@ -7051,4 +7047,1620 @@ function wwmWorkflowNOIwithPin(reportName, reportNameAttachToRecord, reportParam
 	}
 }
 
+
+function addBStructure(vCapId,structNo,structType,structName,structDesc){
+    var added = aa.bStructure.addStructure(vCapId, structNo, structType, structName, structDesc, "", aa.date.getCurrentDate());
+    if (added.getSuccess()) {
+        logDebug("BStructure Added Successfully");
+        return true;
+    } else {
+        logDebug("BStructure Added ERROR: " + added.getErrorMessage());
+        return false;
+    }
+}
+function addRefContactToRecord(refNum, cType, vcapId) {
+	itemCap = vcapId;
+	var refConResult = aa.people.getPeople(refNum);
+	if (refConResult.getSuccess()) {
+		var refPeopleModel = refConResult.getOutput();
+		if (refPeopleModel != null) {
+			pm = refPeopleModel;
+			pm.setContactType(cType);
+			pm.setFlag("N");
+			pm.setContactAddressList(getRefAddContactList(refNum));
+			
+			var result = aa.people.createCapContactWithRefPeopleModel(itemCap, pm);
+			if (result.getSuccess()) {
+				logDebug("Successfully added the contact");
+			}	
+			else {
+				logDebug("Error creating the applicant " + result.getErrorMessage());
+			}
+		}
+	}
+}
+
+function AllowTimeSheetAdjustment(vDateLogged,vLoggedBy){
+    var flagPreventSubmittal = false;
+    //figure out what week today is in
+    var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    var currentTSDate = new Date(vDateLogged)
+    var day = weekday[currentTSDate.getDay()];
+
+    if(day == "Sunday"){
+        TSSTartDate = currentTSDate
+    }else if(day == "Monday"){
+        TSSTartDate = dateAdd(currentTSDate,-1)
+    }else if(day == "Tuesday"){
+        TSSTartDate = dateAdd(currentTSDate,-2)
+    }else if(day == "Wednesday"){
+        TSSTartDate = dateAdd(currentTSDate,-3)
+    }else if(day == "Thursday"){
+        TSSTartDate = dateAdd(currentTSDate,-4)
+    }else if(day == "Friday"){
+        TSSTartDate = dateAdd(currentTSDate,-5)
+    }else if(day == "Saturday"){
+        TSSTartDate = dateAdd(currentTSDate,-6)
+    }
+    logDebug("Looking for Timesheet Start Date of " + TSSTartDate);
+
+    //Find Time sheet record associated to this USER and Timeframe
+    var fromDate = aa.date.parseDate(TSSTartDate);
+    var toDate = aa.date.parseDate(dateAdd(TSSTartDate,7));
+    logDebug("**INFO checking For Date = " + aa.util.formatDate(convertDate(fromDate), "MM/dd/YYYY") + " to date "  + aa.util.formatDate(convertDate(toDate), "MM/dd/YYYY"));
+    var searchResult = aa.cap.getCapIDsByAppSpecificInfoDateRange("TIMESHEET INFORMATION", "Time Period Start Date", fromDate, toDate);
+    if (searchResult.getSuccess()) {
+        searchResultArray = searchResult.getOutput();
+    }
+    for ( var s in searchResultArray) {
+        var timesheetCapId = searchResultArray[s];
+        timesheetCapId = timesheetCapId.getCapID();
+        var thisCap = aa.cap.getCap(timesheetCapId).getOutput();
+        if(getAppSpecific("Employee Name",timesheetCapId) == vLoggedBy){
+            //Found Timesheet
+            logDebug("Record " + timesheetCapId.getCustomID() + " found for " + vLoggedBy + " for Date Range " + aa.util.formatDate(convertDate(fromDate), "MM/dd/YYYY") + " to date "  + aa.util.formatDate(convertDate(toDate), "MM/dd/YYYY"))
+            var timesheetCap = aa.cap.getCap(timesheetCapId).getOutput();
+            timesheetCapStatus = timesheetCap.getCapStatus();
+            if(!matches(timesheetCapStatus,"Timesheet Rejected",null)){
+                flagPreventSubmittal = true;
+                showMessage = true;
+                var timeStart = getAppSpecific("Time Period Start Date",timesheetCapId)
+                var timeEnd = getAppSpecific("Time Period End Date",timesheetCapId)
+                comment("<B><Font Color='RED'>WARNING: A timesheet " + timesheetCapId.getCustomID() + " with a status of " + timesheetCapStatus + " has been found for the time period " + timeStart + " to " + timeEnd + " and cannot be altered</Font></B>")
+            }
+        }
+    }
+    return flagPreventSubmittal;
+}
+function assignWfTask(wfstr, username, vCapId) {
+    var processName = "";
+
+    var taskUserResult = aa.person.getUser(username);
+    if (taskUserResult.getSuccess()) {
+        taskUserObj = taskUserResult.getOutput()
+    } else {
+        logMessage("**ERROR: Failed to get user object: " + taskUserResult.getErrorMessage());
+        return false
+    }
+    var workflowResult = aa.workflow.getTaskItems(vCapId, wfstr, processName, null, null, null);
+    if (workflowResult.getSuccess()) {
+        var wfObj = workflowResult.getOutput()
+    } else {
+        logMessage("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage());
+        return false
+    }
+    for (i in wfObj) {
+        var fTask = wfObj[i];
+        if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase())) {
+            fTask.setAssignedUser(taskUserObj);
+            var taskItem = fTask.getTaskItem();
+            var adjustResult = aa.workflow.assignTask(taskItem);
+            logMessage("Assigned Workflow Task: " + wfstr + " to " + username);
+            logDebug("Assigned Workflow Task: " + wfstr + " to " + username)
+        }
+    }
+}
+function batchInvoicePermits()
+{
+    var billingParamRec = capId;
+    if (arguments.length > 0)
+        billingParamRec = arguments[0];
+
+    var setName = billingParamRec.getCustomID();
+    var set = new capSet(setName, setName, "Billing");
+    for (var x in set.members)
+    {
+        var thisCapId = aa.cap.getCapID(set.members[x].getID1(), set.members[x].getID2(), set.members[x].getID3()).getOutput();
+        if (appMatch("Administration/Billing/Parameters/NA", thisCapId))
+            continue;
+        aa.print("Processing " + thisCapId.getCustomID());
+        invoiceAllFees4BillingParamRec(thisCapId);
+        var thisFacilityRec = getParent(thisCapId);
+        var appliedDate = getAppSpecific("Applied Date", billingParamRec) || "";
+        var updateResult = true;
+        if (!isBlank(appliedDate))
+            updateResult = _updateInvoiceDate(appliedDate);
+        if (!updateResult)
+            continue;
+        var sendEmail = getAppSpecific("Send Email", billingParamRec);
+        var emailToArray = getContactsEmailArray(["Accounts Receivable"], thisFacilityRec);
+        var emailToString = "";
+        for (var x in emailToArray)
+            emailToString += emailToArray[x] + ";";
+        if ("CHECKED".equals(sendEmail) && thisFacilityRec && !isBlank(emailToString))
+        {
+            var reportParameters = aa.util.newHashMap();
+            reportParameters.put("RECORD_ID", String(thisFacilityRec.getCustomID()));
+            var files = new Array();
+            var file = generateReport(thisFacilityRec, "EH_CONSOLIDATED_BILLING_REPORT_EMAIL", "ENVHEALTH", reportParameters);
+            files.push(file);
+            var emailParams = aa.util.newHashMap();
+            var templateName = "EH_BILLING_NOTIFICATION";
+            sendNotification("", emailToString, "", templateName, emailParams, files, thisFacilityRec);
+        }
+        else if (thisFacilityRec)
+        {
+            var reportParameters = aa.util.newHashMap();
+            reportParameters.put("RECORD_ID", String(thisFacilityRec.getCustomID()));
+            var file = generateReport(thisFacilityRec, "EH_CONSOLIDATED_BILLING_REPORT_PRINT", "ENVHEALTH", reportParameters);
+        }
+    }
+
+    resultWorkflowTask("Invoice Processing", "Billing Complete", "", "", null, billingParamRec);
+    var taskAssignedTo = getUserAssignedToTask(billingParamRec, "Invoice Processing");
+    if (taskAssignedTo && !isBlank(taskAssignedTo.getEmail()))
+    {
+        var template = "EH_BILLING_TASK_UPDATE";
+        var params = aa.util.newHashtable();
+        addParameter(params, "$$taskName$$", "Renewal Set Processing");
+        addParameter(params, "$$taskStatus$$", "Set Review in Progress");
+        sendNotification("", taskAssignedTo.getEmail(), "", template, params, new Array());
+    }
+
+    var newBillingCapId = createCap("Administration/Billing/Parameters/NA", "");
+
+    function _updateInvoiceDate(invoiceDateString)
+    {
+        var capInvoices = aa.finance.getInvoiceByCapID(thisCapId, null).getOutput() || new Array();
+        if (capInvoices.length == 0)
+        {
+            logDebug(thisCapId.getCustomID() +": has no invoices");
+            return false;
+        }
+        capInvoices.sort(sortInvoices);
+        capInvoices[0].getInvoiceModel().setInvDate(new Date(invoiceDateString));
+        var result = aa.invoice.editInvoice(thisCapId, capInvoices[0].getInvoiceModel());
+        if (result.getSuccess())
+            logDebug(thisCapId.getCustomID() + ": Updated invoice date successfully");
+        else
+            logDebug(thisCapId.getCustomID() + ": Problem updating invoice date " + result.getErrorMessage());
+        function sortInvoices(a, b)
+        {
+            return b.getInvoiceModel().getInvNbr() - a.getInvoiceModel().getInvNbr();
+        }
+    }
+}
+function capExistsInSet(setId, altId)
+{
+    var capIdResult = new capSet(setId);
+    var alreadyExists = false;
+    var capIds = capIdResult.members;
+    for (thisCap in capIds) {
+        if (altId.toString() == capIds[thisCap].toString()) {
+            alreadyExists = true;
+            break;
+        }
+    }
+    return alreadyExists;
+}
+function copyASIBySubGroup(sourceCapId, targetCapId, vSubGroupName) {
+	useAppSpecificGroupName = true;
+    var sAInfo = new Array;
+    loadAppSpecific(sAInfo, sourceCapId);
+    for (var asi in sAInfo) {
+		if( asi.substr(0,asi.indexOf(".")) == vSubGroupName){
+			editAppSpecific(asi, sAInfo[asi], targetCapId);
+		}
+    }
+	useAppSpecificGroupName = false;
+}
+
+function copyOwner(sCapID, tCapID) {
+    var ownrReq = aa.owner.getOwnerByCapId(sCapID);
+    if (ownrReq.getSuccess()) {
+        var ownrObj = ownrReq.getOutput();
+        if (ownrObj.length >= 1) {
+            for (xx in ownrObj) {
+                ownrObj[xx].setCapID(tCapID);
+                aa.owner.createCapOwnerWithAPOAttribute(ownrObj[xx]);
+                logDebug("Copied Owner: " + ownrObj[xx].getOwnerFullName());
+            }
+        } else {
+            logDebug("Warning: No owners exist to copy");
+        }
+    } else {
+        logDebug("Error Copying Owner : " + ownrObj.getErrorType() + " : " + ownrObj.getErrorMessage());
+    }
+}
+
+function countRecordContactsByType(vContactType,vCapId){
+	var cntTypeCnt = 0;
+	var capContactResult = aa.people.getCapContactByCapID(vCapId);
+	if (capContactResult.getSuccess()){
+		var Contacts = capContactResult.getOutput();
+		for (yy in Contacts){
+			var thisContact = Contacts[yy].getCapContactModel();
+			if(thisContact.getContactType() == vContactType) {
+				cntTypeCnt++
+			}
+		}
+	}
+	return cntTypeCnt
+}
+function createASITRow(recordList,resArray)
+{
+    var vRow = new Array();
+    vRow["Time Accounting Group"] = new asiTableValObj("Time Accounting Group", recordList.get('TIME_GROUP_NAME')+"", "N");
+    vRow["Time Accounting Type"] = new asiTableValObj("Time Accounting Type", recordList.get('TIME_TYPE_NAME')+"", "N");
+    var logDate = recordList.get('LOG_DATE');
+    logDate = aa.util.formatDate(logDate, "MM/dd/YYYY");
+    vRow["Date Logged"] = new asiTableValObj("Date Logged", logDate+"", "N");
+
+    var timeElapsedHHMMSS = recordList.get('TIME_ELAPSED');
+    timeElapsedHHMMSS = aa.util.formatDate(timeElapsedHHMMSS, "hh:mm:ss");
+    vRow["Time Elapsed"] = new asiTableValObj("Time Elapsed", timeElapsedHHMMSS+"", "N");
+
+    var id1 = recordList.get('B1_PER_ID1');
+    if(id1 == 'N/A')
+    {
+        vRow["Reference Record"] = new asiTableValObj("Reference Record", "N/A", "N");
+    }
+    else
+    {
+        var id2 = recordList.get('B1_PER_ID2');
+        var id3 = recordList.get('B1_PER_ID3');
+        var vCapID = aa.cap.getCapID(String(id1),String(id2),String(id3)).getOutput();
+        vRow["Reference Record"] = new asiTableValObj("Reference Record", vCapID.getCustomID()+"", "N");
+    }
+
+    var bFlag = recordList.get('BILLABLE_FLAG');
+    vRow["Billable"] = new asiTableValObj("Billable", bFlag, "N");
+    vRow["Reject"] = new asiTableValObj("Reject", " ", "N");
+    vRow["Reject Reason"] = new asiTableValObj("Reject Reason", " ", "N");
+    vRow["Reject Date"] = new asiTableValObj("Reject Date", " ", "N");
+    vRow["Time Accounting Entry ID"] = new asiTableValObj("Time Accounting Entry ID", recordList.get('TIME_LOG_SEQ')+"", "N");
+    resArray.push(vRow);
+}
+function createTrustAccountAndLink(acctID, desc, overdraft, ledger, threshold, primary, user, vCapId) {
+    // Creates a new trust account
+    // acctID (int) - new account ID
+    // desc (string) - account description
+    // overdraft (double) - overdraft limit for the account (0 if none)
+    // ledger (string) - GL account for the trust acount
+    // threshold (double) - Amount when a low balance notice may be triggered
+    // primary (String Y or N)
+    // user (string) - the user ID to log the account creation transaction (typically the current user)
+	var jDate = new java.util.Date();
+	//create a trust account model
+	var taModel = aa.trustAccount.createTrustAccountScriptModel().getTrustAccountModel();
+	taModel.setAcctID(acctID);
+	taModel.setAcctBalance(0);
+	taModel.setAcctStatus("Active");
+	taModel.setRecDate(jDate);
+	taModel.setRecFulName(user);
+	taModel.setRecStatus("A");
+	taModel.setServProvCode(aa.getServiceProviderCode());
+	taModel.setDescription(desc);
+	taModel.setLedgerAccount(ledger);
+	taModel.setThresholdAmount(threshold);
+	//Set overdraft options
+	if (overdraft > 0) {
+		taModel.setOverdraftLimit(overdraft);
+		taModel.setOverdraft("Y");
+	} else {
+		taModel.setOverdraftLimit(0);
+		taModel.setOverdraft("N");
+	}
+	//commit the model
+	var res = aa.trustAccount.createTrustAccount(taModel);
+	if (res.getSuccess()) {
+		var accSeq = aa.trustAccount.getTrustAccountByAccountID(acctID, aa.getServiceProviderCode()).getOutput().getAcctSeq();
+        var tbiz = aa.proxyInvoker.newInstance("com.accela.aa.finance.trustAccount.TrustAccountBusiness").getOutput();
+        tbiz.createTrustAccountCapRelationShip(vCapId,taModel,"Yes");
+        if(matches(primary.toUpperCase(),"Y","YES")){
+            tbiz.updatePrimaryTrustAccountForCap(vCapId,taModel.getAcctSeq(),"Y");
+        }
+        return accSeq
+	} else {
+		return false;
+	}
+}
+// This is a modified loadASITable 
+// that only returns true or false 
+// depending on whether rows are found
+
+function doASITRowsExist(tName){
+	var itemCap = capId;
+	if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
+
+	var gm = aa.appSpecificTableScript.getAppSpecificTableGroupModel(itemCap).getOutput();
+	var ta = gm.getTablesArray()
+	var tai = ta.iterator();
+
+	while (tai.hasNext()){
+	  var tsm = tai.next();
+	  var tn = tsm.getTableName();
+
+      if (!tn.equals(tName)) continue;
+
+	  if(tsm.rowIndex.isEmpty()){
+			return false;
+		}else{
+			return true;
+		}
+	}
+}
+
+function editAppSpecific(itemName, itemValue) {
+    var itemCap = capId;
+    var itemGroup = null;
+    if (arguments.length == 3) {
+        itemCap = arguments[2];
+    }
+    if (useAppSpecificGroupName) {
+        if (itemName.indexOf(".") < 0) {
+            logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true");
+            return false;
+        }
+        itemGroup = itemName.substr(0, itemName.indexOf("."));
+        itemName = itemName.substr(itemName.indexOf(".") + 1);
+    }
+    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+    if (asiFieldResult.getSuccess()) {
+        var asiFieldArray = asiFieldResult.getOutput();
+        if (asiFieldArray.length > 0) {
+            var asiField = asiFieldArray[0];
+            if (asiField) {
+                var origAsiValue = asiField.getChecklistComment();
+                asiField.setChecklistComment(itemValue);
+                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                if (updateFieldResult.getSuccess()) {
+                    logDebug("Successfully updated custom field: " + itemName + " with value: " + itemValue);
+                    if (arguments.length < 3) {
+                        AInfo[itemName] = itemValue;
+                    }
+                } else {
+                    logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated.");
+                }
+            } else {
+                logDebug("WARNING: (editAppSpecific) " + itemName + " was not updated.");
+            }
+        }
+    } else {
+        logDebug("ERROR: (editAppSpecific) " + asiFieldResult.getErrorMessage());
+    }
+}
+
+function editRecordStatus(targetCapId, strStatus){
+    var capModel = aa.cap.getCap(targetCapId).getOutput();
+    capModel.setCapStatus(strStatus);
+    aa.cap.editCapByPK(capModel.getCapModel());
+ }
+function editSpecificASITableRow(tableCapId, tableName, keyName, keyValue, editName, editValue) {
+	// keyName and keyValue is the column name and column value you want to use to filter for records you want to update
+	// editName and editValue are the new values
+   var tableArr = loadASITable(tableName, tableCapId);
+   var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,tableCapId,"ADMIN");
+   if (tableArr) {
+      for (var r in tableArr) {
+         if (tableArr[r][keyName] != keyValue) {
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               var tVal = new asiTableValObj(tableArr[r][col].columnName, tableArr[r][col].fieldValue, tableArr[r][col].readOnly);
+               var tVal = tableArr[r][col];
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }
+         else {
+            logDebug(" Editing row " + r);
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               if (tableArr[r][col].columnName.toString() == editName) {
+                  var tVal = tableArr[r][col];
+                  tVal.fieldValue = editValue;
+               }
+               else {
+                  var tVal = tableArr[r][col];
+               }
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }
+      }
+   }//end loop
+}
+function editSpecificASITableRow2Column(tableCapId, tableName, keyName1, keyValue1,keyName2, keyValue2, editName, editValue) {
+	// keyName and keyValue is the column name and column value you want to use to filter for records you want to update
+	// editName and editValue are the new values
+   var tableArr = loadASITable(tableName, tableCapId);
+   var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,tableCapId,"ADMIN");
+   if (tableArr) {
+      for (var r in tableArr) {
+         if (tableArr[r][keyName1] == keyValue1 && tableArr[r][keyName2] == keyValue2) {
+            logDebug(" Editing row " + r);
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               if (tableArr[r][col].columnName.toString() == editName) {
+                  var tVal = tableArr[r][col];
+                  tVal.fieldValue = editValue;
+               }
+               else {
+                  var tVal = tableArr[r][col];
+               }
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }else{
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               var tVal = new asiTableValObj(tableArr[r][col].columnName, tableArr[r][col].fieldValue, tableArr[r][col].readOnly);
+               var tVal = tableArr[r][col];
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }
+      }
+   }//end loop
+}
+
+function editSpecificASITableRowforInteger(tableCapId, tableName, keyName, keyValue, editName, editValue) {
+	// keyName and keyValue is the column name and column value you want to use to filter for records you want to update
+	// editName and editValue are the new values
+   var tableArr = loadASITable(tableName, tableCapId);
+   var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,tableCapId,"ADMIN");
+   if (tableArr) {
+      for (var r in tableArr) {
+         if (parseInt(tableArr[r][keyName]) != parseInt(keyValue)) {
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               var tVal = new asiTableValObj(tableArr[r][col].columnName, tableArr[r][col].fieldValue, tableArr[r][col].readOnly);
+               var tVal = tableArr[r][col];
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }
+         else {
+            logDebug(" Editing row " + r);
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               if (tableArr[r][col].columnName.toString() == editName) {
+                  var tVal = tableArr[r][col];
+                  tVal.fieldValue = editValue;
+               }
+               else {
+                  var tVal = tableArr[r][col];
+               }
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }
+      }
+   }//end loop
+}
+function editSpecificASITableRowforInteger2Column(tableCapId, tableName, keyName1, keyValue1,keyName2, keyValue2, editName, editValue) {
+	// keyName and keyValue is the column name and column value you want to use to filter for records you want to update
+	// editName and editValue are the new values
+   var tableArr = loadASITable(tableName, tableCapId);
+   var tssmResult = aa.appSpecificTableScript.removeAppSpecificTableInfos(tableName,tableCapId,"ADMIN");
+   if (tableArr) {
+      for (var r in tableArr) {
+        if (parseInt(tableArr[r][keyName1]) == parseInt(keyValue1) && parseInt(tableArr[r][keyName2]) == parseInt(keyValue2)) {
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               if (tableArr[r][col].columnName.toString() == editName) {
+                  logDebug(" Editing row " + r + " updating " + tableArr[r][col].columnName.toString() + " to " + editValue);
+                  var tVal = tableArr[r][col];
+                  tVal.fieldValue = editValue;
+               }
+               else {
+                  var tVal = tableArr[r][col];
+               }
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         
+         }else {
+            var rowArr=new Array();
+            var tempArr=new Array();
+            for (var col in tableArr[r]) {
+               var tVal = new asiTableValObj(tableArr[r][col].columnName, tableArr[r][col].fieldValue, tableArr[r][col].readOnly);
+               var tVal = tableArr[r][col];
+               //bizarre string conversion - just go with it
+               var colName = new String(tableArr[r][col].columnName.toString());
+               colName=colName.toString();
+               tempArr[colName] = tVal;
+            }
+            rowArr.push(tempArr); 
+            //for (var val in rowArr) for (var c in rowArr[val]) aa.print("Value " + c + ": " + rowArr[val][c]);
+            addASITable(tableName,rowArr,tableCapId);
+         }
+      }
+   }//end loop
+}
+function getAAUserEmail(userId){
+    var email = aa.person.getUser(userId.toUpperCase()+"").getOutput().getEmail();
+    logDebug("AA User email ID : "+email);
+    return email;
+}
+
+function getACAUrl() {
+    itemCap = (arguments.length == 1) ? arguments[0] : capId;
+    var enableCustomWrapper = lookup("ACA_CONFIGS", "ENABLE_CUSTOMIZATION_PER_PAGE");
+    var acaUrl = "";
+    var id1 = itemCap.getID1();
+    var id2 = itemCap.getID2();
+    var id3 = itemCap.getID3();
+    var itemCapModel = aa.cap.getCap(itemCap).getOutput().getCapModel();
+    acaUrl += "/urlrouting.ashx?type=1000";
+    acaUrl += "&Module=" + itemCapModel.getModuleName();
+    acaUrl += "&capID1=" + id1 + "&capID2=" + id2 + "&capID3=" + id3;
+    acaUrl += "&agencyCode=" + aa.getServiceProviderCode();
+    if (matches(enableCustomWrapper, "Yes", "YES")) {
+        acaUrl += "&FromACA=Y";
+    }
+    return acaUrl;
+}
+
+function getACAUrlWithCapId(vCapId){
+	// returns the path to the record on ACA.  Needs to be appended to the site
+	itemCap = vCapId;
+	if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
+		var acaUrl = "";
+	var id1 = capId.getID1();
+	var id2 = capId.getID2();
+	var id3 = capId.getID3();
+	var cap = aa.cap.getCap(capId).getOutput().getCapModel();
+	acaUrl += "/urlrouting.ashx?type=1000";
+	acaUrl += "&Module=" + cap.getModuleName();
+	acaUrl += "&capID1=" + id1 + "&capID2=" + id2 + "&capID3=" + id3;
+	acaUrl += "&agencyCode=" + aa.getServiceProviderCode();
+	return acaUrl;
+}
+function getActivityCustomFieldValue(capId,activityCustomFieldName,curActivityNumber){
+	var activityBusiness = aa.proxyInvoker.newInstance("com.accela.aa.aamain.servicerequest.ActivityBusiness").getOutput();
+	var ActivitySpecInfoBusiness = aa.proxyInvoker.newInstance("com.accela.aa.aamain.activityspecinfo.ActivitySpecInfoBusiness").getOutput();
+	if(activityBusiness != null){
+		var activityList = activityBusiness.getActivityListBySR(capId);
+		if(!activityList) {
+			logDebug("No activities on target record.");
+			return false;
+		}
+		var lIt = activityList.iterator();
+		while(lIt.hasNext()){
+			var thisActivity = lIt.next();
+			if(thisActivity.getActivityNumber() == parseInt(curActivityNumber)){
+				var fieldsList = ActivitySpecInfoBusiness.getRefASIsByRefAcitivity(aa.getServiceProviderCode(),'RECORD',thisActivity.getActivityNumber());
+				var fIt = fieldsList.iterator();
+				while(fIt.hasNext()){
+					var thisField = fIt.next();
+					if(thisField.ASIName == activityCustomFieldName){
+						return thisField.dispASIValue;
+					}
+				}
+			}
+		}
+	}
+}
+function getAppName(capId){    
+    capResult = aa.cap.getCap(capId);
+    capModel = capResult.getOutput().getCapModel()
+    var appName = capModel.getSpecialText();
+    if(appName)
+		return appName;
+	else
+		return false;
+}
+function getAppStatus()
+{
+    var itemCapId = capId;
+    var capStatus = null;
+    if (arguments.length == 1) itemCapId = arguments[0];
+
+    var itemCap = aa.cap.getCap(itemCapId).getOutput();
+    capStatus = itemCap.getCapStatus();
+
+    return capStatus;
+}
+function getContactsEmailArray(contactTypeArray)
+{
+    var itemCap = capId;
+    var result = new Array();
+    if (!contactTypeArray)
+        contactTypeArray = new Array();
+    var getAll = (contactTypeArray.length == 0)
+    if (arguments.length > 1)
+        itemCap = arguments[1];
+    var emailString = "";
+    var contactArray = getPeople(itemCap);
+    for (var c in contactArray)
+    {
+        if (!(contactArray[c].getPeople().getEmail() && contactArray[c].getPeople().getEmail().length() > 0))
+            continue;
+        if (getAll || exists(contactArray[c].getPeople().getContactType(), contactTypeArray))
+        {
+            result.push(contactArray[c].getPeople().getEmail());
+        }
+    }
+    return result;
+}
+function getFacilityId(vCapId){
+    var facilityId = null;
+    facilityId = getParentByCapId(vCapId);
+    if(!matches(facilityId,null,undefined,"")){
+        if(appMatch("EnvHealth/Facility/NA/NA",facilityId)){
+            return facilityId;
+        }else{
+            // If Parent isnt a Facility, try the Gradparent
+            facilityId = getParentByCapId(facilityId);
+            if(!matches(facilityId,null,undefined,"")){
+                if(appMatch("EnvHealth/Facility/NA/NA",facilityId)){
+                    return facilityId;
+                }
+            }
+        }
+    }
+    return false;
+}
+function getGuideSheetFieldValue(gsCustomFieldItem,itemCap,inspIDNumArg,gsItemSeqNo) {
+	itemCap = aa.cap.getCapID(itemCap.getID1(), itemCap.getID2(), itemCap.getID3()).getOutput();
+	var r = aa.inspection.getInspections(itemCap);
+	if (r.getSuccess()) {
+		var inspArray = r.getOutput();
+		for (i in inspArray) {
+			var inspModel = inspArray[i].getInspection();
+			if(inspModel.getIdNumber() == inspIDNumArg){
+				var gs = inspModel.getGuideSheets();
+				if (gs) {
+					for (var i = 0; i < gs.size(); i++) {
+						var guideSheetObj = gs.get(i);
+						var guidesheetItem = guideSheetObj.getItems();
+						for (var j = 0; j < guidesheetItem.size(); j++) {
+							var item = guidesheetItem.get(j);
+							if(item.guideItemSeqNbr == parseInt(gsItemSeqNo)){
+								if (item.getItemASISubgroupList() != null) {
+									var subGroupList = item.getItemASISubgroupList();
+									if (subGroupList != null) {
+										for (var index = 0; index < subGroupList.size(); index++) {
+											var subGroupItem = subGroupList.get(index);
+											if (subGroupItem != null) {
+												var asiList = subGroupItem.getAsiList();
+												for (var asiIndex = 0; asiIndex < asiList.size(); asiIndex++) {
+													var asiItem = asiList.get(asiIndex);
+													if (asiItem.getAsiName() == gsCustomFieldItem) {
+														if (asiItem.getAttributeValue() != null && asiItem.getAttributeValue() != "") {
+															return asiItem.getAttributeValue();
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return "";
+
+}
+function getParent()
+{
+    var itemCap = capId;
+    if (arguments.length > 0)
+        itemCap = arguments[0];
+
+    getCapResult = aa.cap.getProjectParents(itemCap,1);
+    if (getCapResult.getSuccess())
+    {
+        parentArray = getCapResult.getOutput();
+        if (parentArray.length)
+            return parentArray[0].getCapID();
+        else
+        {
+            logDebug( "**WARNING: GetParent found no project parent for this application");
+            return false;
+        }
+    }
+    else
+    {
+        logDebug( "**WARNING: getting project parents:  " + getCapResult.getErrorMessage());
+        return false;
+    }
+}
+function getPermitIDfromInspection(vFacilityID,inspIDNumArg){
+    cldPmtAry = getChildren("EnvHealth/*/*/Permit",vFacilityID);
+    for(x in cldPmtAry){
+        var cldPmtCapId = cldPmtAry[x];
+        var r = aa.inspection.getInspections(cldPmtCapId);
+        if (r.getSuccess()) {
+            var inspArray = r.getOutput();
+            for (i in inspArray) {
+                var inspModel = inspArray[i].getInspection();
+                if(inspModel.getIdNumber() == inspIDNumArg){
+                    return cldPmtCapId;
+                }
+            }
+        }
+    }
+    return false;
+ }
+function getRefAddContactList(peoId){
+	var conAdd = aa.proxyInvoker.newInstance("com.accela.orm.model.address.ContactAddressModel").getOutput();
+	conAdd.setEntityID(parseInt(peoId));
+	conAdd.setEntityType("CONTACT");
+	var addList =  aa.address.getContactAddressList(conAdd).getOutput();
+	var tmpList = aa.util.newArrayList();
+	var pri = true;
+	for(x in addList){
+		if(pri){
+			pri=false;
+			addList[x].getContactAddressModel().setPrimary("Y"); 
+		}
+		tmpList.add(addList[x].getContactAddressModel());
+	}
+		
+	return tmpList;
+}
+
+function getRefContactForPublicUser(userSeqNum) {
+	contractorPeopleBiz = aa.proxyInvoker.newInstance("com.accela.pa.people.ContractorPeopleBusiness").getOutput();
+	userList = aa.util.newArrayList();
+	userList.add(userSeqNum);
+	peopleList = contractorPeopleBiz.getContractorPeopleListByUserSeqNBR(aa.getServiceProviderCode(), userList); 
+	if (peopleList != null) {
+		peopleArray = peopleList.toArray();
+		if (peopleArray.length > 0)
+			return peopleArray[0];
+	}
+	return null;
+}
+function getRefGSItemComment(GSItem){
+	var strReturn = null;
+    var sql = "SELECT GUIDE_ITEM_COMMENT FROM RGUIDESHEET_ITEM WHERE GUIDE_ITEM_TEXT = '$$GuideItem$$' AND SERV_PROV_CODE = '$$servProvCode$$' AND REC_STATUS = 'A'";
+    sql = sql.replace("$$GuideItem$$", GSItem).replace("$$servProvCode$$", aa.getServiceProviderCode());
+    var r = aa.db.select(sql, new Array()).getOutput();
+    var result = new Array();
+    if (r.size() > 0){
+        r = r.toArray();
+        for (var x in r){
+            var thisGuideComment = r[x].get("GUIDE_ITEM_COMMENT");
+            result.push(thisGuideComment);
+        }
+    }
+	if(result.length > 0){
+		strReturn = result[0];
+	}
+	return strReturn;
+}
+
+function getStandardChoiceArray(stdChoice) {
+    var cntItems = 0;
+    var stdChoiceArray = new Array();
+    var bizDomScriptResult = aa.bizDomain.getBizDomain(stdChoice);
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        if (bizDomScriptObj != null) {
+            cntItems = bizDomScriptObj.size();
+            logDebug("getStdChoiceArray: " + stdChoice + " size = " + cntItems);
+            if (cntItems > 0) {
+                var bizDomScriptItr = bizDomScriptObj.iterator();
+                while (bizDomScriptItr.hasNext()) {
+                    var bizBomScriptItem = bizDomScriptItr.next();
+                    var stdChoiceArrayItem = new Array();
+                    stdChoiceArrayItem["value"] = bizBomScriptItem.getBizdomainValue();
+                    stdChoiceArrayItem["valueDesc"] = bizBomScriptItem.getDescription();
+                    stdChoiceArrayItem["active"] = bizBomScriptItem.getAuditStatus();
+                    stdChoiceArray.push(stdChoiceArrayItem);
+                }
+            }
+        } else {
+            logDebug("getStdChoiceArray: WARNING stdChoice not found - " + stdChoice);
+        }
+    }
+    return stdChoiceArray;
+}
+
+function getTaskSpecific(wfName, itemName) { // optional: itemCap
+	var i = 0;
+	itemCap = capId;
+	if (arguments.length == 3) { // use cap ID specified in args
+		itemCap = arguments[2];
+	}
+	var workflowResult = aa.workflow.getTasks(itemCap);
+	if (workflowResult.getSuccess()) { // Get the workflows
+		var wfObj = workflowResult.getOutput();
+	} else {
+		logDebug("**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage());
+		return false;
+	}
+	for (i in wfObj) { // Loop through workflow tasks
+		fTask = wfObj[i];
+		stepnumber = fTask.getStepNumber();
+		processID = fTask.getProcessID();
+		if (wfName.equals(fTask.getTaskDescription())) { // Found the right Workflow Task
+			TSIResult = aa.taskSpecificInfo.getTaskSpecifiInfoByDesc(itemCap, processID, stepnumber, itemName);
+			if (TSIResult.getSuccess()) {
+				var TSI = TSIResult.getOutput();
+				if (TSI != null) {
+					var TSIArray = new Array();
+					TSInfoModel = TSI.getTaskSpecificInfoModel();
+					var itemValue = TSInfoModel.getChecklistComment();
+					return itemValue;
+				} else
+					logDebug("No task specific info field called " + itemName + " found for task " + wfName);
+			} else {
+				logDebug("**ERROR: Failed to get Task Specific Info objects: " + TSIResult.getErrorMessage());
+				return false;
+			}
+		}
+	}
+}
+function getTimeAccounting(userId, fromDate, toDate)
+{
+    var query = "";
+    query += "SELECT * FROM T1_TIME_LOG T "
+    query += "INNER JOIN R1_TIME_GROUP G ON "
+    query += "T.TIME_GROUP_SEQ = G.TIME_GROUP_SEQ "
+    query += "INNER JOIN R1_TIME_TYPES TYPE ON "
+    query += "T.TIME_TYPE_SEQ = TYPE.TIME_TYPE_SEQ "
+    query += "WHERE "
+    query += "T.USER_NAME = '$$USERNAME$$' AND "
+    query += "T.LOG_DATE >= TO_DATE('$$FROMDATE$$', 'MM/DD/YYYY') AND "
+    query += "T.LOG_DATE <= TO_DATE('$$TODATE$$', 'MM/DD/YYYY') AND "
+    query += "T.REC_STATUS = 'A' AND "
+    query += "T.SERV_PROV_CODE = '$$SERVPROVCODE$$'"
+    query = query.replace("$$USERNAME$$", userId).replace("$$FROMDATE$$", fromDate).replace("$$TODATE$$", toDate).replace("$$SERVPROVCODE$$", aa.getServiceProviderCode());
+
+    var recordsResult = aa.db.select(query, new Array());
+    var records = null;
+    if (!recordsResult.getSuccess())
+    {
+        logDebug("Problem in getTimeAccounting(): " + recordsResult.getErrorMessage());
+        return false;
+    }
+    records = recordsResult.getOutput() || new Array();
+    if (records.size() > 0)
+        return records.toArray();
+    return records;
+}
+function getUserAssignedToTask(vCapId,taskName){
+    currentUsrVar = null
+    var taskResult1 = aa.workflow.getTask(vCapId,taskName);
+    if (taskResult1.getSuccess()){
+        tTask = taskResult1.getOutput();
+    }
+    else{
+        logMessage("**ERROR: Failed to get workflow task object ");
+        return false;
+    }
+    taskItem = tTask.getTaskItem()
+    taskUserObj = tTask.getTaskItem().getAssignedUser()
+
+    if(taskUserObj != null){
+        return taskUserObj;
+    }
+    else{
+        return false;
+    }
+}
+function getWorkDesc(pCapId){
+	var workDescResult = aa.cap.getCapWorkDesByPK(pCapId);
+	if (!workDescResult.getSuccess()){
+		logDebug("**ERROR: Failed to get work description: " + workDescResult.getErrorMessage()); 
+		return false;
+	}
+	var workDescObj = workDescResult.getOutput();
+	var workDesc = workDescObj.getDescription();
+	return workDesc;
+}
+	 
+function invoiceAllFees4BillingParamRec(billingRecAltID) {
+    itemCapId = capId;
+    if (arguments.length > 1) itemCapId = arguments[1];
+    feeSeqList = [];
+    periodList = [];
+    periodExists = false;
+
+    feeList = aa.finance.getFeeItemByCapID(itemCapId).getOutput();
+
+    for (fee in feeList) {
+        if (feeList[fee].getFeeitemStatus() == "NEW" && billingRecAltID.equals(feeList[fee].getUdf1())) {
+            feeSeqList.push(feeList[fee].getFeeSeqNbr());
+            for (per in periodList){
+                if (periodList[per] == feeList[fee].getPaymentPeriod()) periodExists = true;
+            }
+            if (!periodExists) periodList.push(feeList[fee].getPaymentPeriod());
+        }
+    }
+
+    if(feeSeqList.length > 0) {
+        doInvoice = aa.finance.createInvoice(itemCapId, feeSeqList, periodList);
+        if (!doInvoice.getSuccess()){
+            logDebug("Error during invoicing: " + doInvoice.getErrorMessage());
+        }
+    }
+}
+function isEmptyOrNull(value) {
+    return value == null || value === undefined || String(value) == "";
+}
+// adding for test of STDBASE_BATCH_CONNECT_TO_PUBLIC_USER
+ function peopleDuplicateCheck(ipPeop){
+	// This function uses the close match criteria stored in the
+	// INDIVIDUAL_CONTACT_MATCH_CRITERIA and ORGANIZATION_CONTACT_MATCH_CRITERIA standard choices to check the reference
+	// contact library for potential duplicates
+	// takes a single peopleModel as a parameter, and will return an array of people models (peopResult)
+	// returns null if there are no matches
+
+	var fvContType = ipPeop.getContactType();
+
+	var fvCriteriaStdChoice = "INDIVIDUAL_CONTACT_MATCH_CRITERIA";
+	// default to individual unless flag is Org
+	if (fvContType == "Organization")
+	{
+		fvCriteriaStdChoice = "ORGANIZATION_CONTACT_MATCH_CRITERIA";
+	}
+	if (lookup("REF_CONTACT_CREATION_RULES",fvContType) == "O")
+	{
+		fvCriteriaStdChoice = "ORGANIZATION_CONTACT_MATCH_CRITERIA";
+	}
+
+	//Add agency specific logic here if needed
+	var fvBizDomainSR = aa.bizDomain.getBizDomain(fvCriteriaStdChoice);
+	if (!fvBizDomainSR || !fvBizDomainSR.getSuccess())
+	{
+		logDebug("Standard Choice '" + fvCriteriaStdChoice + "' not defined.");
+		return null;
+	}
+	var fvBizDomain = fvBizDomainSR.getOutput();
+	if (!fvBizDomain || fvBizDomain.size() == 0)
+	{
+			logDebug("No criteria defined in Standard Choice '" + fvCriteriaStdChoice + "'.");
+			return null;
+	}
+
+	for(var fvCounter1 = 0; fvCounter1 < fvBizDomain.size(); fvCounter1++)
+	{
+		var fvCloseMatchCriteriaObj = fvBizDomain.get(fvCounter1);
+		var fvCriteriaStr = fvCloseMatchCriteriaObj.getDispBizdomainValue();
+		if (!fvCriteriaStr || fvCriteriaStr == "")
+			continue;
+
+		var fvPeop = aa.people.createPeopleModel().getOutput().getPeopleModel();
+
+		var fvCriteriaArr = fvCriteriaStr.split(";");
+
+		var fvSkipThisCriteria = false;
+		for (var fvCounter2 in fvCriteriaArr)
+		{
+		   var fvCriteriaFld = fvCriteriaArr[fvCounter2];
+		   if (ipPeop[fvCriteriaFld] == null)
+		   {
+			   fvSkipThisCriteria = true;
+			   logDebug("Value for " + fvCriteriaFld + " is null.");
+			   break;
+		   }
+		   fvPeop[fvCriteriaFld] = ipPeop[fvCriteriaFld];
+		   logDebug("Search for " + fvCriteriaFld + " " + fvPeop[fvCriteriaFld]);
+		}
+
+		if (fvSkipThisCriteria)
+		{
+			logDebug("WARNING: One or more Values for the Fields defined in this Criteria are null. Skipping this criteria.");
+			continue;
+		}
+
+		var fvResult = aa.people.getPeopleByPeopleModel(fvPeop);
+		if ( !fvResult.getSuccess())
+		{
+			logDebug("WARNING: Error searching for duplicate contacts : " + fvResult.getErrorMessage());
+			continue;
+		}
+
+		var fvPeopResult = fvResult.getOutput();
+		if (fvPeopResult.length == 0)
+		{
+			logDebug("Searched for REF contact, no matches found.");
+			continue;
+		}
+
+		if (fvPeopResult.length > 0)
+		{
+			logDebug("Searched for a REF Contact, " + fvPeopResult.length + " matches found! returning the first match : " + fvPeopResult[0].getContactSeqNumber());
+			return fvPeopResult[0].getContactSeqNumber();
+		}
+	}
+	logDebug("No matches found. Returning Null.");
+	return null;
+}
+function refreshTimeSheet(recordList)
+{
+    var itemCap = capId;
+    if (arguments.length > 1) {
+        itemCap = arguments[1]
+    }
+
+    var resArray = new Array();
+    for (var i = 0 ; i < recordList.length ; i++)
+    {
+        if(recordList[i].get('TIME_LOG_STATUS') == 'U')
+        {
+            logDebug("DEBUG : " + itemCap.getCustomID() + " : Creating row for TIMESHEET ENTRIES table");
+            createASITRow(recordList[i], resArray);
+            logDebug("DEBUG : " + itemCap.getCustomID() + " : Updating time accounting entry with status as Lock");
+            var lockStatus = "L";
+            var timeLogSeq = recordList[i].get('TIME_LOG_SEQ')+"";
+            updateTimeAccountingLockStatus(timeLogSeq,lockStatus);
+        }
+    }
+    removeASITable("TIMESHEET ENTRIES",itemCap);
+    addASITable("TIMESHEET ENTRIES", resArray, itemCap);
+}
+function removeContactsFromCap(vCapId){
+    var cons = aa.people.getCapContactByCapID(vCapId).getOutput();
+    for (x in cons){
+        conSeqNum = cons[x].getPeople().getContactSeqNumber();
+        if (conSeqNum){ 
+            aa.people.removeCapContact(vCapId, conSeqNum);
+        }
+    }
+}
+function resultWorkflowTask(wfstr, wfstat, wfcomment, wfnote) // optional process name
+{
+    var useProcess = false;
+    var processName = "";
+    var itemCap = capId;
+    if (arguments.length > 4 && arguments[4]) {
+        processName = arguments[4]; // subprocess
+        useProcess = true;
+    }
+    if (arguments.length > 5)
+        itemCap = arguments[5];
+    var workflowResult = aa.workflow.getTaskItems(itemCap, wfstr, processName, null, null, null);
+    if (workflowResult.getSuccess())
+        var wfObj = workflowResult.getOutput();
+    else {
+        logMessage("**ERROR: Failed to get workflow object: " + workflowResult.getErrorMessage());
+        return false;
+    }
+
+    if (!wfstat)
+        wfstat = "NA";
+
+    for (i in wfObj) {
+        var fTask = wfObj[i];
+        if (fTask.getTaskDescription().toUpperCase().equals(wfstr.toUpperCase()) && (!useProcess || fTask.getProcessCode().equals(processName))) {
+            var statObj = aa.workflow.getTaskStatus(fTask, wfstat);
+            var dispo = "U";
+            if (statObj.getSuccess()) {
+                var status = statObj.getOutput();
+                dispo = status.getResultAction();
+            } else {
+                logDebug("Could not get status action resulting to no change")
+            }
+
+            var dispositionDate = aa.date.getCurrentDate();
+            var stepnumber = fTask.getStepNumber();
+            var processID = fTask.getProcessID();
+
+            if (useProcess)
+                aa.workflow.handleDisposition(itemCap, stepnumber, processID, wfstat, dispositionDate, wfnote, wfcomment, systemUserObj, dispo);
+            else
+                aa.workflow.handleDisposition(itemCap, stepnumber, wfstat, dispositionDate, wfnote, wfcomment, systemUserObj, dispo);
+
+            logMessage("Resulting Workflow Task: " + wfstr + " with status " + wfstat);
+            logDebug("Resulting Workflow Task: " + wfstr + " with status " + wfstat);
+        }
+    }
+}
+function returnValueInASITCol(vTableName,keyName1,keyValue1,returnColumn,vCapId){
+	var returnValue = null;
+	var tableArr = loadASITable(vTableName, vCapId);
+	if (tableArr) {
+		for (var r in tableArr) {
+			if (parseInt(tableArr[r][keyName1]) == parseInt(keyValue1)){
+				returnValue = tableArr[r][returnColumn]
+			}
+		}
+	}
+	return returnValue;
+}
+function scheduleInspectionReturnInspID(iType,DaysAhead,vCapId){
+	// Added Optional 4th parameter inspTime Valid format is HH12:MIAM or AM (SR5110) 
+	// Added Optional 5th parameter inspComm ex. to call without specifying other options params scheduleInspection("Type",5,null,null,"Schedule Comment");
+	var inspectorObj = null;
+	var inspTime = null;
+	var inspComm = "Scheduled via Script";
+	var schedRes = aa.inspection.scheduleInspection(vCapId, inspectorObj, aa.date.parseDate(dateAdd(null,DaysAhead)), inspTime, iType, inspComm)
+	if (schedRes.getSuccess()){
+		logDebug("Successfully scheduled inspection : " + iType + " for " + dateAdd(null,DaysAhead));
+		return schedRes.getOutput();
+	}
+	else{
+		logDebug( "**ERROR: adding scheduling inspection (" + iType + "): " + schedRes.getErrorMessage());
+	}
+}
+function sendEmailtoAAUser(emailTo, templateName, capId)
+{
+    var emailParameters = aa.util.newHashtable();
+    addParameter(emailParameters, "$$AltID$$",capId.getCustomID());
+    addParameter(emailParameters, "$$subject$$","Your Timesheet has been rejected");
+    if (emailTo != null && emailTo != '') {
+        sendNotification("", emailTo, "", templateName, emailParameters, null);
+    }
+}
+function updateASITableRow(tableName, ColName, colValue,  RowIndex, vCapID, currentUserID, readOnly) {
+    //  tableName is the name of the ASI table
+    //  tableValueArray is an array of associative array values.  All elements MUST be either a string or asiTableVal object
+    var itemCap = vCapID;
+
+    var tssmResult = aa.appSpecificTableScript.getAppSpecificTableModel(itemCap, tableName)
+
+    if (!tssmResult.getSuccess()) {
+        logDebug("WARNING: error retrieving app specific table " + tableName + " " + tssmResult.getErrorMessage());
+        return false;
+    }
+
+    var tssm = tssmResult.getOutput();
+    var tsm = tssm.getAppSpecificTableModel();
+    var fld = tsm.getTableField();
+    var clm = tsm.getColumns();
+    var fld_readonly = tsm.getReadonlyField();
+    var sizeOFRecord = fld.size();
+    var sizeOfColums = clm.size();
+    var clmList = clm.toArray();
+
+    var currentIndex = RowIndex * sizeOfColums;
+
+    fld.set(currentIndex + getRowIndex(clmList, ColName), colValue);
+    fld_readonly.set(currentIndex + getRowIndex(clmList, ColName), readOnly);
+
+    tsm.setTableField(fld);
+    tsm.setReadonlyField(fld_readonly);
+
+    var addResult = aa.appSpecificTableScript.editAppSpecificTableInfos(tsm, itemCap, currentUserID);
+
+    if (addResult.getSuccess()) {
+        logDebug("updating app specific table " + tableName + " Successfully");
+        //return false
+    } else{
+        logDebug("WARNING: error updating app specific table " + tableName + " " + addResult.getErrorMessage());
+        return false;
+    }
+    function getRowIndex(cloumnList, columnName) {
+        var index = -1;
+        for (var i = 0; i < cloumnList.length; i++) {
+            if (cloumnList[i].getColumnName() == columnName) return i;
+        }
+        return index;
+    }
+}
+function updateBStructure(vCapId,structNo,structType,structName,structDesc){
+    var updated = aa.bStructure.updateStructure(vCapId, structNo, structType, structName, structDesc, "", aa.date.getCurrentDate());
+    if (updated.getSuccess()) {
+        logDebug("BStructure Updated Successfully");
+        return true;
+    } else {
+        logDebug("BStructure Updated ERROR: " + updated.getErrorMessage());
+        return false;
+    }
+}
+function updateFacilityInfo(targetCapId,vFacilityId){
+	var capResult = aa.cap.getCap(vFacilityId);
+	if(capResult != null){
+		var capModel = capResult.getOutput().getCapModel()
+		var appName = capModel.getSpecialText();
+		var itemName = "Facility ID";
+		var itemGroup = null;
+		if (useAppSpecificGroupName){
+			if (itemName.indexOf(".") < 0)
+				{ logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
+			itemGroup = itemName.substr(0,itemName.indexOf("."));
+			itemName = itemName.substr(itemName.indexOf(".")+1);
+		}
+		var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,vFacilityId.getCustomID(),itemGroup);
+		if (appSpecInfoResult.getSuccess()){
+			logDebug( "INFO: " + itemName + " was updated."); 
+		} 	
+		else{
+			logDebug( "WARNING: " + itemName + " was not updated."); 
+		}
+		var itemName = "Facility Name";
+		var itemGroup = null;
+		if (useAppSpecificGroupName){
+			if (itemName.indexOf(".") < 0)
+				{ logDebug("**WARNING: editAppSpecific requires group name prefix when useAppSpecificGroupName is true") ; return false }
+			itemGroup = itemName.substr(0,itemName.indexOf("."));
+			itemName = itemName.substr(itemName.indexOf(".")+1);
+		}
+		var appSpecInfoResult = aa.appSpecificInfo.editSingleAppSpecific(targetCapId,itemName,appName,itemGroup);
+		if (appSpecInfoResult.getSuccess()){
+			logDebug( "INFO: " + itemName + " was updated."); 
+		} 	
+		else{
+			logDebug( "WARNING: " + itemName + " was not updated."); 
+		}
+	}
+}
+function updateGuidesheetFieldValueByArray(updateArr, vCapId) {
+	var r = aa.inspection.getInspections(vCapId);
+	if (r.getSuccess()) {
+		var inspArray = r.getOutput();
+		for (i in inspArray) {
+            var vInspId = inspArray[i].getIdNumber();
+            var inspModel = inspArray[i].getInspection();
+            var gs = inspModel.getGuideSheets();
+            if (gs) {
+                gsArray = gs.toArray();
+                for(gsIdx in gsArray){
+                    var guideSheetObj = gsArray[gsIdx];
+                    var guidesheetItem = guideSheetObj.getItems();
+                    for(var j=0;j< guidesheetItem.size();j++) {
+                        var item = guidesheetItem.get(j);
+                        for (var gItem in updateArr){
+                            var ArraySeqNo = updateArr[gItem][0];
+                            var ArrayRowViolName = updateArr[gItem][1];
+                            var ArrayASIName1 = updateArr[gItem][2];
+                            var ArrayASIValue1 = updateArr[gItem][3];
+                            var ArrayASIName2 = updateArr[gItem][4];
+                            var ArrayASIValue2 = updateArr[gItem][5];
+                            var ArrayASIName3 = updateArr[gItem][6];
+                            var ArrayASIValue3 = updateArr[gItem][7];
+                            var ArrayCapId = updateArr[gItem][8];
+                            var ArrayInspd = updateArr[gItem][9];
+                            if(parseInt(ArraySeqNo) == item.guideItemSeqNbr && parseInt(ArrayInspd) == vInspId){
+								//1. Filter Guide Sheet items by Guide sheet item name && ASI group code
+								if(item.getGuideItemText() == ArrayRowViolName) {
+									var ASISubGroups = item.getItemASISubgroupList();
+									if(ASISubGroups) {
+										//2. Filter ASI sub group by ASI Sub Group name
+										for(var k=0;k< ASISubGroups.size();k++) {
+											var ASISubGroup = ASISubGroups.get(k);
+                                            var ASIModels =  ASISubGroup.getAsiList();
+                                            if(ASIModels) {
+                                                //3. Filter ASI by ASI name
+                                                for( var m = 0; m< ASIModels.size();m++) {
+                                                    var ASIModel = ASIModels.get(m);
+                                                    if(ASIModel && ASIModel.getAsiName() == ArrayASIName1) {
+                                                        logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue1);
+                                                        //4. Reset ASI value
+                                                        ASIModel.setAttributeValue(ArrayASIValue1);
+                                                    }
+                                                    if(ASIModel && ASIModel.getAsiName() == ArrayASIName2) {
+                                                        logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue2);
+                                                        //4. Reset ASI value
+                                                        ASIModel.setAttributeValue(ArrayASIValue2);
+                                                    }
+                                                    if(ASIModel && ASIModel.getAsiName() == ArrayASIName3) {
+                                                        logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue3);
+                                                        //4. Reset ASI value
+                                                        ASIModel.setAttributeValue(ArrayASIValue3);
+                                                    }
+                                                }
+                                            }
+										}
+									}
+								}
+							}
+                        }
+                    }				
+                    //Update the guidesheet
+                    var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
+                    if (updateResult.getSuccess()) {
+                        logDebug("Successfully updated GS Data on inspection " + inspArray[i].getIdNumber() + ".");
+                    } else {
+                        logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+                        return false;
+                    }
+                }
+            } else {
+                // if there are guidesheets
+                logDebug("No guidesheets for this inspection");
+                return false;
+            }
+		}
+	} else {
+		logDebug("No inspections on the record");
+		return false;
+	}
+	logDebug("No updates to the guidesheet made");
+	return false;
+} 
+function updateGuidesheetFieldValueByArrayMultiPermt(updateArr) {
+	for (var Permit in updateArr){
+		var ArrayCapId = updateArr[Permit][8];
+		var r = aa.inspection.getInspections(ArrayCapId);
+		if (r.getSuccess()) {
+			var inspArray = r.getOutput();
+			for (i in inspArray) {
+				var vInspId = inspArray[i].getIdNumber();
+				var inspModel = inspArray[i].getInspection();
+				var gs = inspModel.getGuideSheets();
+				if (gs) {
+					gsArray = gs.toArray();
+					for(gsIdx in gsArray){
+						var guideSheetObj = gsArray[gsIdx];
+						var guidesheetItem = guideSheetObj.getItems();
+						for(var j=0;j< guidesheetItem.size();j++) {
+							var item = guidesheetItem.get(j);
+							for (var gItem in updateArr){
+								var ArraySeqNo = updateArr[gItem][0];
+								var ArrayRowViolName = updateArr[gItem][1];
+								var ArrayASIName1 = updateArr[gItem][2];
+								var ArrayASIValue1 = updateArr[gItem][3];
+								var ArrayASIName2 = updateArr[gItem][4];
+								var ArrayASIValue2 = updateArr[gItem][5];
+								var ArrayASIName3 = updateArr[gItem][6];
+								var ArrayASIValue3 = updateArr[gItem][7];
+								var ArrayCapId = updateArr[gItem][8];
+								var ArrayInspId = updateArr[gItem][9];
+								if(parseInt(ArraySeqNo) == item.guideItemSeqNbr && parseInt(ArrayInspId) == vInspId){
+									logDebug("DB1.1 " + vInspId)
+									//1. Filter Guide Sheet items by Guide sheet item name && ASI group code
+									if(item.getGuideItemText() == ArrayRowViolName) {
+										var ASISubGroups = item.getItemASISubgroupList();
+										if(ASISubGroups) {
+											//2. Filter ASI sub group by ASI Sub Group name
+											for(var k=0;k< ASISubGroups.size();k++) {
+												var ASISubGroup = ASISubGroups.get(k);
+                                                var ASIModels =  ASISubGroup.getAsiList();
+                                                if(ASIModels) {
+                                                    //3. Filter ASI by ASI name
+                                                    for( var m = 0; m< ASIModels.size();m++) {
+                                                        var ASIModel = ASIModels.get(m);
+                                                        if(ASIModel && ASIModel.getAsiName() == ArrayASIName1) {
+                                                            logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue1);
+                                                            //4. Reset ASI value
+                                                            ASIModel.setAttributeValue(ArrayASIValue1);
+                                                        }
+                                                        if(ASIModel && ASIModel.getAsiName() == ArrayASIName2) {
+                                                            logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue2);
+                                                            //4. Reset ASI value
+                                                            ASIModel.setAttributeValue(ArrayASIValue2);
+                                                        }
+                                                        if(ASIModel && ASIModel.getAsiName() == ArrayASIName3) {
+                                                            logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue3);
+                                                            //4. Reset ASI value
+                                                            ASIModel.setAttributeValue(ArrayASIValue3);
+                                                        }
+                                                    }
+                                                }
+											}
+										}
+									}
+								}
+							}
+						}				
+						//Update the guidesheet
+						var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
+						if (updateResult.getSuccess()) {
+							logDebug("Successfully updated GS Data on inspection " + inspArray[i].getIdNumber() + ".");
+						} else {
+							logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+							return false;
+						}
+					}
+				} else {
+					// if there are guidesheets
+					logDebug("No guidesheets for this inspection");
+					return false;
+				}
+			}
+		} else {
+			logDebug("No inspections on the record");
+			return false;
+		}
+		logDebug("No updates to the guidesheet made");
+		return false;
+	}
+
+}
+function updateGuidesheetFieldValueByArrayMultiPermtAct(updateArr) {
+	for (var Permit in updateArr){
+		var ArrayCapId = updateArr[Permit][4];
+		var r = aa.inspection.getInspections(ArrayCapId);
+		if (r.getSuccess()) {
+			var inspArray = r.getOutput();
+			for (i in inspArray) {
+				var inspModel = inspArray[i].getInspection();
+				var gs = inspModel.getGuideSheets();
+				if (gs) {
+					gsArray = gs.toArray();
+					for(gsIdx in gsArray){
+						var guideSheetObj = gsArray[gsIdx];
+						var guidesheetItem = guideSheetObj.getItems();
+						for(var j=0;j< guidesheetItem.size();j++) {
+							var item = guidesheetItem.get(j);
+							for (var gItem in updateArr){
+								var ArraySeqNo = updateArr[gItem][0];
+								var ArrayRowViolName = updateArr[gItem][1];
+								var ArrayASIName1 = updateArr[gItem][2];
+								var ArrayASIValue1 = updateArr[gItem][3];
+								var ArrayCapId = updateArr[gItem][4];
+								if(parseInt(ArraySeqNo) == item.guideItemSeqNbr){
+									//1. Filter Guide Sheet items by Guide sheet item name && ASI group code
+									if(item.getGuideItemText() == ArrayRowViolName) {
+										var ASISubGroups = item.getItemASISubgroupList();
+										if(ASISubGroups) {
+											//2. Filter ASI sub group by ASI Sub Group name
+											for(var k=0;k< ASISubGroups.size();k++) {
+												var ASISubGroup = ASISubGroups.get(k);
+                                    var ASIModels =  ASISubGroup.getAsiList();
+                                    if(ASIModels) {
+                                          //3. Filter ASI by ASI name
+                                          for( var m = 0; m< ASIModels.size();m++) {
+                                             var ASIModel = ASIModels.get(m);
+                                             if(ASIModel && ASIModel.getAsiName() == ArrayASIName1) {
+                                                logDebug(ArrayRowViolName + " Change ASI value " + ASIModel.getAsiName() + " from:"+ ASIModel.getAttributeValue() +" to " + ArrayASIValue1);
+                                                //4. Reset ASI value
+                                                ASIModel.setAttributeValue(ArrayASIValue1);
+                                             }
+                                          }
+                                    }
+											}
+										}
+									}
+								}
+							}
+						}				
+						//Update the guidesheet
+						var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj,guideSheetObj.getAuditID());
+						if (updateResult.getSuccess()) {
+							logDebug("Successfully updated GS Data on inspection " + inspArray[i].getIdNumber() + ".");
+						} else {
+							logDebug("Could not update guidesheet ID: " + updateResult.getErrorMessage());
+							return false;
+						}
+					}
+				} else {
+					// if there are guidesheets
+					logDebug("No guidesheets for this inspection");
+					return false;
+				}
+			}
+		} else {
+			logDebug("No inspections on the record");
+			return false;
+		}
+		logDebug("No updates to the guidesheet made");
+		return false;
+	}
+
+}
+function updateGuidesheetItemStatus(inspId, gItem, gItemStatus, itemCap) {
+    var r = aa.inspection.getInspections(itemCap);
+    if (r.getSuccess()) {
+        var inspArray = r.getOutput();
+        for (i in inspArray) {
+            if (inspArray[i].getIdNumber() == inspId) {
+                var inspModel = inspArray[i].getInspection();
+                var gs = inspModel.getGuideSheets();
+                if (gs) {
+                    for (var i = 0; i < gs.size(); i++) {
+                        var guideSheetObj = gs.get(i);
+                        if (guideSheetObj) {
+                            var guidesheetItem = guideSheetObj.getItems();
+                            for (var j = 0; j < guidesheetItem.size(); j++) {
+                                var item = guidesheetItem.get(j);
+                                //1. Filter Guide Sheet items by Guide sheet item name && ASI group code
+                                if (item && gItem == item.getGuideItemText()) {
+                                    logDebug("Found the item: " + item.getGuideItemText() + " with Status: " + item.getGuideItemStatus());
+                                    item.setGuideItemStatus(gItemStatus);
+                                    var updateResult = aa.guidesheet.updateGGuidesheet(guideSheetObj, currentUserID).getOutput();
+                                    return item.getGuideItemStatus();
+                                }
+                            }
+                            //if we got here then there were no guide sheet items matching the item requested
+                            logDebug("No matching guidesheet items found for: " + item);
+                            return false;
+                        }
+                    }
+                }
+                else {
+                    // if there are guidesheets
+                    logDebug("No guidesheets for this inspection");
+                    return false;
+                }
+            }
+        }
+    }
+    else {
+        logDebug("No inspections on the record");
+        return false;
+    }
+ }
+function updateTimeAccountingLockStatus(timeLogSeq, lockStatus)
+{
+    var query = "UPDATE T1_TIME_LOG T SET TIME_LOG_STATUS = '$$status$$' WHERE TIME_LOG_SEQ = '$$timeLogSeq$$' AND SERV_PROV_CODE = '$$SERVPROVCODE$$'";
+    query = query.replace("$$timeLogSeq$$",timeLogSeq).replace("$$status$$",lockStatus).replace("$$SERVPROVCODE$$",aa.getServiceProviderCode());
+
+    var recordsResult = aa.db.update(query, new Array());
+    var records = null;
+    if (!recordsResult.getSuccess())
+    {
+        logDebug("Problem in updateTimeAccounting(): " + recordsResult.getErrorMessage());
+        return false;
+    }
+    logDebug("Updated Successfully...");
+}
+function valueExistInASIT2Col(vTableName,keyName1,keyValue1,keyName2,keyValue2,vCapId){
+	var tableArr = loadASITable(vTableName, vCapId);
+	var matchResult = false;
+	if (tableArr) {
+		for (var r in tableArr) {
+			if (parseInt(tableArr[r][keyName1]) == parseInt(keyValue1) && tableArr[r][keyName2].toString() == keyValue2.toString()) {
+				
+				matchResult = true;
+			}
+		}
+	}
+	return matchResult;
+}
+function valueExistInASITCol(vTableName,keyName,keyValue,vCapId){
+	var tableArr = loadASITable(vTableName, vCapId);
+	var matchResult = false;
+	if (tableArr) {
+		for (var r in tableArr) {
+			if (parseInt(tableArr[r][keyName]) == parseInt(keyValue)) {
+				matchResult = true;
+			}
+		}
+	}
+	return matchResult;
+}
 
