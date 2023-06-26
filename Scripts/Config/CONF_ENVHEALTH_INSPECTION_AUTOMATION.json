@@ -1,0 +1,186 @@
+{
+  "EnvHealth/*/*/Application": {
+    "InspectionResultSubmitAfter": [
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
+            "010 Field/Periodic Inspection",
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Permit Issued",
+            "Not Applicable",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }
+    ],
+    "V360InspectionResultSubmitAfter": [
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
+            "010 Field/Periodic Inspection",
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Permit Issued",
+            "Not Applicable",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }
+    ],
+    "InspectionResultModifyAfter": [
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
+            "010 Field/Periodic Inspection",
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Not Applicable",
+            "Permit Issued",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }
+    ]
+  },
+  "EnvHealth/*/*/Permit": {
+    "InspectionResultSubmitAfter": [
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
+            "010 Field/Periodic Inspection",
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Not Applicable",
+            "Permit Issued",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }
+    ],
+    "V360InspectionResultSubmitAfter": [
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
+            "010 Field/Periodic Inspection",
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Not Applicable",
+            "Permit Issued",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }
+    ],
+    "InspectionResultModifyAfter": [
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
+            "010 Field/Periodic Inspection",
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Not Applicable",
+            "Permit Issued",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }
+    ]
+  }
+}

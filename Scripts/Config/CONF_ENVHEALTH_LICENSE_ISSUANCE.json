@@ -10,12 +10,13 @@
         "criteria": {
           "task": [],
           "status": [
-            "Completed"
+            "No Plans Required",
+            "Plans Approved"
           ]
         },
         "action": {
           "parentLicense": "EnvHealth/Health Program/Food Protection/Permit",
-          "issuedStatus": "Active, billable",
+          "issuedStatus": "Pending",
           "copyCustomFields": [
             "ALL"
           ],
@@ -50,12 +51,13 @@
         "criteria": {
           "task": [],
           "status": [
-            "Completed"
+            "No Plans Required",
+            "Plans Approved"
           ]
         },
         "action": {
           "parentLicense": "EnvHealth/Health Program/Mobile/Permit",
-          "issuedStatus": "Active, billable",
+          "issuedStatus": "Pending",
           "copyCustomFields": [
             "ALL"
           ],
@@ -98,7 +100,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Temporary Event/Annual Molluscan Shellfish/Permit",
-          "issuedStatus": "Active, billable",
+          "issuedStatus": "Pending",
           "copyCustomFields": [
             "ALL"
           ],
@@ -140,7 +142,7 @@
         },
         "action": {
           "parentLicense": "EnvHealth/Temporary Event/Annual Sampling/Permit",
-          "issuedStatus": "Active, billable",
+          "issuedStatus": "Pending",
           "copyCustomFields": [
             "ALL"
           ],
@@ -182,8 +184,8 @@
           ]
         },
         "action": {
-          "parentLicense": "EnvHealth/Temporary Event/NA/NA",
-          "issuedStatus": "Active, billable",
+          "parentLicense": "EnvHealth/Temporary Event/Vendor/Permit",
+          "issuedStatus": "Pending",
           "copyCustomFields": [
             "ALL"
           ],
@@ -225,8 +227,8 @@
           ]
         },
         "action": {
-          "parentLicense": "EnvHealth/Temporary Event/NA/NA",
-          "issuedStatus": "Active, billable",
+          "parentLicense": "EnvHealth/Temporary Event/Organizer/Permit",
+          "issuedStatus": "Pending",
           "copyCustomFields": [
             "ALL"
           ],
