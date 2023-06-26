@@ -16,13 +16,16 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
     }
 
 	var complaintNumber = AInfo["Updated.Complaint Number"];
-    cmpCapId = getApplication(complaintNumber);
-    if (!cmpCapId)   
+    if (!matches(complaintNumber, undefined, null, ""))
     {
-        cancel = true;
-        showMessage = true;
-        comment("The Complaint Number entered '" + complaintNumber + "' is invalid. Please enter a valid Complaint Number.");
-	}
+        cmpCapId = getApplication(complaintNumber);
+        if (!cmpCapId)   
+        {
+            cancel = true;
+            showMessage = true;
+            comment("The Complaint Number entered '" + complaintNumber + "' is invalid. Please enter a valid Complaint Number.");
+        }
+    }
 
 
     // DOCKET - 23/30: Custom Field required fields
