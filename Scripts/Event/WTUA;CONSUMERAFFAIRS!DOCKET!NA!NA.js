@@ -33,6 +33,7 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 	editAppSpecific("Pre-Hearing Conference Date", loadTaskSpecific(wfTask, "Pre-Hearing Conference Date"), capId);	
 	editAppSpecific("Pre-Hearing Conference Time", loadTaskSpecific(wfTask, "Pre-Hearing Conference Time"), capId);
 
+	editAppSpecific("No Pre-Hearing Conference", loadTaskSpecific(wfTask, "No Pre-Hearing Conference"), capId);	
 	
 	editAppSpecific("License Expiration Date", loadTaskSpecific(wfTask, "License Expiration Date"), capId);
 
