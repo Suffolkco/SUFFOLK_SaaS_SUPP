@@ -23,10 +23,9 @@ if (publicUser)
     }
   
     // EHIMS-5036
-    var appStatus = getAppStatus(capId);
-    
+    var appStatus = getAppStatus(capId);   
     // Only if the application has been reviewed
-    if(appStatus != "Resubmitted" && appStatus != "Received")
+    if(appStatus != "Resubmitted" && appStatus != "Received" && !matches(appStatus, null, undefined, "", "null")) 
     {
         updateAppStatus("Resubmitted");
     } 
