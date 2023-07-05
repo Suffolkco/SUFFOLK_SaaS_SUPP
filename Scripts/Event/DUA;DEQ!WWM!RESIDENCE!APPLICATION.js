@@ -32,6 +32,11 @@ if (publicUser)
         updateAppStatus("Resubmitted");        
     }
     // EHIMS-5036     
+    
+    var body = "appStatus: " + appStatus + " capId: " + capId + " Complete cap? " + cap.isCompleteCap();
+
+    aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "DUA WWM Resid App", body);
+
     if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")) 
     {       
         updateAppStatus("Resubmitted");        
