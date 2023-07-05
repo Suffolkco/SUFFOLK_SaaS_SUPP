@@ -170,7 +170,7 @@ if (inspType == "OPC Dry Cleaner Inspection" && (inspResult == "Complete" || ins
        
 }
 else
-{
+{   //EHIMS-4613
     // For OPC PBS/Non-PBS Site Inspection Types
     // Inspection Group: DEQ OPC Site
     /*OPC Non-PBS Site OP Inspection
@@ -195,7 +195,8 @@ else
                 if (inspList[xx].getInspection().getIdNumber() == inspId)
                 {
                     if ((inspList[xx].getInspectionType().toUpperCase().contains("OPC NON-PBS") || inspList[xx].getInspectionType().toUpperCase().toUpperCase().contains("OPC PBS SITE")) &&
-                        (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Fail"))
+                        (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Fail" 
+                        || inspList[xx].getInspectionStatus() == "Violations Found"))
                     {
                         inspObj = inspList[xx];
                         logDebug("Inspection number: " + inspList[xx].getInspection().getIdNumber());
@@ -360,8 +361,23 @@ else
                                                                             logDebug("Update Tank Location" + location);
                                                                             editAppSpecific("Tank Location", location, childTankCapId);
 
-                                                                            // Detailed Description: product + "Construction Material" + comments
-                                                                            var description = product + " Construction Material " + comments;
+                                                                            // Detailed Description: product + "Construction Material" + 
+                                                                            
+                                                                            if (matches(comments, null, "", undefined)) 
+                                                                            {
+                                                                                comments = "";
+                                                                            }
+                                                                            if (matches(product, null, "", undefined)) 
+                                                                            {
+                                                                                product = "";
+                                                                            }
+                                                                            if (matches(constMaterial, null, "", undefined)) 
+                                                                            {
+                                                                                constMaterial = "";
+                                                                            }
+                                                                            
+
+                                                                            var description = product + " " + constMaterial + " " + comments;
                                                                             logDebug("Update description:" + description);
 
                                                                             updateWorkDesc(description, childTankCapId)
