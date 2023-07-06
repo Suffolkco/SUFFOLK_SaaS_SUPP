@@ -155,22 +155,23 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				editAppSpecific("Date of Violation (Occurence)", vioDate, violationChild);     							
 				copyContacts(capId, violationChild);
 				
+				
 				// Add law and penalty information to violation asitable as well
-				var violationsAry = new Array();
-                var asitRow = new Array();
-				logDebug("Law: " + charge);
-                asitRow["Law"] = new asiTableValObj("Law",charge, "Y");
+				
+				logDebug("Law: " + charge);              
 				logDebug("Violation Description: " + desc);
-
-                asitRow["Violation Description"] = new asiTableValObj("Violation Description", desc, "Y");
-				logDebug("Abbreviated Description: " + abbDesc);
-                asitRow["Abbreviated Description"] = new asiTableValObj("Abbreviated Description", abbDesc, "Y");
-				logDebug("Max Penalty: " + maxPenalty);
-                asitRow["Max Penalty"] = new asiTableValObj("Max Penalty", maxPenalty, "Y");           
-				logDebug("Reduced Penalty: " + reducedPenalty);
-                asitRow["Reduced Penalty"] = new asiTableValObj("Reduced Penalty", reducedPenalty,"Y");                 
-                violationsAry.push(asitRow);
-                addASITable("POTENTIAL VIOLATION", violationsAry, violationChild);
+				logDebug("Abbreviated Description: " + abbDesc);             
+				logDebug("Max Penalty: " + maxPenalty);                
+				logDebug("Reduced Penalty: " + reducedPenalty);       		
+				var newVioResultsTable = new Array();				
+				var newRow = new Array();
+				newRow["Law"] = charge;
+				newRow["Violation Description"] = desc;
+				newRow["Abbreviated Description"] = abbDesc;
+				newRow["Max Penalty"] = maxPenalty;
+				newRow["Reduced Penalty"] = reducedPenalty;								
+				newVioResultsTable.push(newRow);	
+				addASITable("POTENTIAL VIOLATION", newVioResultsTable, violationChild);
 
 
 				// Put the newly created violation record ID back to the cheat sheet
