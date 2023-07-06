@@ -24,7 +24,7 @@ try
 		newRow["Withdraw/Void Violation"] = withdrawVoidVio;
 		newRow["Reference Violation Number"] = vioNo;		
 		newRow["Abbreviated Description"] = cheatSheet[c]["Abbreviated Description"];
-		newRow["Max Penalty"] = cheatSheet[c]["Penalty"];
+		newRow["Max Penalty"] = cheatSheet[c]["Max Penalty"];
 		newRow["Reduced Penalty"] = cheatSheet[c]["Reduced Penalty"];
 		newRow["Item"] = itemNo.toString();
 		logDebug("itemNo: " + itemNo);		
