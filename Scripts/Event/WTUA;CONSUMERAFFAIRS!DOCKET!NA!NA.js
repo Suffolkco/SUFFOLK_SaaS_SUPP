@@ -152,17 +152,23 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 			if (violationChild != null)
 			{		
 				logDebug("Violation date: " + vioDate);
-				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
+				editAppSpecific("Date of Violation (Occurence)", vioDate, violationChild);     							
 				copyContacts(capId, violationChild);
 				
 				// Add law and penalty information to violation asitable as well
 				var violationsAry = new Array();
                 var asitRow = new Array();
-                asitRow["Law"] = new asiTableValObj("Law",null,charge);
+				logDebug("Law: " + charge);
+                asitRow["Law"] = new asiTableValObj("Law",charge, "Y");
+				logDebug("Violation Description: " + desc);
+
                 asitRow["Violation Description"] = new asiTableValObj("Violation Description", desc, "Y");
+				logDebug("Abbreviated Description: " + abbDesc);
                 asitRow["Abbreviated Description"] = new asiTableValObj("Abbreviated Description", abbDesc, "Y");
-                asitRow["Max Penalty"] = new asiTableValObj("Max Penalty", maxPenalty, "Y");             
-                asitRow["Reduced Penalty"] = new asiTableValObj("Reduced Penalty",reducedPenalty,"Y");                 
+				logDebug("Max Penalty: " + maxPenalty);
+                asitRow["Max Penalty"] = new asiTableValObj("Max Penalty", maxPenalty, "Y");           
+				logDebug("Reduced Penalty: " + reducedPenalty);
+                asitRow["Reduced Penalty"] = new asiTableValObj("Reduced Penalty", reducedPenalty,"Y");                 
                 violationsAry.push(asitRow);
                 addASITable("POTENTIAL VIOLATION", violationsAry, violationChild);
 
