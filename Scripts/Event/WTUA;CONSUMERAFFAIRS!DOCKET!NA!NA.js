@@ -170,9 +170,9 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				newRow["Abbreviated Description"] = abbDesc;
 				newRow["Max Penalty"] = maxPenalty;
 				newRow["Reduced Penalty"] = reducedPenalty;								
-				newVioResultsTable.push(newRow);	
-				addASITable("POTENTIAL VIOLATION", newVioResultsTable, violationChild);
-
+				newVioResultsTable.push(newRow);			
+				logDebug("Add Row to : " + violationChild);       			
+				addRowToASITable("POTENTIAL VIOLATION", newRow, violationChild);
 
 				// Put the newly created violation record ID back to the cheat sheet
 				vioAltId = violationChild.getCustomID();
