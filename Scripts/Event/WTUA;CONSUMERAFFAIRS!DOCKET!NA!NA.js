@@ -93,19 +93,29 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	cmpCapId = getApplication(complaintNumber);
 
 	logDebug("cmpCapId " + cmpCapId);
+
+	// Docket Custom Fields to copy to Violation
+	var docHearingDate = getAppSpecific("Hearing Date", capId);
+	var docHearingTime = getAppSpecific("Hearing Time", capId);
+	var docPreConfDate = getAppSpecific("Pre-Hearing Conference Date", capId);
+
+
    for (c in cheatSheet)
    {
 	
 		var item = cheatSheet[c]["Item"];
 	   var vioDate = cheatSheet[c]["Violation Date"];
-	   var occDate = cheatSheet[c]["Occurence Date"];
+	   var occDate = cheatSheet[c]["Occurrence Date"];
 	   var caseNo = cheatSheet[c]["Case Number"];	  
 	  
-	   var charge = cheatSheet[c]["Charge"];
+	   var charge = cheatSheet[c]["Law"];
 	   var createVio = cheatSheet[c]["Create Violation"];
 	   var vioNo = cheatSheet[c]["Reference Violation Number"];
 	    
 	   var abbDesc = cheatSheet[c]["Abbreviated Description"];
+	   var desc = cheatSheet[c]["Description"];
+	   var maxPenalty = cheatSheet[c]["Max Penalty"];
+	   var reducedPenalty = cheatSheet[c]["Reduced Penalty"];
 
 	   logDebug("vioNo: " + vioNo);
 	   logDebug("createVio: " + createVio);
@@ -124,6 +134,18 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
 				copyContacts(capId, violationChild);
 				
+				// Add law and penalty information to violation asitable as well
+				var violationsAry = new Array();
+                var asitRow = new Array();
+                asitRow["Law"] = new asiTableValObj("Law",null,charge);
+                asitRow["Violation Description"] = new asiTableValObj("Violation Description", desc, "Y");
+                asitRow["Abbreviated Description"] = new asiTableValObj("Abbreviated Description", abbDesc, "Y");
+                asitRow["Max Penalty"] = new asiTableValObj("Max Penalty", maxPenalty, "Y");             
+                asitRow["Reduced Penalty"] = new asiTableValObj("Reduced Penalty",reducedPenalty,"Y");                 
+                violationsAry.push(asitRow);
+                addASITable("POTENTIAL VIOLATION", violationsAry, vioAltId);
+
+
 				// Put the newly created violation record ID back to the cheat sheet
 				vioAltId = violationChild.getCustomID();
 				logDebug("vioAltId: " + vioAltId);
