@@ -170,7 +170,7 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
     var aosChecked =  AInfo["Update.Affidavit of Service"]
     logDebug("aosChecked: " + aosChecked);
 
-    if (aosChecked)
+    if (aosChecked == 'Y')
     {
 
         aosCheck = determineDocumentAttached("Affidavit of Service");
