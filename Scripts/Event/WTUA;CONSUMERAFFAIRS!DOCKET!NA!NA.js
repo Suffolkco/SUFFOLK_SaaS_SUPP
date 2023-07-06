@@ -90,7 +90,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	if (!matches(complaintNumber, undefined, null, ""))
 	{
 		
-			// License as Parent(if exists) -> Complaint -> Violation
+			// License as Parent(if exists) -> Complaint -> Violation(child) (Violationa and docket are siplings)
 			var capComplaintResult = aa.cap.getCapID(complaintNumber);
 
 			cmpCapId = getApplication(complaintNumber);
@@ -126,12 +126,29 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   // Only if they enable the flag and the field is empty
 	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
 	   {
-			if (capComplaintResult.getSuccess()) {
-				cmpCapId = capComplaintResult.getOutput();		
-				logDebug("cmpCapId: " + cmpCapId);			
+		var violationChild;
+
+			// Set Complaint as parent if exist. DKT and violation are siplings and are child of complaint. License is the grandparent.
+			if (!matches(complaintNumber, undefined, null, ""))
+			{
+				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
+				logDebug("Complaint Record as parent. Violation as child.");
 			}
-			
-			var violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
+			else if (!matches(licenseNumber, undefined, null, ""))// No complaint record, can only be the child of license
+			{
+				var capLicResult = aa.cap.getCapID(licenseNumber);
+				licCapId = getApplication(licenseNumber);
+				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", licCapId);
+
+				logDebug("License Record as parent. No Complaint Record. Violation as child.");
+
+			}
+			else // No complaint nor license. Can only relate to Dkt
+			{
+				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", capId);
+				logDebug("Docket Record as parent. No Complaint Record nor license. Violation as child.");
+			}
+
 			if (violationChild != null)
 			{		
 				logDebug("Violation date: " + vioDate);
