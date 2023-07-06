@@ -87,12 +87,16 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
    
    var complaintNumber = getAppSpecific("Complaint Number", capId);
    logDebug("complaintNumber: " + complaintNumber);
-	// License as Parent(if exists) -> Complaint -> Violation
-	var capComplaintResult = aa.cap.getCapID(complaintNumber);
+	if (!matches(complaintNumber, undefined, null, ""))
+	{
+		
+			// License as Parent(if exists) -> Complaint -> Violation
+			var capComplaintResult = aa.cap.getCapID(complaintNumber);
 
-	cmpCapId = getApplication(complaintNumber);
+			cmpCapId = getApplication(complaintNumber);
 
-	logDebug("cmpCapId " + cmpCapId);
+			logDebug("cmpCapId " + cmpCapId);
+	}
 
 	// Docket Custom Fields to copy to Violation
 	var docHearingDate = getAppSpecific("Hearing Date", capId);
@@ -143,7 +147,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
                 asitRow["Max Penalty"] = new asiTableValObj("Max Penalty", maxPenalty, "Y");             
                 asitRow["Reduced Penalty"] = new asiTableValObj("Reduced Penalty",reducedPenalty,"Y");                 
                 violationsAry.push(asitRow);
-                addASITable("POTENTIAL VIOLATION", violationsAry, vioAltId);
+                addASITable("POTENTIAL VIOLATION", violationsAry, violationChild);
 
 
 				// Put the newly created violation record ID back to the cheat sheet
