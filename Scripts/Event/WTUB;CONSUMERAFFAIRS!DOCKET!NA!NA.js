@@ -167,13 +167,20 @@ else if (wfTask == "Hearing Report" && wfStatus == "Complete")
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 {
     //Check if the AOS has not been scanned 
-    aosCheck = determineDocumentAttached("Affidavit of Service");
-    
-    if(!aosCheck)
+    var aosChecked =  AInfo["Update.Affidavit of Service"]
+    logDebug("aosChecked: " + aosChecked);
+
+    if (aosChecked)
     {
-        cancel = true;
-        showMessage = true;
-        comment("No AOS document has been attached. Please attach Affidavit of Service document before proceeding. Unable to move to the next task.");
+
+        aosCheck = determineDocumentAttached("Affidavit of Service");
+        
+        if(!aosCheck)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("No AOS document has been attached. Please attach Affidavit of Service document before proceeding. Unable to move to the next task.");
+        }
     }  
 
 
