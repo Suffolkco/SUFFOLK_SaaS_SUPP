@@ -18,11 +18,14 @@ try
 		newRow["Violation Date"] = cheatSheet[c]["Violation Date"];
 		newRow["Occurrence Date"] = cheatSheet[c]["Occurrence Date"];
 		newRow["Case Number"] = caseNo;	
-		newRow["Charge"] = cheatSheet[c]["Charge"];
+		newRow["Law"] = cheatSheet[c]["Law"];
+		newRow["Description"] = cheatSheet[c]["Description"];
 		newRow["Create Violation"] = cheatSheet[c]["Create Violation"];
 		newRow["Withdraw/Void Violation"] = withdrawVoidVio;
-		newRow["Reference Violation Number"] = vioNo;
+		newRow["Reference Violation Number"] = vioNo;		
 		newRow["Abbreviated Description"] = cheatSheet[c]["Abbreviated Description"];
+		newRow["Max Penalty"] = cheatSheet[c]["Penalty"];
+		newRow["Reduced Penalty"] = cheatSheet[c]["Reduced Penalty"];
 		newRow["Item"] = itemNo.toString();
 		logDebug("itemNo: " + itemNo);		
 		logDebug("withdrawVoidVio: " + withdrawVoidVio);
