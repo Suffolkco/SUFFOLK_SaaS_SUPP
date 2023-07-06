@@ -161,6 +161,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 {
     editAppSpecific("Mailed Letter", loadTaskSpecific(wfTask, "Mailed Letter"));
+	editAppSpecific("Affidavit of Service", loadTaskSpecific(wfTask, "Affidavit of Service"));
 
 }
 
@@ -222,6 +223,8 @@ else if (wfTask == "Hearing")
 	
 	editAppSpecific("License Obtained Due Date", loadTaskSpecific(wfTask, "License Obtained Due Date"), capId);
 	   
+	editAppSpecific("Waiver", loadTaskSpecific(wfTask, "Waiver"), capId);
+	editAppSpecific("AOD", loadTaskSpecific(wfTask, "AOD"), capId);
 
 }
 else if (wfTask == "Hearing Report")

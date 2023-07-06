@@ -198,6 +198,28 @@ else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Defa
         comment("No audio hearing recording has been attached. Please upload before proceeding. Unable to move to the next task.");
     }
 
+    //Check if the Waiver has not been scanned 
+    var waiverChecked =  AInfo["Updated.Waiver"]
+    logDebug("waiverChecked: " + waiverChecked);
+
+    if (waiverChecked == 'Yes')
+    {
+        cancel = true;
+        showMessage = true;
+        comment("No Waiver has been attached. Please upload before proceeding. Unable to move to the next task.");
+    }
+
+    
+    //Check if the AOD has not been scanned 
+    var aodChecked =  AInfo["Updated.AOD"]
+    logDebug("aodChecked: " + aodChecked);
+
+    if (aodChecked == 'Yes')
+    {
+        comment("No AOD has been attached. Please upload before proceeding. Unable to move to the next task.");
+    }
+
+
     // For reference
     /*
     Those come from the values stored in "aa.env.getValue("TaskSpecificInfoModels")"
