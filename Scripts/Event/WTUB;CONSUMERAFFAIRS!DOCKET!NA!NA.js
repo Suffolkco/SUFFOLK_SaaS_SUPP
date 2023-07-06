@@ -167,10 +167,10 @@ else if (wfTask == "Hearing Report" && wfStatus == "Complete")
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 {
     //Check if the AOS has not been scanned 
-    var aosChecked =  AInfo["Update.Affidavit of Service"]
+    var aosChecked =  AInfo["Updated.Affidavit of Service"]
     logDebug("aosChecked: " + aosChecked);
 
-    if (aosChecked == 'Y')
+    if (aosChecked == 'Yes')
     {
 
         aosCheck = determineDocumentAttached("Affidavit of Service");
