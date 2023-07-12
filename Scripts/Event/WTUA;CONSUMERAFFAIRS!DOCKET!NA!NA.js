@@ -102,7 +102,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	var docHearingDate = getAppSpecific("Hearing Date", capId);
 	var docHearingTime = getAppSpecific("Hearing Time", capId);
 	var docPreConfDate = getAppSpecific("Pre-Hearing Conference Date", capId);
-
+	var docPreConfTime = getAppSpecific("Pre-Hearing Conference Time", capId);
 
    for (c in cheatSheet)
    {
@@ -152,7 +152,12 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 			if (violationChild != null)
 			{		
 				logDebug("Violation date: " + vioDate);
-				editAppSpecific("Date of Violation (Occurence)", vioDate, violationChild);     							
+				editAppSpecific("Date of Violation", vioDate, violationChild); 
+				editAppSpecific("Hearing Date", docHearingDate, violationChild); 
+				editAppSpecific("Hearing Time", docHearingTime, violationChild); 
+				editAppSpecific("Pre-Conference Date", docPreConfDate, violationChild); 
+				editAppSpecific("Pre-Conference Time", docPreConfTime, violationChild); 
+
 				copyContacts(capId, violationChild);
 				
 				
@@ -182,6 +187,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Case Number", complaintNumber, item, "Item");
 				
+				
 			}
 		}
 		
@@ -189,7 +195,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	}
 
 	// VENODR
-	editAppSpecific("A63 Unlicensed", loadTaskSpecific(wfTask, "A63 Unlicensed"));
+	editAppSpecific("A63 Licensed", loadTaskSpecific(wfTask, "A63 Licensed"));
 	editAppSpecific("A64 Unlicensed", loadTaskSpecific(wfTask, "A64 Unlicensed"));
 	editAppSpecific("A65 Licensed", loadTaskSpecific(wfTask, "A65 Licensed"));
 	editAppSpecific("A66 Unlicensed", loadTaskSpecific(wfTask, "A66 Unlicensed"));
@@ -407,6 +413,61 @@ function loadTaskSpecific(wfName,itemName)  // optional: itemCap
 			}  // found workflow task
 		} // each task
 		return null
+}
+
+function addRowToASITable(tableName, tableValues) //optional capId
+{
+    //tableName is the name of the ASI table
+    //tableValues is an associative array of values.  All elements must be either a string or asiTableVal object
+    itemCap = capId
+    if (arguments.length > 2)
+    {
+        itemCap = arguments[2]; //use capId specified in args
+    }
+    var tssmResult = aa.appSpecificTableScript.getAppSpecificTableModel(itemCap, tableName);
+    if (!tssmResult.getSuccess())
+    {
+        logDebug("**WARNING: error retrieving app specific table " + tableName + " " + tssmResult.getErrorMessage());
+        return false;
+    }
+    var tssm = tssmResult.getOutput();
+    var tsm = tssm.getAppSpecificTableModel();
+    var fld = tsm.getTableField();
+    var col = tsm.getColumns();
+    var fld_readonly = tsm.getReadonlyField(); //get ReadOnly property
+    var coli = col.iterator();
+    while (coli.hasNext())
+    {
+        colname = coli.next();
+        if (!tableValues[colname.getColumnName()]) 
+        {
+            logDebug("Value in " + colname.getColumnName() + " - " + tableValues[colname.getColumnName()]);
+            logDebug("addToASITable: null or undefined value supplied for column " + colname.getColumnName() + ", setting to empty string");
+            tableValues[colname.getColumnName()] = "";
+        }
+        if (typeof (tableValues[colname.getColumnName()].fieldValue) != "undefined")
+        {
+            fld.add(tableValues[colname.getColumnName()].fieldValue);
+            fld_readonly.add(tableValues[colname.getColumnName()].readOnly);
+        }
+        else // we are passed a string
+        {
+            fld.add(tableValues[colname.getColumnName()]);
+            fld_readonly.add(null);
+        }
+    }
+    tsm.setTableField(fld);
+    tsm.setReadonlyField(fld_readonly); // set readonly field
+    addResult = aa.appSpecificTableScript.editAppSpecificTableInfos(tsm, itemCap, currentUserID);
+    if (!addResult.getSuccess())
+    {
+        logDebug("**WARNING: error adding record to ASI Table:  " + tableName + " " + addResult.getErrorMessage());
+        return false;
+    }
+    else
+    {
+        logDebug("Successfully added record to ASI Table: " + tableName);
+    }
 }
 
 function sendVendorEmail(nodDate, nodAmt, nodDueDate, paymentDueDate)

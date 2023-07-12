@@ -90,7 +90,7 @@ if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
 else if (wfTask == "Create Violations" && wfStatus == "Complete")
 {
      // DOCKET #9: lBlock letter has not been mailed
-    /*var a63 =  AInfo["A63 Unlicensed"]
+    /*var a63 =  AInfo["A63 Licensed"]
 	var a64 =  AInfo["A64 Unlicensed"]
 	var a65 =  AInfo["A65 Unlicensed"]
     var a66 =  AInfo["A66 Unlicensed"]
@@ -106,7 +106,7 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
     var a75 =  AInfo["A75 Adjournment Letter"]
     var a76 =  AInfo["A76 Adjournment Letter"]*/
 
-    var a63 = AInfo["Updated.A63 Unlicensed"];
+    var a63 = AInfo["Updated.A63 Licensed"];
     var a64 = AInfo["Updated.A64 Unlicensed"];
     var a65 = AInfo["Updated.A65 Licensed"];
     var a66 = AInfo["Updated.A66 Unlicensed"];
