@@ -2,63 +2,162 @@
 var emailText = "";
 var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
 
-
 if (publicUser)
 {    
-    logDebug("balanceDue: " + balanceDue);
+    logDebugLocal("balanceDue: " + balanceDue);
     
     if (balanceDue <= 0)
     {       
-        if (isTaskActive("Inspections") || isTaskActive("Final Review"))
+        var projIncomplete = aa.cap.getProjectByChildCapID(capId, "Renewal", "Incomplete");
+        logDebugLocal("Proj Inc " + projIncomplete.getSuccess());
+        if(projIncomplete.getSuccess())
         {
-            var appStatus = getAppStatus(capId);
-            logDebug("appStatus:" + appStatus);
-
-            if (isTaskActive("Inspections"))
+            var projInc = projIncomplete.getOutput();
+            for (var pi in projInc)
             {
-                logDebug("Inspection task is active");
-                updateTask("Inspections", "Permit Renewed", "", "");        
-                updateAppStatus("Plan Approved");
+                parentCapId = projInc[pi].getProjectID();
+                logDebugLocal("parentCapId: " + parentCapId);
             }
-            else if (isTaskActive("Final Review"))
-            {
-                logDebug("Final Review task is active");
-                updateTask("Final Review", "Resubmitted", "", "");       
-                updateAppStatus("Final Review");
-            }
-
-            var b1ExpResult = aa.expiration.getLicensesByCapID(capId);
-            
-            if (b1ExpResult.getSuccess())
-            {
-                b1Exp = b1ExpResult.getOutput();
-                var curExp = b1Exp.getExpDate();
-                var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
-                var dateAdd = addDays(curExpCon, 365);
-                var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);               
-
-                //var newDate = new Date();
-                //var newExpDate = (newDate.getMonth() + 1) + "/" + newDate.getDate() + "/" + (newDate.getFullYear() + 1);       
-                logDebug("This is the current expiration date: " + curExpCon);                
-                //logDebug("This is the current month: " + newDate.getMonth() + 1 );
-                //logDebug("This is the current date: " + newDate.getDate() );
-                newIndExpDateOne = aa.date.parseDate(dateMMDDYYY);
-                logDebug("This is the new expiration date: " + dateMMDDYYY);
-                b1Exp.setExpDate(newIndExpDateOne);
-                b1Exp.setExpStatus("Active");
-                aa.expiration.editB1Expiration(b1Exp.getB1Expiration());        
-            }        
         }
+
+        // EHIMS-4609: Send email to assignee 
+        if (isParentTaskActive("Inspections", parentCapId))
+        {
+            logDebugLocal("Insepctions active.")
+            // Check Fee Codes
+            if (checkFeeCode)
+            {
+                assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
+                logDebugLocal("assignedUserId: " + assignedUserId);
+
+                if (assignedUserid !=  null)
+                {
+                    iNameResult = aa.person.getUser(assignedUserid)
+    
+                    if(iNameResult.getSuccess())
+                    {
+                        assignedUser = iNameResult.getOutput();                   
+                        var emailParams = aa.util.newHashtable();               
+                        getRecordParams4Notification(emailParams);             
+                        logDebugLocal("capId.getCustomID(): " + capId.getCustomID());
+
+                        addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                        if (assignedUser.getEmail() != null)
+                        {
+                            logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
+                            sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_PAYMENT_MADE", emailParams, null);
+                        }
+                    }
+                }
+            }         
+           	
+        }
+
     }
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
 }
 
+function isParentTaskActive(task, parentCapId)
+{        
+    var ret = false;
+    
+    var workflowResult = aa.workflow.getTaskItems(parentCapId, task, "", null, null, "Y");
+    if (!workflowResult.getSuccess()) {
+        throw "**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage();
+    }
+    var wfObj = workflowResult.getOutput();
+
+    for (var i in wfObj) {
+        fTask = wfObj[i];
+        if (fTask.getTaskDescription().toUpperCase().equals(task.toUpperCase())) {
+            if (fTask.getActiveFlag().equals("Y")) {
+                ret = true;
+                break;
+            }
+
+        }
+    }
+    return ret;   
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
+}
+
+function checkFeeCode()
+{
+    var recPayments = new Array;
+    var recPayments = aa.finance.getPaymentByCapID(capId, null).getOutput();
+    // Get the Last Payment on the record
+    recPayments.sort(sortPayments);
+    var lastPayment = recPayments[0];
+    var pfResult = aa.finance.getPaymentFeeItems(capId, null);
+    if (pfResult.getSuccess()) {
+    var pfObj = pfResult.getOutput();
+    for (ij in pfObj) {
+        var paymentFee = pfObj[ij];
+        logDebugLocal('paymentFee.getPaymentSeqNbr():' + paymentFee.getPaymentSeqNbr());
+
+        if (paymentFee.getPaymentSeqNbr() == lastPayment.getPaymentSeqNbr()) {
+        // Count number of Annual Fees in Payment by comparing the Fee Code 
+        // and the Program Element Number
+        thisFeeResult = aa.finance.getFeeItemByPK(capId, paymentFee.getFeeSeqNbr());
+        if (thisFeeResult.getSuccess()) {
+            thisFee = thisFeeResult.getOutput();
+
+            logDebugLocal('thisFee.feeCod:' + thisFee.feeCod);
+
+            if (thisFee.feeCod == 'HM-CON-REN')
+            {
+                logDebugLocal('Match fee code:' + thisFee.feeCod);
+                 return true;
+            }
+        }
+        }
+    }
+}
+    return false;
+}
 function addDays(date, days) 
 {
 	var result = new Date(date);
 	result.setDate(result.getDate() + days);
 	return result;
 }
+
+function getUserIDAssignedToTask(vCapId, taskName) {
+    currentUsrVar = null;
+    var taskResult1 = aa.workflow.getTask(vCapId, taskName);
+    if (taskResult1.getSuccess())
+    {
+        tTask = taskResult1.getOutput();
+    } else
+    {
+        logMessage("**ERROR: Failed to get workflow task object ");
+        return false;
+    }
+    taskItem = tTask.getTaskItem();
+    taskUserObj = tTask.getTaskItem().getAssignedUser();
+    taskUserObjLname = taskUserObj.getLastName();
+    taskUserObjFname = taskUserObj.getFirstName();
+    taskUserObjMname = taskUserObj.getMiddleName();
+    currentUsrVar = aa.person.getUser(taskUserObjFname, taskUserObjMname, taskUserObjLname).getOutput();
+    if (currentUsrVar != null)
+    {
+        currentUserIDVar = currentUsrVar.getGaUserID();
+        return currentUserIDVar;
+    } else
+    {
+        return false;
+    }
+}
+
 
 function jsDateToMMDDYYYY(pJavaScriptDate) {
 	//converts javascript date to string in MM/DD/YYYY format
