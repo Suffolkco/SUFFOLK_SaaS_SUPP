@@ -9,8 +9,20 @@ if (publicUser)
     
     if (balanceDue <= 0)
     {       
+        var projIncomplete = aa.cap.getProjectByChildCapID(capId, "Renewal", "Incomplete");
+        logDebugLocal("Proj Inc " + projIncomplete.getSuccess());
+        if(projIncomplete.getSuccess())
+        {
+            var projInc = projIncomplete.getOutput();
+            for (var pi in projInc)
+            {
+                parentCapId = projInc[pi].getProjectID();
+                logDebugLocal("parentCapId: " + parentCapId);
+            }
+        }
+
         // EHIMS-4609: Send email to assignee 
-        if (isTaskActive("Inspections"))
+        if (isParentTaskActive("Inspections", parentCapId))
         {
             logDebugLocal("Insepctions active.")
             // Check Fee Codes
@@ -85,6 +97,29 @@ if (publicUser)
         }
     }
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
+}
+
+function isParentTaskActive(task, parentCapId)
+{        
+    var ret = false;
+    
+    var workflowResult = aa.workflow.getTaskItems(parentCapId, task, "", null, null, "Y");
+    if (!workflowResult.getSuccess()) {
+        throw "**ERROR: Failed to get workflow object: " + s_capResult.getErrorMessage();
+    }
+    var wfObj = workflowResult.getOutput();
+
+    for (var i in wfObj) {
+        fTask = wfObj[i];
+        if (fTask.getTaskDescription().toUpperCase().equals(task.toUpperCase())) {
+            if (fTask.getActiveFlag().equals("Y")) {
+                ret = true;
+                break;
+            }
+
+        }
+    }
+    return ret;   
 }
 
 function logDebugLocal(dstr)
