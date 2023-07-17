@@ -183,6 +183,7 @@ function mainProcess()
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 												var projectName = workDescGet(capId);
 												var conArray = getContactArray();
+												var addrResult = getAddressInALine(capId);
 												
 												for (con in conArray)
 												{		
@@ -200,7 +201,7 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 													addParameter(emailParams, "$$DAY$$", "EXPIRING TODAY");
-
+													addParameter(emailParams, "$$address$$", addrResult);
 													addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
 													addACAUrlsVarToEmail(emailParams);
 
@@ -242,7 +243,7 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);                                  
 													addParameter(lpEmailParams, "$$DAY$$", "EXPIRING TODAY");
-
+													addParameter(lpEmailParams, "$$address$$", addrResult);
 																						
 													addParameter(lpEmailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
 													addACAUrlsVarToEmail(lpEmailParams);
@@ -284,6 +285,53 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function getAddressInALine() {
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
+}
 function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
 {
   if (capConditionScriptModel1 == null || capConditionScriptModel2 == null)

@@ -190,6 +190,8 @@ function mainProcess()
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 												var projectName = workDescGet(capId);
 
+												var addrResult = getAddressInALine(capId);
+
 												var conArray = getContactArray();
 												for (con in conArray)
 												{		
@@ -206,12 +208,16 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
+													addParameter(vEParams, "$$address$$", addrResult);
 													//Save Base ACA URL
 													addParameter(emailParams, "$$acaURL$$", acaSite);													
 													addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
 													addACAUrlsVarToEmail(emailParams);
 
 													conEmail2 = conArray[con].email;
+
+													
+
 													if (conEmail2 != null)
 													{
 														logDebug("Sending email to contact: " + conEmail2); 
@@ -248,6 +254,7 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
+													addParameter(lpEmailParams, "$$address$$", addrResult);
 													//Save Base ACA URL
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
 													addParameter(lpEmailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
@@ -290,6 +297,53 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function getAddressInALine() {
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
+}
 function addACAUrlsVarToEmail(vEParams) {
 	//Get base ACA site from standard choices
 	var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
