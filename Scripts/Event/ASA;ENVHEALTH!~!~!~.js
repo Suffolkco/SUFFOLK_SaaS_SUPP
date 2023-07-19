@@ -7,7 +7,7 @@ setPrimaryContactToApplicant(capId);
 
 if (!publicUser)
 {
-    if (appMatch("EnvHealth/Health Program/Food Protection/Application") || appMatch("EnvHealth/Health Program/Mobile/Application"))
+    if (appMatch("EnvHealth/*/*/Application"))
     {
         // Check if the ASI field "Does this application require a new facility?" is set to "Yes"
         var requireNewFacility = getAppSpecific("Does this application require a new facility?");
@@ -475,7 +475,8 @@ function updateShortNotes(text) // option CapId
 }
 
 function setPrimaryContactToApplicant(itemCap) {
-	primContactType = "Accounts Receivable";
+	// PHP-48: Updated to Facility Owner
+	primContactType = "Facility Owner";
 
 	var conObj = getContactObj(itemCap,primContactType);
 
