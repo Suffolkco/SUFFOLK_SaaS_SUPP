@@ -9,37 +9,38 @@ if (publicUser)
     if (balanceDue <= 0)
     {       
          // EHIMS-4609: Send email to assignee 
-         if (isParentTaskActive("Inspections", parentCapId))
-         {
-             logDebugLocal("Insepctions active.")
-             // Check Fee Codes
-             if (checkFeeCode)
-             {
-                 assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
-                 logDebugLocal("assignedUserId: " + assignedUserId);
- 
-                 if (assignedUserid !=  null)
-                 {
-                     iNameResult = aa.person.getUser(assignedUserid)
-     
-                     if(iNameResult.getSuccess())
-                     {
-                         assignedUser = iNameResult.getOutput();                   
-                         var emailParams = aa.util.newHashtable();               
-                         getRecordParams4Notification(emailParams);             
-                         logDebugLocal("capId.getCustomID(): " + capId.getCustomID());
- 
-                         addParameter(emailParams, "$$altID$$", capId.getCustomID());
-                         if (assignedUser.getEmail() != null)
-                         {
-                             logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
-                             sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_PAYMENT_MADE", emailParams, null);
-                         }
-                     }
-                 }
-             }         
-                
-         }
+        if (isTaskActive("Inspections"))
+        {
+            logDebugLocal("Insepctions active.")
+            // Check Fee Codes
+            if (checkFeeCode)
+            {
+                assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
+                logDebugLocal("assignedUserId: " + assignedUserId);
+
+                if (assignedUserid !=  null)
+                {
+                    iNameResult = aa.person.getUser(assignedUserid)
+    
+                    if(iNameResult.getSuccess())
+                    {
+                        assignedUser = iNameResult.getOutput();                   
+                        var emailParams = aa.util.newHashtable();               
+                        getRecordParams4Notification(emailParams);             
+                        logDebugLocal("capId.getCustomID(): " + capId.getCustomID());
+
+                        addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                        if (assignedUser.getEmail() != null)
+                        {
+                            logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
+                            sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_PAYMENT_MADE", emailParams, null);
+                        }
+                    }
+                }
+            }         
+               
+        }
+
 
         if (isTaskActive("Inspections") || isTaskActive("Final Review"))
         {

@@ -9,6 +9,39 @@ if (publicUser)
     
     if (balanceDue <= 0)
     {       
+        // EHIMS-4609: Send email to assignee 
+        if (isTaskActive("Inspections"))
+        {
+            logDebugLocal("Insepctions active.")
+            // Check Fee Codes
+            if (checkFeeCode)
+            {
+                assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
+                logDebugLocal("assignedUserId: " + assignedUserId);
+
+                if (assignedUserid !=  null)
+                {
+                    iNameResult = aa.person.getUser(assignedUserid)
+    
+                    if(iNameResult.getSuccess())
+                    {
+                        assignedUser = iNameResult.getOutput();                   
+                        var emailParams = aa.util.newHashtable();               
+                        getRecordParams4Notification(emailParams);             
+                        logDebugLocal("capId.getCustomID(): " + capId.getCustomID());
+
+                        addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                        if (assignedUser.getEmail() != null)
+                        {
+                            logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
+                            sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_PAYMENT_MADE", emailParams, null);
+                        }
+                    }
+                }
+            }         
+               
+        }
+
         if (isTaskActive("Inspections") || isTaskActive("Final Review"))
         {
             var appStatus = getAppStatus(capId);
@@ -51,6 +84,78 @@ if (publicUser)
         }
     }
     aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - OPC GC", emailText);
+}
+
+function checkFeeCode()
+{
+    var recPayments = new Array;
+    var recPayments = aa.finance.getPaymentByCapID(capId, null).getOutput();
+    // Get the Last Payment on the record
+    recPayments.sort(sortPayments);
+    var lastPayment = recPayments[0];
+    var pfResult = aa.finance.getPaymentFeeItems(capId, null);
+    if (pfResult.getSuccess()) {
+    var pfObj = pfResult.getOutput();
+    for (ij in pfObj) {
+        var paymentFee = pfObj[ij];
+        logDebugLocal('paymentFee.getPaymentSeqNbr():' + paymentFee.getPaymentSeqNbr());
+
+        if (paymentFee.getPaymentSeqNbr() == lastPayment.getPaymentSeqNbr()) {
+        // Count number of Annual Fees in Payment by comparing the Fee Code 
+        // and the Program Element Number
+        thisFeeResult = aa.finance.getFeeItemByPK(capId, paymentFee.getFeeSeqNbr());
+        if (thisFeeResult.getSuccess()) {
+            thisFee = thisFeeResult.getOutput();
+
+            logDebugLocal('thisFee.feeCod:' + thisFee.feeCod);
+
+            if (thisFee.feeCod == 'HM-CON-REN')
+            {
+                logDebugLocal('Match fee code:' + thisFee.feeCod);
+                 return true;
+            }
+        }
+        }
+    }
+}
+    return false;
+}
+
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
+} 
+
+function getUserIDAssignedToTask(vCapId, taskName) {
+    currentUsrVar = null;
+    var taskResult1 = aa.workflow.getTask(vCapId, taskName);
+    if (taskResult1.getSuccess())
+    {
+        tTask = taskResult1.getOutput();
+    } else
+    {
+        logMessage("**ERROR: Failed to get workflow task object ");
+        return false;
+    }
+    taskItem = tTask.getTaskItem();
+    taskUserObj = tTask.getTaskItem().getAssignedUser();
+    taskUserObjLname = taskUserObj.getLastName();
+    taskUserObjFname = taskUserObj.getFirstName();
+    taskUserObjMname = taskUserObj.getMiddleName();
+    currentUsrVar = aa.person.getUser(taskUserObjFname, taskUserObjMname, taskUserObjLname).getOutput();
+    if (currentUsrVar != null)
+    {
+        currentUserIDVar = currentUsrVar.getGaUserID();
+        return currentUserIDVar;
+    } else
+    {
+        return false;
+    }
 }
 
 function addDays(date, days) 
