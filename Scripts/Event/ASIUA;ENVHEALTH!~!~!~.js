@@ -26,6 +26,20 @@ if (appMatch("EnvHealth/*/*/*")) {
 	//var parentId = cap.getParentCapID();
 }
 
+
+// push program elements up to record detail tab
+
+// Get "Program Element" and set "Short Notes" and "Detailed Description"
+	// Check if "Program Element" custom field exists and has a value
+if (AInfo["Program Element"] !== undefined && AInfo["Program Element"] !== null && AInfo["Program Element"].trim() !== "") {
+	// Get "Program Element" and set "Short Notes" and "Detailed Description"
+	updateWorkDesc(AInfo["Program Element"]);
+	updateShortNotes(AInfo["Program Element"]);
+}
+
+
+
+
 //helper functions
 function editRecordStatus(targetCapId, strStatus){
     var capModel = aa.cap.getCap(targetCapId).getOutput();
@@ -820,3 +834,60 @@ function updateFacilityInfo(targetCapId,vFacilityId){
 		}
 	}
 }
+
+function updateWorkDesc(newWorkDes) // optional CapId
+{
+	var itemCap = capId
+		if (arguments.length > 1)
+			itemCap = arguments[1]; // use cap ID specified in args
+
+
+		var workDescResult = aa.cap.getCapWorkDesByPK(itemCap);
+	var workDesObj;
+
+	if (!workDescResult.getSuccess()) {
+		aa.print("**ERROR: Failed to get work description: " + workDescResult.getErrorMessage());
+		return false;
+	}
+
+	var workDesScriptObj = workDescResult.getOutput();
+	if (workDesScriptObj) {
+		workDesObj = workDesScriptObj.getCapWorkDesModel();
+	} else {
+		aa.print("**ERROR: Failed to get workdes Obj: " + workDescResult.getErrorMessage());
+		return false;
+	}
+
+	workDesObj.setDescription(newWorkDes);
+	aa.cap.editCapWorkDes(workDesObj);
+
+	aa.print("Updated Work Description to : " + newWorkDes);
+
+}
+
+
+function updateShortNotes(newSN) // option CapId
+	{
+	var itemCap = capId
+	if (arguments.length > 1) itemCap = arguments[1]; // use cap ID specified in args
+
+	var cdScriptObjResult = aa.cap.getCapDetail(itemCap);
+	if (!cdScriptObjResult.getSuccess())
+		{ logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; return false; }
+
+	var cdScriptObj = cdScriptObjResult.getOutput();
+
+	if (!cdScriptObj)
+		{ logDebug("**ERROR: No cap detail script object") ; return false; }
+
+	cd = cdScriptObj.getCapDetailModel();
+
+	cd.setShortNotes(newSN);
+
+	cdWrite = aa.cap.editCapDetail(cd)
+
+	if (cdWrite.getSuccess())
+		{ logDebug("updated short notes to " + newSN) }
+	else
+		{ logDebug("**ERROR writing capdetail : " + cdWrite.getErrorMessage()) ; return false ; }
+	}
