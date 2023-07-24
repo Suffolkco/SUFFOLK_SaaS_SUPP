@@ -37,22 +37,7 @@ if (wfTask == "Inspections" && (wfStatus == "Inspection Failure" || wfStatus == 
 }
 if (wfStatus == "Partial Final Approval")
 {
-	logDebugLocal("wfTask: " + wfTask);
-	var eParams = aa.util.newHashtable();
-	var altId = capId.getCustomID();			
-	addParameter(eParams, "$$altID$$", altId);
-	var shortNotes = getShortNotes(capId);
-	logDebugLocal("shortNotes: " + shortNotes);
-	addParameter(eParams, "$$shortNotes$$", shortNotes);	
-	var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
-	acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-	logDebugLocal("acaSite: " + acaSite);
-	addParameter(eParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
-	logDebugLocal("acaSite url: " + acaSite + getACAUrl());
-
-	addACAUrlsVarToEmail(eParams);
-
-	sendNotification("", allEmail, "", "DEQ_WWM_PARTIAL_FINAL_REVIEW", eParams, null);
+	workflowPartialReviewApproved();	
 } 
 
 
