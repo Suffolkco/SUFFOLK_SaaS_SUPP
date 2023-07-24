@@ -47,7 +47,7 @@ if (wfStatus == "Partial Final Approval")
 	var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 	acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 	logDebugLocal("acaSite: " + acaSite);
-	addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
+	addParameter(eParams, "$$acaRecordURL$$", acaSite + getACAUrl());		
 	logDebugLocal("acaSite url: " + acaSite + getACAUrl());
 
 	addACAUrlsVarToEmail(eParams);
