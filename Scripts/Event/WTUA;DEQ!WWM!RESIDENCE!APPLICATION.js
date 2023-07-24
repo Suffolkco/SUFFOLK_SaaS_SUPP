@@ -35,7 +35,7 @@ if (wfTask == "Inspections" && (wfStatus == "Inspection Failure" || wfStatus == 
 		workflowInspectionResultedWWM("Inspection Corrections Required", "RECORDID");
 	}
 }
-if (wfTask == "Partial Final Approval")
+if (wfStatus == "Partial Final Approval")
 {
 	logDebugLocal("wfTask: " + wfTask);
 	var eParams = aa.util.newHashtable();
