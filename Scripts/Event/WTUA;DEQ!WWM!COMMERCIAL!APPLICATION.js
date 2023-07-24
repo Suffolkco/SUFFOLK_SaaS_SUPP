@@ -42,11 +42,17 @@ if (wfTask == "Inspections" &&  (wfStatus == "Inspection Failure" || wfStatus ==
 		workflowInspectionResultedWWM("Inspection Corrections Required", "RECORDID");
 	}
 }
-/*if (wfTask == "Inspections" && wfStatus == "Partial Final Approval")
-    {
-        THIS IS FORTHCOMING
-	}
-*/
+if (wfStatus == "Partial Final Approval")
+{
+	var eParams = aa.util.newHashtable();
+	var altId = capId.getCustomID();			
+	addParameter(eParams, "$$altID$$", altId);
+	var shortNotes = getShortNotes(capId);
+	addParameter(eParams, "$$shortNotes$$", shortNotes);	
+	addACAUrlsVarToEmail(eParams);
+	sendNotification("", allEmail, "", "DEQ_WWM_PARTIAL_FINAL_REVIEW", eParams, null);
+}
+
 if (wfTask == "Inspections" && wfStatus == "Complete")
 {		
 	var completed = latestCompletedInspection();
