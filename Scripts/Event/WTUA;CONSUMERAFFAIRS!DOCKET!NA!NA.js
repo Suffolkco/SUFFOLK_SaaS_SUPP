@@ -645,8 +645,7 @@ function deactivateAllActiveTasks(targetCapId) {
                 logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
             }
 			else
-			{
-				var deact = aa.workflow.adjustTask()
+			{			
 				logDebug("deactived: " + fTask.getTaskDescription());
 			}
         }
