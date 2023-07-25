@@ -185,7 +185,7 @@ else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 
 
 }
-// DOCKET #6: At Hearing, WTUA to block from proceeding if audio recording has not been attached
+
 else if (wfTask == "Hearing")
 {
     //Check if the Waiver has not been scanned 
@@ -194,9 +194,14 @@ else if (wfTask == "Hearing")
 
     if (waiverChecked == 'Yes')
     {
-        cancel = true;
-        showMessage = true;
-        comment("No Waiver has been attached. Please upload before proceeding. Unable to move to the next task.");
+        waiverAttachmentCheck = determineDocumentAttached("Waiver");
+
+        if (!waiverAttachmentCheck)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("No Waiver has been attached. Please upload before proceeding. Unable to move to the next task.");
+        }
     }
 
     
@@ -206,11 +211,20 @@ else if (wfTask == "Hearing")
 
     if (aodChecked == 'Yes')
     {
-        comment("No AOD has been attached. Please upload before proceeding. Unable to move to the next task.");
+        aodAttachmentCheck = determineDocumentAttached("AOD");
+
+        if (!aodAttachmentCheck)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("No AOD has been attached. Please upload before proceeding. Unable to move to the next task.");
+        }
     }
 
 
-    if(wfStatus == "Full Hearing" || wfStatus == "Default")
+    // DOCKET #6: At Hearing, WTUA to block from proceeding if audio recording has not been attached
+    // only need to do it in configuration. No need to script this
+    /*if(wfStatus == "Full Hearing" || wfStatus == "Default")
     {
         //Check if the audio hearing has not been scanned 
         audioCheck = determineDocumentAttached("Audio Hearing Recording");
@@ -220,56 +234,9 @@ else if (wfTask == "Hearing")
             cancel = true;
             showMessage = true;
             comment("No audio hearing recording has been attached. Please upload before proceeding. Unable to move to the next task.");
-        }
-
-        
-
-        // For reference
-        /*
-        Those come from the values stored in "aa.env.getValue("TaskSpecificInfoModels")"
-
-        You can extract them like they do in the WorkflowTaskUpdateBefore Master Script:
-        
-        var wfTSI = aa.env.getValue("TaskSpecificInfoModels");
-
-        if (wfTSI != "")
-        {
-
-            for (TSIm in wfTSI)
-            {
-
-                if (useTaskSpecificGroupName)
-
-                    AInfo["Updated." + wfProcess + "." + wfTask + "." + wfTSI[TSIm].getCheckboxDesc()] = wfTSI[TSIm].getChecklistComment();
-
-                else
-
-                    AInfo["Updated." + wfTSI[TSIm].getCheckboxDesc()] = wfTSI[TSIm].getChecklistComment();
-
-            }
-
-        }
-        */
-
-        // Check if Hearing custom fields have been filled in
-        /*
-        var vendorAttorn =  AInfo["Update.Vendor Attorney Present"]
-        var conAttorn =  AInfo["Update.Consumer Attorney Present"]
-        var vp =  AInfo["Update.Vendor Present"]
-        var cp =  AInfo["Update.Consumer Present"]
-        var vw =  AInfo["Update.Vendor Witnessess"]
-        var cw = AInfo["Update.Consumer Witnesses"]
-        var tu = AInfo["Update.Translator Used"]
-
-        if(vendorAttorn == null || conAttorn == null || vp == null || cp == null || vw == null || cw == null || tu == null)
-        {
-            cancel = true;
-            showMessage = true;
-            comment("Hearing Information section(Vendor/Consumer/Attorney/Translator) in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
-            
-        } */
-
+        }     
     }
+    */
 }
 
 function determineDocumentAttached(docType) 
