@@ -156,17 +156,24 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				{
 					logDebug("Retrieving workflow for violation child record: " + violationChild.getCustomID());
 					var wfObj = vioWorkflowResult.getOutput();
-                                       
-                    for (i in wfObj)
-                    {
-                        if (wfObj[i].getActiveFlag() == "Y")
-                        {
-                            wfObj[i].setActiveFlag("N");
-							
-							logDebug(wfObj[i].getTaskDescription() + " has set inactive in " + violationChild.getCustomID());
-
+                                     
+					for (i in wfObj)
+					{
+						fTask = wfObj[i];
+						if (fTask.getActiveFlag().equals("Y"))
+						{
+							var deact = aa.workflow.adjustTask(violationChild, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
+							if (!deact.getSuccess())
+							{
+								logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
+							}
+							else
+							{
+								logDebug(wfObj[i].getTaskDescription() + " has set to " + fTask.getActiveFlag());
+							}
 						}
 					}
+                   
 				}
 				logDebug("Violation date: " + vioDate);
 				editAppSpecific("Date of Violation", vioDate, violationChild); 
