@@ -151,6 +151,23 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 
 			if (violationChild != null)
 			{		
+				var vioWorkflowResult = aa.workflow.getTasks(violationChild);
+				if (vioWorkflowResult.getSuccess())
+				{
+					logDebug("Retrieving workflow for violation child record: " + violationChild.getCustomID());
+					var wfObj = vioWorkflowResult.getOutput();
+                                       
+                    for (i in wfObj)
+                    {
+                        if (wfObj[i].getActiveFlag() == "Y")
+                        {
+                            wfObj[i].setActiveFlag("N");
+							
+							logDebug(wfObj[i].getTaskDescription() + " has set inactive in " + violationChild.getCustomID());
+
+						}
+					}
+				}
 				logDebug("Violation date: " + vioDate);
 				editAppSpecific("Date of Violation", vioDate, violationChild); 
 				editAppSpecific("Hearing Date", docHearingDate, violationChild); 
