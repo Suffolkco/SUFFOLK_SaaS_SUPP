@@ -151,30 +151,8 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 
 			if (violationChild != null)
 			{		
-				var vioWorkflowResult = aa.workflow.getTasks(violationChild);
-				if (vioWorkflowResult.getSuccess())
-				{
-					logDebug("Retrieving workflow for violation child record: " + violationChild.getCustomID());
-					var wfObj = vioWorkflowResult.getOutput();
-                                     
-					for (i in wfObj)
-					{
-						fTask = wfObj[i];
-						if (fTask.getActiveFlag().equals("Y"))
-						{
-							var deact = aa.workflow.adjustTask(violationChild, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
-							if (!deact.getSuccess())
-							{
-								logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
-							}
-							else
-							{
-								logDebug(wfObj[i].getTaskDescription() + " has set to " + fTask.getActiveFlag());
-							}
-						}
-					}
-                   
-				}
+				var success = deactivateAllActiveTasks(violationChild);
+				logDebug("Deactive success? " + success);
 				logDebug("Violation date: " + vioDate);
 				editAppSpecific("Date of Violation", vioDate, violationChild); 
 				editAppSpecific("Hearing Date", docHearingDate, violationChild); 
@@ -645,4 +623,33 @@ function addDays(date, days)
 	var result = new Date(date);
 	result.setDate(result.getDate() + days);
 	return result;
+}
+
+function deactivateAllActiveTasks(targetCapId) {
+    var t = aa.workflow.getTasks(targetCapId);
+    if (t.getSuccess())
+        wfObj = t.getOutput();
+    else
+    {
+        logDebug("**INFO: deactivateAllActiveTasks() Failed to get workflow Tasks: " + t.getErrorMessage());
+        return false;
+    }
+    for (i in wfObj)
+    {
+        fTask = wfObj[i];
+        if (fTask.getActiveFlag().equals("Y"))
+        {
+            var deact = aa.workflow.adjustTask(targetCapId, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
+            if (!deact.getSuccess())
+            {
+                logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
+            }
+			else
+			{
+				var deact = aa.workflow.adjustTask()
+				logDebug("deactived: " + fTask.getTaskDescription());
+			}
+        }
+    }
+    return true;
 }
