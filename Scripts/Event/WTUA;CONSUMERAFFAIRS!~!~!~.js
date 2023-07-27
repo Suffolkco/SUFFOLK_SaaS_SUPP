@@ -73,9 +73,7 @@ if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[2] != 
 		var emailParams = aa.util.newHashtable();
 		if (!matches(conArray.email, null, undefined, "")) 
 		{			
-			emailTemplate = "CA_LIC_REG_SURVEYS";
-			
-			addParameter(emailParams, '$$altID$$', parentAltID);
+			emailTemplate = "CA_LIC_REG_SURVEYS";						
 			conEmail += conArray.email + "; ";
 			logDebug("Email addresses: " + conEmail);
 			sendNotification("", conEmail, "", emailTemplate, emailParams, null);
