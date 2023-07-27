@@ -70,14 +70,15 @@ if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[2] != 
 		var conArray = getContactByType("Vendor", capId);
 		var conEmail = "";
 		var emailTemplate = "";
+		var emailParams = aa.util.newHashtable();
 		if (!matches(conArray.email, null, undefined, "")) 
 		{			
 			emailTemplate = "CA_LIC_REG_SURVEYS";
 			
-			addParameter(vEParams, '$$altID$$', parentAltID);
+			addParameter(emailParams, '$$altID$$', parentAltID);
 			conEmail += conArray.email + "; ";
 			logDebug("Email addresses: " + conEmail);
-			sendNotification("", conEmail, "", emailTemplate, vEParams, null);
+			sendNotification("", conEmail, "", emailTemplate, emailParams, null);
 		}
 	}
 
