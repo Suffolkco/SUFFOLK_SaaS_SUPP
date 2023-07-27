@@ -66,7 +66,19 @@ if (matches(appTypeArray[1], "Registrations", "Licenses") && appTypeArray[2] != 
 			b1Exp.setExpDate(aa.date.parseDate(newExpDate));
 			aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
 		} 
-		
+		// DAP-579 Send Survey
+		var conArray = getContactByType("Vendor", capId);
+		var conEmail = "";
+		var emailTemplate = "";
+		if (!matches(conArray.email, null, undefined, "")) 
+		{			
+			emailTemplate = "CA_LIC_REG_SURVEYS";
+			
+			addParameter(vEParams, '$$altID$$', parentAltID);
+			conEmail += conArray.email + "; ";
+			logDebug("Email addresses: " + conEmail);
+			sendNotification("", conEmail, "", emailTemplate, vEParams, null);
+		}
 	}
 
 } 
