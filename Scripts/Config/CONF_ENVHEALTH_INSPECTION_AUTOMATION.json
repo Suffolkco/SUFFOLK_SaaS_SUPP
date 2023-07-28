@@ -9,13 +9,42 @@
         },
         "criteria": {
           "inspectionTypePerformed": [
+            "006 Field Meeting/Conference",
+            "018 New Construction Inspection",
+            "030 Emergency Investigation",
+            "031 Epidemiological Investigation",
+            "038 Preliminary Inspection"         
+          ],
+          "inspectionResult": [            
+            "Not Applicable"            
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
             "010 Field/Periodic Inspection",
-            "012 Premise/Facility Inspection"
+            "011 Reinspection/Follow-up",
+            "012 Obs Premise/Facility Inspection"
           ],
           "inspectionResult": [
             "Follow-up Action Required",
-            "Permit Issued",
-            "Not Applicable",
+            "Filed with Violations",
+            "Voluntary Closure",
             "Satisfactory"
           ]
         },
@@ -28,7 +57,85 @@
           "documentCategory": "Correspondence"
         },
         "postScript": ""
-      }
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Filed with Violations",
+            "Voluntary Closure",
+            "Permit Issued",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "013 Field Survey"
+          ],
+          "inspectionResult": [            
+            "Not Applicable",
+            "No Contact",
+            "Closed for Season"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },     
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "019 No Inspection/Out of Business"            
+          ],
+          "inspectionResult": [            
+            "Out of Business"           
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }      
     ],
     "V360InspectionResultSubmitAfter": [
       {
@@ -39,13 +146,42 @@
         },
         "criteria": {
           "inspectionTypePerformed": [
+            "006 Field Meeting/Conference",
+            "018 New Construction Inspection",
+            "030 Emergency Investigation",
+            "031 Epidemiological Investigation",
+            "038 Preliminary Inspection"         
+          ],
+          "inspectionResult": [            
+            "Not Applicable"            
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
             "010 Field/Periodic Inspection",
-            "012 Premise/Facility Inspection"
+            "011 Reinspection/Follow-up",
+            "012 Obs Premise/Facility Inspection"
           ],
           "inspectionResult": [
             "Follow-up Action Required",
-            "Permit Issued",
-            "Not Applicable",
+            "Filed with Violations",
+            "Voluntary Closure",
             "Satisfactory"
           ]
         },
@@ -58,7 +194,85 @@
           "documentCategory": "Correspondence"
         },
         "postScript": ""
-      }
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "012 Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Filed with Violations",
+            "Voluntary Closure",
+            "Permit Issued",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "013 Field Survey"
+          ],
+          "inspectionResult": [            
+            "Not Applicable",
+            "No Contact",
+            "Closed for Season"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },     
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "019 No Inspection/Out of Business"            
+          ],
+          "inspectionResult": [            
+            "Out of Business"           
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }      
     ],
     "InspectionResultModifyAfter": [
       {
@@ -69,12 +283,69 @@
         },
         "criteria": {
           "inspectionTypePerformed": [
+            "006 Field Meeting/Conference",
+            "018 New Construction Inspection",
+            "030 Emergency Investigation",
+            "031 Epidemiological Investigation",
+            "038 Preliminary Inspection"         
+          ],
+          "inspectionResult": [            
+            "Not Applicable"            
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
             "010 Field/Periodic Inspection",
+            "011 Reinspection/Follow-up",
+            "012 Obs Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Filed with Violations",
+            "Voluntary Closure",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
             "012 Premise/Facility Inspection"
           ],
           "inspectionResult": [
             "Follow-up Action Required",
-            "Not Applicable",
+            "Filed with Violations",
+            "Voluntary Closure",
             "Permit Issued",
             "Satisfactory"
           ]
@@ -88,7 +359,57 @@
           "documentCategory": "Correspondence"
         },
         "postScript": ""
-      }
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "013 Field Survey"
+          ],
+          "inspectionResult": [            
+            "Not Applicable",
+            "No Contact",
+            "Closed for Season"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },     
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "019 No Inspection/Out of Business"            
+          ],
+          "inspectionResult": [            
+            "Out of Business"           
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }      
     ]
   },
   "EnvHealth/*/*/Permit": {
@@ -101,12 +422,69 @@
         },
         "criteria": {
           "inspectionTypePerformed": [
+            "006 Field Meeting/Conference",
+            "018 New Construction Inspection",
+            "030 Emergency Investigation",
+            "031 Epidemiological Investigation",
+            "038 Preliminary Inspection"         
+          ],
+          "inspectionResult": [            
+            "Not Applicable"            
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
             "010 Field/Periodic Inspection",
+            "011 Reinspection/Follow-up",
+            "012 Obs Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Filed with Violations",
+            "Voluntary Closure",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
             "012 Premise/Facility Inspection"
           ],
           "inspectionResult": [
             "Follow-up Action Required",
-            "Not Applicable",
+            "Filed with Violations",
+            "Voluntary Closure",
             "Permit Issued",
             "Satisfactory"
           ]
@@ -120,7 +498,57 @@
           "documentCategory": "Correspondence"
         },
         "postScript": ""
-      }
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "013 Field Survey"
+          ],
+          "inspectionResult": [            
+            "Not Applicable",
+            "No Contact",
+            "Closed for Season"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },     
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "019 No Inspection/Out of Business"            
+          ],
+          "inspectionResult": [            
+            "Out of Business"           
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }      
     ],
     "V360InspectionResultSubmitAfter": [
       {
@@ -131,12 +559,69 @@
         },
         "criteria": {
           "inspectionTypePerformed": [
+            "006 Field Meeting/Conference",
+            "018 New Construction Inspection",
+            "030 Emergency Investigation",
+            "031 Epidemiological Investigation",
+            "038 Preliminary Inspection"         
+          ],
+          "inspectionResult": [            
+            "Not Applicable"            
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
             "010 Field/Periodic Inspection",
+            "011 Reinspection/Follow-up",
+            "012 Obs Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Filed with Violations",
+            "Voluntary Closure",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
             "012 Premise/Facility Inspection"
           ],
           "inspectionResult": [
             "Follow-up Action Required",
-            "Not Applicable",
+            "Filed with Violations",
+            "Voluntary Closure",
             "Permit Issued",
             "Satisfactory"
           ]
@@ -150,7 +635,57 @@
           "documentCategory": "Correspondence"
         },
         "postScript": ""
-      }
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "013 Field Survey"
+          ],
+          "inspectionResult": [            
+            "Not Applicable",
+            "No Contact",
+            "Closed for Season"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },     
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "019 No Inspection/Out of Business"            
+          ],
+          "inspectionResult": [            
+            "Out of Business"           
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }      
     ],
     "InspectionResultModifyAfter": [
       {
@@ -161,12 +696,69 @@
         },
         "criteria": {
           "inspectionTypePerformed": [
+            "006 Field Meeting/Conference",
+            "018 New Construction Inspection",
+            "030 Emergency Investigation",
+            "031 Epidemiological Investigation",
+            "038 Preliminary Inspection"         
+          ],
+          "inspectionResult": [            
+            "Not Applicable"            
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [
             "010 Field/Periodic Inspection",
+            "011 Reinspection/Follow-up",
+            "012 Obs Premise/Facility Inspection"
+          ],
+          "inspectionResult": [
+            "Follow-up Action Required",
+            "Filed with Violations",
+            "Voluntary Closure",
+            "Satisfactory"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
             "012 Premise/Facility Inspection"
           ],
           "inspectionResult": [
             "Follow-up Action Required",
-            "Not Applicable",
+            "Filed with Violations",
+            "Voluntary Closure",
             "Permit Issued",
             "Satisfactory"
           ]
@@ -180,7 +772,57 @@
           "documentCategory": "Correspondence"
         },
         "postScript": ""
-      }
+      },
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "013 Field Survey"
+          ],
+          "inspectionResult": [            
+            "Not Applicable",
+            "No Contact",
+            "Closed for Season"
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      },     
+      {
+        "preScript": "",
+        "metadata": {
+          "description": "",
+          "operators": ""
+        },
+        "criteria": {
+          "inspectionTypePerformed": [          
+            "019 No Inspection/Out of Business"            
+          ],
+          "inspectionResult": [            
+            "Out of Business"           
+          ]
+        },
+        "action": {
+          "inspectionReport": [
+            "Inspection Result"
+          ],
+          "documentName": "Inspection Result",
+          "documentGroup": "EH_FOOD",
+          "documentCategory": "Correspondence"
+        },
+        "postScript": ""
+      }      
     ]
   }
 }
