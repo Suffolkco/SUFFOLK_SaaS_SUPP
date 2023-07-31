@@ -129,7 +129,8 @@ else if(wfStatus == "Awaiting Client Reply")
     var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     if (appTypeArray[1] == "OPC")
     {
-        if (appTypeArray[2] != "Swimming Pool" && appTypeArray[3] != "Renewal")
+        if(!matches(itemCapType, "DEQ/OPC/Swimming Pool/Renewal"))
+        //if (appTypeArray[2] != "Swimming Pool" && appTypeArray[3] != "Renewal")
         {
             var wfComment = null;
             var s_result = aa.address.getAddressByCapId(capId);
