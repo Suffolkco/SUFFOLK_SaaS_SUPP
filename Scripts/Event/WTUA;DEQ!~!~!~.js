@@ -47,7 +47,7 @@ if ((wfTask == "Application Review" && wfStatus == "Awaiting Client Reply") &&
         {
             fTask = wfObj[i];
     
-                if (fTask.getDisposition() != null && fTask.getCompleteFlag() == "N")
+                if (!matches(fTask.getDisposition() , null, undefined, "")  && fTask.getCompleteFlag() == "N")
                 {
                     wfComment = fTask.getDispositionComment();
                     
