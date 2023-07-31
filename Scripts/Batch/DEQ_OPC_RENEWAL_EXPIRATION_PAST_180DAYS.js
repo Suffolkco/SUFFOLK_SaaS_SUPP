@@ -167,7 +167,7 @@ function mainProcess()
                                     for (i in wfObj)
                                     {
                                         fTask = wfObj[i];
-                                        if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
+                                        if (!matches(fTask.getDisposition() , null, undefined, "") && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
 											{										        

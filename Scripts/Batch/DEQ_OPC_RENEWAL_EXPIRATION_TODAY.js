@@ -164,7 +164,7 @@ function mainProcess()
                                         fTask = wfObj[i];
                                                                     
                                         //logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
-                                        if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
+                                        if (!matches(fTask.getDisposition() , null, undefined, "") && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
 											{
