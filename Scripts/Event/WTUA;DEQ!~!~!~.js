@@ -142,8 +142,10 @@ else if(wfStatus == "Awaiting Client Reply")
             {
                 fTask = wfObj[i];
         
-                if (fTask.getDisposition() != null && fTask.getCompleteFlag() == "N")
+                if (!matches(fTask.getDisposition() , null, undefined, "") && fTask.getCompleteFlag() == "N")
                 {
+                    logDebug("fTask.getDisposition(): " + fTask.getDisposition());    
+
                     wfComment = fTask.getDispositionComment();
                             
                     if (wfComment == null)
