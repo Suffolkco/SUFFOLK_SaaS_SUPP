@@ -281,6 +281,8 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
         }
     
     }
+    //EHIMS-5041: remove all LP email
+    /*
     var lpEmail = "";
         
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
@@ -322,8 +324,8 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
     if (!matches(lpEmail, null, undefined, ""))	
 	{
         logDebug("Found: " + lpEmail + " lp email in the array.");
-        sendNotification("", lpEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", lpEmailParams, null);
-    }
+        sendNotification("", lpEmail, "", "//EHIMS-5041: remove all LP email", lpEmailParams, null);
+    } */
 }
 
 function generateReport(aaReportName,parameters,rModule) {

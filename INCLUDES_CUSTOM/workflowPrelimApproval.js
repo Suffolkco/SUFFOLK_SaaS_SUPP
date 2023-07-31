@@ -38,6 +38,8 @@ function workflowPrelimApproval(reportName, reportParamRecID)
         }
     
 	}
+	//EHIMS-5041: remove all LP email
+	/*
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
 	{ 
@@ -53,7 +55,7 @@ function workflowPrelimApproval(reportName, reportParamRecID)
 		{
 			conEmail += lpArr[lp].getEmail() + "; ";
 		}
-	}
+	}*/
 	getRecordParams4Notification(emailParams);
     getWorkflowParams4Notification(emailParams);
     
