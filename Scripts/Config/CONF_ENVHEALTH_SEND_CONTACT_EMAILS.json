@@ -165,7 +165,7 @@
         },
         "postScript": ""
       }
-    ],
+    /*],
     "InspectionScheduleAfter": [
       {
         "metadata": {
@@ -190,7 +190,7 @@
           "reportingInfoStandards": ""
         },
         "postScript": ""
-      }
+      }*/
     ]
   },
   "EnvHealth/*/*/Permit": {
