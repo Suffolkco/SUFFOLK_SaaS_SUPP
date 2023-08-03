@@ -110,7 +110,7 @@ if (send5001Report)
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
 	rptParams.put("agencyid", 'SUFFOLKCO');	
-	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
+	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true, username);
 }
 else if (send5002Report)
 {
@@ -189,6 +189,7 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 			//addParameter(eParams, "$$inspGroup$$", inspGroup);
 			addParameter(eParams, "$$inspType$$", inspType);
 			addParameter(eParams, "$$inspSchedDate$$", inspSchedDate);
+			logDebug("*** username ***: " + username);
 			addParameter(eParams,	"$$username$$", username);
 			addACAUrlsVarToEmail(eParams, capId);
 
