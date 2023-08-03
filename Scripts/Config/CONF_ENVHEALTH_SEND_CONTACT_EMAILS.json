@@ -22,6 +22,7 @@
             "Facility Owner"
           ],
           "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "url4ACA": "",
           "createFromParent": false,
           "reportingInfoStandards": ""
@@ -131,6 +132,7 @@
           ],
           "additionalEmailsTo": "",
           "url4ACA": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "createFromParent": false,
           "reportingInfoStandards": ""
         },
@@ -156,6 +158,33 @@
             "Facility Owner"
           ],
           "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
+          "url4ACA": "",
+          "createFromParent": false,
+          "reportingInfoStandards": ""
+        },
+        "postScript": ""
+      }
+    ],
+    "InspectionScheduleAfter": [
+      {
+        "metadata": {
+          "description": "Send notification when inspection is scheduled",
+          "operators": {}
+        },
+        "preScript": "",
+        "criteria": {
+          "task": [],
+          "status": []
+        },
+        "action": {
+          "notificationTemplate": "SS_INSPECTION_SCHEDULED",
+          "notificationReport": [],
+          "notifyContactTypes": [
+            "Facility Contact"
+          ],
+          "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "url4ACA": "",
           "createFromParent": false,
           "reportingInfoStandards": ""
@@ -185,6 +214,7 @@
             "Applicant"
           ],
           "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "url4ACA": "",
           "createFromParent": false,
           "reportingInfoStandards": ""
