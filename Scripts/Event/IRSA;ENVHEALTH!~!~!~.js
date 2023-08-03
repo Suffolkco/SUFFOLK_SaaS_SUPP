@@ -1,15 +1,109 @@
-if ((inspType == "010 Field/Periodic Inspection" || inspType == "012 Premise/Facility Inspection") && 
-    (inspResult == "Follow-up Action Required" || inspResult == "Permit Issued" || inspResult == "Satisfactory")) {
+//IRSA;ENVHEALTH///
+var send5001Report = false; // Compliance
+var send5002Report = false; // Observation
+logDebug("*** Inspection type detected***:" + inspType + ', ' + inspResult);
 
+//010, 012 - 5001 compliance checklist
+//006, 011, 012  obs, 013, 015, 018, 019, 020,021, 030, 031,038 - 5002 observation checklist
+
+// 014, 015 no report sent
+
+//006
+if (inspType == "006 Field Meeting/Conference" && inspResult == "Not Applicable")
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+// 010
+else if (inspType == "010 Field/Periodic Inspection" && 
+(inspResult == "Satisfactory" || inspResult == "Follow-up Action Required" || inspResult == "Filed with Violations" || inspResult =="Voluntary Closure"))
+{
+	send5001Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5001 Report.");
+}
+//011
+else if (inspType == "011 Reinspection/Follow-up" &&
+(inspResult == "Brought to Compliance" || inspResult == "Follow-up Action Required" || inspResult == "Filed with Violations" || inspResult =="Voluntary Closure"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+//012
+else if (inspType == "012 Premise/Facility Inspection" &&
+(inspResult == "Satisfactory" || inspResult =="Follow-up Action Required" || inspResult =="Filed with Violations" || inspResult =="Voluntary Closure"
+|| "Permit Issued"))
+{
+	send5001Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5001 Report.");
+}
+//012 obs
+else if (inspType == "012 Obs Premise/Facility Inspection" &&
+(inspResult == "Satisfactory" || inspResult == "Follow-up Action Required" || inspResult == "Filed with Violations" || inspResult =="Voluntary Closure"
+|| "Permit Issued"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+//013
+else if (inspType == "013 Field Survey" && (inspResult == "Not Applicable" || inspResult == "No Contact" || inspResult =="Closed for Season"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+//018
+else if (inspType == "018 New Construction Inspection" && (inspResult == "Not Applicable"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+//019
+else if (inspType == "019 No Inspection/Out of Business" && (inspResult == "Out of Business"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+//020
+if (inspType == "020 Complaint Investigation" && (inspResult == "Satisfactory" || 
+inspResult == "Follow-up Action Required"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+//021
+if (inspType == "021 Complaint Follow-up" && 
+(inspResult == "Brought to Compliance" || inspResult == "Follow-up Action Required"))
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+
+//030, 031, 038
+else if ((inspType == "030 Emergency Investigation" || inspType == "038 Preliminary Inspection" || inspType == "031 Epidemiological Investigation") && 
+    (inspResult == "Not Applicable")) 
+{
+	send5002Report = true;
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
+}
+else
+{
+	logDebug("Detect " + inspType + ". result: " + inspResult + ". Will not send report.");
+}
+
+logDebug("*** send5001Report ***:" + send5001Report);
+logDebug("*** send5002Report ***:" + send5002Report);
+
+// Send reports based on the variables.
+if (send5001Report)
+{
+	logDebug("*** Emailing 5001 Report ***");
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
 	rptParams.put("agencyid", 'SUFFOLKCO');
 	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
 }
-
-if ((inspType == "011 Reinspection/Follow-up" || inspType == "030 Emergency Investigation" || inspType == "038 Preliminary Inspection" || inspType == "012 Obs Premise/Facility Inspection") && 
-    (inspResult == "Follow-up Action Required" || inspResult == "Permit Issued" || inspResult == "Satisfactory")) {
-
+else if (send5002Report)
+{
+	logDebug("*** Emailing 5002 Report ***");
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
 	rptParams.put("agencyid", 'SUFFOLKCO');
