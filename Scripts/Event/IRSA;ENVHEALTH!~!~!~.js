@@ -101,7 +101,7 @@ if (userToSend != null)
 	logDebug("Current username: " + username);
 }
 
-
+logDebug("username: " + username);
 // Send reports based on the variables.
 if (send5001Report)
 {
