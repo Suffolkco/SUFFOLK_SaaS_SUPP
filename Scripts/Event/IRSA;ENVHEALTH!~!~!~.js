@@ -94,9 +94,10 @@ logDebug("*** send5002Report ***:" + send5002Report);
 
 var userToSend = aa.person.getUser(currentUserID).getOutput();
 logDebug("Current user: " + currentUserID);
+var username = "";
 if (userToSend != null)
 {
-	var username = userToSend.getFirstName() + " " + userToSend.getLastName();
+	username = userToSend.getFirstName() + " " + userToSend.getLastName();
 	logDebug("Current username: " + username);
 }
 
