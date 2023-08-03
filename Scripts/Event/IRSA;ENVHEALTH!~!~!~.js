@@ -92,6 +92,15 @@ else
 logDebug("*** send5001Report ***:" + send5001Report);
 logDebug("*** send5002Report ***:" + send5002Report);
 
+var userToSend = aa.person.getUser(currentUserID).getOutput();
+logDebug("Current user: " + currentUserID);
+if (userToSend != null)
+{
+	var username = userToSend.getFirstName() + " " + userToSend.getLastName();
+	logDebug("Current username: " + username);
+}
+
+
 // Send reports based on the variables.
 if (send5001Report)
 {
@@ -99,6 +108,7 @@ if (send5001Report)
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
 	rptParams.put("agencyid", 'SUFFOLKCO');
+	rptParams.put("username", username);
 	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
 }
 else if (send5002Report)
@@ -107,6 +117,7 @@ else if (send5002Report)
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
 	rptParams.put("agencyid", 'SUFFOLKCO');
+	rptParams.put("username", username);
 	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5002 Observation Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
 }
 
