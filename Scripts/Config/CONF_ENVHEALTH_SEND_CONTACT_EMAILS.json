@@ -164,33 +164,7 @@
           "reportingInfoStandards": ""
         },
         "postScript": ""
-      }
-    /*],
-    "InspectionScheduleAfter": [
-      {
-        "metadata": {
-          "description": "Send notification when inspection is scheduled",
-          "operators": {}
-        },
-        "preScript": "",
-        "criteria": {
-          "task": [],
-          "status": []
-        },
-        "action": {
-          "notificationTemplate": "SS_INSPECTION_SCHEDULED",
-          "notificationReport": [],
-          "notifyContactTypes": [
-            "Facility Contact"
-          ],
-          "additionalEmailsTo": "",
-          "fromEmail": "noreplyphp@suffolkcountyny.gov",
-          "url4ACA": "",
-          "createFromParent": false,
-          "reportingInfoStandards": ""
-        },
-        "postScript": ""
-      }*/
+      }    
     ]
   },
   "EnvHealth/*/*/Permit": {
