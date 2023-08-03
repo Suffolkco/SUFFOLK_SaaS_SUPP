@@ -92,16 +92,7 @@ else
 logDebug("*** send5001Report ***:" + send5001Report);
 logDebug("*** send5002Report ***:" + send5002Report);
 
-var userToSend = aa.person.getUser(currentUserID).getOutput();
-logDebug("Current user: " + currentUserID);
-var username = "";
-if (userToSend != null)
-{
-	username = userToSend.getFirstName() + " " + userToSend.getLastName();
-	logDebug("Current username: " + username);
-}
 
-logDebug("username: " + username);
 
 // Send reports based on the variables.
 if (send5001Report)
@@ -172,6 +163,17 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 		mailFrom = "";
 	}
 
+	var userToSend = aa.person.getUser(currentUserID).getOutput();
+	logDebug("Current user: " + currentUserID);
+	var usrname = "";
+	if (userToSend != null)
+	{
+		usrname = userToSend.getFirstName() + " " + userToSend.getLastName();
+		logDebug("Current username: " + usrname);
+	}
+
+	logDebug("username: " + usrname);
+
 	var capContactObjs = getContactObjs(capId);
 	for ( var c in capContactObjs) {
 		if (exists(capContactObjs[c].people.getContactType(), toTypesArry)) {
@@ -189,8 +191,8 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 			//addParameter(eParams, "$$inspGroup$$", inspGroup);
 			addParameter(eParams, "$$inspType$$", inspType);
 			addParameter(eParams, "$$inspSchedDate$$", inspSchedDate);
-			logDebug("*** username ***: " + username);
-			addParameter(eParams,	"$$username$$", username);
+			logDebug("*** username ***: " + usrname);
+			addParameter(eParams,	"$$username$$", usrname);
 			addACAUrlsVarToEmail(eParams, capId);
 
 			var name = capContactObjs[c].getContactName();
