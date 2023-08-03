@@ -102,14 +102,14 @@ if (userToSend != null)
 }
 
 logDebug("username: " + username);
+
 // Send reports based on the variables.
 if (send5001Report)
 {
 	logDebug("*** Emailing 5001 Report ***");
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
-	rptParams.put("agencyid", 'SUFFOLKCO');
-	rptParams.put("username", username);
+	rptParams.put("agencyid", 'SUFFOLKCO');	
 	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
 }
 else if (send5002Report)
@@ -117,14 +117,13 @@ else if (send5002Report)
 	logDebug("*** Emailing 5002 Report ***");
 	var rptParams = aa.util.newHashMap();
 	rptParams.put("inspectionid", inspId);
-	rptParams.put("agencyid", 'SUFFOLKCO');
-	rptParams.put("username", username);
-	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5002 Observation Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
+	rptParams.put("agencyid", 'SUFFOLKCO');	
+	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5002 Observation Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true), username;
 }
 
 
 
-function sendNotificationAndGenReport(notificationTemplateName, reportName, rptParams, toTypesArry, attachRptToEmail) {
+function sendNotificationAndGenReport(notificationTemplateName, reportName, rptParams, toTypesArry, attachRptToEmail, username) {
 	var reportFiles = null;
 
 	if (reportName != null && reportName != "") {
@@ -190,7 +189,7 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 			//addParameter(eParams, "$$inspGroup$$", inspGroup);
 			addParameter(eParams, "$$inspType$$", inspType);
 			addParameter(eParams, "$$inspSchedDate$$", inspSchedDate);
-			
+			addParameter(eParams,	"$$username$$", username);
 			addACAUrlsVarToEmail(eParams, capId);
 
 			var name = capContactObjs[c].getContactName();
