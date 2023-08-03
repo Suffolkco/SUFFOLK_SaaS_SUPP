@@ -11,7 +11,7 @@ var SCRIPT_VERSION = "3.0";
 var BATCH_NAME = "BATCH_EH_BILLING_CREATE_SETS";
 eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 eval(getScriptText("INCLUDES_ACCELA_GLOBALS", null, true));
-
+eval(getScriptText("INCLUDES_CUSTOM", null, true));
 //#endregion
 
 //override functions for cleaner logs

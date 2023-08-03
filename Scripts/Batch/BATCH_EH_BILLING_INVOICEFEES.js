@@ -9,6 +9,8 @@ var BATCH_NAME = "BATCH_EH_BILLING_INVOICEFEES";
 var SCRIPT_VERSION = "3.0";
 eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 eval(getScriptText("INCLUDES_ACCELA_GLOBALS", null, true));
+eval(getScriptText("INCLUDES_CUSTOM", null, true));
+
 
 // Get Parameters
 var EmailNotifyTo = aa.env.getValue("EmailNotifyTo");

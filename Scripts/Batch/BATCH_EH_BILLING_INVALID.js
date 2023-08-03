@@ -9,7 +9,7 @@ var BATCH_NAME = "BATCH_EH_BILLING_INVALID";
 var SCRIPT_VERSION = "3.0";
 eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 eval(getScriptText("INCLUDES_ACCELA_GLOBALS", null, true));
-
+eval(getScriptText("INCLUDES_CUSTOM", null, true));
 
 // Get Parameters
 var currentUserID = "ADMIN";
