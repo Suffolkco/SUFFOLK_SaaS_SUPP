@@ -1,5 +1,10 @@
 //EHIMS2-35
 
+// EHIMS2-289: Get Created By
+
+var  capDetail = getCapDetailByID(capId);
+debugObject(capDetail);
+
 if (!publicUser)
 {
     var greaseTrap = getAppSpecific("In-Kind Grease Trap Replacement");
@@ -199,6 +204,13 @@ if (!publicUser)
     sendNotification("", allEmail, "", "DEQ_SHIP_APPLICATION_RECEIVED", vEParams, null);
 
 }
+function debugObject(object) {
+    var output = ''; 
+    for (property in object) { 
+      output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+    } 
+    logDebug(output);
+} 
 
 function getAddressInALine(capId) {
 
