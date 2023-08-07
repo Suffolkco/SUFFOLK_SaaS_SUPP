@@ -63,14 +63,14 @@ else if (inspType == "019 No Inspection/Out of Business" && (inspResult == "Out 
 	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
 }
 //020
-if (inspType == "020 Complaint Investigation" && (inspResult == "Satisfactory" || 
+else if (inspType == "020 Complaint Investigation" && (inspResult == "Satisfactory" || 
 inspResult == "Follow-up Action Required"))
 {
 	send5002Report = true;
 	logDebug("Detect " + inspType + ". result: " + inspResult + ". Send 5002 Report.");
 }
 //021
-if (inspType == "021 Complaint Follow-up" && 
+else if (inspType == "021 Complaint Follow-up" && 
 (inspResult == "Brought to Compliance" || inspResult == "Follow-up Action Required"))
 {
 	send5002Report = true;
