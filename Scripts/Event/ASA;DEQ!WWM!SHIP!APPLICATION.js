@@ -1,10 +1,17 @@
-//EHIMS2-35
 
 // EHIMS2-289: Get Created By
-
 var  capDetail = getCapDetailByID(capId);
-debugObject(capDetail);
+var userId = capDetail.getCreateBy();
+var createByUseObj = aa.person.getUser(userId).getOutput();  
+if (createByUseObj != null)
+{
+    var userName = createByUseObj.getFirstName() + " " + createByUseObj.getLastName();
+    logDebug("userName is: " + userName);
+    createByEmail =  createByUseObj.getEmail();           
+    logDebug("email address is: " + createByEmail);
+}
 
+//EHIMS2-35
 if (!publicUser)
 {
     var greaseTrap = getAppSpecific("In-Kind Grease Trap Replacement");
@@ -176,7 +183,7 @@ if (!publicUser)
     {
         logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
     }
-    var allEmail = conEmail + lpEmail;
+    var allEmail = conEmail + lpEmail + createByEmail;
 
 
     var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
