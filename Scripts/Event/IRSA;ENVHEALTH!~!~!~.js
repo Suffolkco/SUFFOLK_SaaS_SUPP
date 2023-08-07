@@ -194,7 +194,7 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 			logDebug("*** username ***: " + usrname);
 			addParameter(eParams,	"$$username$$", usrname);
 			addACAUrlsVarToEmail(eParams, capId);
-			debugObject(capContactObjs[c]);
+			//debugObject(capContactObjs[c]);
 			var name = getContactName(capContactObjs[c]);
 			addParameter(eParams, "$$ContactName$$", name);
 			addParameter(eParams, "$$contactFullName$$", name);
