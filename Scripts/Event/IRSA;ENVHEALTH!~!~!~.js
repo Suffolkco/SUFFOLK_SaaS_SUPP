@@ -194,7 +194,7 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 			logDebug("*** username ***: " + usrname);
 			addParameter(eParams,	"$$username$$", usrname);
 			addACAUrlsVarToEmail(eParams, capId);
-
+			debugObject(capContactObjs[c]);
 			var name = capContactObjs[c].getContactName();
 			addParameter(eParams, "$$ContactName$$", name);
 			addParameter(eParams, "$$contactFullName$$", name);
@@ -215,6 +215,13 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 	}//for all contacts
 }
 
+function debugObject(object) {
+	var output = ''; 
+	for (property in object) { 
+	  output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+	} 
+	logDebug(output);
+} 
 
 function addACAUrlsVarToEmail(vEParams, capId) {
     // Get base ACA site from standard choices
