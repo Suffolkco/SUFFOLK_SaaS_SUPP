@@ -270,16 +270,26 @@ else if (wfTask == "Hearing")
 	editAppSpecific("Consumer Witnessess", loadTaskSpecific(wfTask, "Consumer Witnessess"), capId);	
 	editAppSpecific("Translator Used", loadTaskSpecific(wfTask, "Translator Used"), capId);
 
+	editAppSpecific("Vendor Appearance", loadTaskSpecific(wfTask, "Vendor Appearance"), capId);	
+	editAppSpecific("Consumer Appearance", loadTaskSpecific(wfTask, "Consumer Appearance"), capId);
+	editAppSpecific("Attorney Appearance", loadTaskSpecific(wfTask, "Attorney Appearance"), capId);	
+	
+	editAppSpecific("Adjustment Request", loadTaskSpecific(wfTask, "Adjustment Request"), capId);	
+
 	editAppSpecific("Waiver Due Date Amount", loadTaskSpecific(wfTask, "Waiver Due Date Amount"), capId);
-	editAppSpecific("Number of Default Hearings", loadTaskSpecific(wfTask, "Number of Default Hearings"), capId);
+	//editAppSpecific("Number of Default Hearings", loadTaskSpecific(wfTask, "Number of Default Hearings"), capId);
 	editAppSpecific("Waiver Due Date License", loadTaskSpecific(wfTask, "Waiver Due Date License"), capId);
 	editAppSpecific("Settlement Due Date", loadTaskSpecific(wfTask, "Settlement Due Date"), capId);
-	editAppSpecific("Number of Full Hearings", loadTaskSpecific(wfTask, "Number of Full Hearings"), capId);
+	//editAppSpecific("Number of Full Hearings", loadTaskSpecific(wfTask, "Number of Full Hearings"), capId);
+	editAppSpecific("Hearings", loadTaskSpecific(wfTask, "Hearings"), capId);
 	editAppSpecific("AOD Date Signed", loadTaskSpecific(wfTask, "AOD Date Signed"), capId);
 	editAppSpecific("AOD Date Due Amount", loadTaskSpecific(wfTask, "AOD Date Due Amount"), capId);
 
 	
+	editAppSpecific("Investigator Recommended Revocation", loadTaskSpecific(wfTask, "Investigator Recommended Revocation"), capId);
+
 	editAppSpecific("License Obtained Due Date", loadTaskSpecific(wfTask, "License Obtained Due Date"), capId);
+	editAppSpecific("Waiver Date Signed", loadTaskSpecific(wfTask, "Waiver Date Signed"), capId);
 	   
 	editAppSpecific("Waiver", loadTaskSpecific(wfTask, "Waiver"), capId);
 	editAppSpecific("AOD", loadTaskSpecific(wfTask, "AOD"), capId);
