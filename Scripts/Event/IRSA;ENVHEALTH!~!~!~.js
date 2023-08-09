@@ -177,39 +177,54 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 	var capContactObjs = getContactObjs(capId);
 	for ( var c in capContactObjs) {
 		if (exists(capContactObjs[c].people.getContactType(), toTypesArry)) {
-			// Set email parameters
-			var eParams = aa.util.newHashtable();
 
-			addParameter(eParams, "$$altId$$", cap.getCapModel().getAltID());
-			addParameter(eParams, "$$altID$$", cap.getCapModel().getAltID());
-			addParameter(eParams, "$$recordAlias$$", cap.getCapModel().getCapType().getAlias());
-			addParameter(eParams, "$$recordStatus$$", cap.getCapModel().getCapStatus());
+			logDebug("Contact status is: " + capContactObjs[c].people.getAuditStatus());
+			// Only if contact is active
+			if (capContactObjs[c].people.getAuditStatus() != 'I')
+			{
+				// Set email parameters
+				var eParams = aa.util.newHashtable();
 
-			addParameter(eParams, "$$inspResult$$", inspResult);
-			addParameter(eParams, "$$inspComment$$", inspComment);
-			addParameter(eParams, "$$inspResultDate$$", inspResultDate);
-			//addParameter(eParams, "$$inspGroup$$", inspGroup);
-			addParameter(eParams, "$$inspType$$", inspType);
-			addParameter(eParams, "$$inspSchedDate$$", inspSchedDate);
-			logDebug("*** username ***: " + usrname);
-			addParameter(eParams,	"$$username$$", usrname);
-			addACAUrlsVarToEmail(eParams, capId);
-			//debugObject(capContactObjs[c]);
-			var name = getContactName(capContactObjs[c]);
-			addParameter(eParams, "$$ContactName$$", name);
-			addParameter(eParams, "$$contactFullName$$", name);
+				addParameter(eParams, "$$altId$$", cap.getCapModel().getAltID());
+				addParameter(eParams, "$$altID$$", cap.getCapModel().getAltID());
+				addParameter(eParams, "$$recordAlias$$", cap.getCapModel().getCapType().getAlias());
+				addParameter(eParams, "$$recordStatus$$", cap.getCapModel().getCapStatus());
 
-			eParams = getACARecordParam4Notification(eParams);
-			adResult = aa.address.getPrimaryAddressByCapID(capId, "Y");
-			if (adResult.getSuccess()) {
-				ad = adResult.getOutput().getAddressModel();
-				addParameter(eParams, "$$FullAddress$$", ad.getDisplayAddress());
+				addParameter(eParams, "$$inspResult$$", inspResult);
+				addParameter(eParams, "$$inspComment$$", inspComment);
+				addParameter(eParams, "$$inspResultDate$$", inspResultDate);
+				//addParameter(eParams, "$$inspGroup$$", inspGroup);
+				addParameter(eParams, "$$inspType$$", inspType);
+				addParameter(eParams, "$$inspSchedDate$$", inspSchedDate);
+				logDebug("*** username ***: " + usrname);
+				addParameter(eParams,	"$$username$$", usrname);
+				addACAUrlsVarToEmail(eParams, capId);
+				//debugObject(capContactObjs[c].people);
+				var name = getContactName(capContactObjs[c]);
+				addParameter(eParams, "$$ContactName$$", name);
+				addParameter(eParams, "$$contactFullName$$", name);
+
+				eParams = getACARecordParam4Notification(eParams);
+				adResult = aa.address.getPrimaryAddressByCapID(capId, "Y");
+				if (adResult.getSuccess()) {
+					ad = adResult.getOutput().getAddressModel();
+					addParameter(eParams, "$$FullAddress$$", ad.getDisplayAddress());
+				}
+
+				var altIDScriptModel = aa.cap.createCapIDScriptModel(capId.getID1(), capId.getID2(), capId.getID3());
+				var sent = aa.document.sendEmailAndSaveAsDocument("", capContactObjs[c].people.getEmail(), "", notificationTemplateName, eParams, altIDScriptModel, reportFiles);
+				if (!sent.getSuccess()) {
+					logDebug("**WARN sendNotificationAndGenReport(), Error: " + sent.getErrorMessage());
+				}
 			}
+			else
+			{
+				logDebug("Skip sending email to this contact. Contact status is: " + capContactObjs[c].people.getAuditStatus());
+				logDebug("**Full Name:  " +  capContactObjs[c].people.getFullName());
+				logDebug("**First Name:  " +  capContactObjs[c].people.getFirstName());
+				logDebug("**Last Name:  " +  capContactObjs[c].people.getLastName());
+				logDebug("**Contact ID: " +  capContactObjs[c].people.getContactSeqNumber());		
 
-			var altIDScriptModel = aa.cap.createCapIDScriptModel(capId.getID1(), capId.getID2(), capId.getID3());
-			var sent = aa.document.sendEmailAndSaveAsDocument("", capContactObjs[c].people.getEmail(), "", notificationTemplateName, eParams, altIDScriptModel, reportFiles);
-			if (!sent.getSuccess()) {
-				logDebug("**WARN sendNotificationAndGenReport(), Error: " + sent.getErrorMessage());
 			}
 		}//contact type matched
 	}//for all contacts
@@ -258,6 +273,12 @@ function getInspectionId(capIdObJ){
 }
 
 function getContactName(vConObj) {
+
+	logDebug("**Contact Type Flag:  " + vConObj.people.getContactTypeFlag());
+	logDebug("**Full Name:  " + vConObj.people.getFullName());
+	logDebug("**First Name:  " + vConObj.people.getFirstName());
+	logDebug("**Last Name:  " + vConObj.people.getLastName());
+	logDebug("**Contact ID: " + vConObj.people.getContactSeqNumber());		
 	if (vConObj.people.getContactTypeFlag() == "organization") {
 		if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
 			return vConObj.people.getBusinessName();
