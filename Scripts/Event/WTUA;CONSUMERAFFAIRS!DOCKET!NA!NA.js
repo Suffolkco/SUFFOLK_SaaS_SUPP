@@ -276,6 +276,8 @@ else if (wfTask == "Hearing")
 	
 	editAppSpecific("Adjustment Request", loadTaskSpecific(wfTask, "Adjustment Request"), capId);	
 
+	editAppSpecific("Other License Statuses", loadTaskSpecific(wfTask, "Other License Statuses"), capId);	
+
 	editAppSpecific("Waiver Due Date Amount", loadTaskSpecific(wfTask, "Waiver Due Date Amount"), capId);
 	//editAppSpecific("Number of Default Hearings", loadTaskSpecific(wfTask, "Number of Default Hearings"), capId);
 	editAppSpecific("Waiver Due Date License", loadTaskSpecific(wfTask, "Waiver Due Date License"), capId);
