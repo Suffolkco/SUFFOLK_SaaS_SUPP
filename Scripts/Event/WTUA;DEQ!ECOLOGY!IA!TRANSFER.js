@@ -53,6 +53,18 @@ else
     logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
 }
 
+// EHIMS2-289: Get Created By
+var  capDetail = getCapDetailByID(capId);
+var userId = capDetail.getCreateBy();
+var createByUseObj = aa.person.getUser(userId).getOutput();  
+if (createByUseObj != null)
+{
+    var userName = createByUseObj.getFirstName() + " " + createByUseObj.getLastName();
+    logDebug("userName is: " + userName);
+    createByEmail =  createByUseObj.getEmail();           
+    logDebug("email address is: " + createByEmail);
+}
+
 
 if (wfTask == "Document Review" && wfStatus == "Complete") 
 {
@@ -409,6 +421,7 @@ if (wfTask == "Document Review" && wfStatus == "Complete")
                     if (rcRFiles != undefined)
                     {
                         sendNotification("", allSHIPEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                        sendNotification("", createByEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
                     }
                     closeTask("Final Review", "Registration Complete", "", "");
                     deactivateAllActiveTasks(capId);
