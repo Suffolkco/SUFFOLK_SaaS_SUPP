@@ -44,36 +44,41 @@ function workflowAwaitingClientDEQ()
 		}
 	}
 
-	var lpResult = aa.licenseScript.getLicenseProf(capId);
-	if (lpResult.getSuccess())
-	{ 
-		var lpArr = lpResult.getOutput();  
-	} 
-	else 
-	{ 
-		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
-	}
-	for (var lp in lpArr)
+	// EHIMS-5041
+	var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+	if(!matches(itemCapType, "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application"))
 	{
-		if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
-		{
-			conEmail = lpArr[lp].getEmail();
-			var emailSent = false;
-			for (x in emailAddressArray)
-            {
-				if (matches(emailAddressArray[x], conEmail))
-                {
-                    emailSent = true;
-                    logDebug("Found: " + conEmail + " in the array. Not sending email again.");
-                }
-			}
-			if (!emailSent)
-            {
-				sendNotification("", conEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY", emailParams, reportFile);
-				emailAddressArray.push(conEmail);
-                logDebug("email sending: " + conEmail );
-			}
+		var lpResult = aa.licenseScript.getLicenseProf(capId);
+		if (lpResult.getSuccess())
+		{ 
+			var lpArr = lpResult.getOutput();  
 		} 
+		else 
+		{ 
+			logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+		}
+		for (var lp in lpArr)
+		{
+			if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+			{
+				conEmail = lpArr[lp].getEmail();
+				var emailSent = false;
+				for (x in emailAddressArray)
+				{
+					if (matches(emailAddressArray[x], conEmail))
+					{
+						emailSent = true;
+						logDebug("Found: " + conEmail + " in the array. Not sending email again.");
+					}
+				}
+				if (!emailSent)
+				{
+					sendNotification("", conEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY", emailParams, reportFile);
+					emailAddressArray.push(conEmail);
+					logDebug("email sending: " + conEmail );
+				}
+			} 
+		}
 	}
 	
 	/*

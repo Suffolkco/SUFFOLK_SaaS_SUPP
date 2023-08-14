@@ -305,7 +305,8 @@ function wwmWorkflowNOIwithPin(reportName, reportNameAttachToRecord, reportParam
         }		
     }
        
-
+    // EHIMS-5041: Remove LP
+    /*
     var lpEmail = "";
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
@@ -347,6 +348,6 @@ function wwmWorkflowNOIwithPin(reportName, reportNameAttachToRecord, reportParam
 	if (lpEmail != null)
 	{
 		sendNotification("", lpEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY", lpEmailParams, lpReportFile);
-	}
+	} */
 }
 
