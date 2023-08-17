@@ -290,6 +290,8 @@ else if (wfTask == "Hearing")
 	
 	editAppSpecific("Investigator Recommended Revocation", loadTaskSpecific(wfTask, "Investigator Recommended Revocation"), capId);
 
+	editAppSpecific("I agree to pay penalty or apply and timely apply license by date", loadTaskSpecific(wfTask, "I agree to pay penalty or apply and timely apply license by date"), capId);
+	
 	editAppSpecific("License Obtained Due Date", loadTaskSpecific(wfTask, "License Obtained Due Date"), capId);
 	editAppSpecific("Type of License Required", loadTaskSpecific(wfTask, "Type of License Required"), capId);
 
