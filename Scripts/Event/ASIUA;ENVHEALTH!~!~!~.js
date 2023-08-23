@@ -174,11 +174,11 @@ function copyFromFacToFoodPermitCustomFields(childArray, copyfromFacToPermit, co
                             setFacFSAFSACustomFields(childPermitCapId);
                                                        
                             editAppSpecific("SAN AREA", facSanArea, childPermitCapId);                                         
-                            editAppSpecific("Bar Seats", facBarSeats, childPermitCapId);
-                            editAppSpecific("Catering Seats", facCatSeats, childPermitCapId);
-                            editAppSpecific("Exterior Seats", facExtSeats, childPermitCapId);
-                            editAppSpecific("Restaurant Seats", facResSeats,childPermitCapId);
-                            editAppSpecific("Total Seats", facTotSeats, childPermitCapId);
+                            editAppSpecific("UDF_BAR_SEATS", facBarSeats, childPermitCapId);
+                            editAppSpecific("UDF_CATERING_SEATS", facCatSeats, childPermitCapId);
+                            editAppSpecific("UDF_EXTERIOR_SEATS", facExtSeats, childPermitCapId);
+                            editAppSpecific("UDF_RESTAURANT_SEATS", facResSeats,childPermitCapId);
+                            editAppSpecific("UDF_WWM_MAX", facTotSeats, childPermitCapId);
                         }
                             
                         // Copy Facility custom field to Child Food Protection Application if the flag is ON
@@ -477,11 +477,11 @@ function copyToFacCustomFields()
             var permitSeatsProvided = getAppSpecific("Seats Provided");
             var permitSeptic = getAppSpecific("Septic/Sewage");
             var permitNoOfSeats = getAppSpecific("Number of Seats");    
-            var permitBarSeats = getAppSpecific("Bar Seats");
-            var permitCatSeats = getAppSpecific("Catering Seats");
-            var permitExtSeats = getAppSpecific("Exterior Seats");
-            var permitResSeats = getAppSpecific("Restaurant Seats");
-            var permitTotSeats= getAppSpecific("Total Seats");
+            var permitBarSeats = getAppSpecific("UDF_BAR_SEATS");
+            var permitCatSeats = getAppSpecific("UDF_CATERING_SEATS");
+            var permitExtSeats = getAppSpecific("UDF_EXTERIOR_SEATS");
+            var permitResSeats = getAppSpecific("UDF_RESTAURANT_SEATS");
+            var permitTotSeats= getAppSpecific("UDF_WWM_MAX");
             var permitSanArea = getAppSpecific("SAN AREA");
 
             editAppSpecific("Seats Provided", permitSeatsProvided, parentCapId);
