@@ -73,7 +73,7 @@ else if (appMatch("EnvHealth/Health Program/Food Protection/Permit") || appMatch
 {   
     var childAppArray;
     var copyfromPe
-    rmitToFac = getAppSpecific("Copy changes to Facility Record?");
+    var copyfromPermitToFac = getAppSpecific("Copy changes to Facility Record?");  
     var copyfromPermitToApp = getAppSpecific("Copy changes to Application Record?");
 
     // Copy from permit to parent facility
