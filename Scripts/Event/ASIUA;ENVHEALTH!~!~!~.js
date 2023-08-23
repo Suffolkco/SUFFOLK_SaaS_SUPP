@@ -435,7 +435,7 @@ function setMobileCustomFields(recordCapId)
     editAppSpecific("License Plate State", permitLicPlateState, recordCapId);
     editAppSpecific("Vehicle Make", permitVehMake, recordCapId);
     editAppSpecific("Vehicle Model", permitVehModel,recordCapId);
-    editAppSpecific("Vehicle Year", permitVehYear, childAppCapId);     
+    editAppSpecific("Vehicle Year", permitVehYear, recordCapId);     
 
     logDebug("Setting License Plate Number of " + recordCapId + " to be: " + permitLicPlateNumber);
     logDebug("Setting License Plate State of " + recordCapId + " to be: " + permitLicPlateState);
