@@ -325,14 +325,14 @@ function setMobileAppPermitCustomFields(recordCapId)
 // These are the common custom fields for All FAC, FSA, FSP, LMA and LMP
 function setCommonCustomFields(recordCapId)
 {
-    var facDBAName = getAppSpecific("Facility DBA Name");
+    var facDBAName = getAppSpecific("Facility Name");
     var facTypeOfOwn = getAppSpecific("Type of Ownership");
     var facWaterSupply = getAppSpecific("Water Supply");                
       
     var facTypeOfEst = getAppSpecific("Type of Establishment");                        
     var facProgramElem= getAppSpecific("Program Element");
         
-    editAppSpecific("Facility DBA Name", facDBAName, recordCapId);
+    editAppSpecific("Facility Name", facDBAName, recordCapId);
     editAppSpecific("Type of Ownership", facTypeOfOwn, recordCapId);    
     editAppSpecific("Water Supply", facWaterSupply, recordCapId);
     editAppSpecific("Type of Establishment", facTypeOfEst, recordCapId);
@@ -395,7 +395,7 @@ function setFoodServiceCustomFields(recordCapId)
 // These are the common custom fields for FAC, FSA and FSP
 function setFacFSAFSACustomFields(recordCapId)
 {
-    var dBAName = getAppSpecific("Facility DBA Name");
+    var dBAName = getAppSpecific("Facility Name");
     var typeOfOwn = getAppSpecific("Type of Ownership");
     var waterSupply = getAppSpecific("Water Supply");                
     var septicSewage = getAppSpecific("Septic/Sewage");     
@@ -404,7 +404,7 @@ function setFacFSAFSACustomFields(recordCapId)
     var seatProvided= getAppSpecific("Seat Provided");            
     var programElem= getAppSpecific("Program Element");
         
-    editAppSpecific("Facility DBA Name", dBAName, recordCapId);
+    editAppSpecific("Facility Name", dBAName, recordCapId);
     editAppSpecific("Type of Ownership", typeOfOwn, recordCapId);    
     editAppSpecific("Water Supply", waterSupply, recordCapId);
     editAppSpecific("Septic/Sewage", septicSewage, recordCapId);
