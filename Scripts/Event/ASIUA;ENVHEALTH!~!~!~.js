@@ -450,9 +450,8 @@ function setMobileCustomFields(recordCapId)
 function copyToFacCustomFields()
 {    
     var parents = getParents("EnvHealth/Facility/NA/NA");
-    
-    
-    for (var parent in parentFacArray)
+        
+    for (var parent in parents)
     {
         var parentCapId = parents[parent];
         
