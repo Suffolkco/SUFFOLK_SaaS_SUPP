@@ -76,6 +76,9 @@ else if (appMatch("EnvHealth/Health Program/Food Protection/Permit") || appMatch
     var copyfromPermitToFac = getAppSpecific("Copy changes to Facility Record?");  
     var copyfromPermitToApp = getAppSpecific("Copy changes to Application Record?");
 
+    logDebug("Permit copyfromPermitToFac: " + copyfromPermitToFac);
+    logDebug("Permit copyfromPermitToApp: " + copyfromPermitToApp);
+
     // Copy from permit to parent facility
     if (copyfromPermitToFac == "Yes")
     {      
@@ -104,6 +107,9 @@ else if (appMatch("EnvHealth/Health Program/Food Protection/Application") || app
 {
     var copyfromAppToPermit = getAppSpecific("Copy changes to Permit Record?");
     var copyfromAppToFac = getAppSpecific("Copy changes to Facility Record?");
+
+    logDebug("App copyfromAppToPermit: " + copyfromAppToPermit);
+    logDebug("App copyfromAppToFac: " + copyfromAppToFac);
 
     if (copyfromAppToPermit == "Yes") 
     {
