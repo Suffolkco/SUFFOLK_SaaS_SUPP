@@ -894,19 +894,26 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		logDebug("month: " + month);
 		logDebug("year: " + year);
 		logDebug("day: " + day);
-		logDebug("minute: " + minute);
-		logDebug("hour: " + hour);
-
+		
 			
 		//inspAct.setDesiredDate(scheduledDate); 
 		//inspAct.setActivityDate(scheduledDate); 
 		//inspAct.setEndActivityDate(scheduledDate); 
-		inspAct.setCompletionDate(scheduledDate); 
-
-		aa.inspection.editInspection(inspModel);
+		//inspAct.setCompletionDate(scheduledDate); 
 
 		logDebug("*****");
 		debugObject(inspModel.getInspection().getActivity());
+
+		var scheduledDate = new Date(year, month, day, 0, 0, 0, 0);
+
+		inspAct.setStartTime(scheduledDate);
+		//inspAct.setCompleteTime2(inspTime);
+		//inspAct.setCompleteTime1(inspAmPm);
+		aa.inspection.editInspection(inspModel);
+
+		aa.inspection.editInspection(inspModel);
+
+		
 
 
 		if (timeArray != null && typeof timeArray != "undefined") {
