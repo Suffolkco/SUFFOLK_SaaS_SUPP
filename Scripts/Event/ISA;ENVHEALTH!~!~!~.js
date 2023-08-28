@@ -4,33 +4,6 @@ showDebug = true;
 // Declare the today variable as scheduled date instead
 var today = new Date(inspSchedDate);
 
-var inspDate = new Date(inspSchedDate);
-logDebug("**inspSchedDate: " + inspSchedDate);
-logDebug("**inspDate: " + inspDate);
-
-setInspectionTimeAndStartTime(inspId, inspDate, capId) 
-/*
-var inspDate = new Date(inspSchedDate);
-logDebug("**inspSchedDate: " + inspSchedDate);
-logDebug("**inspDate: " + inspDate);
-
-//   Set the inspection time and the start time on the inspection to match the scheduled time.
-
-var iObjResult = aa.inspection.getInspection(capId, inspId);
-var inspAct = iObjResult.getInspection().getActivity();
-var inspTime = inspAct.getTime2();
-var inspAmPm = inspAct.getTime1();
-
-debugObject(inspAct);
-
-var iObj = iObjResult.getOutput();
-scheduledDate = iObj.getScheduledDate();
-
-
-iObj.setInspectionStatusDate(scheduledDate);
-aa.inspection.editInspection(iObj); */
-
-
 if (inspType == "010 Field/Periodic Inspection" || inspType == "012 Premise/Facility Inspection")
 {
 	var gName = "Food INSPECTION Checklist";
@@ -875,54 +848,4 @@ function updateGuidesheetASIFields(inspId, gName, guideItems, today) {
     logDebug("No inspections on the record");
     return false;
   }
-}
-
-function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap) 
-{
-	try {
-		var inspModel = aa.inspection.getInspection(itemCap, inspId).getOutput();
-		//debugObject(inspModel);
-
-		var inspAct = inspModel.getInspection().getActivity();	
-		var insStatusDate = inspAct.getStatusDate();	
-		logDebug("insStatusDate: " + insStatusDate);
-
-		var inspectionScheduledDate = new Date(inspSchedDate);
-		var month = inspectionScheduledDate.getMonth();
-		var year = inspectionScheduledDate.getFullYear();
-		var day = inspectionScheduledDate.getDate();
-		logDebug("month: " + month);
-		logDebug("year: " + year);
-		logDebug("day: " + day);
-
-		logDebug("*****Before****");
-		debugObject(inspModel.getInspection().getActivity());
-			
-		//inspAct.setDesiredDate(scheduledDate); 
-		//inspAct.setActivityDate(scheduledDate); 
-		//inspAct.setEndActivityDate(scheduledDate); 
-		//inspAct.setCompletionDate(scheduledDate); 
-		
-		var scheduledDate = new Date(year, month, day, 0, 0, 0, 0);
-
-		inspAct.setStartTime(scheduledDate);
-		inspAct.setCompleteTime2("1");
-		inspAct.setCompleteTime1("PM");
-
-		inspAct.setRecordDate(scheduledDate);
-
-		aa.inspection.editInspection(inspModel);
-
-
-		logDebug("*****After****");
-		var inspModel1 = aa.inspection.getInspection(itemCap, inspId).getOutput();
-		debugObject(inspModel1.getInspection().getActivity());
-
-
-		
-		
-	}
-	catch (exception) {
-		logDebug("Excpetion: " + exception);
-	}
 }
