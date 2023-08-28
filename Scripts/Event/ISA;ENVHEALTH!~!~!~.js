@@ -890,7 +890,7 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		var inspTime = inspAct.getTime2();
 		var inspAmPm = inspAct.getTime1();		
 		var insRecordDate = inspAct.getRecordDate();
-		var insStatusDate = inspActstatusDate.getStatusDate();
+		var insStatusDate = inspAct.getStatusDate();
 		logDebug("inspTime: " + inspTime);
 		logDebug("inspAmPm: " + inspAmPm);
 		logDebug("insRecordDate: " + insRecordDate);
