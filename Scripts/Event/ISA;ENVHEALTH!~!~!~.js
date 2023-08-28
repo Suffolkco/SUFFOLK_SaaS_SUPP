@@ -883,17 +883,8 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		var inspModel = aa.inspection.getInspection(itemCap, inspId).getOutput();
 		//debugObject(inspModel);
 
-		var inspAct = inspModel.getInspection().getActivity();
-		logDebug("*****");
-		debugObject(inspModel.getInspection().getActivity());
-				
-		var inspTime = inspAct.getTime2();
-		var inspAmPm = inspAct.getTime1();		
-		var insRecordDate = inspAct.getRecordDate();
-		var insStatusDate = inspAct.getStatusDate();
-		logDebug("inspTime: " + inspTime);
-		logDebug("inspAmPm: " + inspAmPm);
-		logDebug("insRecordDate: " + insRecordDate);
+		var inspAct = inspModel.getInspection().getActivity();	
+		var insStatusDate = inspAct.getStatusDate();	
 		logDebug("insStatusDate: " + insStatusDate);
 
 		var inspectionScheduledDate = new Date(inspSchedDate);
@@ -906,12 +897,17 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		logDebug("minute: " + minute);
 		logDebug("hour: " + hour);
 
-		inspAct.setRecordDate(scheduledDate);
+	
 		inspAct.setStatusDate(scheduledDate);
 		inspAct.setDesiredDate(scheduledDate); 
 		inspAct.setActivityDate(scheduledDate); 
 		inspAct.setEndActivityDate(scheduledDate); 
+		inspAct.setCompletionDate(scheduledDate); 
+
 		aa.inspection.editInspection(inspModel);
+
+		logDebug("*****");
+		debugObject(inspModel.getInspection().getActivity());
 
 
 		if (timeArray != null && typeof timeArray != "undefined") {
