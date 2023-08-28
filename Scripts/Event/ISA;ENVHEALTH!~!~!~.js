@@ -897,11 +897,10 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		logDebug("minute: " + minute);
 		logDebug("hour: " + hour);
 
-	
-		inspAct.setStatusDate(scheduledDate);
-		inspAct.setDesiredDate(scheduledDate); 
-		inspAct.setActivityDate(scheduledDate); 
-		inspAct.setEndActivityDate(scheduledDate); 
+			
+		//inspAct.setDesiredDate(scheduledDate); 
+		//inspAct.setActivityDate(scheduledDate); 
+		//inspAct.setEndActivityDate(scheduledDate); 
 		inspAct.setCompletionDate(scheduledDate); 
 
 		aa.inspection.editInspection(inspModel);
