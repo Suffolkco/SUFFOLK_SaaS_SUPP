@@ -465,7 +465,6 @@ function checkForRelatedSITERecord(parcelNumber) {
              copyParcels(capId, myParent);
              copyOwner(capId, myParent);
              copyParcelGisObjectsParent(capId, myParent);
-            
              updateShortNotes(updateToName, myParent);        
              editAppName(updateToName, myParent);
              
@@ -509,6 +508,7 @@ function checkForRelatedSITERecord(parcelNumber) {
         {
             ammendARecord(capId, siteCap);
             addParent(siteCap);
+            copyConditions(siteCap);
         }
         else
         {
@@ -551,6 +551,31 @@ function copyParcelGisObjectsParent(childId, parentId) {
     else { logDebug("**ERROR: Getting Parcels from Cap.  Reason is: " + capParcelResult.getErrorType() + ":" + capParcelResult.getErrorMessage()); return false }
 }
 
+function copyConditions(fromCapId) // optional toCapID
+{
+
+	var itemCap = capId;
+	if (arguments.length == 2)
+		itemCap = arguments[1]; // use cap ID specified in args
+
+	var getFromCondResult = aa.capCondition.getCapConditions(fromCapId);
+	if (getFromCondResult.getSuccess())
+		var condA = getFromCondResult.getOutput();
+	else {
+		logDebug("**ERROR: getting cap conditions: " + getFromCondResult.getErrorMessage());
+		return false
+	}
+
+	for (cc in condA) {
+		var thisC = condA[cc];
+
+		var addCapCondResult = aa.capCondition.addCapCondition(itemCap, thisC.getConditionType(), thisC.getConditionDescription(), thisC.getConditionComment(), thisC.getEffectDate(), thisC.getExpireDate(), sysDate, thisC.getRefNumber1(), thisC.getRefNumber2(), thisC.getImpactCode(), thisC.getIssuedByUser(), thisC.getStatusByUser(), thisC.getConditionStatus(), currentUserID, String("A"), null, thisC.getDisplayConditionNotice(), thisC.getIncludeInConditionName(), thisC.getIncludeInShortDescription(), thisC.getInheritable(), thisC.getLongDescripton(), thisC.getPublicDisplayMessage(), thisC.getResolutionAction(), null, null, thisC.getReferenceConditionNumber(), thisC.getConditionGroup(), thisC.getDisplayNoticeOnACA(), thisC.getDisplayNoticeOnACAFee(), thisC.getPriority(), thisC.getConditionOfApproval());
+		if (addCapCondResult.getSuccess())
+			logDebug("Successfully added condition (" + thisC.getImpactCode() + ") " + thisC.getConditionDescription());
+		else
+			logDebug("**ERROR: adding condition (" + cImpact + "): " + addCapCondResult.getErrorMessage());
+	}
+} 
 
 /**
  * Uses the close match criteria configured in Agency Profile > Standard Choices stored in the 
@@ -2018,6 +2043,77 @@ function determineACADocumentAttached(docType) {
 }
 
 
+function doConfigurableScriptActions() {
+	var module = "";
+
+	if (appTypeArray && appTypeArray[0] != undefined) {
+		module = appTypeArray[0];
+	}
+
+	if (typeof capId !== 'undefined' && capId) {
+		if (module == "") {
+			var itemCap = aa.cap.getCap(capId).getOutput();
+			var itemCapModel = itemCap.getCapModel();
+			module = itemCapModel.getModuleName();
+		}
+	}
+
+	if (module != "") {
+		rulesetName = "CONFIGURABLE_RULESET_" + module;
+		rulesetName = rulesetName.toUpperCase();
+		logDebug("rulesetName: " + rulesetName);
+
+		try {
+			var configRuleset = getScriptText(rulesetName);
+			if (configRuleset == "") {
+				logDebug("No JSON file exists for this module.");
+			} else {
+				var configJSON = JSON.parse(configRuleset);
+
+				// match event, run appropriate configurable scripts
+				settingsArray = [];
+				if (configJSON[controlString]) {
+					var ruleSetArray = configJSON[controlString];
+					var scriptsToRun = ruleSetArray.StandardScripts;
+					var customScriptsToRun = ruleSetArray.CustomScripts;
+					var script;
+					var validScript;
+
+					for (var s in scriptsToRun) {
+
+						if (exists(scriptsToRun[s], customScriptsToRun)) {
+							logDebug("doConfigurableScriptActions scriptsToRun[s]: " + scriptsToRun[s] + " Overridden in CustomScripts, Skipped.");
+							continue;
+						}
+
+						logDebug("doConfigurableScriptActions scriptsToRun[s]: " + scriptsToRun[s]);
+						script = scriptsToRun[s];
+						validScript = getScriptText(script);
+						if (validScript != "") {
+							logDebug("Script " + script + " exist and executed from Non-Master scripts");
+							eval(validScript);
+						} else {
+							eval(getScriptText(script, null, true)); // now calling this section from master scripts
+						}
+					}
+					for (var cs in customScriptsToRun) {
+						logDebug("doConfigurableScriptActions customScriptsToRun[cs]: " + customScriptsToRun[cs]);
+						script = customScriptsToRun[cs];
+						validScript = getScriptText(script);
+						if (validScript == "") {
+							logDebug("Configurable custom script " + script + " does not exist.");
+						} else {
+							eval(validScript);
+						}
+					}
+				}
+			}
+		} catch (err) {
+			logDebug("ERROR: doConfigurableScriptActions " + rulesetName + " Error Message:" + err.message);
+			handleError(err, "doConfigurableScriptActions " + rulesetName);
+		}
+	}
+}
 function editASITableRow(tableCapId, tableName, editName, editValue) {
 	logDebug("In editASITableRow with parameters:" + "|" + tableCapId + "|" + tableName + "|" + editName + "|" + editValue);
 	var tableArr = loadASITable(tableName, tableCapId);
@@ -3726,6 +3822,340 @@ function reportRunSave(reportName, view, edmsSave, storeToDisk, reportModule, re
 	}	
 	return rFile;
 }
+function sendEmailsOnSIPRecord(templateName)
+{
+
+		var sipPO = loadASITable("DEQ_SIP_PROPERTY_OWNER");
+		var emailParams = aa.util.newHashtable();
+			var reportParams = aa.util.newHashtable();
+			var reportFile = new Array();
+			var conArray = getContactArray(capId);
+			 var dubCheckemails = "";
+			var conEmail = "";
+			var lpEmail= "";
+			var fromEmail = "autosend@suffolkcountyny.gov";   
+			varcapAddresses = null;  
+			
+			var emailAddressArray = new Array();  
+  
+
+			if(matches(fromEmail, null, "", undefined))
+			{
+			  fromEmail = "";
+			}
+			
+			//Contact Emails
+			for (con in conArray)
+			{
+			  if (!matches(conArray[con].email, null, undefined, ""))
+			  {
+				logDebug("Contact email: " + conArray[con].email);
+				conEmail = conArray[con].email;
+				 if (conEmail && dubCheckemails.indexOf(conEmail) == -1) {
+					if(dubCheckemails)
+						dubCheckemails = dubCheckemails + "||" + conEmail;
+					 else
+						dubCheckemails = "" + conEmail;
+				}
+			  }
+			}
+			//Lp emails
+			
+			var lpResult = aa.licenseScript.getLicenseProf(capId);
+			if (lpResult.getSuccess())
+			{ 
+			  var lpArr = lpResult.getOutput();  
+			} 
+			else 
+			{ 
+			  logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+			}
+			for (var lp in lpArr)
+			{
+			  if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+			  {
+				logDebug("LP email: " + lpArr[lp].email);
+				lpEmail = lpArr[lp].getEmail();
+				 if (lpEmail && dubCheckemails.indexOf(lpEmail) == -1) {
+					if(dubCheckemails)
+						dubCheckemails = dubCheckemails + ";" + lpEmail;
+					 else
+						dubCheckemails = "" + lpEmail;
+				}
+			  }
+			}
+			
+			//Email from ASIT table
+			
+						for (var k = 0; k < sipPO.length; k++)
+			{
+					  var poEmail = sipPO[k]["Email Address"];
+					  if (!matches(poEmail, null, undefined, ""))
+					 {
+						  if (poEmail && dubCheckemails.indexOf(poEmail) == -1) {
+					if(dubCheckemails)
+						dubCheckemails = dubCheckemails + ";" + poEmail;
+					 else
+						dubCheckemails = "" + poEmail;
+				}
+					 }
+		   }
+			  //getRecordParams4Notification(emailParams);
+				  
+			 //addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
+			  //addParameter(emailParams, "$$shortNotes$$", shortNotes); 
+			  //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+			  //addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			  //addParameter(emailParams, "$$ACAURL$$", getACARecordURL()); 
+			  /*if (capAddresses != null)
+			  {
+				logDebug("Record address:" +capAddresses[0]);
+				  addParameter(emailParams, "$$address$$", capAddresses[0]);
+			  }*/
+
+			if (dubCheckemails != null)
+			{
+				 
+				  sendNotification("", dubCheckemails, "", templateName, emailParams, reportFile);
+			}
+		 
+
+}
+function sendEmailsOnSIPRecordOnlyContacts(templateName)
+{
+
+		var sipPO = loadASITable("DEQ_SIP_PROPERTY_OWNER");
+		var emailParams = aa.util.newHashtable();
+			var reportParams = aa.util.newHashtable();
+			var reportFile = new Array();
+			var conArray = getContactArray(capId);
+			 var dubCheckemails = "";
+			var conEmail = "";
+			var lpEmail= "";
+			var fromEmail = "autosend@suffolkcountyny.gov";   
+			varcapAddresses = null;  
+			
+			var emailAddressArray = new Array();  
+  
+
+			if(matches(fromEmail, null, "", undefined))
+			{
+			  fromEmail = "";
+			}
+			
+			//Contact Emails
+			for (con in conArray)
+			{
+			  if (!matches(conArray[con].email, null, undefined, ""))
+			  {
+				logDebug("Contact email: " + conArray[con].email);
+				conEmail = conArray[con].email;
+				 if (conEmail && dubCheckemails.indexOf(conEmail) == -1) {
+					if(dubCheckemails)
+						dubCheckemails = dubCheckemails + "||" + conEmail;
+					 else
+						dubCheckemails = "" + conEmail;
+				}
+			  }
+			}
+		
+		
+		//getRecordParams4Notification(emailParams);
+				  
+			 //addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
+			  //addParameter(emailParams, "$$shortNotes$$", shortNotes); 
+			  //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+			  //addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			  //addParameter(emailParams, "$$ACAURL$$", getACARecordURL()); 
+			  /*if (capAddresses != null)
+			  {
+				logDebug("Record address:" +capAddresses[0]);
+				  addParameter(emailParams, "$$address$$", capAddresses[0]);
+			  }*/
+
+			if (dubCheckemails != null)
+			{
+				 
+				  sendNotification("", dubCheckemails, "", templateName, emailParams, reportFile);
+			}
+		 
+
+}
+function sendEmailsOnSIPRecordOnlyLPs(templateName)
+{
+
+		var sipPO = loadASITable("DEQ_SIP_PROPERTY_OWNER");
+		var emailParams = aa.util.newHashtable();
+			var reportParams = aa.util.newHashtable();
+			var reportFile = new Array();
+			var conArray = getContactArray(capId);
+			 var dubCheckemails = "";
+			var conEmail = "";
+			var lpEmail= "";
+			var fromEmail = "autosend@suffolkcountyny.gov";   
+			varcapAddresses = null;  
+			
+			var emailAddressArray = new Array();  
+  
+
+			if(matches(fromEmail, null, "", undefined))
+			{
+			  fromEmail = "";
+			}
+			
+			
+			//Lp emails
+			
+			var lpResult = aa.licenseScript.getLicenseProf(capId);
+			if (lpResult.getSuccess())
+			{ 
+			  var lpArr = lpResult.getOutput();  
+			} 
+			else 
+			{ 
+			  logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+			}
+			for (var lp in lpArr)
+			{
+			  if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+			  {
+				logDebug("LP email: " + lpArr[lp].email);
+				lpEmail = lpArr[lp].getEmail();
+				 if (lpEmail && dubCheckemails.indexOf(lpEmail) == -1) {
+					if(dubCheckemails)
+						dubCheckemails = dubCheckemails + ";" + lpEmail;
+					 else
+						dubCheckemails = "" + lpEmail;
+				}
+			  }
+			}
+			
+			
+			  //getRecordParams4Notification(emailParams);
+				  
+			 //addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
+			  //addParameter(emailParams, "$$shortNotes$$", shortNotes); 
+			  //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+			  //addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			  //addParameter(emailParams, "$$ACAURL$$", getACARecordURL()); 
+			  /*if (capAddresses != null)
+			  {
+				logDebug("Record address:" +capAddresses[0]);
+				  addParameter(emailParams, "$$address$$", capAddresses[0]);
+			  }*/
+			  
+			  
+
+			if (dubCheckemails != null)
+			{
+				 
+				  sendNotification("", dubCheckemails, "", templateName, emailParams, reportFile);
+			}
+		 
+
+}
+function sendEmailsOnSIPRecordOnlyWWMLP(templateName)
+{
+
+		var sipPO = loadASITable("DEQ_SIP_PROPERTY_OWNER");
+		var emailParams = aa.util.newHashtable();
+			var reportParams = aa.util.newHashtable();
+			var reportFile = new Array();
+			var conArray = getContactArray(capId);
+			 var dubCheckemails = "";
+			var conEmail = "";
+			var lpEmail= "";
+			var fromEmail = "autosend@suffolkcountyny.gov";   
+			varcapAddresses = null;  
+			
+			var emailAddressArray = new Array();  
+  
+
+			if(matches(fromEmail, null, "", undefined))
+			{
+			  fromEmail = "";
+			}
+			
+			
+			//Lp emails
+			
+			var lpResult = aa.licenseScript.getLicenseProf(capId);
+			if (lpResult.getSuccess())
+			{ 
+			  var lpArr = lpResult.getOutput();  
+			} 
+			else 
+			{ 
+			  logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+			}
+			for (var lp in lpArr)
+			{
+				
+				 if(lpArr[lp].getLicenseType() == "WWM Liquid Waste")
+					  
+					 {
+						  if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+						  {
+							  
+							 
+								logDebug("LP email: " + lpArr[lp].email);
+								lpEmail = lpArr[lp].getEmail();
+								 if (lpEmail && dubCheckemails.indexOf(lpEmail) == -1) {
+									if(dubCheckemails)
+										dubCheckemails = dubCheckemails + ";" + lpEmail;
+									 else
+										dubCheckemails = "" + lpEmail;
+								}
+				
+							}
+					}
+			}
+			
+			
+			  //getRecordParams4Notification(emailParams);
+				  
+			 //addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
+			  //addParameter(emailParams, "$$shortNotes$$", shortNotes); 
+			  //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+			  //addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			  //addParameter(emailParams, "$$ACAURL$$", getACARecordURL()); 
+			  /*if (capAddresses != null)
+			  {
+				logDebug("Record address:" +capAddresses[0]);
+				  addParameter(emailParams, "$$address$$", capAddresses[0]);
+			  }*/
+			  
+			  
+
+			if (dubCheckemails != null)
+			{
+				 
+				  sendNotification("", dubCheckemails, "", templateName, emailParams, reportFile);
+			}
+		 
+
+}
+function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile) {
+    var itemCap = capId;
+    if (arguments.length == 7) itemCap = arguments[6]; // use cap ID specified in args
+    var id1 = itemCap.ID1;
+    var id2 = itemCap.ID2;
+    var id3 = itemCap.ID3;
+    var capIDScriptModel = aa.cap.createCapIDScriptModel(id1, id2, id3);
+    var result = null;
+    result = aa.document.sendEmailAndSaveAsDocument(emailFrom, emailTo, emailCC, templateName, params, capIDScriptModel, reportFile);
+    if (result.getSuccess())
+    {
+        aa.print("Sent email successfully!");
+        return true;
+    }
+    else
+    {
+        aa.print("Failed to send mail. - " + result.getErrorType());
+        return false;
+    }
+}
+
 function splitByDashes(ASI_Name, label, code, capId)
 {
     var variable = getAppSpecific(ASI_Name, capId);
@@ -4433,6 +4863,10 @@ function workflowAwaitingClientDEQ()
 		}
 	}
 
+// EHIMS-5041
+	var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+	if(!matches(itemCapType, "DEQ/WWM/Residence/Application", "DEQ/WWM/Commercial/Application"))
+	{
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
 	{ 
@@ -4464,6 +4898,7 @@ function workflowAwaitingClientDEQ()
 			}
 		} 
 	}
+}
 	
 	/*
 	if (appTypeArray[1] == "WWM")
@@ -5328,6 +5763,55 @@ function workflowInspectionResultedWWM(reportName, reportParamRecID)
     }
 }
 
+function workflowPartialReviewApproved()
+{
+	var emailParams = aa.util.newHashtable();
+	var reportParams = aa.util.newHashtable();
+	var reportFile = new Array();
+	var conArray = getContactArray();
+	var conEmail = "";
+    var fromEmail = ""; 
+    
+	if(matches(fromEmail, null, "", undefined))
+	{
+		fromEmail = "";
+	}
+	for (con in conArray)
+	{
+		if (!matches(conArray[con].email, null, undefined, ""))
+		{
+			conEmail += conArray[con].email + "; ";
+		}
+	}
+	var lpResult = aa.licenseScript.getLicenseProf(capId);
+	if (lpResult.getSuccess())
+	{ 
+		var lpArr = lpResult.getOutput();  
+	} 
+	else 
+	{ 
+		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+	}
+	for (var lp in lpArr)
+	{
+		if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+		{
+			conEmail += lpArr[lp].getEmail() + "; ";
+		}
+	}
+	getRecordParams4Notification(emailParams);
+    getWorkflowParams4Notification(emailParams);    
+    //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+	var shortNotes = getShortNotes(capId);
+	addParameter(emailParams, "$$shortNotes$$", shortNotes);	
+	addACAUrlsVarToEmail(emailParams);
+
+	if (conEmail != null)
+	{
+		sendNotification("", conEmail, "", "DEQ_WWM_PARTIAL_FINAL_REVIEW", emailParams, reportFile);
+	}
+}
 function workflowPlanReviewApprovedBackflow()
 {    
     var emailParams = aa.util.newHashtable();	
@@ -5857,6 +6341,8 @@ function workflowPrelimApproval(reportName, reportParamRecID)
         }
     
 	}
+	//EHIMS-5041: remove all LP email
+	/*
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
 	{ 
@@ -5872,7 +6358,7 @@ function workflowPrelimApproval(reportName, reportParamRecID)
 		{
 			conEmail += lpArr[lp].getEmail() + "; ";
 		}
-	}
+	}*/
 	getRecordParams4Notification(emailParams);
     getWorkflowParams4Notification(emailParams);
     
@@ -6201,6 +6687,8 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
         }
     
     }
+    //EHIMS-5041: remove all LP email
+    /*
     var lpEmail = "";
         
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
@@ -6242,8 +6730,8 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
     if (!matches(lpEmail, null, undefined, ""))	
 	{
         logDebug("Found: " + lpEmail + " lp email in the array.");
-        sendNotification("", lpEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", lpEmailParams, null);
-    }
+        sendNotification("", lpEmail, "", "//EHIMS-5041: remove all LP email", lpEmailParams, null);
+    } */
 }
 
 function generateReport(aaReportName,parameters,rModule) {
@@ -7002,7 +7490,8 @@ function wwmWorkflowNOIwithPin(reportName, reportNameAttachToRecord, reportParam
         }		
     }
        
-
+  // EHIMS-5041: Remove LP
+    /*
     var lpEmail = "";
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
@@ -7045,6 +7534,7 @@ function wwmWorkflowNOIwithPin(reportName, reportNameAttachToRecord, reportParam
 	{
 		sendNotification("", lpEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY", lpEmailParams, lpReportFile);
 	}
+*/
 }
 
 
@@ -8663,4 +9153,3 @@ function valueExistInASITCol(vTableName,keyName,keyValue,vCapId){
 	}
 	return matchResult;
 }
-
