@@ -261,7 +261,8 @@ function workflowFinalReviewApprovedWWMWithPin()
     }
        
 
-
+// EHIMS-5041: No LP
+/*
  var lpEmail = "";
  var lpEmailParams = aa.util.newHashtable();	
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
@@ -297,6 +298,6 @@ function workflowFinalReviewApprovedWWMWithPin()
 	if (lpEmail != null)
 	{
 		sendNotification("", lpEmail, "", "DEQ_WWM_FINAL REVIEW APPROVED", lpEmailParams, lpReportFile);
-	}
+	} */
 }
 

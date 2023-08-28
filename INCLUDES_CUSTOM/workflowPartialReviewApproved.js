@@ -18,7 +18,8 @@ function workflowPartialReviewApproved()
 			conEmail += conArray[con].email + "; ";
 		}
 	}
-	var lpResult = aa.licenseScript.getLicenseProf(capId);
+	//EHIMS-5041: No LP
+	/*var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
 	{ 
 		var lpArr = lpResult.getOutput();  
@@ -33,7 +34,7 @@ function workflowPartialReviewApproved()
 		{
 			conEmail += lpArr[lp].getEmail() + "; ";
 		}
-	}
+	} */
 	getRecordParams4Notification(emailParams);
     getWorkflowParams4Notification(emailParams);    
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());

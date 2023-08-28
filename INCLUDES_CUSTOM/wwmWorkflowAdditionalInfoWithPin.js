@@ -306,7 +306,8 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
         }		
     }
        
-
+    // EHIMS-5041: No LP for all WWM
+    /*
     var lpEmail = "";
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
@@ -348,6 +349,6 @@ function wwmWorkflowAdditionalInfoWithPin(reportName, reportNameAttachToRecord, 
 	if (lpEmail != null)
 	{
 		sendNotification("", lpEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY", lpEmailParams, lpReportFile);
-	}
+	}*/
 }
 
