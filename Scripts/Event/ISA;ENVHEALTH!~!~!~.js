@@ -889,10 +889,32 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 				
 		var inspTime = inspAct.getTime2();
 		var inspAmPm = inspAct.getTime1();		
+		var insRecordDate = inspAct.getRecordDate();
+		var insStatusDate = inspActstatusDate.getStatusDate();
 		logDebug("inspTime: " + inspTime);
 		logDebug("inspAmPm: " + inspAmPm);
+		logDebug("insRecordDate: " + insRecordDate);
+		logDebug("insStatusDate: " + insStatusDate);
 
-		//if (timeArray != null && typeof timeArray != "undefined") {
+		var inspectionScheduledDate = new Date(inspSchedDate);
+		var month = inspectionScheduledDate.getMonth();
+		var year = inspectionScheduledDate.getFullYear();
+		var day = inspectionScheduledDate.getDate();
+		logDebug("month: " + month);
+		logDebug("year: " + year);
+		logDebug("day: " + day);
+		logDebug("minute: " + minute);
+		logDebug("hour: " + hour);
+
+		inspAct.setRecordDate(scheduledDate);
+		inspAct.setStatusDate(scheduledDate);
+		inspAct.setDesiredDate(scheduledDate); 
+		inspAct.setActivityDate(scheduledDate); 
+		inspAct.setEndActivityDate(scheduledDate); 
+		aa.inspection.editInspection(inspModel);
+
+
+		if (timeArray != null && typeof timeArray != "undefined") {
 			var timeArray = inspTime.split(":");
 			var hour = timeArray[0];
 			var minute = timeArray[1];  
@@ -902,15 +924,7 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 				militaryHour = Number(militaryHour) + Number(12);
 			}
 
-			var inspectionScheduledDate = new Date(inspSchedDate);
-			var month = inspectionScheduledDate.getMonth();
-			var year = inspectionScheduledDate.getFullYear();
-			var day = inspectionScheduledDate.getDate();
-			logDebug("month: " + month);
-			logDebug("year: " + year);
-			logDebug("day: " + day);
-			logDebug("minute: " + minute);
-			logDebug("hour: " + hour);
+		
 
 			var scheduledDate = new Date(year, month, day, militaryHour, minute, 0, 0);
 
@@ -918,10 +932,10 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 			inspAct.setCompleteTime2(inspTime);
 			inspAct.setCompleteTime1(inspAmPm); 
 			aa.inspection.editInspection(inspModel);
-		/*}
+		}
 		else {
 			logDebug("Invalid time of day.  Skipping setting time of day.");
-		}*/
+		}
 		
 	}
 	catch (exception) {
