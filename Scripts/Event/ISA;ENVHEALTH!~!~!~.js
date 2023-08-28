@@ -894,16 +894,15 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		logDebug("month: " + month);
 		logDebug("year: " + year);
 		logDebug("day: " + day);
-		
+
+		logDebug("*****Before****");
+		debugObject(inspModel.getInspection().getActivity());
 			
 		//inspAct.setDesiredDate(scheduledDate); 
 		//inspAct.setActivityDate(scheduledDate); 
 		//inspAct.setEndActivityDate(scheduledDate); 
 		//inspAct.setCompletionDate(scheduledDate); 
-
-		logDebug("*****");
-		debugObject(inspModel.getInspection().getActivity());
-
+		
 		var scheduledDate = new Date(year, month, day, 0, 0, 0, 0);
 
 		inspAct.setStartTime(scheduledDate);
@@ -911,9 +910,10 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		//inspAct.setCompleteTime1(inspAmPm);
 		aa.inspection.editInspection(inspModel);
 
-		aa.inspection.editInspection(inspModel);
 
-		
+		logDebug("*****After****");
+		var inspModel1 = aa.inspection.getInspection(itemCap, inspId).getOutput();
+		debugObject(inspModel1.getInspection().getActivity());
 
 
 		if (timeArray != null && typeof timeArray != "undefined") {
@@ -925,9 +925,6 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 			if (inspAmPm == "PM") {
 				militaryHour = Number(militaryHour) + Number(12);
 			}
-
-		
-
 			var scheduledDate = new Date(year, month, day, militaryHour, minute, 0, 0);
 
 			inspAct.setStartTime(scheduledDate);
