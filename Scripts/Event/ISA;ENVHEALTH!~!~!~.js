@@ -1,7 +1,34 @@
 // Event Script to update the "Comply By" date in the Food INSPECTION Checklist
+showDebug = true;
 
 // Declare the today variable as scheduled date instead
 var today = new Date(inspSchedDate);
+
+var inspDate = new Date(inspSchedDate);
+logDebug("**inspSchedDate: " + inspSchedDate);
+logDebug("**inspDate: " + inspDate);
+
+setInspectionTimeAndStartTime(inspId, inspDate, capId) 
+/*
+var inspDate = new Date(inspSchedDate);
+logDebug("**inspSchedDate: " + inspSchedDate);
+logDebug("**inspDate: " + inspDate);
+
+//   Set the inspection time and the start time on the inspection to match the scheduled time.
+
+var iObjResult = aa.inspection.getInspection(capId, inspId);
+var inspAct = iObjResult.getInspection().getActivity();
+var inspTime = inspAct.getTime2();
+var inspAmPm = inspAct.getTime1();
+
+debugObject(inspAct);
+
+var iObj = iObjResult.getOutput();
+scheduledDate = iObj.getScheduledDate();
+
+
+iObj.setInspectionStatusDate(scheduledDate);
+aa.inspection.editInspection(iObj); */
 
 
 if (inspType == "010 Field/Periodic Inspection" || inspType == "012 Premise/Facility Inspection")
@@ -757,6 +784,13 @@ if (inspType == "011 Reinspection/Follow-up" || inspType == "030 Emergency Inves
 	updateGuidesheetASIFields(inspId, gName, guideItems, today);
 }
 
+function debugObject(object) {
+	var output = ''; 
+	for (property in object) { 
+	  output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+	} 
+	logDebug(output);
+} 
 
 function updateGuidesheetASIFields(inspId, gName, guideItems, today) {
   var itemCap = capId;
@@ -841,4 +875,56 @@ function updateGuidesheetASIFields(inspId, gName, guideItems, today) {
     logDebug("No inspections on the record");
     return false;
   }
+}
+
+function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap) 
+{
+	try {
+		var inspModel = aa.inspection.getInspection(itemCap, inspId).getOutput();
+		//debugObject(inspModel);
+
+		var inspAct = inspModel.getInspection().getActivity();
+		logDebug("*****");
+		debugObject(inspModel.getInspection().getActivity());
+				
+		var inspTime = inspAct.getTime2();
+		var inspAmPm = inspAct.getTime1();		
+		logDebug("inspTime: " + inspTime);
+		logDebug("inspAmPm: " + inspAmPm);
+
+		//if (timeArray != null && typeof timeArray != "undefined") {
+			var timeArray = inspTime.split(":");
+			var hour = timeArray[0];
+			var minute = timeArray[1];  
+			var militaryHour = hour;
+
+			if (inspAmPm == "PM") {
+				militaryHour = Number(militaryHour) + Number(12);
+			}
+
+			var inspectionScheduledDate = new Date(inspSchedDate);
+			var month = inspectionScheduledDate.getMonth();
+			var year = inspectionScheduledDate.getFullYear();
+			var day = inspectionScheduledDate.getDate();
+			logDebug("month: " + month);
+			logDebug("year: " + year);
+			logDebug("day: " + day);
+			logDebug("minute: " + minute);
+			logDebug("hour: " + hour);
+
+			var scheduledDate = new Date(year, month, day, militaryHour, minute, 0, 0);
+
+			inspAct.setStartTime(scheduledDate);
+			inspAct.setCompleteTime2(inspTime);
+			inspAct.setCompleteTime1(inspAmPm); 
+			aa.inspection.editInspection(inspModel);
+		/*}
+		else {
+			logDebug("Invalid time of day.  Skipping setting time of day.");
+		}*/
+		
+	}
+	catch (exception) {
+		logDebug("Excpetion: " + exception);
+	}
 }
