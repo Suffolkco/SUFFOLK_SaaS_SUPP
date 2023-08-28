@@ -906,8 +906,11 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		var scheduledDate = new Date(year, month, day, 0, 0, 0, 0);
 
 		inspAct.setStartTime(scheduledDate);
-		//inspAct.setCompleteTime2(inspTime);
-		//inspAct.setCompleteTime1(inspAmPm);
+		inspAct.setCompleteTime2("1");
+		inspAct.setCompleteTime1("PM");
+
+		inspAct.setRecordDate(scheduledDate);
+
 		aa.inspection.editInspection(inspModel);
 
 
@@ -916,25 +919,7 @@ function setInspectionTimeAndStartTime (inspId, inspSchedDate, itemCap)
 		debugObject(inspModel1.getInspection().getActivity());
 
 
-		if (timeArray != null && typeof timeArray != "undefined") {
-			var timeArray = inspTime.split(":");
-			var hour = timeArray[0];
-			var minute = timeArray[1];  
-			var militaryHour = hour;
-
-			if (inspAmPm == "PM") {
-				militaryHour = Number(militaryHour) + Number(12);
-			}
-			var scheduledDate = new Date(year, month, day, militaryHour, minute, 0, 0);
-
-			inspAct.setStartTime(scheduledDate);
-			inspAct.setCompleteTime2(inspTime);
-			inspAct.setCompleteTime1(inspAmPm); 
-			aa.inspection.editInspection(inspModel);
-		}
-		else {
-			logDebug("Invalid time of day.  Skipping setting time of day.");
-		}
+		
 		
 	}
 	catch (exception) {
