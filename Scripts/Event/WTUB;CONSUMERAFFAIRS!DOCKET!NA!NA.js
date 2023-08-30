@@ -123,10 +123,13 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
     var a76 = AInfo["Updated.A76 Adjournment Letter"];
     var enf = AInfo["Updated.Enforcement"];
 
-	if (a63 == 'CHECKED' || a64 == 'CHECKED' || a65 == 'CHECKED' || a66 == 'CHECKED' || a67 == 'CHECKED' || a67a == 'CHECKED' ||
+    logDebug("Enforcement: " + enf);
+
+	if ((a63 == 'CHECKED' || a64 == 'CHECKED' || a65 == 'CHECKED' || a66 == 'CHECKED' || a67 == 'CHECKED' || a67a == 'CHECKED' ||
     a68 == 'CHECKED' || a69 == 'CHECKED' || a70 == 'CHECKED' || a71 == 'CHECKED'
     || a72 == 'CHECKED' || a73 == 'CHECKED' || a74 == 'CHECKED'
-    || a75 == 'CHECKED' || a76 == 'CHECKED' || enf == 'CHECKED')
+    || a75 == 'CHECKED' || a76 == 'CHECKED') 
+    || enf == 'CHECKED')
     {
         // Letter checkbox has been checked.
     }

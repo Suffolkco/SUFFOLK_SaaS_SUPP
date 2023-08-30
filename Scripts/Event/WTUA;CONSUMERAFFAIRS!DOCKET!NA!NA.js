@@ -86,6 +86,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
    //logDebug("Amount of swimming pools on this record are: " + swimPools.length);
    
    var complaintNumber = getAppSpecific("Complaint Number", capId);
+   var licNum = getAppSpecific("License Number", capId);
    logDebug("complaintNumber: " + complaintNumber);
 	if (!matches(complaintNumber, undefined, null, ""))
 	{
@@ -128,7 +129,20 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	   {
 		var violationChild;
 
-			// Set Complaint as parent if exist. DKT and violation are siplings and are child of complaint. License is the grandparent.
+		if (!matches(complaintNumber, undefined, null, ""))
+		{
+			logDebug("Complaint Record exists:" + complaintNumber);
+		}
+		if (!matches(licNum, undefined, null, ""))
+		{
+			logDebug("License Record exists:" + licNum);
+		}
+
+		// Create violation as child of docket. 
+		violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", "");
+
+			/* This is wrong
+			// Set Complaint as parent if exist. DKT and violation are siblings and are child of complaint. License is the grandparent.			
 			if (!matches(complaintNumber, undefined, null, ""))
 			{
 				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
@@ -147,7 +161,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 			{
 				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", capId);
 				logDebug("Docket Record as parent. No Complaint Record nor license. Violation as child.");
-			}
+			} */
 
 			if (violationChild != null)
 			{		
