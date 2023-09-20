@@ -7,7 +7,8 @@ if (wfTask == "Review" && wfStatus == "Complete")
     if (wfComment !== null)
     {
         logDebug("A report will be fired, with the Standard Comment inside.")
-        workflowFoodReviewCompleteWWM("Food Review Notice", "RecordID");
+        // EHIMS-831: Do not send any email out
+        //workflowFoodReviewCompleteWWM("Food Review Notice", "RecordID");
         //need to single out Applicant only
         // need to update notification template DEQ_WWM_FOOD_REVIEW_NOTICE with language from Suffolk County
     }
