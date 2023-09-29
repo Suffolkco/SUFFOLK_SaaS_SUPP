@@ -4,87 +4,8 @@
 try{
 //EHIMS2-287
 
-                    var rowArray = [];
-					rowArray["Document Type"] = "Certificate of Occupancy"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "C.O. Equivalency"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Homeowners Insurance Policy Declaration"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Current Tax Bill"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Deed"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Proof of Failure"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Current, Signed Tax Return"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "LLC- Articles of Organization"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "LLC- Operating Agreement"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "LLC- NYS Filing Receipt"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "LLC- Signed Statement from All Members"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Trust- Signed Statement from All Trustees"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Trust- Full Copy of Trust Agreement"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Signed County Grant Agreement" 
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Signed State Contract"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Signed County AOP"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Signed State AOP/RR"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Signed Mailing Address Certification"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Approvable Plans"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Vendor Proposal"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					rowArray["Document Type"] = "Proposal Eligibility Memo"
-					addRowToASITable("DEQ_SIP_GRANT_ELIGIBILITY", rowArray, capId);  
-					
-					
-					var rowArrayPayment = [];
-					rowArrayPayment["Document Type"] = "Fully Executed Grant Agreement"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Compliance Forms"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Installer Certification (WWM-078)"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Design Professional Certification (WWM-073)"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Sanitary System Abandonment Certification (WWM-080) "
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "I/A OWTS Registration (WWM-304)"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "3-Year Operations and Maintenance Contract "
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Final Invoice"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Final Eligibility Memo"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Reimbursement Payment Documentation"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  
-					rowArrayPayment["Document Type"] = "Final Payment Packet"
-					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  	
-					
-					
-					//Add WWM num and town based on Parcel num
-					//EIHMs282
-					var parcelNumber= getFirstParcelFromCapId(capId);
-					 var latestRecordID = checkForRelatedWWMRecord(parcelNumber);
-					 if(latestRecordID !=null)
-					editAppSpecific("WWM Ref #", latestRecordID);
-					var townIdentifier = parcelNumber.slice(0, 2);
-					var town = lookup("TaxNumTownMapping", townIdentifier);
-					editAppSpecific("Town", town);
-				if(!publicUser)
-{	
+                 
+
 					
                   // EHIMS2-295
                   // Sewer District
@@ -163,7 +84,7 @@ if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
 				  }
 			 
 
-}
+
 	}
 catch (ex)
   {
