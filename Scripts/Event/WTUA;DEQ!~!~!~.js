@@ -47,7 +47,7 @@ if ((wfTask == "Application Review" && wfStatus == "Awaiting Client Reply") &&
         {
             fTask = wfObj[i];
     
-                if (fTask.getDisposition() != null && fTask.getCompleteFlag() == "N")
+                if (!matches(fTask.getDisposition() , null, undefined, "")  && fTask.getCompleteFlag() == "N")
                 {
                     wfComment = fTask.getDispositionComment();
                     
@@ -129,7 +129,8 @@ else if(wfStatus == "Awaiting Client Reply")
     var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     if (appTypeArray[1] == "OPC")
     {
-        if (appTypeArray[2] != "Swimming Pool" && appTypeArray[3] != "Renewal")
+        if(!matches(itemCapType, "DEQ/OPC/Swimming Pool/Renewal"))
+        //if (appTypeArray[2] != "Swimming Pool" && appTypeArray[3] != "Renewal")
         {
             var wfComment = null;
             var s_result = aa.address.getAddressByCapId(capId);
@@ -142,8 +143,10 @@ else if(wfStatus == "Awaiting Client Reply")
             {
                 fTask = wfObj[i];
         
-                if (fTask.getDisposition() != null && fTask.getCompleteFlag() == "N")
+                if (!matches(fTask.getDisposition() , null, undefined, "") && fTask.getCompleteFlag() == "N")
                 {
+                    logDebug("fTask.getDisposition(): " + fTask.getDisposition());    
+
                     wfComment = fTask.getDispositionComment();
                             
                     if (wfComment == null)

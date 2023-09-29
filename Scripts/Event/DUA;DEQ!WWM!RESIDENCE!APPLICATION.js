@@ -2,38 +2,14 @@
 if (publicUser)
 { 
     var appStatus = getAppStatus(capId);
-       
-    if (isTaskActive("Application Review") && appStatus != "Received")
-    {
-        updateTask("Application Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
+   
+    // EHIMS-5036  
+    var body = "appStatus: " + appStatus + " capId: " + capId + " Complete cap? " + cap.isCompleteCap();
 
-    if (isTaskActive("Plans Distribution") && isTaskStatus("Plans Distribution","Awaiting Client Reply"))
-    {
-        updateTask("Plans Distribution", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
+    aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "DUA WWM Resid App", body);
 
-    if (isTaskActive("Inspections"))
-    {
-        updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-
-    if (isTaskActive("Final Review"))
-    {
-        updateTask("Final Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-               
-    if (appStatus == "Awaiting Client Reply")
-    {
-        updateAppStatus("Resubmitted");        
-    }
-    // EHIMS-5036
-    if (appStatus != "Received" && appStatus != "Resubmitted")
-    {
+    if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")) 
+    {       
         updateAppStatus("Resubmitted");        
     }
 

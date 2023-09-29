@@ -8,7 +8,7 @@ eval(getScriptText("EH_Permit_UpdatePermitInspections"));
 
 // This Script looks at the guidesheet items and if there are violations it will create rows in the Violations Data Table
 // If the Violation already exists, it will perform an update instead
-eval(getScriptText("EH_Permit_UpdateViolationsFromInspection"));
+//eval(getScriptText("EH_Permit_UpdateViolationsFromInspection"));
 eval(getScriptText("EH_Permit_UpdateEnforcementDataTables"));
 
 // Send the Change of Ownership email to the new Facility Owner

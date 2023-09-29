@@ -7,6 +7,19 @@ var lpEmail = "";
 var agentEmail = "";
 var propEmail = "";
 var propOwnerName = "";
+
+// EHIMS2-289: Get Created By
+var  capDetail = getCapDetailByID(capId);
+var userId = capDetail.getCreateBy();
+var createByUseObj = aa.person.getUser(userId).getOutput();  
+if (createByUseObj != null)
+{
+    var userName = createByUseObj.getFirstName() + " " + createByUseObj.getLastName();
+    logDebug("userName is: " + userName);
+    createByEmail =  createByUseObj.getEmail();           
+    logDebug("email address is: " + createByEmail);
+}
+
 for (c in capContacts)
 {
     if (matches(capContacts[c].getCapContactModel().getContactType(), "Agent", "Property Owner"))
@@ -44,9 +57,9 @@ else
 {
     logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
 }
-var allEmail = conEmail + lpEmail;
+var allEmail = conEmail + lpEmail + createByEmail;
 var agentLpEmail = agentEmail + lpEmail;
-
+var propMailAll = propEmail + createByEmail;
 
 var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
 if (capParcelResult.getSuccess())
@@ -68,7 +81,7 @@ addParameter(vEParams, "$$address$$", addrResult);
 addParameter(vEParams, "$$Parcel$$", parcelNumber);
 addParameter(vEParams, "$$homeowner$$", propOwnerName);
 
-sendNotification("", propEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
+sendNotification("", propMailAll, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
 sendNotification("", allEmail, "", "DEQ_SHIP_APPLICATION_RECEIVED", vEParams, null);
 
 
@@ -195,6 +208,9 @@ if (conditionAddAndEmail)
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
     var recipientEmail = lookup("DCA_Docket_Email_List", "LW");
     sendNotification("", recipientEmail, "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
+    // EHIMS2-289
+    sendNotification("", createByEmail, "", "DEQ_WWM_LIQUID_WASTE_LP_NOTIFICATION", emailParams, null);
+
 }
 
 function getContactName(vConObj) {
@@ -221,6 +237,14 @@ function getContactName(vConObj) {
         return vConObj.people.getBusinessName2();
     }
 }
+
+function debugObject(object) {
+	var output = ''; 
+	for (property in object) { 
+	  output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+	} 
+	logDebug(output);
+} 
 
 function getAddressInALine(capId) {
 

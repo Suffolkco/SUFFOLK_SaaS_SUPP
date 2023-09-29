@@ -23,10 +23,15 @@ if (publicUser)
     }
   
     // EHIMS-5036
-    var appStatus = getAppStatus(capId);
+    var appStatus = getAppStatus(capId);   
+
+    var body = "appStatus: " + appStatus + " capId: " + capId + " Complete cap? " + cap.isCompleteCap();
+
+    aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "PRA WWM Resid App", body);
+
     
     // Only if the application has been reviewed
-    if(appStatus != "Resubmitted" && appStatus != "Received")
+    if(appStatus != "Resubmitted" && appStatus != "Received" && !matches(appStatus, null, undefined, "", "null")) 
     {
         updateAppStatus("Resubmitted");
     } 

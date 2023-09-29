@@ -1,8 +1,8 @@
 // Event Script to update the "Comply By" date in the Food INSPECTION Checklist
+showDebug = true;
 
 // Declare the today variable as scheduled date instead
 var today = new Date(inspSchedDate);
-
 
 if (inspType == "010 Field/Periodic Inspection" || inspType == "012 Premise/Facility Inspection")
 {
@@ -757,6 +757,13 @@ if (inspType == "011 Reinspection/Follow-up" || inspType == "030 Emergency Inves
 	updateGuidesheetASIFields(inspId, gName, guideItems, today);
 }
 
+function debugObject(object) {
+	var output = ''; 
+	for (property in object) { 
+	  output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+	} 
+	logDebug(output);
+} 
 
 function updateGuidesheetASIFields(inspId, gName, guideItems, today) {
   var itemCap = capId;

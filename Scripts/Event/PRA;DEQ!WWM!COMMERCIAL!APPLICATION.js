@@ -25,7 +25,7 @@ if (publicUser)
      var appStatus = getAppStatus(capId);
     
      // Only if the application has been reviewed
-     if(appStatus != "Resubmitted" && appStatus != "Received")
+     if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null"))  
      {
          updateAppStatus("Resubmitted");
      } 

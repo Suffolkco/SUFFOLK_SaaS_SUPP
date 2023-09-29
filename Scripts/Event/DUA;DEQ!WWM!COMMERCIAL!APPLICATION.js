@@ -3,38 +3,10 @@ if (publicUser)
 { 
     
     var appStatus = getAppStatus(capId);
-               
-    if (isTaskActive("Application Review") && appStatus != "Received")   
-    {
-        updateTask("Application Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-
-    if (isTaskActive("Plans Distribution") && isTaskStatus("Plans Distribution","Awaiting Client Reply"))
-    {
-        updateTask("Plans Distribution", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-
-    if (isTaskActive("Inspections"))
-    {
-        updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-
-    if (isTaskActive("Final Review"))
-    {
-        updateTask("Final Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-
-    if (appStatus == "Awaiting Client Reply")
-    {
-        updateAppStatus("Resubmitted");        
-    }
-    // EHIMS-5036
-    if (appStatus != "Received" && appStatus != "Resubmitted")
-    {
+     
+    // EHIMS-5036     
+    if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")) 
+    {       
         updateAppStatus("Resubmitted");        
     }
 }

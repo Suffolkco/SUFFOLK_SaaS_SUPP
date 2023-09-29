@@ -10,4 +10,3 @@ if (appMatch("EnvHealth/Service Request/Variance/NA") || appMatch("EnvHealth/Ser
     //var cap = aa.env.getValue("CapModel");
     //var parentId = cap.getParentCapID();
 }
-

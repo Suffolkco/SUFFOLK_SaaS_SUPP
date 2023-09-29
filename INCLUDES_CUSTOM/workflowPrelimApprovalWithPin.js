@@ -148,8 +148,40 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
                     if (rFile) {
                     reportFile.push(rFile);
                     }
-
+                 
                     saveToRecord = false;
+
+                    // EHIMS-5117
+                    var docList = getDocumentList();
+                    var docDates = [];
+                    var maxDate;
+
+                    for (doc in docList)
+                    {
+                        if (matches(docList[doc].getDocCategory(), "SCDHS Preliminary Approval"))
+                        {
+                            logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+                            docDates.push(docList[doc].getFileUpLoadDate().getTime());
+                            maxDate = Math.max.apply(null, docDates);
+                            logDebug("maxdate is: " + maxDate);
+
+                            if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+                            {
+                                var docType = docList[doc].getDocCategory();
+                                var docFileName = docList[doc].getFileName();
+                            }
+                        }
+                    }
+
+                    //preparing most recent sketch document for email attachment
+                    var docToSend = prepareDocumentForEmailAttachment(capId, "SCDHS Preliminary Approval", docFileName);
+                    logDebug("docToSend" + docToSend);
+                    docToSend = docToSend === null ? [] : [docToSend];
+                    if (!matches(docToSend, null, undefined, ""))
+                    {
+                        reportFile.push(docToSend);
+                    }
+
                     
                     // No public user linkage, send also the ACA Pin instruction letter
                     if (!hasPublicUser && workflowHistoryPinSent == false)  
@@ -281,6 +313,8 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
         }
     
     }
+    //EHIMS-5041: remove all LP email
+    /*
     var lpEmail = "";
         
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
@@ -322,8 +356,8 @@ function workflowPrelimApprovalWithPin(reportName, reportNameAttachToRecord, rep
     if (!matches(lpEmail, null, undefined, ""))	
 	{
         logDebug("Found: " + lpEmail + " lp email in the array.");
-        sendNotification("", lpEmail, "", "DEQ_WWM_PRELIMINARY_REVIEW_APPROVED", lpEmailParams, null);
-    }
+        sendNotification("", lpEmail, "", "//EHIMS-5041: remove all LP email", lpEmailParams, null);
+    } */
 }
 
 function generateReport(aaReportName,parameters,rModule) {
@@ -357,4 +391,67 @@ function generateReport(aaReportName,parameters,rModule) {
          logMessage("No permission to report: "+ reportName + " for Admin" + systemUserObj);
          return false;
     }
+}
+
+function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFileName) {
+    if ((!documentType || documentType == "" || documentType == null) && (!documentFileName || documentFileName == "" || documentFileName == null))
+    {
+        logDebug("**WARN at least docType or docName should be provided, abort...!");
+        return null;
+    }
+    var documents = aa.document.getCapDocumentList(itemCapId, aa.getAuditID());
+    if (!documents.getSuccess())
+    {
+        logDebug("**WARN get cap documents error:" + documents.getErrorMessage());
+        return null;
+    } //get docs error
+    documents = documents.getOutput();
+    //sort (from new to old)
+    documents.sort(function (d1, d2) {
+        if (d1.getFileUpLoadDate().getTime() > d2.getFileUpLoadDate().getTime())
+            return -1;
+        else if (d1.getFileUpLoadDate().getTime() < d2.getFileUpLoadDate().getTime())
+            return 1;
+        else
+            return 0;
+    });
+    //find doc by type or name
+    var docToPrepare = null;
+    for (var d in documents)
+    {
+        var catt = documents[d].getDocCategory();
+        var namee = documents[d].getFileName();
+        if (documentType && documentType != null && documentType != "" && documentType == catt)
+        {
+            docToPrepare = documents[d];
+            break;
+        }
+        if (documentFileName && documentFileName != null && documentFileName != "" && namee.indexOf(documentFileName) > -1)
+        {
+            docToPrepare = documents[d];
+            break;
+        }
+    } //for all docs
+    //download to disk
+    if (docToPrepare == null)
+    {
+        logDebug("**WARN No documents of type or name found");
+        return null;
+    } //no docs of type or name
+    var thisCap = aa.cap.getCap(itemCapId).getOutput();
+    var moduleName = thisCap.getCapType().getGroup();
+    var toClear = docToPrepare.getFileName();
+    toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(".", "").replace(" ", "_");
+    docToPrepare.setFileName(toClear);
+    var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
+    if (downloadRes.getSuccess() && downloadRes.getOutput())
+    {
+        return downloadRes.getOutput().toString();
+    } else
+    {
+        logDebug("**WARN document download failed, " + docToPrepare.getFileName());
+        logDebug(downloadRes.getErrorMessage());
+        return null;
+    } //download failed
+    return null;
 }

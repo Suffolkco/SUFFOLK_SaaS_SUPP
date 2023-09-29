@@ -1,5 +1,5 @@
-//EHIMS2-35
 
+//EHIMS2-35
 if (!publicUser)
 {
     var greaseTrap = getAppSpecific("In-Kind Grease Trap Replacement");
@@ -127,6 +127,18 @@ if (!publicUser)
     }
 
 
+    // EHIMS2-289: Get Created By
+    var  capDetail = getCapDetailByID(capId);
+    var userId = capDetail.getCreateBy();
+    var createByUseObj = aa.person.getUser(userId).getOutput();  
+    if (createByUseObj != null)
+    {
+        var userName = createByUseObj.getFirstName() + " " + createByUseObj.getLastName();
+        logDebug("userName is: " + userName);
+        createByEmail =  createByUseObj.getEmail();           
+        logDebug("email address is: " + createByEmail);
+    }
+
     var contactResult = aa.people.getCapContactByCapID(capId);
     var capContacts = contactResult.getOutput();
     var propEmail = "";
@@ -171,8 +183,8 @@ if (!publicUser)
     {
         logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
     }
-    var allEmail = conEmail + lpEmail;
-
+    var allEmail = conEmail + lpEmail + createByEmail;
+    var propMailAll = propEmail + createByEmail;
 
     var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
     if (capParcelResult.getSuccess())
@@ -194,8 +206,9 @@ if (!publicUser)
     addParameter(vEParams, "$$Parcel$$", parcelNumber);
     addParameter(vEParams, "$$homeowner$$", propOwnerName);
     logDebug("propemail is: " + propEmail);
+    logDebug("propemailAll is: " + propMailAll);
     logDebug("allemail is: " + allEmail);
-    sendNotification("", propEmail, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
+    sendNotification("", propMailAll, "", "DEQ_SHIP_SANI_RETRO_PROPOSED", vEParams, null);
     sendNotification("", allEmail, "", "DEQ_SHIP_APPLICATION_RECEIVED", vEParams, null);
 
 }

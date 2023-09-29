@@ -167,7 +167,7 @@ function mainProcess()
                                     for (i in wfObj)
                                     {
                                         fTask = wfObj[i];
-                                        if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("Inspections")))
+                                        if (!matches(fTask.getDisposition() , null, undefined, "") && (fTask.getTaskDescription() == ("Inspections")))
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
 											{										        
@@ -291,11 +291,11 @@ function mainProcess()
 												
 												var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 												acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
-												var projectName = workDescGet(capId);
-
+												//var projectName = workDescGet(capId);
+												var projectName = getShortNotes();
 												var emailParams = aa.util.newHashtable();  
 												var conArray = getContactArray();
-
+												var addrResult = getAddressInALine(capId);
 												for (con in conArray)
 												{		
 													var address1 = conArray[con].addressLine1;				
@@ -312,6 +312,8 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$acaURL$$", acaSite);
 													addParameter(emailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
+													addParameter(emailParams, "$$address$$", addrResult);
+
 													conEmail2 = conArray[con].email;
 													if (conEmail2 != null)
 													{														
@@ -349,6 +351,8 @@ function mainProcess()
 													addParameter(lpEmailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(lpEmailParams, "$$acaURL$$", acaSite);
 													addParameter(lpEmailParams, "$$DAY$$", "180 DAYS PAST THE EXPIRATION DATE");
+													addParameter(lpEmailParams, "$$address$$", addrResult);
+
 													if (lpEmail != null)
 													{												
 														
@@ -388,6 +392,54 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function getAddressInALine() {
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
+}
+
 function isMatchCapCondition(capConditionScriptModel1, capConditionScriptModel2)
 {
   if (capConditionScriptModel1 == null || capConditionScriptModel2 == null)

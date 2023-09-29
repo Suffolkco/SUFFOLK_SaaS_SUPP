@@ -33,6 +33,7 @@ if (wfTask == 'Enter Hearing Info' && wfStatus == 'Complete')
 	editAppSpecific("Pre-Hearing Conference Date", loadTaskSpecific(wfTask, "Pre-Hearing Conference Date"), capId);	
 	editAppSpecific("Pre-Hearing Conference Time", loadTaskSpecific(wfTask, "Pre-Hearing Conference Time"), capId);
 
+	editAppSpecific("No Pre-Hearing Conference", loadTaskSpecific(wfTask, "No Pre-Hearing Conference"), capId);	
 	
 	editAppSpecific("License Expiration Date", loadTaskSpecific(wfTask, "License Expiration Date"), capId);
 
@@ -85,44 +86,115 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
    //logDebug("Amount of swimming pools on this record are: " + swimPools.length);
    
    var complaintNumber = getAppSpecific("Complaint Number", capId);
+   var licNum = getAppSpecific("License Number", capId);
    logDebug("complaintNumber: " + complaintNumber);
-	// License as Parent(if exists) -> Complaint -> Violation
-	var capComplaintResult = aa.cap.getCapID(complaintNumber);
+	if (!matches(complaintNumber, undefined, null, ""))
+	{
+		
+			// License as Parent(if exists) -> Complaint -> Violation(child) (Violationa and docket are siplings)
+			var capComplaintResult = aa.cap.getCapID(complaintNumber);
 
-	cmpCapId = getApplication(complaintNumber);
+			cmpCapId = getApplication(complaintNumber);
 
-	logDebug("cmpCapId " + cmpCapId);
+			logDebug("cmpCapId " + cmpCapId);
+	}
+
+	// Docket Custom Fields to copy to Violation
+	var docHearingDate = getAppSpecific("Hearing Date", capId);
+	var docHearingTime = getAppSpecific("Hearing Time", capId);
+	var docPreConfDate = getAppSpecific("Pre-Hearing Conference Date", capId);
+	var docPreConfTime = getAppSpecific("Pre-Hearing Conference Time", capId);
+
    for (c in cheatSheet)
    {
 	
 		var item = cheatSheet[c]["Item"];
 	   var vioDate = cheatSheet[c]["Violation Date"];
-	   var occDate = cheatSheet[c]["Occurence Date"];
+	   var occDate = cheatSheet[c]["Occurrence Date"];
 	   var caseNo = cheatSheet[c]["Case Number"];	  
 	  
-	   var charge = cheatSheet[c]["Charge"];
+	   var charge = cheatSheet[c]["Law"];
 	   var createVio = cheatSheet[c]["Create Violation"];
 	   var vioNo = cheatSheet[c]["Reference Violation Number"];
 	    
 	   var abbDesc = cheatSheet[c]["Abbreviated Description"];
+	   var desc = cheatSheet[c]["Description"];
+	   var maxPenalty = cheatSheet[c]["Max Penalty"];
+	   var reducedPenalty = cheatSheet[c]["Reduced Penalty"];
 
 	   logDebug("vioNo: " + vioNo);
 	   logDebug("createVio: " + createVio);
 	   // Only if they enable the flag and the field is empty
 	   if (createVio == 'CHECKED' && (vioNo == null || vioNo == ""))
 	   {
-			if (capComplaintResult.getSuccess()) {
-				cmpCapId = capComplaintResult.getOutput();		
-				logDebug("cmpCapId: " + cmpCapId);			
+		var violationChild;
+
+		if (!matches(complaintNumber, undefined, null, ""))
+		{
+			logDebug("Complaint Record exists:" + complaintNumber);
+		}
+		if (!matches(licNum, undefined, null, ""))
+		{
+			logDebug("License Record exists:" + licNum);
+		}
+
+		// Create violation as child of docket. 
+		violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", "");
+
+			/* This is wrong
+			// Set Complaint as parent if exist. DKT and violation are siblings and are child of complaint. License is the grandparent.			
+			if (!matches(complaintNumber, undefined, null, ""))
+			{
+				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
+				logDebug("Complaint Record as parent. Violation as child.");
 			}
-			
-			var violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", cmpCapId);
+			else if (!matches(licenseNumber, undefined, null, ""))// No complaint record, can only be the child of license
+			{
+				var capLicResult = aa.cap.getCapID(licenseNumber);
+				licCapId = getApplication(licenseNumber);
+				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", licCapId);
+
+				logDebug("License Record as parent. No Complaint Record. Violation as child.");
+
+			}
+			else // No complaint nor license. Can only relate to Dkt
+			{
+				violationChild = createChildLocal("ConsumerAffairs", "Violation", "NA", "NA", capId);
+				logDebug("Docket Record as parent. No Complaint Record nor license. Violation as child.");
+			} */
+
 			if (violationChild != null)
 			{		
+				var success = deactivateAllActiveTasks(violationChild);
+				logDebug("Deactive success? " + success);
 				logDebug("Violation date: " + vioDate);
-				editAppSpecific("Date of Violation(Occurence)", vioDate, violationChild);     							
+				editAppSpecific("Date of Violation", vioDate, violationChild); 
+				editAppSpecific("Hearing Date", docHearingDate, violationChild); 
+				editAppSpecific("Hearing Time", docHearingTime, violationChild); 
+				editAppSpecific("Pre-Conference Date", docPreConfDate, violationChild); 
+				editAppSpecific("Pre-Conference Time", docPreConfTime, violationChild); 
+
 				copyContacts(capId, violationChild);
 				
+				
+				// Add law and penalty information to violation asitable as well
+				
+				logDebug("Law: " + charge);              
+				logDebug("Violation Description: " + desc);
+				logDebug("Abbreviated Description: " + abbDesc);             
+				logDebug("Max Penalty: " + maxPenalty);                
+				logDebug("Reduced Penalty: " + reducedPenalty);       		
+				var newVioResultsTable = new Array();				
+				var newRow = new Array();
+				newRow["Law"] = charge;
+				newRow["Violation Description"] = desc;
+				newRow["Abbreviated Description"] = abbDesc;
+				newRow["Max Penalty"] = maxPenalty;
+				newRow["Reduced Penalty"] = reducedPenalty;								
+				newVioResultsTable.push(newRow);			
+				logDebug("Add Row to : " + violationChild);       			
+				addRowToASITable("POTENTIAL VIOLATION", newRow, violationChild);
+
 				// Put the newly created violation record ID back to the cheat sheet
 				vioAltId = violationChild.getCustomID();
 				logDebug("vioAltId: " + vioAltId);
@@ -131,6 +203,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Reference Violation Number", vioAltId, item, "Item");
 				editASITableRowViaRowIdentifer(capId, "VIOLATION CHEAT SHEET", "Case Number", complaintNumber, item, "Item");
 				
+				
 			}
 		}
 		
@@ -138,7 +211,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 	}
 
 	// VENODR
-	editAppSpecific("A63 Unlicensed", loadTaskSpecific(wfTask, "A63 Unlicensed"));
+	editAppSpecific("A63 Licensed", loadTaskSpecific(wfTask, "A63 Licensed"));
 	editAppSpecific("A64 Unlicensed", loadTaskSpecific(wfTask, "A64 Unlicensed"));
 	editAppSpecific("A65 Licensed", loadTaskSpecific(wfTask, "A65 Licensed"));
 	editAppSpecific("A66 Unlicensed", loadTaskSpecific(wfTask, "A66 Unlicensed"));
@@ -160,6 +233,7 @@ else if (wfTask == 'Create Violations' && wfStatus == 'Complete')
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 {
     editAppSpecific("Mailed Letter", loadTaskSpecific(wfTask, "Mailed Letter"));
+	editAppSpecific("Affidavit of Service", loadTaskSpecific(wfTask, "Affidavit of Service"));
 
 }
 
@@ -210,17 +284,35 @@ else if (wfTask == "Hearing")
 	editAppSpecific("Consumer Witnessess", loadTaskSpecific(wfTask, "Consumer Witnessess"), capId);	
 	editAppSpecific("Translator Used", loadTaskSpecific(wfTask, "Translator Used"), capId);
 
+	editAppSpecific("Vendor Appearance", loadTaskSpecific(wfTask, "Vendor Appearance"), capId);	
+	editAppSpecific("Consumer Appearance", loadTaskSpecific(wfTask, "Consumer Appearance"), capId);
+	editAppSpecific("Attorney Appearance", loadTaskSpecific(wfTask, "Attorney Appearance"), capId);	
+	
+	editAppSpecific("Adjustment Request", loadTaskSpecific(wfTask, "Adjustment Request"), capId);	
+
+	editAppSpecific("Other License Statuses", loadTaskSpecific(wfTask, "Other License Statuses"), capId);	
+
 	editAppSpecific("Waiver Due Date Amount", loadTaskSpecific(wfTask, "Waiver Due Date Amount"), capId);
-	editAppSpecific("Number of Default Hearings", loadTaskSpecific(wfTask, "Number of Default Hearings"), capId);
+	//editAppSpecific("Number of Default Hearings", loadTaskSpecific(wfTask, "Number of Default Hearings"), capId);
 	editAppSpecific("Waiver Due Date License", loadTaskSpecific(wfTask, "Waiver Due Date License"), capId);
 	editAppSpecific("Settlement Due Date", loadTaskSpecific(wfTask, "Settlement Due Date"), capId);
-	editAppSpecific("Number of Full Hearings", loadTaskSpecific(wfTask, "Number of Full Hearings"), capId);
+	//editAppSpecific("Number of Full Hearings", loadTaskSpecific(wfTask, "Number of Full Hearings"), capId);
+	editAppSpecific("Hearings", loadTaskSpecific(wfTask, "Hearings"), capId);
 	editAppSpecific("AOD Date Signed", loadTaskSpecific(wfTask, "AOD Date Signed"), capId);
 	editAppSpecific("AOD Date Due Amount", loadTaskSpecific(wfTask, "AOD Date Due Amount"), capId);
 
 	
+	editAppSpecific("Investigator Recommended Revocation", loadTaskSpecific(wfTask, "Investigator Recommended Revocation"), capId);
+
+	editAppSpecific("I agree to pay penalty or apply and timely apply license by date", loadTaskSpecific(wfTask, "I agree to pay penalty or apply and timely apply license by date"), capId);
+	
 	editAppSpecific("License Obtained Due Date", loadTaskSpecific(wfTask, "License Obtained Due Date"), capId);
+	editAppSpecific("Type of License Required", loadTaskSpecific(wfTask, "Type of License Required"), capId);
+
+	editAppSpecific("Waiver Date Signed", loadTaskSpecific(wfTask, "Waiver Date Signed"), capId);
 	   
+	editAppSpecific("Waiver", loadTaskSpecific(wfTask, "Waiver"), capId);
+	editAppSpecific("AOD", loadTaskSpecific(wfTask, "AOD"), capId);
 
 }
 else if (wfTask == "Hearing Report")
@@ -353,6 +445,61 @@ function loadTaskSpecific(wfName,itemName)  // optional: itemCap
 			}  // found workflow task
 		} // each task
 		return null
+}
+
+function addRowToASITable(tableName, tableValues) //optional capId
+{
+    //tableName is the name of the ASI table
+    //tableValues is an associative array of values.  All elements must be either a string or asiTableVal object
+    itemCap = capId
+    if (arguments.length > 2)
+    {
+        itemCap = arguments[2]; //use capId specified in args
+    }
+    var tssmResult = aa.appSpecificTableScript.getAppSpecificTableModel(itemCap, tableName);
+    if (!tssmResult.getSuccess())
+    {
+        logDebug("**WARNING: error retrieving app specific table " + tableName + " " + tssmResult.getErrorMessage());
+        return false;
+    }
+    var tssm = tssmResult.getOutput();
+    var tsm = tssm.getAppSpecificTableModel();
+    var fld = tsm.getTableField();
+    var col = tsm.getColumns();
+    var fld_readonly = tsm.getReadonlyField(); //get ReadOnly property
+    var coli = col.iterator();
+    while (coli.hasNext())
+    {
+        colname = coli.next();
+        if (!tableValues[colname.getColumnName()]) 
+        {
+            logDebug("Value in " + colname.getColumnName() + " - " + tableValues[colname.getColumnName()]);
+            logDebug("addToASITable: null or undefined value supplied for column " + colname.getColumnName() + ", setting to empty string");
+            tableValues[colname.getColumnName()] = "";
+        }
+        if (typeof (tableValues[colname.getColumnName()].fieldValue) != "undefined")
+        {
+            fld.add(tableValues[colname.getColumnName()].fieldValue);
+            fld_readonly.add(tableValues[colname.getColumnName()].readOnly);
+        }
+        else // we are passed a string
+        {
+            fld.add(tableValues[colname.getColumnName()]);
+            fld_readonly.add(null);
+        }
+    }
+    tsm.setTableField(fld);
+    tsm.setReadonlyField(fld_readonly); // set readonly field
+    addResult = aa.appSpecificTableScript.editAppSpecificTableInfos(tsm, itemCap, currentUserID);
+    if (!addResult.getSuccess())
+    {
+        logDebug("**WARNING: error adding record to ASI Table:  " + tableName + " " + addResult.getErrorMessage());
+        return false;
+    }
+    else
+    {
+        logDebug("Successfully added record to ASI Table: " + tableName);
+    }
 }
 
 function sendVendorEmail(nodDate, nodAmt, nodDueDate, paymentDueDate)
@@ -506,4 +653,32 @@ function addDays(date, days)
 	var result = new Date(date);
 	result.setDate(result.getDate() + days);
 	return result;
+}
+
+function deactivateAllActiveTasks(targetCapId) {
+    var t = aa.workflow.getTasks(targetCapId);
+    if (t.getSuccess())
+        wfObj = t.getOutput();
+    else
+    {
+        logDebug("**INFO: deactivateAllActiveTasks() Failed to get workflow Tasks: " + t.getErrorMessage());
+        return false;
+    }
+    for (i in wfObj)
+    {
+        fTask = wfObj[i];
+        if (fTask.getActiveFlag().equals("Y"))
+        {
+            var deact = aa.workflow.adjustTask(targetCapId, fTask.getStepNumber(), "N", fTask.getCompleteFlag(), null, null);
+            if (!deact.getSuccess())
+            {
+                logDebug("**INFO: deactivateAllActiveTasks() Failed " + deact.getErrorMessage());
+            }
+			else
+			{			
+				logDebug("deactived: " + fTask.getTaskDescription());
+			}
+        }
+    }
+    return true;
 }

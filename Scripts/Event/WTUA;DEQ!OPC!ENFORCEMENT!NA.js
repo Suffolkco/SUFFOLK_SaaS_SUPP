@@ -222,11 +222,18 @@ if (wfTask == "Violation Review")
 
         if (wfStatus == 'Enforcement Request Sent')
         {
-            logDebug("otpRFiles.length is: " + otpRFiles.length);
-
-            if (otpRFiles.length > 0)
+            
+            logDebug("inspDates.length is: " + inspDates.length);
+            // Only if there are entries in the PBS/NonPBS Violations custom table
+            if (inspDates.length> 0)
             {
-                sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
+
+                logDebug("otpRFiles.length is: " + otpRFiles.length);
+
+                if (otpRFiles.length > 0)
+                {
+                    sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
+                }
             }
         }
         else if (wfStatus == 'NOV Letter Sent')
@@ -422,6 +429,11 @@ if (wfTask == "Preliminary Hearing")
     }
     if (wfStatus == "Revised Waiver")
     {
+        logDebug("Record ID report: " + capId.getCustomID().toString());
+
+        reportParams.put("RecordID", capId.getCustomID().toString());
+        logDebug(reportParams);
+        var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
 
         var prelimHearingUserId = getUserIDAssignedToTask(capId, "Preliminary Hearing")
         var userToSend = aa.person.getUser(prelimHearingUserId).getOutput();
@@ -440,9 +452,7 @@ if (wfTask == "Preliminary Hearing")
         addParameter(emailParams, "$$revFineAmount$$", revisedFineAmount);
         addParameter(emailParams, "$$feeDueDate$$", prelimHearingDue);
         //addParameter(reportParams, "$$RecordID$$", capId.getCustomID());
-        reportParams.put("RecordID", capId.getCustomID().toString());
-        logDebug(reportParams);
-        var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
+              
 
         if (reportToUse)
         {
@@ -503,6 +513,9 @@ if (wfTask == "Formal Hearing")
     }
     if (wfStatus == "Revised Waiver")
     {
+        reportParams.put("RecordID", capId.getCustomID().toString());
+        var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
+        
         var formalHearingUserId = getUserIDAssignedToTask(capId, "Formal Hearing")
         logDebug("formal hearing user id is: " + formalHearingUserId);
         var userToSend = aa.person.getUser(formalHearingUserId).getOutput();
@@ -520,8 +533,7 @@ if (wfTask == "Formal Hearing")
         addParameter(emailParams, "$$fineAmount$$", fineAmount);
         addParameter(emailParams, "$$feeDueDate$$", formHearingDue);
         addParameter(emailParams, "$$revFineAmount$$", revisedFineAmount);
-        reportParams.put("RecordID", capId.getCustomID().toString());
-        var reportToUse = generateReportP("OPC Waiver Report", reportParams, 'DEQ');
+       
 
         if (reportToUse)
         {

@@ -22,6 +22,7 @@
             "Facility Owner"
           ],
           "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "url4ACA": "",
           "createFromParent": false,
           "reportingInfoStandards": ""
@@ -131,6 +132,7 @@
           ],
           "additionalEmailsTo": "",
           "url4ACA": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "createFromParent": false,
           "reportingInfoStandards": ""
         },
@@ -156,12 +158,13 @@
             "Facility Owner"
           ],
           "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "url4ACA": "",
           "createFromParent": false,
           "reportingInfoStandards": ""
         },
         "postScript": ""
-      }
+      }    
     ]
   },
   "EnvHealth/*/*/Permit": {
@@ -185,6 +188,7 @@
             "Applicant"
           ],
           "additionalEmailsTo": "",
+          "fromEmail": "noreplyphp@suffolkcountyny.gov",
           "url4ACA": "",
           "createFromParent": false,
           "reportingInfoStandards": ""

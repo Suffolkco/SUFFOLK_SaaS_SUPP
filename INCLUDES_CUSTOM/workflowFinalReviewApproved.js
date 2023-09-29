@@ -27,13 +27,15 @@ function workflowFinalReviewApproved()
 	{ 
 		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
 	}
+	//EHIMS-5041 No LP
+	/*
 	for (var lp in lpArr)
 	{
 		if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
 		{
 			conEmail += lpArr[lp].getEmail() + "; ";
 		}
-	}
+	}*/
 	getRecordParams4Notification(emailParams);
     getWorkflowParams4Notification(emailParams);    
     //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());

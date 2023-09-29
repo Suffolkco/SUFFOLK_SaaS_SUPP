@@ -16,13 +16,16 @@ if (wfTask == "Enter Hearing Info" && wfStatus == "Complete")
     }
 
 	var complaintNumber = AInfo["Updated.Complaint Number"];
-    cmpCapId = getApplication(complaintNumber);
-    if (!cmpCapId)   
+    if (!matches(complaintNumber, undefined, null, ""))
     {
-        cancel = true;
-        showMessage = true;
-        comment("The Complaint Number entered '" + complaintNumber + "' is invalid. Please enter a valid Complaint Number.");
-	}
+        cmpCapId = getApplication(complaintNumber);
+        if (!cmpCapId)   
+        {
+            cancel = true;
+            showMessage = true;
+            comment("The Complaint Number entered '" + complaintNumber + "' is invalid. Please enter a valid Complaint Number.");
+        }
+    }
 
 
     // DOCKET - 23/30: Custom Field required fields
@@ -87,7 +90,7 @@ if (wfTask == "Create Violation Cheatsheet" && wfStatus == "Complete")
 else if (wfTask == "Create Violations" && wfStatus == "Complete")
 {
      // DOCKET #9: lBlock letter has not been mailed
-    /*var a63 =  AInfo["A63 Unlicensed"]
+    /*var a63 =  AInfo["A63 Licensed"]
 	var a64 =  AInfo["A64 Unlicensed"]
 	var a65 =  AInfo["A65 Unlicensed"]
     var a66 =  AInfo["A66 Unlicensed"]
@@ -103,7 +106,7 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
     var a75 =  AInfo["A75 Adjournment Letter"]
     var a76 =  AInfo["A76 Adjournment Letter"]*/
 
-    var a63 = AInfo["Updated.A63 Unlicensed"];
+    var a63 = AInfo["Updated.A63 Licensed"];
     var a64 = AInfo["Updated.A64 Unlicensed"];
     var a65 = AInfo["Updated.A65 Licensed"];
     var a66 = AInfo["Updated.A66 Unlicensed"];
@@ -120,10 +123,13 @@ else if (wfTask == "Create Violations" && wfStatus == "Complete")
     var a76 = AInfo["Updated.A76 Adjournment Letter"];
     var enf = AInfo["Updated.Enforcement"];
 
-	if (a63 == 'CHECKED' || a64 == 'CHECKED' || a65 == 'CHECKED' || a66 == 'CHECKED' || a67 == 'CHECKED' || a67a == 'CHECKED' ||
+    logDebug("Enforcement: " + enf);
+
+	if ((a63 == 'CHECKED' || a64 == 'CHECKED' || a65 == 'CHECKED' || a66 == 'CHECKED' || a67 == 'CHECKED' || a67a == 'CHECKED' ||
     a68 == 'CHECKED' || a69 == 'CHECKED' || a70 == 'CHECKED' || a71 == 'CHECKED'
     || a72 == 'CHECKED' || a73 == 'CHECKED' || a74 == 'CHECKED'
-    || a75 == 'CHECKED' || a76 == 'CHECKED' || enf == 'CHECKED')
+    || a75 == 'CHECKED' || a76 == 'CHECKED') 
+    || enf == 'CHECKED')
     {
         // Letter checkbox has been checked.
     }
@@ -164,75 +170,76 @@ else if (wfTask == "Hearing Report" && wfStatus == "Complete")
 else if (wfTask == "Notice of Hearing" && wfStatus == "Complete")
 {
     //Check if the AOS has not been scanned 
-    aosCheck = determineDocumentAttached("Affidavit of Service");
-    
-    if(!aosCheck)
+    var aosChecked =  AInfo["Updated.Affidavit of Service"]
+    logDebug("aosChecked: " + aosChecked);
+
+    if (aosChecked == 'Yes')
     {
-        cancel = true;
-        showMessage = true;
-        comment("No AOS document has been attached. Please attach Affidavit of Service document before proceeding. Unable to move to the next task.");
+
+        aosCheck = determineDocumentAttached("Affidavit of Service");
+        
+        if(!aosCheck)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("No AOS document has been attached. Please attach Affidavit of Service document before proceeding. Unable to move to the next task.");
+        }
     }  
 
 
 }
-// DOCKET #6: At Hearing, WTUA to block from proceeding if audio recording has not been attached
-else if (wfTask == "Hearing" && (wfStatus == "Full Hearing" || wfStatus == "Default"))
-{
-    //Check if the audio hearing has not been scanned 
-    audioCheck = determineDocumentAttached("Audio Hearing Recording");
 
-    if(!audioCheck)
+else if (wfTask == "Hearing")
+{
+    //Check if the Waiver has not been scanned 
+    var waiverChecked =  AInfo["Updated.Waiver"]
+    logDebug("waiverChecked: " + waiverChecked);
+
+    if (waiverChecked == 'Yes')
     {
-        cancel = true;
-        showMessage = true;
-        comment("No audio hearing recording has been attached. Please upload before proceeding. Unable to move to the next task.");
+        waiverAttachmentCheck = determineDocumentAttached("Waiver");
+
+        if (!waiverAttachmentCheck)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("No Waiver has been attached. Please upload before proceeding. Unable to move to the next task.");
+        }
     }
 
-    // For reference
-    /*
-    Those come from the values stored in "aa.env.getValue("TaskSpecificInfoModels")"
-
-    You can extract them like they do in the WorkflowTaskUpdateBefore Master Script:
     
-    var wfTSI = aa.env.getValue("TaskSpecificInfoModels");
+    //Check if the AOD has not been scanned 
+    var aodChecked =  AInfo["Updated.AOD"]
+    logDebug("aodChecked: " + aodChecked);
 
-    if (wfTSI != "")
+    if (aodChecked == 'Yes')
     {
+        aodAttachmentCheck = determineDocumentAttached("AOD");
 
-        for (TSIm in wfTSI)
+        if (!aodAttachmentCheck)
         {
-
-            if (useTaskSpecificGroupName)
-
-                AInfo["Updated." + wfProcess + "." + wfTask + "." + wfTSI[TSIm].getCheckboxDesc()] = wfTSI[TSIm].getChecklistComment();
-
-            else
-
-                AInfo["Updated." + wfTSI[TSIm].getCheckboxDesc()] = wfTSI[TSIm].getChecklistComment();
-
+            cancel = true;
+            showMessage = true;
+            comment("No AOD has been attached. Please upload before proceeding. Unable to move to the next task.");
         }
+    }
 
+
+    // DOCKET #6: At Hearing, WTUA to block from proceeding if audio recording has not been attached
+    // only need to do it in configuration. No need to script this
+    /*if(wfStatus == "Full Hearing" || wfStatus == "Default")
+    {
+        //Check if the audio hearing has not been scanned 
+        audioCheck = determineDocumentAttached("Audio Hearing Recording");
+
+        if(!audioCheck)
+        {
+            cancel = true;
+            showMessage = true;
+            comment("No audio hearing recording has been attached. Please upload before proceeding. Unable to move to the next task.");
+        }     
     }
     */
-
-    // Check if Hearing custom fields have been filled in
-    /*
-    var vendorAttorn =  AInfo["Update.Vendor Attorney Present"]
-	var conAttorn =  AInfo["Update.Consumer Attorney Present"]
-	var vp =  AInfo["Update.Vendor Present"]
-    var cp =  AInfo["Update.Consumer Present"]
-    var vw =  AInfo["Update.Vendor Witnessess"]
-    var cw = AInfo["Update.Consumer Witnesses"]
-    var tu = AInfo["Update.Translator Used"]
-
-    if(vendorAttorn == null || conAttorn == null || vp == null || cp == null || vw == null || cw == null || tu == null)
-    {
-        cancel = true;
-        showMessage = true;
-        comment("Hearing Information section(Vendor/Consumer/Attorney/Translator) in ASI/Custom Field must be filled in. Please go to Custom Field tab to input all values.");
-        
-    } */
-
 }
 
 function determineDocumentAttached(docType) 

@@ -130,6 +130,18 @@ function mainProcess()
                 totalPermits++;
                 if (cap) 
                 {
+                        // EHIMS2-289: Get Created By
+                        var  capDetail = getCapDetailByID(capId);
+                        var userId = capDetail.getCreateBy();
+                        var createByUseObj = aa.person.getUser(userId).getOutput();  
+                        if (createByUseObj != null)
+                        {
+                            var userName = createByUseObj.getFirstName() + " " + createByUseObj.getLastName();
+                            logDebug("userName is: " + userName);
+                            createByEmail =  createByUseObj.getEmail();           
+                            logDebug("email address is: " + createByEmail);
+                        }
+
                     var myStatusHistory = getCapStatusHistory(null, capId);
                     //logDebug("Status History:" + myStatusHistory);
                    
@@ -167,6 +179,7 @@ function mainProcess()
                                         var iaInstallerEmail = capLPs[l].getLicenseType().email;
                                         addParameter(params, "$$altId$$", capId.getCustomID());
                                         sendNotification("noreplyehims@suffolkcountyny.gov", iaInstallerEmail, "", notificationToSend, params, null);
+                                        sendNotification("noreplyehims@suffolkcountyny.gov", createByEmail, "", notificationToSend, params, null);
                                     }
                                 }
                             }
@@ -193,6 +206,7 @@ function mainProcess()
                                         var iaInstallerEmail = capLPs[l].getLicenseType().email;
                                         addParameter(params, "$$altId$$", capId.getCustomID());
                                         sendNotification("noreplyehims@suffolkcountyny.gov", iaInstallerEmail, "", notificationToSend, params, null);
+                                        sendNotification("noreplyehims@suffolkcountyny.gov", createByEmail, "", notificationToSend, params, null);
                                     }
                                 }
                             }

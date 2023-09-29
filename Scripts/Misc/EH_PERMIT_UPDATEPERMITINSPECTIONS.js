@@ -7,14 +7,14 @@ for (y in myTable) {
     var GSSeqNo = current_row["Checklist Item ID"].fieldValue;
     var GSInspId = parseInt(current_row["Inspection ID"].fieldValue);
     var GSViolName = current_row["Violation Name"].fieldValue;
-    var GSViolDegree = current_row["Degree"].fieldValue;
+    //var GSViolDegree = current_row["Degree"].fieldValue;
     var GSViolStatus = current_row["Status"].fieldValue;
     var GSComplyBy = current_row["Comply By"].fieldValue;
-    var GSCompliedOn= current_row["Complied On"].fieldValue;
+    //var GSCompliedOn= current_row["Complied On"].fieldValue;
     var GSComplianceType= current_row["Compliance Type"].fieldValue;
     updateGuidesheetItemStatus(GSInspId, GSViolName, GSViolStatus, capId);
     var UniqueId = GSInspId + GSSeqNo;
-    gsUpdateArr[UniqueId] = new Array(GSSeqNo,GSViolName,"Return to Compliance Date",GSCompliedOn,"Return to Compliance Qualifier",GSComplianceType,"Comply By",GSComplyBy,capId,GSInspId);
+    gsUpdateArr[UniqueId] = new Array(GSSeqNo,GSViolName,"Return to Compliance Date","Return to Compliance Qualifier",GSComplianceType,"Comply By",GSComplyBy,capId,GSInspId);
 }
 updateGuidesheetFieldValueByArray(gsUpdateArr,capId);
 

@@ -35,11 +35,11 @@ if (wfTask == "Inspections" && (wfStatus == "Inspection Failure" || wfStatus == 
 		workflowInspectionResultedWWM("Inspection Corrections Required", "RECORDID");
 	}
 }
-/*if (wfTask == "Inspections" && wfStatus == "Partial Final Approval")
-	{
-		THIS IS FORTHCOMING
-	} 
-*/
+if (wfStatus == "Partial Final Approval")
+{
+	workflowPartialReviewApproved();	
+} 
+
 
 if (wfTask == "Inspections" && wfStatus == "Complete")
 {

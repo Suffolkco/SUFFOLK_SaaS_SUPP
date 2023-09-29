@@ -99,7 +99,22 @@ opted not to use parcel search method and just to link via ASI entry instead - R
     if (iaNumber != "")
     {
       logDebug("We found a matching IA record: " + iaNumber);
-      addParent(iaNumber);
+      //addParent(iaNumber);
+      //EHIMS 5119 Fix errors by removing the accela function addParent and replace by the below
+      var getCapResult = aa.cap.getCapID(iaNumber);
+      if (getCapResult.getSuccess())
+      {
+        var parentId = getCapResult.getOutput();
+        var linkResult = aa.cap.createAppHierarchy(parentId, capId);
+        if (linkResult.getSuccess())
+          logDebug("Successfully linked to Parent Application : " + iaNumber);
+        else
+          logDebug( "**ERROR: linking to parent application parent cap id (" + iaNumber + "): " + linkResult.getErrorMessage());
+        
+      }
+      else
+      { logDebug( "**ERROR: getting parent cap id (" + iaNumber + "): " + getCapResult.getErrorMessage()) }
+      
     }
   }
 }

@@ -41,21 +41,21 @@ if (myTable != null && parentFacilityID) {
                 if(!matches(current_row["Status"],null,undefined,"null")){
                     asitRow["Status"] = new asiTableValObj("Status", current_row["Status"].toString(), "Y");
                 }
-                if(!matches(current_row["Degree"],null,undefined,"null")){
-                    asitRow["Degree"] = new asiTableValObj("Degree", current_row["Degree"].toString(), "Y");
-                }
-                if(!matches(current_row["Observed Date"],null,undefined,"null")){
-                    asitRow["Observed Date"] = new asiTableValObj("Observed Date",  current_row["Observed Date"].toString(), "Y");
-                }
+                //if(!matches(current_row["Degree"],null,undefined,"null")){
+                //    asitRow["Degree"] = new asiTableValObj("Degree", current_row["Degree"].toString(), "Y");
+                //}
+                //if(!matches(current_row["Observed Date"],null,undefined,"null")){
+                //    asitRow["Observed Date"] = new asiTableValObj("Observed Date",  current_row["Observed Date"].toString(), "Y");
+                //}
                 if(!matches(current_row["Comply By"],null,undefined,"null")){
                     asitRow["Comply By"] = new asiTableValObj("Comply By",current_row["Comply By"].toString(),"N");
                 }
                 if(!matches(current_row["Complied On"],null,undefined,"null")){
                     asitRow["Complied On"] = new asiTableValObj("Complied On",current_row["Complied On"].toString(),"N");
                 }
-                if(!matches(current_row["Compliance Type"],null,undefined,"null")){
-                    asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",current_row["Compliance Type"].toString(),"N");
-                }
+               //if(!matches(current_row["Compliance Type"],null,undefined,"null")){
+                //    asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",current_row["Compliance Type"].toString(),"N");
+                //}
                 if(!matches(current_row["Checklist Comment"],null,undefined,"null")){
                     asitRow["Checklist Comment"] = new asiTableValObj("Checklist Comment",current_row["Checklist Comment"].toString(),"Y");
                 }
@@ -94,21 +94,21 @@ if (myTable != null && parentFacilityID) {
                             if(!matches(current_row["Status"],null,undefined,"null")){
                                 asitRow["Status"] = new asiTableValObj("Status", current_row["Status"].toString(), "Y");
                             }
-                            if(!matches(current_row["Degree"],null,undefined,"null")){
-                                asitRow["Degree"] = new asiTableValObj("Degree", current_row["Degree"].toString(), "Y");
-                            }
-                            if(!matches(current_row["Observed Date"],null,undefined,"null")){
-                                asitRow["Observed Date"] = new asiTableValObj("Observed Date",  current_row["Observed Date"].toString(), "Y");
-                            }
+                            //if(!matches(current_row["Degree"],null,undefined,"null")){
+                            //    asitRow["Degree"] = new asiTableValObj("Degree", current_row["Degree"].toString(), "Y");
+                            //}
+                            //if(!matches(current_row["Observed Date"],null,undefined,"null")){
+                            //    asitRow["Observed Date"] = new asiTableValObj("Observed Date",  current_row["Observed Date"].toString(), "Y");
+                            //}
                             if(!matches(current_row["Comply By"],null,undefined,"null")){
                                 asitRow["Comply By"] = new asiTableValObj("Comply By",current_row["Comply By"].toString(),"N");
                             }
                             if(!matches(current_row["Complied On"],null,undefined,"null")){
                                 asitRow["Complied On"] = new asiTableValObj("Complied On",current_row["Complied On"].toString(),"N");
                             }
-                            if(!matches(current_row["Compliance Type"],null,undefined,"null")){
-                                asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",current_row["Compliance Type"].toString(),"N");
-                            }
+                            //if(!matches(current_row["Compliance Type"],null,undefined,"null")){
+                            //    asitRow["Compliance Type"] = new asiTableValObj("Compliance Type",current_row["Compliance Type"].toString(),"N");
+                            //}
                             if(!matches(current_row["Checklist Comment"],null,undefined,"null")){
                                 asitRow["Checklist Comment"] = new asiTableValObj("Checklist Comment",current_row["Checklist Comment"].toString(),"Y");
                             }
@@ -137,18 +137,18 @@ if (myTable != null && parentFacilityID) {
             if(!matches(current_row["Checklist Item ID"],undefined,null)){
                 var GSSeqNo = current_row["Checklist Item ID"].fieldValue;
                 var tblStatus = current_row["Status"].fieldValue;
-                var degree = current_row["Degree"].fieldValue;
-                var obsDate = current_row["Observed Date"].fieldValue;
+                //var degree = current_row["Degree"].fieldValue;
+                //var obsDate = current_row["Observed Date"].fieldValue;
                 var complyBy = current_row["Comply By"].fieldValue;
                 var complyOn = current_row["Complied On"].fieldValue;
-                var complyType = current_row["Compliance Type"].fieldValue;
+                //var complyType = current_row["Compliance Type"].fieldValue;
                 var checklistCom = current_row["Checklist Comment"].fieldValue;
                 editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Status", tblStatus);
-                editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Degree", degree);
-                editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Observed Date", obsDate);
+                //editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Degree", degree);
+                //editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Observed Date", obsDate);
                 editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Comply By", complyBy);
                 editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Complied On", complyOn);
-                editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Compliance Type", complyType);
+                //editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Compliance Type", complyType);
                 editSpecificASITableRowforInteger2Column(enfCapId, "VIOLATIONS", "Checklist Item ID", GSSeqNo,"Inspection ID", GSInspId,"Checklist Comment", checklistCom);
             }
         }
@@ -162,7 +162,7 @@ if (violationsAryNew.length > 0) {
   var sourceCapAppName = aa.cap.getCap(capId).getOutput().specialText;
   var newEnfCapAlias = sourceCap.getCapType().getAlias();
   editAppSpecific("Case Initiated Date", dateAdd(null, 0), newEnfCapId);
-  editAppSpecific("Facility ID", sourceCapAppName, newEnfCapId);
+  editAppSpecific("Facility ID", parentFacilityID.getCustomID(), newEnfCapId);
   editAppSpecific("Facility Name", sourceCapAppName, newEnfCapId);
   editAppName(sourceCapAppName, newEnfCapId);
   if (!matches(newEnfCapAlias, null, undefined)) {
