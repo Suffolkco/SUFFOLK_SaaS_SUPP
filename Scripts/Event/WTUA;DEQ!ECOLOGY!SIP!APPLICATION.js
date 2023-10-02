@@ -3,10 +3,10 @@
 //EIHMS232
 try
 {
-	if (wfTask == "Application Review" && wfStatus == "Document Request")
+	/*if (wfTask == "Application Review" && wfStatus == "Document Request")
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_DOC_REQUEST");
-	}
+	}*/
 	
 	if ((wfTask == "Application Review" || wfTask == "Grant Review") && (wfStatus == "Applicant Clarification"))
 	{
@@ -14,20 +14,23 @@ try
 	}
 	
 	
-	if ((wfTask == "Application Review" || wfTask == "Grant Review" || wfTask =="Contract Processing") && (wfStatus == "Withdrawn"))
+	/*if ((wfTask == "Application Review" || wfTask == "Grant Review" || wfTask =="Contract Processing") && (wfStatus == "Withdrawn"))
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_WITHDRAWN");
-	}
+	}*/
 	
 	if ((wfTask == "Application Review" || wfTask == "Grant Review" || wfTask == "Application Review") && (wfStatus == "Ineligible"))
 	{
-		sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+		//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("State Status", "Ineligible");
 	}
 	
-	if ((wfTask == "Grant Review") && (wfStatus == "Document Request" || wfStatus == "Deficiency"))
+	/*if ((wfTask == "Grant Review") && (wfStatus == "Document Request" || wfStatus == "Deficiency"))
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_DOC_REQUEST");
-	}
+	}*/
+
 	if (wfTask == "Grant Review" && wfStatus == "Complete")
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_APP_COMPLETE");
@@ -40,7 +43,7 @@ try
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Grant Packet Mailed")
 	{
-		sendEmailsOnSIPRecordOnlyContacts("DEQ_SIP_GRANT_AWARD");
+		sendEmailsOnSIPRecordOnlyContacts("DEQ_SIP_GRANT_PACKET_MAILED");
 	}
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Incomplete")
@@ -53,8 +56,11 @@ try
 	{
 		sendEmailsOnSIPRecordOnlyWWMLP("DEQ_SIP_CLARIFICATION_REQUEST");
 	}
-	
-		
+
+	if (wfTask == "Pre-Install Review" || wfTask == "Complete ")
+{
+	sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
+}
 	if ((wfTask == "Post-Install Review" || wfTask == "Pre-Install Review" || wfTask == "Payment Processing") && (wfStatus == "Applicant Request"))
 	{
 		sendEmailsOnSIPRecordOnlyContacts("DEQ_SIP_CLARIFICATION_REQUEST");
@@ -66,10 +72,27 @@ try
 		sendEmailsOnSIPRecord("DEQ_SIP_CLARIFICATION_REQUEST");
 	}
 	
-	if (wfTask == "Payment Processing" && wfStatus == "Complete")
+	/*if (wfTask == "Payment Processing" && wfStatus == "Complete")
 	{
 		sendEmailsOnSIPRecordOnlyLps("DEQ_SIP_GRANT_FUNDS_DISPERSED");
-	}
+	}*/
+
+if (matches(wfStatus, "Withdrawn"))
+	   {
+	
+		wfTasks = aa.workflow.getTaskItemByCapID(capId, null).getOutput();
+		for (i in wfTasks) 
+	        {
+			var vWFTask = wfTasks[i];
+			//closeTask(vWFTask.getDisposition(), "Withdrawn", "Updated via Script", "Updated via Script");
+			deactivateTask(vWFTask.getTaskDescription());
+		}
+editAppSpecific("County Status", "Withdrawn");
+						editAppSpecific("State Status", "Withdrawn");
+	
+		closeTask("Closure", "Withdrawn", "Updated via Script", "Updated via Script");
+	
+	  }
 	
 }
 catch (ex)
