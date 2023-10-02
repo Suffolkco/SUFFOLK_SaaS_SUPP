@@ -1,5 +1,5 @@
         /*------------------------------------------------------------------------------------------------------/
-        | Program: BATCH_ADD_PIN
+        | Program: BATCH_ADD_PIN_TLC
         |          Add PIN ID Number to records
         | Trigger: Batch    
         | Author: Accela
@@ -10,7 +10,7 @@
         //aa.env.setValue("emailAddress","jcrussell@accela.com");
         //aa.env.setValue("beginRecDt","2020-01-01");
         //aa.env.setValue("endRecDt","6/4/2021");
-        //aa.env.setValue("pinCharLen","8");
+        aa.env.setValue("pinCharLen","8");
         /// TESTING ... REMOVE    
         
         // Address limitation of Batch Parm default.
@@ -231,6 +231,7 @@
 
                 if(!isTemp){
                     var pinNumber = makePIN(pinCharLen);
+                    logDebug("PIN number generated: " + pinNumber);
                     if(editAppSpecificL('PIN INFORMATION.PIN Number',pinNumber,capId))
                     {
                         updateCount++;
@@ -473,8 +474,10 @@
         var result = '';
         var characters = 'ABCDEFGHJKMNPQRTWXY2346789';
         var charactersLength = characters.length;
+        
         for ( var i = 0; i < length; i++ ) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
+           
         }
         return result;
     }
