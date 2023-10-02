@@ -162,11 +162,9 @@ function mainProcess()
 {
     try
     {  
-        //var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE like ('ID Cards', 'Licenses', 'Registrations')";
+        
         // Waiting on Applicant status
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, B1.B1_FILE_DD as openDate FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1.B1_PER_SUB_TYPE = 'Home Improvement' and B1.B1_PER_CATEGORY = 'NA' and B1.B1_APPL_STATUS = 'Waiting on Applicant'";
-        //var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, B1.B1_FILE_DD as openDate FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE in ('ID Cards' , 'Licenses', 'Registrations') and B1.B1_APPL_STATUS = 'Waiting on Applicant' and B1.B1_ALT_ID = 'HI-64257'";
-        //  
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, B1.B1_FILE_DD as openDate FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1.B1_PER_SUB_TYPE = 'Home Improvement' and B1.B1_PER_CATEGORY = 'NA' and B1.B1_APPL_STATUS = 'Waiting on Applicant'";        
         var output = "Record ID | Open Date \n";
         var vResult = doSQLSelect_local(vSQL);
         var count = 0;
