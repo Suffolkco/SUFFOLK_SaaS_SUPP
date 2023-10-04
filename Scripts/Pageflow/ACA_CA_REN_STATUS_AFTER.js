@@ -36,7 +36,7 @@ try
   else
   {               
     var licAppStatus = getAppStatus(parentCapId);
-    logDebug("We found the parent record of this renewal " + parentCapId.getCustomID() + " with this status: "+ licAppStatus);
+    logDebug("We found the parent record " + parentCapId.getCustomID() + " of this renewal " + capId  + " with this status: "+ licAppStatus);
     if(licAppStatus != "About to Expire")
     {
         cancel = true;
