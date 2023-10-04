@@ -51,7 +51,7 @@ if (appMatch("EnvHealth/Facility/NA/NA"))
     var childFoodPermitArray = getChildren("EnvHealth/Health Program/Food Protection/Permit", capId);
     var childMoiblePermitArray = getChildren("EnvHealth/Health Program/Mobile/Permit", capId);    
   
-    logDebug("Fac copyfromFacToPermit: " + facProgramElem);
+    logDebug("Fac copyfromFacToPermit: " + copyfromFacToPermit);
     logDebug("Fac copyfromFacToApp: " + copyfromFacToApp);
 
     if (copyfromFacToPermit == "Yes" || copyfromFacToApp == "Yes")
@@ -165,8 +165,7 @@ function copyFromFacToFoodPermitCustomFields(childArray, copyfromFacToPermit, co
                                        
                         logDebug("Permit facSeptic: " + facSeptic);
                         logDebug("Permit facSanArea: " + facSanArea);
-                        logDebug("Permit facNoOfSeats: " + facNoOfSeats);
-                        logDebug("Permit facTypeOfEst: " + facTypeOfEst);
+                        logDebug("Permit facNoOfSeats: " + facNoOfSeats);                       
                         logDebug("Permit facSeatsProvided: " + facSeatsProvided);                       
                         logDebug("Permit facBarSeats: " + facBarSeats);
                         logDebug("Permit facCatSeats: " + facCatSeats);
@@ -191,6 +190,9 @@ function copyFromFacToFoodPermitCustomFields(childArray, copyfromFacToPermit, co
                         if (copyfromFacToApp == "Yes") 
                         {                        
                             var childFoodAppArray = getChildren("EnvHealth/Health Program/Food Protection/Application", childPermitCapId);
+
+                            logDebug("Number of children that is an FSP/SR: " + childFoodAppArray.length + " of " + childPermitCapId.getCustomID());
+                                                                        
                             if (childFoodAppArray.length > 0)
                             {
                                 for (yy in childFoodAppArray)
@@ -198,10 +200,14 @@ function copyFromFacToFoodPermitCustomFields(childArray, copyfromFacToPermit, co
                                     childFoodAppCapId = childFoodAppArray[yy];
                                     var childFoodAppCapStatus = getAppStatus(childFoodAppCapId);
                                     
-                                    logDebug("App childFoodAppCapStatus: " + childFoodAppCapStatus + ", " + childFoodAppCapId.getCustomID());
+                                    logDebug("Status of FSP: " + childFoodAppCapStatus + " of  " + childFoodAppCapId.getCustomID());
                                                                         
                                     setFacFSAFSACustomFields(childFoodAppCapId);    
                                 }
+                            }
+                            else
+                            {
+                                logDebug("Does not copy data to FSA. No child of " + childPermitCapId.getCustomID() + " is FSA.");
                             }
 
                         }
@@ -331,6 +337,8 @@ function setMobileAppPermitCustomFields(recordCapId)
 // These are the common custom fields for All FAC, FSA, FSP, LMA and LMP
 function setCommonCustomFields(recordCapId)
 {
+    altId = recordCapId.getCustomID()
+
     var facDBAName = getAppSpecific("Facility Name");
     var facTypeOfOwn = getAppSpecific("Type of Ownership");
     var facWaterSupply = getAppSpecific("Water Supply");                
@@ -344,16 +352,19 @@ function setCommonCustomFields(recordCapId)
     editAppSpecific("Type of Establishment", facTypeOfEst, recordCapId);
     editAppSpecific("Program Element", facProgramElem, recordCapId);
     
-    logDebug("Setting Facility DBA Name of " + recordCapId + " to be: " + facDBAName);
-    logDebug("Setting Type of Ownership of " + recordCapId + " to be: " + facTypeOfOwn);
-    logDebug("Setting Water Supply of " + recordCapId + " to be: " + facWaterSupply);
-    logDebug("Setting Type of Establishment of " + recordCapId + " to be: " + facTypeOfEst);
-    logDebug("Setting Program Element of " + recordCapId + " to be: " + facProgramElem);
+    logDebug("Setting Facility DBA Name of " + altId + " to be: " + facDBAName);
+    logDebug("Setting Type of Ownership of " + altId + " to be: " + facTypeOfOwn);
+    logDebug("Setting Water Supply of " + altId + " to be: " + facWaterSupply);
+    logDebug("Setting Type of Establishment of " + altId + " to be: " + facTypeOfEst);
+    logDebug("Setting Program Element of " + altId + " to be: " + facProgramElem);
 }
 
 // These are the common custom fields for FSA and FSP
 function setFoodServiceCustomFields(recordCapId)
 {
+
+    altId = recordCapId.getCustomID()
+
     var permitSeatsProvided = getAppSpecific("Seats Provided");      
     var permitNoOfSeats = getAppSpecific("Number of Seats");  
     var permitSeptic = getAppSpecific("Septic/Sewage");                  
@@ -383,31 +394,34 @@ function setFoodServiceCustomFields(recordCapId)
     editAppSpecific("From", permitFrom,recordCapId);
     editAppSpecific("To", permitTo, recordCapId);   
 
-    logDebug("Setting Septic/Sewage of " + recordCapId + " to be: " + permitSeptic);
-    logDebug("Setting Number of Seats of " + recordCapId + " to be: " + permitNoOfSeats);
-    logDebug("Setting Seats Provided of " + recordCapId + " to be: " + permitSeatsProvided);
-    logDebug("Setting Monday of " + recordCapId + " to be: " + permitMonday);
-    logDebug("Setting Tuesday of " + recordCapId + " to be: " + permitTuesday);
-    logDebug("Setting Wednesday of " + recordCapId + " to be: " + permitWednesday);
-    logDebug("Setting Thursdsay of " + recordCapId + " to be: " + permitThursdsay);
-    logDebug("Setting Friday of " + recordCapId + " to be: " + permitFriday);
-    logDebug("Setting Saturday of " + recordCapId + " to be: " + permitSaturday);
-    logDebug("Setting Sunday of " + recordCapId + " to be: " + permitSunday);
-    logDebug("Setting From of " + recordCapId + " to be: " + permitFrom);
-    logDebug("Setting To of " + recordCapId + " to be: " + permitTo);
+    logDebug("Setting Septic/Sewage of " + altId + " to be: " + permitSeptic);
+    logDebug("Setting Number of Seats of " + altId + " to be: " + permitNoOfSeats);
+    logDebug("Setting Seats Provided of " + altId + " to be: " + permitSeatsProvided);
+    logDebug("Setting Monday of " + altId + " to be: " + permitMonday);
+    logDebug("Setting Tuesday of " + altId + " to be: " + permitTuesday);
+    logDebug("Setting Wednesday of " + altId + " to be: " + permitWednesday);
+    logDebug("Setting Thursdsay of " + altId + " to be: " + permitThursdsay);
+    logDebug("Setting Friday of " + altId + " to be: " + permitFriday);
+    logDebug("Setting Saturday of " + altId + " to be: " + permitSaturday);
+    logDebug("Setting Sunday of " + altId + " to be: " + permitSunday);
+    logDebug("Setting From of " + altId + " to be: " + permitFrom);
+    logDebug("Setting To of " + altId + " to be: " + permitTo);
 
 }
 
 // These are the common custom fields for FAC, FSA and FSP
 function setFacFSAFSACustomFields(recordCapId)
 {
+
+    altId = recordCapId.getCustomID()
+
     var dBAName = getAppSpecific("Facility Name");
     var typeOfOwn = getAppSpecific("Type of Ownership");
     var waterSupply = getAppSpecific("Water Supply");                
     var septicSewage = getAppSpecific("Septic/Sewage");     
     var typeOfEst = getAppSpecific("Type of Establishment");      
     var noOfSeats = getAppSpecific("Number of Seats");       
-    var seatProvided= getAppSpecific("Seat Provided");            
+    var seatProvided= getAppSpecific("Seats Provided");            
     var programElem= getAppSpecific("Program Element");
         
     editAppSpecific("Facility Name", dBAName, recordCapId);
@@ -416,21 +430,23 @@ function setFacFSAFSACustomFields(recordCapId)
     editAppSpecific("Septic/Sewage", septicSewage, recordCapId);
     editAppSpecific("Type of Establishment", typeOfEst, recordCapId);
     editAppSpecific("Number Of Seats", noOfSeats, recordCapId);
-    editAppSpecific("Seat Provided", seatProvided, recordCapId);
+    editAppSpecific("Seats Provided", seatProvided, recordCapId);
     editAppSpecific("Program Element", programElem, recordCapId);
 
-    logDebug("Setting Facility DBA Name of " + recordCapId + " to be: " + dBAName);
-    logDebug("Setting Type of Ownership of " + recordCapId + " to be: " + typeOfOwn);
-    logDebug("Setting Water Supply of " + recordCapId + " to be: " + waterSupply);
-    logDebug("Setting Septic/Sewage of " + recordCapId + " to be: " + septicSewage);
-    logDebug("Setting Type of Establishment of " + recordCapId + " to be: " + typeOfEst);
-    logDebug("Setting Number Of Seats of " + recordCapId + " to be: " + noOfSeats);
-    logDebug("Setting Seat Provided of " + recordCapId + " to be: " + seatProvided);
-    logDebug("Setting Program Element of " + recordCapId + " to be: " + programElem);  
+    logDebug("Setting Facility DBA Name of " + altId + " to be: " + dBAName);
+    logDebug("Setting Type of Ownership of " + altId + " to be: " + typeOfOwn);
+    logDebug("Setting Water Supply of " + altId + " to be: " + waterSupply);
+    logDebug("Setting Septic/Sewage of " + altId + " to be: " + septicSewage);
+    logDebug("Setting Type of Establishment of " + altId + " to be: " + typeOfEst);
+    logDebug("Setting Number Of Seats of " + altId + " to be: " + noOfSeats);
+    logDebug("Setting Seats Provided of " + altId + " to be: " + seatProvided);
+    logDebug("Setting Program Element of " + altId + " to be: " + programElem);  
 }
 
 function setMobileCustomFields(recordCapId)
 {
+    altId = recordCapId.getCustomID()
+
     var permitLicPlateNumber= getAppSpecific("License Plate Number");
     var permitLicPlateState = getAppSpecific("License Plate State");
     var permitVehMake = getAppSpecific("Vehicle Make");
@@ -443,11 +459,11 @@ function setMobileCustomFields(recordCapId)
     editAppSpecific("Vehicle Model", permitVehModel,recordCapId);
     editAppSpecific("Vehicle Year", permitVehYear, recordCapId);     
 
-    logDebug("Setting License Plate Number of " + recordCapId + " to be: " + permitLicPlateNumber);
-    logDebug("Setting License Plate State of " + recordCapId + " to be: " + permitLicPlateState);
-    logDebug("Setting Vehicle Make of " + recordCapId + " to be: " + permitVehMake);
-    logDebug("Setting Vehicle Model of " + recordCapId + " to be: " + permitVehModel);
-    logDebug("Setting Vehicle Year of " + recordCapId + " to be: " + permitVehYear);
+    logDebug("Setting License Plate Number of " + altId + " to be: " + permitLicPlateNumber);
+    logDebug("Setting License Plate State of " + altId + " to be: " + permitLicPlateState);
+    logDebug("Setting Vehicle Make of " + altId + " to be: " + permitVehMake);
+    logDebug("Setting Vehicle Model of " + altId + " to be: " + permitVehModel);
+    logDebug("Setting Vehicle Year of " + altId + " to be: " + permitVehYear);
 
    
 }
