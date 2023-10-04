@@ -175,7 +175,7 @@ function mainProcess()
 													}
 													if (conEmail != null)
 													{
-														//sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_90", emailParams, null);
+														sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_90", emailParams, null);
 														count++;
 														logDebug("Record Number: " + capIDString + " contact sent.");
 													} 
