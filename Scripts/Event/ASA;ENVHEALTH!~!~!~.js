@@ -7,6 +7,17 @@ setPrimaryContactToApplicant(capId);
 
 if (!publicUser)
 {
+	// PHP-49
+	if (appMatch("EnvHealth/Complaint/Base/NA"))
+	{
+		// Update shortnotes name with Program Element
+		updateShortNotes(AInfo["Program Element"]);
+		updateWorkDesc(AInfo["Program Element"], capId);
+		// Update Facility DBA Name to Record Tab
+		editAppName(AInfo["Facility Name"]);
+		// Set to Active only if it's submitted by AA
+		updateAppStatus("Active");
+	}
     if (appMatch("EnvHealth/*/*/Application"))
     {
         // Check if the ASI field "Does this application require a new facility?" is set to "Yes"
