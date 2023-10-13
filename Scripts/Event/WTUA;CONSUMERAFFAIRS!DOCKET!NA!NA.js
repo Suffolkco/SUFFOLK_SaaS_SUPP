@@ -356,25 +356,26 @@ else if (wfTask == 'NOD' && wfStatus == 'Complete')
 
 	var nodDate = AInfo["NOD Date"];
 	var nodeAmt = AInfo["NOD Amount"];
-	var nodDueDate = AInfo["NOD Amount Due Date"];
+	var nodDueDate = AInfo["NOD Payment Due date"];
 	editAppSpecific("NOD Date", nodDate);
 	editAppSpecific("NOD Amount", nodeAmt);
-	editAppSpecific("NOD Amount Due Date", nodDueDate);
+	editAppSpecific("NOD Payment Due Date", nodDueDate);
 
 	logDebug("nodDate :" + nodDate);
 	logDebug("nodeAmt: " +  nodeAmt);
 	logDebug("nodDueDate: " + nodDueDate);
 
+	/*
 	var startDate = new Date();
 	var startTime = startDate.getTime();
 	var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();	
 	var dateAdd = addDays(todayDate, 30);
 	var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);  
 
-	editAppSpecific("Payment Due Date", dateMMDDYYY);
-	editTaskSpecific("NOD", "Payment Due Date", dateMMDDYYY, capId);
-	editAppSpecific("Payment Due Date", loadTaskSpecific(wfTask, "Payment Due Date"), capId);	
-
+	editAppSpecific("NOD Payment Due Date", dateMMDDYYY);	
+	editAppSpecific("NOD Payment Due Date", dateMMDDYYY);	
+	editAppSpecific("NOD Payment Due Date", loadTaskSpecific(wfTask, "NOD Payment Due Date"), capId);	
+	*/
 	sendVendorEmail(nodDate, nodeAmt, nodDueDate, dateMMDDYYY);
 
 	

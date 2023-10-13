@@ -1,16 +1,16 @@
 /*------------------------------------------------------------------------------------------------------/
-| Program: BATCH_CA_REGISTRATIONS_EXPIRED_AFTER60DAYS.js
+| Program: BATCH_CA_UPDATE_HI_STATUS_180DAYS.js
 | Trigger: Batch
 | Client: Suffolk
-| Version 1.0 07/01/2021
-| Author: JGreene
+| Version 1.0 04/08/2021
+| Author: RLittlefield
 | This batch script will run daily.
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
 | USER CONFIGURABLE PARAMETERS
 /------------------------------------------------------------------------------------------------------*/
 currentUserID = "ADMIN";
-useAppSpecificGroupName = true;
+useAppSpecificGroupName = false;
 /*------------------------------------------------------------------------------------------------------/
 | GLOBAL VARIABLES
 /------------------------------------------------------------------------------------------------------*/
@@ -151,7 +151,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_REGISTRATIONS_EXPIRED_AFTER60DAYS", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "BATCH_CA_UPDATE_HI_STATUS_180DAYS", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -161,105 +161,73 @@ if (paramsOK)
 function mainProcess() 
 {
     try
-    {
-        var dateCheck = dateAdd(null, -60);
-        dateCheckString = String(dateCheck).split("/")
-        var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
-        logDebugLocal("Date to check: " + dateToCheck);
-        dateCheckString1 = dateToCheck.replace(/\b0/g, '');            
-        logDebugLocal("Date to check 1: " + dateCheckString1);     
-            
-        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as ExpDate FROM B1PERMIT B1 INNER JOIN BCHCKBOX BC on b1.serv_prov_code = bc.serv_prov_code and b1.b1_per_id1 = bc.b1_per_id1 and b1.b1_per_id2 = bc.b1_per_id2 and b1.b1_per_id3 = bc.b1_per_id3 and bc.B1_CHECKBOX_TYPE LIKE '%LICENSE DATES%' and bc.B1_CHECKBOX_DESC = 'Expiration Date' and BC.B1_CHECKLIST_COMMENT IN ('" + dateToCheck + "','" + dateCheckString1 + "') WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Registrations'"; 
-        var output = "Record ID | Expiration Date \n";
-        var vResult = doSQLSelect_local(vSQL); 
-        logDebugLocal("vResult:" + vResult.length);
+    {  
+        
+        // Waiting on Applicant status
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber, B1.B1_FILE_DD as openDate FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'ConsumerAffairs' and B1.B1_PER_TYPE = 'Licenses' and B1.B1_PER_SUB_TYPE = 'Home Improvement' and B1.B1_PER_CATEGORY = 'NA' and B1.B1_APPL_STATUS = 'Waiting on Applicant'";        
+        var output = "Record ID | Open Date \n";
+        var vResult = doSQLSelect_local(vSQL);
+        var count = 0;
+
         for (r in vResult)
         {
-            
             recordID = vResult[r]["recordNumber"];
-            expirationDate = vResult[r]["ExpDate"];
-            output += recordID + " | " + expirationDate + "\n";
+            openDate = vResult[r]["openDate"];
+           
+            output += recordID + " | " + openDate + "\n";
             capId = getApplication(recordID);
             capIDString = capId.getCustomID();
+
+        
             cap = aa.cap.getCap(capId).getOutput();
-            logDebugLocal(capIDString + ". Status: " + getAppStatus() + "Expiration Date: " + expirationDate);      
-            
+            var appTypeResult = cap.getCapType();
+            var appTypeString = appTypeResult.toString();
+            var appTypeArray = appTypeString.split("/");
             if (cap)
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
                 {
-                    if (matches(getAppStatus(), "Expired"))
-                    {                       
-                        {                           
-                            var vEParams = aa.util.newHashtable();
-                            var vRParams = aa.util.newHashtable();
-                            var AInfo = new Array();
-                            loadAppSpecific(AInfo);
-                            var PIN = AInfo["PIN Number"];
+                    if (matches(getAppStatus(capId), "Waiting on Applicant"))
+                    {                        
+                        fileDateObj = cap.getFileDate();
+                        fileDate = "" + fileDateObj.getMonth() + "/" + fileDateObj.getDayOfMonth() + "/" + fileDateObj.getYear();
+                        fileDateYYYYMMDD = dateFormatted(fileDateObj.getMonth(),fileDateObj.getDayOfMonth(),fileDateObj.getYear(),"YYYY-MM-DD")
+                        
+                        //logDebugLocal("Open Date for " + capIDString + ": " + fileDateYYYYMMDD);
+                        
+                        
+                        //var newDate = dateAddMonths(fileDateObj, 6);
+                        var newDate = dateAdd(fileDateObj, 180);
+                        var openDate = convertDate(newDate);
+                        
+                        //logDebugLocal("Added 180 days: " + newDate);
+                        //logDebugLocal("Record " + capIDString + ": 6 months after record open date " + fileDateYYYYMMDD + " is: " + newDate);
 
-                             // DAP-602: Generate PIN if it doesn't exist
-                             if (matches(PIN, null, "", undefined))
-                             {
-                                 logDebugLocal("PIN in : " + capIDString + " is empty.");
-                                 var pinNumber = makePIN(8);
-                                 logDebugLocal("New PIN number generated: " + pinNumber);
-                                 if(editAppSpecificL('PIN INFORMATION.PIN Number',pinNumber,capId))
-                                 {
-                                     PIN = pinNumber;
-                                     logDebugLocal("Assigned PIn to " + capIDString);
-                                 }
-                             }
+                        var todayDate = new Date();
+	                    var sDateMMDDYYYY = (todayDate.getMonth() + 1) + "/" + todayDate.getDate() + "/" + todayDate.getFullYear()    ;
+                        
+                        //logDebugLocal("Today's date: " +  sDateMMDDYYYY);
 
-                            addParameter(vEParams, "$$altID$$", capIDString);
-                            addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
-                            addParameter(vEParams, "$$expirDate$$", expirationDate);
-                            addParameter(vEParams, "$$PINNumber$$", PIN);
-                            addACAUrlsVarToEmail(vEParams);
-                           
-                            logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
+                        var dateDifference = dateDiff(todayDate, openDate)
 
-                            var contactResult = aa.people.getCapContactByCapID(capId);
-                            if (contactResult.getSuccess())
-                            {
-                                var capContacts = contactResult.getOutput();
-                                var conEmail = "";
-                                for (c in capContacts)
-                                {
-                                    if (capContacts[c].getCapContactModel().getContactType() == "Vendor")
-                                    {
-                                        addParameter(vEParams, "$$FullNameBusName$$", getContactName(capContacts[c]));
+                       
 
-                                        if (!matches(capContacts[c].email, null, undefined, ""))
-                                        {
-                                            addParameter(vRParams, "RecordID", capIDString);
-                                            addParameter(vRParams, "FromDate", dateToCheck);
-                                            addParameter(vRParams, "ToDate", dateToCheck);
-                                            addParameter(vRParams, "Email", "Yes");
-
-                                            conEmail = capContacts[c].email;
-                                           
-
-                                            var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
-                                            if (caReport)
-                                            {                                             
-                                                var caReports = new Array();
-                                                caReports.push(caReport);
-                                            }
-                                            logDebugLocal("Vendor email is: " + conEmail);
-                                            var success = sendNotification("", conEmail, "", "CA_LICENSE_EXPIRATION", vEParams, caReports);
-                                            logDebugLocal("success:" + success);
-                                        }
-
-                                    }
-                                }
-                            } 
-
+                        if (dateDifference <= -180)
+                        {
+                            logDebugLocal("Days Difference: " + parseInt(Math.abs(dateDifference)) + " days.");
+                            logDebugLocal("Setting Record " + capIDString + " to Closed-Withdrawn. The record has opened longer than 180 days on: " + fileDateYYYYMMDD + 
+                            "and have an application status of " + getAppStatus(capId));
+                            updateAppStatus("Closed-Withdrawn");      
+                            count++;                    
+                            
                         }
+                        
                     }
                 }
-            }
+            }           
         }
+        logDebugLocal("Total of record Ids that have been updated:  " + count);
     }
     catch (err)
     {
@@ -267,6 +235,7 @@ function mainProcess()
     }
     logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
 }
+
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
@@ -274,68 +243,73 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
-function generateReportBatch(itemCap, reportName, module, parameters)
+function jsDateToMMDDYYYY(pJavaScriptDate)
+	{
+	//converts javascript date to string in MM/DD/YYYY format
+	//
+	if (pJavaScriptDate != null)
+		{
+		if (Date.prototype.isPrototypeOf(pJavaScriptDate))
+	return (pJavaScriptDate.getMonth()+1).toString()+"/"+pJavaScriptDate.getDate()+"/"+pJavaScriptDate.getFullYear();
+		else
+			{
+			logDebug("Parameter is not a javascript date");
+			return ("INVALID JAVASCRIPT DATE");
+			}
+		}
+	else
+		{
+		logDebug("Parameter is null");
+		return ("NULL PARAMETER VALUE");
+		}
+	}
+
+function dateAddMonths(pDate, pMonths)
+	{
+	// Adds specified # of months (pMonths) to pDate and returns new date as string in format MM/DD/YYYY
+	// If pDate is null, uses current date
+	// pMonths can be positive (to add) or negative (to subtract) integer
+	// If pDate is on the last day of the month, the new date will also be end of month.
+	// If pDate is not the last day of the month, the new date will have the same day of month, unless such a day doesn't exist in the month, in which case the new date will be on the last day of the month
+	//
+	if (!pDate)
+		baseDate = new Date();
+	else
+		baseDate = convertDate(pDate);
+
+	var day = baseDate.getDate();
+	baseDate.setMonth(baseDate.getMonth() + pMonths);
+	if (baseDate.getDate() < day)
+		{
+		baseDate.setDate(1);
+		baseDate.setDate(baseDate.getDate() - 1);
+		}
+	return ((baseDate.getMonth() + 1) + "/" + baseDate.getDate() + "/" + baseDate.getFullYear());
+	}
+
+function dateAdd(td,amt) 
 {
-    //returns the report file which can be attached to an email.
-    var user = currentUserID; // Setting the User Name
-    var report = aa.reportManager.getReportInfoModelByName(reportName);
-    if (!report.getSuccess() || report.getOutput() == null)
-    {
-        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
-        return false;
-    }
-    report = report.getOutput();
-    report.setModule(module);
-    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
-    report.setReportParameters(parameters);
-
-    var permit = aa.reportManager.hasPermission(reportName, user);
-
-    if (permit.getOutput().booleanValue())
-    {
-        var reportResult = aa.reportManager.getReportResult(report);
-        if (reportResult.getSuccess())
-        {
-            reportOutput = reportResult.getOutput();
-            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
-            reportFile = reportFile.getOutput();
-            return reportFile;
-        } else
-        {
-            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
-            return false;
-        }
-    } else
-    {
-        logDebug("You have no permission.");
-        return false;
-    }
+	// perform date arithmetic on a string
+	// td can be "mm/dd/yyyy" (or any string that will convert to JS date)
+	// amt can be positive or negative (5, -3) days
+	if (!td) 
+	{
+		dDate = new Date();
+	} 
+	else 
+	{
+		dDate = convertDate(td);
+	}
+	//var i = 0;
+	//while (i < Math.abs(amt)) 
+	//{
+	//	dDate = new Date(aa.calendar.getNextWorkDay(aa.date.parseDate(dDate.getMonth()+1 + "/" + dDate.getDate() + "/" + dDate.getFullYear())).getOutput().getTime());
+	//	i++;
+	//}
+	dDate.setTime(dDate.getTime() + (1000 * 60 * 60 * 24 * amt));
+	return (dDate.getMonth() + 1) + "/" + dDate.getDate() + "/" + dDate.getFullYear();
 }
-function getContactName(vConObj)
-{
-    if (vConObj.people.getContactTypeFlag() == "organization")
-    {
-        if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
-            return vConObj.people.getBusinessName();
 
-        return vConObj.people.getBusinessName2();
-    }
-    else
-    {
-        if (vConObj.people.getFullName() != null && vConObj.people.getFullName() != "")
-        {
-            return vConObj.people.getFullName();
-        }
-        if (vConObj.people.getFirstName() != null && vConObj.people.getLastName() != null)
-        {
-            return vConObj.people.getFirstName() + " " + vConObj.people.getLastName();
-        }
-        if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
-            return vConObj.people.getBusinessName();
-
-        return vConObj.people.getBusinessName2();
-    }
-}
 function matches(eVal, argList)
 {
     for (var i = 1; i < arguments.length; i++)
@@ -466,84 +440,46 @@ function doSQLSelect_local(sql)
         return array
     }
 }
-function loadAppSpecific(thisArr) {
-	// 
-	// Returns an associative array of App Specific Info
-	// Optional second parameter, cap ID to load from
-	//
-	
-	var itemCap = capId;
-	if (arguments.length == 2) itemCap = arguments[1]; // use cap ID specified in args
 
-    	var appSpecInfoResult = aa.appSpecificInfo.getByCapID(itemCap);
-	if (appSpecInfoResult.getSuccess())
-	 	{
-		var fAppSpecInfoObj = appSpecInfoResult.getOutput();
-
-		for (loopk in fAppSpecInfoObj)
-			{
-			if (useAppSpecificGroupName)
-				thisArr[fAppSpecInfoObj[loopk].getCheckboxType() + "." + fAppSpecInfoObj[loopk].checkboxDesc] = fAppSpecInfoObj[loopk].checklistComment;
-			else
-				thisArr[fAppSpecInfoObj[loopk].checkboxDesc] = fAppSpecInfoObj[loopk].checklistComment;
-			}
-		}
-	}
-
-function editAppSpecificL(itemName,itemValue, itemCap){
-
-    var itemGroup = null;
-
-    if (useAppSpecificGroupName){
-        if (itemName.indexOf(".") < 0){ logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true") ; return false }
-        itemGroup = itemName.substr(0,itemName.indexOf("."));
-        itemName = itemName.substr(itemName.indexOf(".")+1);
-    }
-    
-    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
-    if(asiFieldResult.getSuccess()){
-        var asiFieldArray = asiFieldResult.getOutput();
-        if(asiFieldArray.length > 0){
-            var asiField = asiFieldArray[0];
-            if(asiField){
-                //printObjProperties(asiField);
-                var origAsiValue = asiField.getChecklistComment();
-                if(origAsiValue && origAsiValue != null && origAsiValue.trim() != ""){
-                    logDebugLocal("SKIPPING ... PIN Value already set for record " + itemCap + " : " + origAsiValue);
-                    return false;
-                }
-                asiField.setChecklistComment(itemValue);
-                asiField.setAuditStatus("A");
-                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
-                if(updateFieldResult.getSuccess()){
-                    logDebugLocal("Successfully updated custom field: " + itemName + " with value: " + itemValue);
-                    return true;
-                } else { 
-                    logDebugLocal( "WARNING: (editAppSpecificL) " + itemName + " was not updated."); 
-                    return false;
-                }	
-            } else { 
-                logDebugLocal( "WARNING: (editAppSpecificL) " + itemName + " was not updated."); 
-                return false;
-            }
-        }
-    } else {
-        logDebugLocal("ERROR: (editAppSpecificL) " + asiFieldResult.getErrorMessage());
+function generateReportBatch(itemCap, reportName, module, parameters)
+{
+    //returns the report file which can be attached to an email.
+    var user = currentUserID; // Setting the User Name
+    var report = aa.reportManager.getReportInfoModelByName(reportName);
+    if (!report.getSuccess() || report.getOutput() == null)
+    {
+        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
         return false;
     }
-    return false;
-} 
+    report = report.getOutput();
+    report.setModule(module);
+    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    report.setReportParameters(parameters);
 
-function makePIN(length) {
-    var result = '';
-    var characters = 'ABCDEFGHJKMNPQRTWXY2346789';
-    var charactersLength = characters.length;
-    
-    for ( var i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-       
+    var permit = aa.reportManager.hasPermission(reportName, user);
+
+    if (permit.getOutput().booleanValue())
+    {
+        var reportResult = aa.reportManager.getReportResult(report);
+        if (reportResult.getSuccess())
+        {
+            reportOutput = reportResult.getOutput();
+            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
+            reportFile = reportFile.getOutput();
+            return reportFile;
+        } else
+        {
+            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
+            return false;
+        }
+    } else
+    {
+        logDebug("You have no permission.");
+        return false;
     }
-    return result;
 }
 
+function dateDiff(date1, date2) {
 
+    return (convertDate(date2).getTime() - convertDate(date1).getTime()) / (1000 * 60 * 60 * 24);
+}

@@ -1,7 +1,7 @@
 /*------------------------------------------------------------------------------------------------------/
 | Program:EH_NEXT_BILLING_DATE_UPDATE.js
 | 
-| This batch script will run one time to update a custom field Business Website Address.
+| This batch script will run one time to the next billing date
 | The existing format is invalid.
 /------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------/
@@ -173,13 +173,18 @@ function mainProcess()
         logDebug("Batch script will run");
 		var lmpCount = 0;
 		var fspCount = 0;
-				
+		var tCount = 0;				
 		// FSP only
-		var vSQL = "select B.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as nextBillingDate from b1permit B JOIN V_WORKFLOW WF ON  B.SERV_PROV_CODE = WF.AGENCY_ID AND B.B1_PER_ID1 = WF.T_ID1 AND B.B1_PER_ID2 = WF.T_ID2 AND B.B1_PER_ID3 = WF.T_ID3 JOIN BCHCKBOX BC on WF.AGENCY_ID = BC.serv_prov_code and WF.T_ID1 = BC.b1_per_id1 and WF.T_ID2 = BC.b1_per_id2 and WF.T_ID3= BC.b1_per_id3 and BC.B1_CHECKBOX_TYPE LIKE 'DATES INFORMATION' and BC.B1_CHECKBOX_DESC = 'Next Billing Date' WHERE B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP like 'EnvHealth' AND B.B1_PER_TYPE = 'Health Program' AND B.B1_PER_SUB_TYPE  = 'Food Protection' AND B.B1_PER_CATEGORY = 'Permit' and B.REC_STATUS = 'A' and B.B1_ALT_ID not like '%TMP%' and BC.B1_CHECKBOX_DESC = 'Next Billing Date' AND WF.RECORD_MODULE = 'EnvHealth' AND WF.TASK = 'Permit Status' AND WF.STATUS = 'Change of Owner'";
+		//var vSQL = "select B.B1_ALT_ID as recordNumber, BC.B1_CHECKLIST_COMMENT as nextBillingDate from b1permit B JOIN V_WORKFLOW WF ON  B.SERV_PROV_CODE = WF.AGENCY_ID AND B.B1_PER_ID1 = WF.T_ID1 AND B.B1_PER_ID2 = WF.T_ID2 AND B.B1_PER_ID3 = WF.T_ID3 JOIN BCHCKBOX BC on WF.AGENCY_ID = BC.serv_prov_code and WF.T_ID1 = BC.b1_per_id1 and WF.T_ID2 = BC.b1_per_id2 and WF.T_ID3= BC.b1_per_id3 and BC.B1_CHECKBOX_TYPE LIKE 'DATES INFORMATION' and BC.B1_CHECKBOX_DESC = 'Next Billing Date' WHERE B.SERV_PROV_CODE = 'SUFFOLKCO' AND B.B1_PER_GROUP like 'EnvHealth' AND B.B1_PER_TYPE = 'Health Program' AND B.B1_PER_SUB_TYPE  = 'Food Protection' AND B.B1_PER_CATEGORY = 'Permit' and B.REC_STATUS = 'A' and B.B1_ALT_ID not like '%TMP%' and BC.B1_CHECKBOX_DESC = 'Next Billing Date' AND WF.RECORD_MODULE = 'EnvHealth' AND WF.TASK = 'Permit Status' AND WF.STATUS = 'Change of Owner'";
 
 		// LMP
 		//var vSQL = "select b1.B1_ALT_ID as recordNumber, bch.B1_CHECKLIST_COMMENT as nextBillingDate from b1permit b1 join BCHCKBOX bch on b1.SERV_PROV_CODE = bch.SERV_PROV_CODE and b1.B1_PER_ID1 = bch.B1_PER_ID1 and b1.B1_PER_ID2 = bch.B1_PER_ID2 and b1.B1_PER_ID3 = bch.B1_PER_ID3 where b1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP like 'EnvHealth' AND B1.B1_PER_TYPE = 'Health Program' AND B1.B1_PER_SUB_TYPE = 'Mobile' AND B1.B1_PER_CATEGORY = 'Permit' and b1.REC_STATUS = 'A' and b1.B1_ALT_ID not like '%TMP%' and bch.B1_CHECKBOX_DESC = 'Next Billing Date'";
 
+		// TEMP
+		//var vSQL = "select b1.B1_ALT_ID as recordNumber, bch.B1_CHECKLIST_COMMENT as nextBillingDate from b1permit b1 join BCHCKBOX bch on b1.SERV_PROV_CODE = bch.SERV_PROV_CODE and b1.B1_PER_ID1 = bch.B1_PER_ID1 and b1.B1_PER_ID2 = bch.B1_PER_ID2 and b1.B1_PER_ID3 = bch.B1_PER_ID3 where b1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP like 'EnvHealth' AND B1.B1_PER_TYPE = 'Temporary Event' AND B1.B1_PER_SUB_TYPE = 'Annual Molluscan Shellfish' AND B1.B1_PER_CATEGORY = 'Permit' and b1.REC_STATUS = 'A' and b1.B1_ALT_ID not like '%TMP%' and bch.B1_CHECKBOX_DESC = 'Next Billing Date'";
+
+		// TESP
+		var vSQL ="select b1.B1_ALT_ID as recordNumber, bch.B1_CHECKLIST_COMMENT as nextBillingDate from b1permit b1 join BCHCKBOX bch on b1.SERV_PROV_CODE = bch.SERV_PROV_CODE and b1.B1_PER_ID1 = bch.B1_PER_ID1 and b1.B1_PER_ID2 = bch.B1_PER_ID2 and b1.B1_PER_ID3 = bch.B1_PER_ID3 where b1.SERV_PROV_CODE = 'SUFFOLKCO' AND B1.B1_PER_GROUP like 'EnvHealth' AND B1.B1_PER_TYPE = 'Temporary Event' AND B1.B1_PER_SUB_TYPE = 'Annual Sampling' AND B1.B1_PER_CATEGORY = 'Permit' and b1.REC_STATUS = 'A' and b1.B1_ALT_ID not like '%TMP%' and bch.B1_CHECKBOX_DESC = 'Next Billing Date'";
 				
 		var vResult = doSQLSelect_local(vSQL);  	     
 		logDebugLocal("********ENVHEALTH records that with Next Billing Dates: " + vResult.length + "*********\n");
@@ -247,7 +252,17 @@ function mainProcess()
 						else
 						{}
 						
-					}				
+					}	
+					else // TEMP and TESP
+					{
+						logDebugLocal("Original billing date : " + capIDString + " - " + billingDate);
+						if(!matches(billingDate,"", null))	
+						{	
+							editAppSpecific("Next Billing Date", "", capId);
+							logDebugLocal("Update Next Billing Date: " + capIDString + " to blank.");
+							tCount++;
+						}
+					}			
 
 					
 				}			
@@ -256,6 +271,7 @@ function mainProcess()
 		logDebugLocal("*****************************************");
 		logDebugLocal("Number of FSP Billing Date updates:" + fspCount);		
 		logDebugLocal("Number of LMP Billing Date updates:" + lmpCount);	
+		logDebugLocal("Number of TEMP/TSP Billing Date updates:" + tCount);	
 		logDebugLocal("*****************************************");
 		logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");    
 		

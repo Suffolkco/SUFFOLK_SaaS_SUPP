@@ -28,20 +28,21 @@ var capId = cap.getCapID();
 
 try
 {
-    var parentCapId = getParent(capId);
+  var parentCapId = getParentCapID4Renewal(capId);
+  if (typeof parentCapId == undefined || !parentCapId || parentCapId == null || parentCapId == "") 
+  {    
     aa.debug("Debug", "Parent:" + parentCapId);
-
-  // getParent() returns false on failure, check for that, too.
-  if (parentCapId != null && parentCapId != false) 
+  }
+  else
   {               
-        var licAppStatus = getAppStatus(parentCapId);
-        logDebug("We found the parent record of this renewal " + parentCapId.getCustomID() + " with this status: "+ licAppStatus);
-        if(licAppStatus != "About to Expire")
-        {
-            cancel = true;
-            showMessage = true;
-            comment("Your License cannot be renewed at this time, please call 311 or email: consumer.affairs@suffolkcountyny.gov for assistance");
-        }
+    var licAppStatus = getAppStatus(parentCapId);
+    logDebug("We found the parent record " + parentCapId.getCustomID() + " of this renewal " + capId  + " with this status: "+ licAppStatus);
+    if(licAppStatus != "About to Expire")
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Your License cannot be renewed at this time, please call 311 or email: consumer.affairs@suffolkcountyny.gov for assistance");
+    }
    }
    aa.sendMail("noreply@accela.com", "ada.chan@suffolkcountyny.gov", "", "Debug From ACA_CA_REN_STATUS_AFTER", debug);
     

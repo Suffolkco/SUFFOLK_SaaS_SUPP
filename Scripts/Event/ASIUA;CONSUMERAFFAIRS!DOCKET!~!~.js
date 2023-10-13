@@ -3,6 +3,19 @@
 var showDebug = true;
 try
 {
+	// Update altid enforcement type
+	var enfType = getAppSpecific("Enforcement Type");      
+    logDebug("enftype is: " + enfType);
+    var altIdString = String(capId.getCustomID());
+	
+	if (!altIdString.endsWith("Enforcement Patrol") && !altIdString.endsWith("Internal Enforcement") 
+	&& !altIdString.endsWith("External Enforcement"))
+	{	
+        altIdNewString = altIdString + " " + enfType;
+        logDebug("Updating Alt ID to: " + altIdNewString);           
+		aa.cap.updateCapAltID(capId, altIdNewString);
+    }
+
 	
 	cheatSheet = loadASITable("VIOLATION CHEAT SHEET");
 	var caseNo = getAppSpecific("Complaint Number");

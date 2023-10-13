@@ -1,18 +1,18 @@
 // This Script creates a Violation Record with data from the Parent Permit
 // Any Row in the Violations Data Table that has the checkbox "Create Enforcement Actions" selected will be copied to this new record
 // A ReInspection will also be scheduled with the failed Guidesheet Items copied over
-eval(getScriptText("EH_Complaint_UpdateEnforcementDataTables"));
-eval(getScriptText("EH_Permit_UpdatePermitInspections"));
+//eval(getScriptText("EH_Complaint_UpdateEnforcementDataTables"));
+//eval(getScriptText("EH_Permit_UpdatePermitInspections"));
 
 
 
 // This Script looks at the guidesheet items and if there are violations it will create rows in the Violations Data Table
 // If the Violation already exists, it will perform an update instead
 //eval(getScriptText("EH_Permit_UpdateViolationsFromInspection"));
-eval(getScriptText("EH_Permit_UpdateEnforcementDataTables"));
+//eval(getScriptText("EH_Permit_UpdateEnforcementDataTables"));
 
 // Send the Change of Ownership email to the new Facility Owner
-eval(getScriptText("EH_ChangeOfOwnershipPINInspection"));
+//eval(getScriptText("EH_ChangeOfOwnershipPINInspection"));
 
 
 function editRecordStatus(targetCapId, strStatus){

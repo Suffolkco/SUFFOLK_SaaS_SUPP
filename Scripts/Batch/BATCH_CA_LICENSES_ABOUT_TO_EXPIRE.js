@@ -10,7 +10,7 @@
 | USER CONFIGURABLE PARAMETERS
 /------------------------------------------------------------------------------------------------------*/
 currentUserID = "ADMIN";
-useAppSpecificGroupName = false;
+useAppSpecificGroupName = true;
 /*------------------------------------------------------------------------------------------------------/
 | GLOBAL VARIABLES
 /------------------------------------------------------------------------------------------------------*/
@@ -192,6 +192,7 @@ function mainProcess()
                 if (capmodel.isCompleteCap())
                 {
                     var appStatus = getAppStatus();
+                    
                     if (!matches(appStatus, "Expired", "About to Expire"))
                     {
                         b1ExpResult = aa.expiration.getLicensesByCapID(capId)
@@ -210,13 +211,14 @@ function mainProcess()
                                         {
                                             b1Exp.setExpStatus("About to Expire");
                                             aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-                                            logDebug("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
+                                            logDebugLocal("<b>" + capIDString + "</b>" + "renewal info has been set to About to Expire");
                                         }
                                     }
                                 }
                             }
                         }
-                        var workflowResult = aa.workflow.getTasks(capId);
+                      
+                        var workflowResult = aa.workflow.getTasks(capId);                       
                         if (workflowResult.getSuccess())
                         {
                             var wfObj = workflowResult.getOutput();
@@ -227,6 +229,20 @@ function mainProcess()
                             var AInfo = new Array();
                             loadAppSpecific(AInfo);
                             var PIN = AInfo["PIN Number"];
+                            
+                            // DAP-602: Generate PIN if it doesn't exist
+                            if (matches(PIN, null, "", undefined))
+                            {
+                                logDebugLocal("PIN in : " + capIDString + " is empty.");
+                                var pinNumber = makePIN(8);
+                                logDebugLocal("New PIN number generated: " + pinNumber);
+                                if(editAppSpecificL('PIN INFORMATION.PIN Number',pinNumber,capId))
+                                {
+                                    PIN = pinNumber;
+                                    logDebugLocal("Assigned PIn to " + capIDString);
+                                }
+                            }
+
                             acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 
                             //Save Base ACA URL
@@ -516,3 +532,58 @@ function generateReportBatch(itemCap, reportName, module, parameters)
     }
 }
 
+function editAppSpecificL(itemName,itemValue, itemCap){
+
+    var itemGroup = null;
+
+    if (useAppSpecificGroupName){
+        if (itemName.indexOf(".") < 0){ logDebug("**WARNING: (editAppSpecific) requires group name prefix when useAppSpecificGroupName is true") ; return false }
+        itemGroup = itemName.substr(0,itemName.indexOf("."));
+        itemName = itemName.substr(itemName.indexOf(".")+1);
+    }
+    
+    var asiFieldResult = aa.appSpecificInfo.getByList(itemCap, itemName);
+    if(asiFieldResult.getSuccess()){
+        var asiFieldArray = asiFieldResult.getOutput();
+        if(asiFieldArray.length > 0){
+            var asiField = asiFieldArray[0];
+            if(asiField){
+                //printObjProperties(asiField);
+                var origAsiValue = asiField.getChecklistComment();
+                if(origAsiValue && origAsiValue != null && origAsiValue.trim() != ""){
+                    logDebugLocal("SKIPPING ... PIN Value already set for record " + itemCap + " : " + origAsiValue);
+                    return false;
+                }
+                asiField.setChecklistComment(itemValue);
+                asiField.setAuditStatus("A");
+                var updateFieldResult = aa.appSpecificInfo.editAppSpecInfoValue(asiField);
+                if(updateFieldResult.getSuccess()){
+                    logDebugLocal("Successfully updated custom field: " + itemName + " with value: " + itemValue);
+                    return true;
+                } else { 
+                    logDebugLocal( "WARNING: (editAppSpecificL) " + itemName + " was not updated."); 
+                    return false;
+                }	
+            } else { 
+                logDebugLocal( "WARNING: (editAppSpecificL) " + itemName + " was not updated."); 
+                return false;
+            }
+        }
+    } else {
+        logDebugLocal("ERROR: (editAppSpecificL) " + asiFieldResult.getErrorMessage());
+        return false;
+    }
+    return false;
+} 
+
+function makePIN(length) {
+    var result = '';
+    var characters = 'ABCDEFGHJKMNPQRTWXY2346789';
+    var charactersLength = characters.length;
+    
+    for ( var i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+       
+    }
+    return result;
+}

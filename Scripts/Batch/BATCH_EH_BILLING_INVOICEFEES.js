@@ -1,4 +1,4 @@
-/*
+ /*
 Batch Job Script 
 Name: BATCH_EH_BILLING_INVOICEFEES
 Description: 
@@ -10,7 +10,7 @@ var SCRIPT_VERSION = "3.0";
 eval(getScriptText("INCLUDES_ACCELA_FUNCTIONS", null, true));
 eval(getScriptText("INCLUDES_ACCELA_GLOBALS", null, true));
 eval(getScriptText("INCLUDES_CUSTOM", null, true));
-
+var currentUserID = "ADMIN";
 
 // Get Parameters
 var EmailNotifyTo = aa.env.getValue("EmailNotifyTo");
@@ -277,13 +277,13 @@ function mainProcess(){
             eParams.put("$$altID$$",EnvhProgramCapId.getCustomID());
 			addParameter(eParams, "$$expirDate$$", expirationDate);
 			addParameter(eParams, "$$PINNumber$$", PIN);
-			addACAUrlsVarToEmail(eParams, EnvhProgramCapId);
+			//addACAUrlsVarToEmail(eParams, EnvhProgramCapId);
             if(getAppSpecific("Send Email",billingParamId) == "CHECKED" && !matches(accntReceivEmail,null,undefined,"")){
                 // Emailing Report
                 sendNotification(null,accntReceivEmail,"","PHP_PERMIT_ABOUT_TO_EXPIRE",eParams,[String(rFile)],EnvhProgramCapId);
             }else if(getAppSpecific("Send Email",billingParamId) != "CHECKED"){
                 // Printing Report
-                runReportAttach(facilityCapId,"5005 Invoice Statement SSRS",rParams);
+                //runReportAttach(EnvhProgramCapId,"5005 Invoice Statement SSRS",rParams);
             }
         }catch(err){
             logDebug("Error Running report 5005 Invoice Statement SSRS " + err);
