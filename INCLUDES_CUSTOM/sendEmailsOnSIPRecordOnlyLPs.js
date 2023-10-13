@@ -53,6 +53,7 @@ function sendEmailsOnSIPRecordOnlyLPs(templateName)
     if (controlString == "WorkflowTaskUpdateAfter") {
  
 	addParameter(emailParams, "$$wfComments$$", wfComment);
+addParameter(emailParams, "$$WFstatusdate$$", wfDateMMDDYYYY);
 }
 			var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 		  acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));

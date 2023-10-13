@@ -74,7 +74,7 @@ if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
 					  
-				if (AInfo["Previously installed IA OWTS"] == "No" && AInfo["Tax liens"] == "No" &&
+				if (AInfo["Tax liens"] == "No" &&
 				    AInfo["Foreclosure"] == "No" &&
 				    AInfo["C.O."] == "Yes")
 				  {
@@ -82,6 +82,16 @@ if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
 						 editAppSpecific("State Status", "Undetermined");
 						 sendEmailsOnSIPRecord("DEQ_SIP_APP_RCVD");
 				  }
+
+
+if ((AInfo["Tax liens"] == "Yes") ||
+				      (AInfo["Foreclosure"] == "Yes") ||
+				    (AInfo["C.O."] == "No"))
+					
+					{
+						
+						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+					}
 			 
 
 

@@ -30,13 +30,16 @@ if (publicUser)
 				for (i in docModel) 
 		   {
 					var docName = docModel[i].getDocCategory();
-					if(docName == "Vendor Proposal")
+					if(docName != "Vendor Proposal")
 					{
 						updateAppStatus("Resubmitted");
+					
+					}
+if(docName == "Vendor Proposal")
+					{
 						   if (isTaskActive("Pre-Install Review"))
 						{
 							updateTask("Pre-Install Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-							updateAppStatus("Resubmitted");
 						}
 					}
 
