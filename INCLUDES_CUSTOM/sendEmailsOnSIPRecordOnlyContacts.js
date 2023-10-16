@@ -29,7 +29,7 @@ function sendEmailsOnSIPRecordOnlyContacts(templateName)
 				conEmail = conArray[con].email;
 				 if (conEmail && dubCheckemails.indexOf(conEmail) == -1) {
 					if(dubCheckemails)
-						dubCheckemails = dubCheckemails + "||" + conEmail;
+						dubCheckemails = dubCheckemails + ";" + conEmail;
 					 else
 						dubCheckemails = "" + conEmail;
 				}
@@ -42,6 +42,7 @@ function sendEmailsOnSIPRecordOnlyContacts(templateName)
     if (controlString == "WorkflowTaskUpdateAfter") {
  
 	addParameter(emailParams, "$$wfComments$$", wfComment);
+addParameter(emailParams, "$$WFstatusdate$$", wfDateMMDDYYYY);
 }
 			var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 		  acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));

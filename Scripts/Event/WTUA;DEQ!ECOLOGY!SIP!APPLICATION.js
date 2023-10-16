@@ -26,10 +26,10 @@ editAppSpecific("County Status", "Ineligible");
 						editAppSpecific("State Status", "Ineligible");
 	}
 	
-	/*if ((wfTask == "Grant Review") && (wfStatus == "Document Request" || wfStatus == "Deficiency"))
+	if ((wfTask == "Grant Review") && (wfStatus == "Document Request" || wfStatus == "Deficiency"))
 	{
-		sendEmailsOnSIPRecord("DEQ_SIP_DOC_REQUEST");
-	}*/
+		sendEmailsOnSIPRecord("DEQ_SIP_CLARIFICATION_REQUEST");
+	}
 
 	if (wfTask == "Grant Review" && wfStatus == "Complete")
 	{
@@ -43,12 +43,12 @@ editAppSpecific("County Status", "Ineligible");
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Grant Packet Mailed")
 	{
-		sendEmailsOnSIPRecordOnlyContacts("DEQ_SIP_GRANT_PACKET_MAILED");
+sendEmailsOnSIPRecord("DEQ_SIP_GRANT_PACKET_MAILED");
 	}
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Incomplete")
 	{
-		sendEmailsOnSIPRecordOnlyContacts("DEQ_SIP_GRANT_AWARD");
+		sendEmailsOnSIPRecord("DEQ_SIP_GRANT_PACKET_REVISION");
 	}
 	
 	
@@ -57,13 +57,13 @@ editAppSpecific("County Status", "Ineligible");
 		sendEmailsOnSIPRecordOnlyWWMLP("DEQ_SIP_CLARIFICATION_REQUEST");
 	}
 
-	if (wfTask == "Pre-Install Review" || wfTask == "Complete ")
+	if (wfTask == "Pre-Install Review" && wfStatus == "Complete")
 {
 	sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
 }
 	if ((wfTask == "Post-Install Review" || wfTask == "Pre-Install Review" || wfTask == "Payment Processing") && (wfStatus == "Applicant Request"))
 	{
-		sendEmailsOnSIPRecordOnlyContacts("DEQ_SIP_CLARIFICATION_REQUEST");
+		sendEmailsOnSIPRecord("DEQ_SIP_CLARIFICATION_REQUEST");
 	}
 	
 		
@@ -77,7 +77,7 @@ editAppSpecific("County Status", "Ineligible");
 		sendEmailsOnSIPRecordOnlyLps("DEQ_SIP_GRANT_FUNDS_DISPERSED");
 	}*/
 
-if (matches(wfStatus, "Withdrawn"))
+if (matches(wfStatus, "Withdrawn", "Ineligible"))
 	   {
 	
 		wfTasks = aa.workflow.getTaskItemByCapID(capId, null).getOutput();
@@ -87,13 +87,21 @@ if (matches(wfStatus, "Withdrawn"))
 			//closeTask(vWFTask.getDisposition(), "Withdrawn", "Updated via Script", "Updated via Script");
 			deactivateTask(vWFTask.getTaskDescription());
 		}
+if(wfStatus == "Withdrawn")
+{
 editAppSpecific("County Status", "Withdrawn");
-						editAppSpecific("State Status", "Withdrawn");
+editAppSpecific("State Status", "Withdrawn");
+closeTask("Closure", "Withdrawn", "Updated via Script", "Updated via Script");
+}
+if(wfStatus == "Ineligible")
+{
+editAppSpecific("County Status", "Ineligible");
+editAppSpecific("State Status", "Ineligible");
+closeTask("Closure", "Ineligible", "Updated via Script", "Updated via Script");
+}
+
 	
-		closeTask("Closure", "Withdrawn", "Updated via Script", "Updated via Script");
-	
-	  }
-	
+}
 }
 catch (ex)
   {
