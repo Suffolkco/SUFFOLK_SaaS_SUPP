@@ -332,6 +332,16 @@ function workflowFinalReviewApprovedWWMWithPin()
 	} */
 }
 
+/*
+ * find a document on record and download it on disk, preparing it to be used on email attachment.
+ * at least documentType or documentFileName should be passed, search priority for documentType.
+ *
+ * @param itemCapId capId for record
+ * @param documentType {String} document type to find on record, pass null or empty to ignore
+ * @param documentFileName {String} file name of the document to find, pass null or empty to ignore
+ *
+ * @returns {String} full path of the document if found, otherwise null
+ */
 function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFileName) {
     if ((!documentType || documentType == "" || documentType == null) && (!documentFileName || documentFileName == "" || documentFileName == null))
     {
@@ -380,7 +390,7 @@ function prepareDocumentForEmailAttachment(itemCapId, documentType, documentFile
     var thisCap = aa.cap.getCap(itemCapId).getOutput();
     var moduleName = thisCap.getCapType().getGroup();
     var toClear = docToPrepare.getFileName();
-    toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(".", "").replace(" ", "_");
+    toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(" ", "_");
     docToPrepare.setFileName(toClear);
     var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
     if (downloadRes.getSuccess() && downloadRes.getOutput())
