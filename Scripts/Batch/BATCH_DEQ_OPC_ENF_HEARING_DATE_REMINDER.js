@@ -288,14 +288,14 @@ function mainProcess(thisType) {
                                                             {
                                                                 if (enfType == "SP")
                                                                 {
-                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Pool Owner", "Pool Operator"))
                                                                     {
                                                                         conEmail += String(capContacts[c].email) + ";";
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Tank Owner", "Operator"))
                                                                     {
                                                                         conEmail += String(capContacts[c].email) + ";";
                                                                     }
@@ -305,7 +305,7 @@ function mainProcess(thisType) {
                                                     }
                                                 }
 
-                                                logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
+                                                logDebugLocal("Sending DEQ_OPC_ENF_PRELIM_HEARING_REM notification on : " + capId.getCustomID() + " to " + conEmail);
                                                 sendNotification("", conEmail, "", "DEQ_OPC_ENF_PRELIM_HEARING_REM", vEParams, null);
                                             }
                                         }
@@ -337,17 +337,27 @@ function mainProcess(thisType) {
                                                         }
                                                     }
                                                 }
+
+                                                var wfObj = workflowResult.getOutput();
+                                                for (w in wfObj)
+                                                {
+                                                    if (matches(wfObj[w].getTaskDescription(), "Preliminary Hearing") && !matches(wfObj[w].getDisposition(), "Paid") 
+                                                    && !matches(wfObj[w].getDisposition(), "Hearing Held")
+                                                    && wfObj[w].getActiveFlag() == "Y")
+                                                    {
+                                                        addParameter(vEParams, "$$altID$$", capIDString);
+                                                        addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
+                                                        addParameter(vEParams, "$$facilityName$$", appName);
+                                                        addParameter(vEParams, "$$prelimHearingDate$$", statDate);
+                                                        logDebugLocal("Workflow status is: " + wfObj[w].getDisposition() + ". Sending missed hearing DEQ_OPC_ENF_MIS_HEARING template to " + prelimHearingUserEmail + " as part of " + capId.getCustomID());                
+                                                        sendNotification("", prelimHearingUserEmail, "", "DEQ_OPC_ENF_MIS_HEARING", vEParams, null);
+                                                        
+                                                    
+                                                    }
+                                                }
                                             }
-                                            addParameter(vEParams, "$$altID$$", capIDString);
-                                            addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
-                                            addParameter(vEParams, "$$facilityName$$", appName);
-                                            addParameter(vEParams, "$$prelimHearingDate$$", statDate);
-
-                                            logDebugLocal("sending missed hearing template to " + prelimHearingUserEmail + " as part of " + capId.getCustomID());
-
-                                            sendNotification("", prelimHearingUserEmail, "", "DEQ_OPC_ENF_MIS_HEARING", vEParams, null);
                                         }
-                                    }
+                                    
                                 }
                             }
                             if (matches(getAppStatus(), "OPEN FH", "Open FH"))
@@ -428,14 +438,14 @@ function mainProcess(thisType) {
                                                             {
                                                                 if (enfType == "SP")
                                                                 {
-                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Pool Owner", "Pool Operator"))
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Pool Owner", "Pool Operator"))
                                                                     {
                                                                         conEmail += String(capContacts[c].email) + ";";
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Property Owner", "Tank Owner", "Operator"))
+                                                                    if (matches(capContacts[c].getCapContactModel().getContactType(), "Tank Owner", "Operator"))
                                                                     {
                                                                         conEmail += String(capContacts[c].email) + ";";
                                                                     }
@@ -444,7 +454,7 @@ function mainProcess(thisType) {
                                                         }
                                                     }
                                                 }
-                                                logDebugLocal("sending notification on : " + capId.getCustomID() + " to " + conEmail);
+                                                logDebugLocal("Sending DEQ_OPC_ENF_FORMAL_HEARING_REM notification on : " + capId.getCustomID() + " to " + conEmail);
                                                 sendNotification("", conEmail, "", "DEQ_OPC_ENF_FORMAL_HEARING_REM", vEParams, null);
                                             }
                                         }
@@ -549,14 +559,15 @@ function mainProcess(thisType) {
 
                                                         //Overdue open task
                                                         if (matches(dateDifRound, -1))
-                                                        {
+                                                        {                                                           
                                                             //logDebugLocal("datedif matches");
                                                             addParameter(vEParams, "$$altID$$", capIDString);
                                                             //logDebugLocal("capidstring is: " + capIDString);
                                                             addParameter(vEParams, "$$fileRefNum$$", fileRefNum);
                                                             addParameter(vEParams, "$$facilityName$$", appName);
-                                                            //logDebugLocal("sending action required template to " + taskUserEmail + " as part of " + capId.getCustomID());
+                                                            logDebugLocal("Sending action DEQ_OPC_ENF_ACT_REQ required template to " + taskUserEmail + " as part of " + capId.getCustomID());
                                                             sendNotification("", taskUserEmail, "", "DEQ_OPC_ENF_ACT_REQ", vEParams, null);
+                                                            }
                                                         }
                                                     }
                                                 }
