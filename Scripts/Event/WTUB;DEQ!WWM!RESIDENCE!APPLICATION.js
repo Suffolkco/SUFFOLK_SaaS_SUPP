@@ -170,7 +170,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         //editAppSpecific("New documents uploaded", "UNCHECKED", capId);
         cancel = true;
         showMessage = true;
-        comment("A resubmission was made - verify that the latest documents or payment have been reviewed. Deactivate 'New documents uploaded' flag in custom fields to proceed.");
+        comment("A new submission was made since the start of your review - verify that the latest documents or payments have been reviewed and uncheck the “New Documents” box in custom field.");
 
     }
 }
