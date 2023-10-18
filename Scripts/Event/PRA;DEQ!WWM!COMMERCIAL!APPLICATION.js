@@ -1,6 +1,48 @@
 //PRA:DEQ/WR/Commercial/Application
 if (publicUser)
 {
+    // EHIMS-4832: Resubmission after user already submitted.
+    if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
+    {
+        // 1. Set a flag
+        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+        
+        // 2. Send email to Record Assignee                       
+        var cdScriptObjResult = aa.cap.getCapDetail(capId);
+        if (!cdScriptObjResult.getSuccess())
+            { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+
+        var cdScriptObj = cdScriptObjResult.getOutput();
+
+        if (!cdScriptObj)
+            { logDebug("**ERROR: No cap detail script object") ; }
+
+        cd = cdScriptObj.getCapDetailModel();
+
+        // Record Assigned to
+        var assignedUserid = cd.getAsgnStaff();
+        if (assignedUserid !=  null)
+        {
+            iNameResult = aa.person.getUser(assignedUserid)
+
+            if(iNameResult.getSuccess())
+            {
+                assignedUser = iNameResult.getOutput();                   
+                var emailParams = aa.util.newHashtable();
+                var reportFile = new Array();
+                getRecordParams4Notification(emailParams);   
+                addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                if (assignedUser.getEmail() != null)
+                {
+                    sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+                    logDebug("Email Sent here***************");
+                    logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
+                }                    
+            }
+        }             
+    }
+    
     if (isTaskActive("Application Review") && isTaskStatus("Application Review","Awaiting Client Reply"))
     {
         updateTask("Application Review", "Resubmitted", "Additional payment submitted by Applicant", "Additional payment submitted by Applicant");        
@@ -28,7 +70,9 @@ if (publicUser)
      if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null"))  
      {
          updateAppStatus("Resubmitted");
-     } 
+     }     
+
+
 }
 
 
