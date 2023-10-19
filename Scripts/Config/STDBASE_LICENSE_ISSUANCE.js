@@ -419,6 +419,16 @@ function licenseIssuance(itemCapId, recordSettings) {
 			}//rNewLicId is OK
 		}//rLicChild array OK
 	}
+if(recordSettings.copyRecordName)
+{
+	copyRecordNameLocal(capIdsArray, usageType);
+}
+
+if(recordSettings.copyRecordDetails)
+{
+	copyRecordDetailsLocal(capIdsArray, usageType);
+}
+	
 }
 
 function createParentLocal(grp, typ, stype, cat, desc)
@@ -1130,4 +1140,73 @@ function prepareAppTypeArray(appTypeToCreate) {
 		logDebug("**ERROR prepareAppTypeArray(): failed to get getCapTypeListByModule, error: " + capTypeList.getErrorMessage());
 	}
 	return false;
+}
+
+function copyRecordDetailsLocal(capIdsArray, copyDirection) {
+
+	//This Portlet is not supported in Pageflow
+	if (controlString.equalsIgnoreCase("Pageflow")) {
+		return;
+	}
+
+	for (ca in capIdsArray) {
+
+		var srcDestArray = getCopySrcDest(capId, capIdsArray[ca], copyDirection);
+
+		aa.cap.copyCapDetailInfo(srcDestArray["src"], srcDestArray["dest"]);
+
+		//for Description Field
+		aa.cap.copyCapWorkDesInfo(srcDestArray["src"], srcDestArray["dest"]);
+
+		//copy from 1st parent only (other will just overwrite)
+		if (copyDirection == FROM_PARENT) {
+			return true;
+		}
+	} //for all capIdsArray
+	return true;
+}
+
+/**
+ * Description of function here.
+ *
+ * @param {array} capIds
+ * @param {string} copyDirection
+ * @return {boolean} returns true if successful, false if not.
+ * copy 'Short Notes' and 'Detailed Description' values from source cap Id to destination cap Id 
+ */
+function copyRecordNameLocal(capIdsArray, copyDirection) {
+
+	//This Portlet is not supported in Pageflow
+	if (controlString.equalsIgnoreCase("Pageflow")) {
+		return;
+	}
+
+	for (ca in capIdsArray) {
+		var srcDestArray = getCopySrcDest(capId, capIdsArray[ca], copyDirection);
+
+		var fromCapModel = aa.cap.getCapByPK(srcDestArray["src"], true);
+		if (fromCapModel.getSuccess()) {
+			fromCapModel = fromCapModel.getOutput();
+
+			var toCapModel = aa.cap.getCapByPK(srcDestArray["dest"], true);
+			if (toCapModel.getSuccess()) {
+				toCapModel = toCapModel.getOutput();
+				toCapModel.setSpecialText(fromCapModel.getSpecialText());
+				aa.cap.editCapByPK(toCapModel).getSuccess();
+			}
+			else
+				{
+				logDebug("Error in aa.cap.getCapByPK API. Message = " + toCapModel.getErrorMsg());
+				}
+		}
+		else
+			{
+			logDebug("Error in aa.cap.getCapByPK API. Message = " + fromCapModel.getErrorMsg());
+			}
+		//copy from 1st parent only (other will just overwrite)
+		if (copyDirection == FROM_PARENT) {
+			return true;
+		}
+	} //for all capIdsArray
+	return true;
 }
