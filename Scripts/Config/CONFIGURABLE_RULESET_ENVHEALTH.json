@@ -3,7 +3,17 @@
     "StandardScripts": [
       "STDBASE_COPY_RECORD_DATA",
       "STDBASE_REQUIRED_DOCUMENTS",
-      "STDBASE_UPDATE_FIELDS"
+      "STDBASE_UPDATE_FIELDS",
+      "STDBASE_SEND_CONTACT_EMAILS",
+      "STDBASE_PEOPLE_AUTOMATION"
+    ]
+  },
+  "ConvertToRealCAPAfter": {
+    "StandardScripts": [
+      "STDBASE_COPY_RECORD_DATA",
+      "STDBASE_UPDATE_FIELDS",
+      "STDBASE_SEND_CONTACT_EMAILS",
+      "STDBASE_PEOPLE_AUTOMATION"
     ]
   },
   "InvoiceFeeAfter": {
@@ -54,6 +64,11 @@
   "Pageflow": {
     "StandardScripts": [
       "STDBASE_REQUIRED_DOCUMENTS"
+    ]
+  },
+  "ApplicationSpecificInfoUpdateAfter": {
+    "StandardScripts": [
+      "STDBASE_UPDATE_FIELDS"
     ]
   }
 }
