@@ -1,46 +1,53 @@
 //PRA:DEQ/WR/Commercial/Application
 if (publicUser)
 {
-    // EHIMS-4832: Resubmission after user already submitted.
-    if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
+    try
     {
-        // 1. Set a flag
-        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-        
-        // 2. Send email to Record Assignee                       
-        var cdScriptObjResult = aa.cap.getCapDetail(capId);
-        if (!cdScriptObjResult.getSuccess())
-            { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
-
-        var cdScriptObj = cdScriptObjResult.getOutput();
-
-        if (!cdScriptObj)
-            { logDebug("**ERROR: No cap detail script object") ; }
-
-        cd = cdScriptObj.getCapDetailModel();
-
-        // Record Assigned to
-        var assignedUserid = cd.getAsgnStaff();
-        if (assignedUserid !=  null)
+        // EHIMS-4832: Resubmission after user already submitted.
+        if (getAppStatus(capId) == "Resubmitted" || getAppStatus(capId) == "Review in Process" || getAppStatus(capId) == "Pending")
         {
-            iNameResult = aa.person.getUser(assignedUserid)
+            // 1. Set a flag
+            editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+            
+            // 2. Send email to Record Assignee                       
+            var cdScriptObjResult = aa.cap.getCapDetail(capId);
+            if (!cdScriptObjResult.getSuccess())
+                { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
 
-            if(iNameResult.getSuccess())
+            var cdScriptObj = cdScriptObjResult.getOutput();
+
+            if (!cdScriptObj)
+                { logDebug("**ERROR: No cap detail script object") ; }
+
+            cd = cdScriptObj.getCapDetailModel();
+
+            // Record Assigned to
+            var assignedUserid = cd.getAsgnStaff();
+            if (assignedUserid !=  null)
             {
-                assignedUser = iNameResult.getOutput();                   
-                var emailParams = aa.util.newHashtable();
-                var reportFile = new Array();
-                getRecordParams4Notification(emailParams);   
-                addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
-                addParameter(emailParams, "$$altID$$", capId.getCustomID());
-                if (assignedUser.getEmail() != null)
+                iNameResult = aa.person.getUser(assignedUserid)
+
+                if(iNameResult.getSuccess())
                 {
-                    sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
-                    logDebug("Email Sent here***************");
-                    logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
-                }                    
-            }
-        }             
+                    assignedUser = iNameResult.getOutput();                   
+                    var emailParams = aa.util.newHashtable();
+                    var reportFile = new Array();
+                    getRecordParams4Notification(emailParams);   
+                    addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+                    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                    if (assignedUser.getEmail() != null)
+                    {
+                        sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);                  
+                    }                    
+                }
+            }             
+        }
+    }
+    catch (err)
+    {
+        message += "A system error has occured: " + err.message;
+        debug = debug + " Additional Information Required: " + err.message;
+        aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "PRA COMM debug", debug);
     }
     
     if (isTaskActive("Application Review") && isTaskStatus("Application Review","Awaiting Client Reply"))

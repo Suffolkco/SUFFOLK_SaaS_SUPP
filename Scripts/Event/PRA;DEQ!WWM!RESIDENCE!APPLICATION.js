@@ -1,26 +1,33 @@
 //PRA:DEQ/WR/Residence/Application
 if (publicUser)
 { 
+   try
+   {
    // EHIMS-4832: Resubmission after user already submitted.
-   if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
+   if (getAppStatus(capId) == "Resubmitted" || getAppStatus(capId) == "Review in Process" || getAppStatus(capId) == "Pending")
    {
        // 1. Set a flag
        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-       
+         
        // 2. Send email to Record Assignee                       
        var cdScriptObjResult = aa.cap.getCapDetail(capId);
-       if (!cdScriptObjResult.getSuccess())
-           { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+       if (!cdScriptObjResult.getSuccess())           
+       { 
+        logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ;
+      }
 
        var cdScriptObj = cdScriptObjResult.getOutput();
 
-       if (!cdScriptObj)
-           { logDebug("**ERROR: No cap detail script object") ; }
+       if (!cdScriptObj)           
+        { logDebug("**ERROR: No cap detail script object") ; 
+        
+    }
 
        cd = cdScriptObj.getCapDetailModel();
 
        // Record Assigned to
        var assignedUserid = cd.getAsgnStaff();
+       
        if (assignedUserid !=  null)
        {
            iNameResult = aa.person.getUser(assignedUserid)
@@ -30,18 +37,25 @@ if (publicUser)
                assignedUser = iNameResult.getOutput();                   
                var emailParams = aa.util.newHashtable();
                var reportFile = new Array();
-               getRecordParams4Notification(emailParams);   
-               addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+               getRecordParams4Notification(emailParams);                          
+               addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                       
+               
                addParameter(emailParams, "$$altID$$", capId.getCustomID());
                if (assignedUser.getEmail() != null)
                {
-                   sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
-                   logDebug("Email Sent here***************");
-                   logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
-               }                    
+                   sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);                                    
+               }    
+             
            }
        }             
    }
+}
+catch (err)
+{
+    message += "A system error has occured: " + err.message;
+	debug = debug + " Additional Information Required: " + err.message;
+    aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "PRA RES debug", debug);
+}
    
     if (isTaskActive("Application Review") && isTaskStatus("Application Review","Awaiting Client Reply"))
     {
@@ -66,7 +80,7 @@ if (publicUser)
     // EHIMS-5036
     var appStatus = getAppStatus(capId);   
 
-    var body = "appStatus: " + appStatus + " capId: " + capId + " Complete cap? " + cap.isCompleteCap();
+    var body = "appStatus: " + appStatus + " capId: " + capId + " Complete cap? " + cap.isCompleteCap() + "Assigned ID: " + assignedUserid;
 
     aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "PRA WWM Resid App", body);
 
