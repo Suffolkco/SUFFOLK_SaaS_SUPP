@@ -6,48 +6,58 @@ if (publicUser)
    // EHIMS-4832: Resubmission after user already submitted.
    if (getAppStatus(capId) == "Resubmitted" || getAppStatus(capId) == "Review in Process" || getAppStatus(capId) == "Pending")
    {
-       // 1. Set a flag
-       editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-         
-       // 2. Send email to Record Assignee                       
-       var cdScriptObjResult = aa.cap.getCapDetail(capId);
-       if (!cdScriptObjResult.getSuccess())           
-       { 
-        logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ;
-      }
+        var newDocUploaded = AInfo["New Documents Uploaded"]
+        logDebug("New Doc Flag Uploaded: " + newDocUploaded);
 
-       var cdScriptObj = cdScriptObjResult.getOutput();
+        if (newDocUploaded == 'CHECKED')
+        {
+            logDebug("Won't send again. Already sent email");
+        }
+        else
+        {
+        // 1. Set a flag
+        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+            
+        // 2. Send email to Record Assignee                       
+        var cdScriptObjResult = aa.cap.getCapDetail(capId);
+        if (!cdScriptObjResult.getSuccess())           
+        { 
+            logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ;
+        }
 
-       if (!cdScriptObj)           
-        { logDebug("**ERROR: No cap detail script object") ; 
+        var cdScriptObj = cdScriptObjResult.getOutput();
+
+        if (!cdScriptObj)           
+            { logDebug("**ERROR: No cap detail script object") ; 
+            
+            }
+
+        cd = cdScriptObj.getCapDetailModel();
+
+        // Record Assigned to
+        var assignedUserid = cd.getAsgnStaff();
         
-    }
+        if (assignedUserid !=  null)
+        {
+            iNameResult = aa.person.getUser(assignedUserid)
 
-       cd = cdScriptObj.getCapDetailModel();
-
-       // Record Assigned to
-       var assignedUserid = cd.getAsgnStaff();
-       
-       if (assignedUserid !=  null)
-       {
-           iNameResult = aa.person.getUser(assignedUserid)
-
-           if(iNameResult.getSuccess())
-           {
-               assignedUser = iNameResult.getOutput();                   
-               var emailParams = aa.util.newHashtable();
-               var reportFile = new Array();
-               getRecordParams4Notification(emailParams);                          
-               addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                       
-               
-               addParameter(emailParams, "$$altID$$", capId.getCustomID());
-               if (assignedUser.getEmail() != null)
-               {
-                   sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);                                    
-               }    
-             
-           }
-       }             
+            if(iNameResult.getSuccess())
+            {
+                assignedUser = iNameResult.getOutput();                   
+                var emailParams = aa.util.newHashtable();
+                var reportFile = new Array();
+                getRecordParams4Notification(emailParams);                          
+                addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                       
+                
+                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                if (assignedUser.getEmail() != null)
+                {
+                    sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);                                    
+                }    
+                
+            }
+        }      
+        }       
    }
 }
 catch (err)

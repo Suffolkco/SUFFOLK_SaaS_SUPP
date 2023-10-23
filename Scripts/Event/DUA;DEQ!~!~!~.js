@@ -18,7 +18,7 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
         var newDocUploaded = AInfo["New Documents Uploaded"]
         logDebug("New Doc Flag Uploaded: " + newDocUploaded);
 
-        if (newDocUploaded == CHECKED)
+        if (newDocUploaded == 'CHECKED')
         {
             logDebug("Won't send again. Already sent email");
         }
