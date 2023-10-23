@@ -15,43 +15,53 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     // EHIMS-4832
     if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
     {
-        // 1. Set a flag
-        editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
-        
-        // 2. Send email to Record Assignee                       
-        var cdScriptObjResult = aa.cap.getCapDetail(capId);
-        if (!cdScriptObjResult.getSuccess())
-            { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
+        var newDocUploaded = AInfo["New Documents Uploaded"]
+        logDebug("New Doc Flag Uploaded: " + newDocUploaded);
 
-        var cdScriptObj = cdScriptObjResult.getOutput();
-
-        if (!cdScriptObj)
-            { logDebug("**ERROR: No cap detail script object") ; }
-
-        cd = cdScriptObj.getCapDetailModel();
-
-        // Record Assigned to
-        var assignedUserid = cd.getAsgnStaff();
-        if (assignedUserid !=  null)
+        if (newDocUploaded == CHECKED)
         {
-            iNameResult = aa.person.getUser(assignedUserid)
+            logDebug("Won't send again. Already sent email");
+        }
+        else
+        {
+            // 1. Set a flag
+            editAppSpecific("New Documents Uploaded", 'CHECKED', capId);
+            
+            // 2. Send email to Record Assignee                       
+            var cdScriptObjResult = aa.cap.getCapDetail(capId);
+            if (!cdScriptObjResult.getSuccess())
+                { logDebug("**ERROR: No cap detail script object : " + cdScriptObjResult.getErrorMessage()) ; }
 
-            if(iNameResult.getSuccess())
+            var cdScriptObj = cdScriptObjResult.getOutput();
+
+            if (!cdScriptObj)
+                { logDebug("**ERROR: No cap detail script object") ; }
+
+            cd = cdScriptObj.getCapDetailModel();
+
+            // Record Assigned to
+            var assignedUserid = cd.getAsgnStaff();
+            if (assignedUserid !=  null)
             {
-                assignedUser = iNameResult.getOutput();                   
-                var emailParams = aa.util.newHashtable();
-                var reportFile = new Array();
-                getRecordParams4Notification(emailParams);   
-                addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
-                addParameter(emailParams, "$$altID$$", capId.getCustomID());
-                if (assignedUser.getEmail() != null)
+                iNameResult = aa.person.getUser(assignedUserid)
+
+                if(iNameResult.getSuccess())
                 {
-                    sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
-                    logDebug("Email Sent here***************");
-                    logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
-                }                    
-            }
-        }             
+                    assignedUser = iNameResult.getOutput();                   
+                    var emailParams = aa.util.newHashtable();
+                    var reportFile = new Array();
+                    getRecordParams4Notification(emailParams);   
+                    addParameter(emailParams, "$$assignedUser$$",assignedUser.getFirstName() + " " + assignedUser.getLastName());                 
+                    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                    if (assignedUser.getEmail() != null)
+                    {
+                        sendNotification("", assignedUser.getEmail() , "", "DEQ_WWM_REVIEW_REQUIRED", emailParams, reportFile);
+                        logDebug("Email Sent here***************");
+                        logDebug("Info: " + isTaskActive("Plans Coordination") + getAppStatus())
+                    }                    
+                }
+            }             
+        }
     }
 
     // EHIMS -4431: Check if BOR is attached and there is a BOR fee already
@@ -129,42 +139,49 @@ if (!skip)
         {
             updateTask("Plans Distribution", "Resubmitted", "Plan corrections submitted by Applicant.", "Plan corrections submitted by Applicant.");
         }
-    }
+    
+}
 
 
 if (publicUser)
 {    
-    if (isTaskActive("Application Review"))
+    // We will handle WWM Res/Sub/Commerical in it's own file.
+    if (itemCapType != "DEQ/WWM/Residence/Application" && 
+    itemCapType != "DEQ/WWM/Subdivision/Application" &&       
+    itemCapType != "DEQ/WWM/Commercial/Application")
     {
-        if (isTaskStatus("Application Review", "Awaiting Client Reply")) 
+        if (isTaskActive("Application Review"))
         {
-            updateAppStatus("Resubmitted");
-            updateTask("Application Review", "Resubmitted", "Additional documents submitted by Applicant.", "Additional documents submitted by Applicant.");
+            if (isTaskStatus("Application Review", "Awaiting Client Reply")) 
+            {
+                updateAppStatus("Resubmitted");
+                updateTask("Application Review", "Resubmitted", "Additional documents submitted by Applicant.", "Additional documents submitted by Applicant.");
+            }
+            if (itemCapType == "DEQ/WWM/Garbage/Permit")
+            {               
+                updateAppStatus("Resubmitted");
+                
+            }
+        
         }
-        if (itemCapType == "DEQ/WWM/Garbage/Permit")
-        {               
-            updateAppStatus("Resubmitted");
-            
-        }
-    
-    }
 
-    if (isTaskActive("Final Review") && isTaskStatus("Final Review","Awaiting Client Reply"))
-    {
-        updateTask("Final Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-    if (isTaskActive("Inspections") && isTaskStatus("Inspections","Awaiting Client Reply"))
-    {
-        updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
-        updateAppStatus("Resubmitted");
-    }
-
-    if (itemCapType == "DEQ/WWM/Garbage/Amendment" || itemCapType == "DEQ/WWM/Garbage/Renewal")
-    {
-        if (isTaskActive("Renewal Review"))
+        if (isTaskActive("Final Review") && isTaskStatus("Final Review","Awaiting Client Reply"))
         {
+            updateTask("Final Review", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
             updateAppStatus("Resubmitted");
+        }
+        if (isTaskActive("Inspections") && isTaskStatus("Inspections","Awaiting Client Reply"))
+        {
+            updateTask("Inspections", "Resubmitted", "Additional information submitted by Applicant", "Additional information submitted by Applicant");
+            updateAppStatus("Resubmitted");
+        }
+
+        if (itemCapType == "DEQ/WWM/Garbage/Amendment" || itemCapType == "DEQ/WWM/Garbage/Renewal")
+        {
+            if (isTaskActive("Renewal Review"))
+            {
+                updateAppStatus("Resubmitted");
+            }
         }
     }
    
