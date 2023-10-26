@@ -36,7 +36,7 @@
           "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
-        "postScript": ""
+        "postScript": "POST_Update_Record_Hierarchy"
       }
     ]
   },
