@@ -33,14 +33,10 @@
           "createLP": true,
           "licenseTable": "",
           "refLPType": "Food Facility",
-          "contactType": "Facility Contact",
+          "contactType": "Facility Information",
           "contactAddressType": "Mailing"
         },
-        "postScript": 
-        [ 
-          "POST_Update_Record_Hierarchy",
-          "EH_PERMIT_UPDATELP"
-        ]
+        "postScript": "POST_Update_Record_Hierarchy"          
               
       }
     ]
