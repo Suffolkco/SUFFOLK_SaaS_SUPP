@@ -36,7 +36,12 @@
           "contactType": "Facility Contact",
           "contactAddressType": "Mailing"
         },
-        "postScript": "POST_Update_Record_Hierarchy"
+        "postScript": 
+        [ 
+          "POST_Update_Record_Hierarchy",
+          "EH_PERMIT_UPDATELP"
+        ]
+              
       }
     ]
   },
