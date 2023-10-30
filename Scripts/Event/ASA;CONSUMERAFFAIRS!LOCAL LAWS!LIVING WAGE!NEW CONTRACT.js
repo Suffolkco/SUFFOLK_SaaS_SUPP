@@ -1,7 +1,7 @@
-var specific = getAppSpecific("Specific", capId);
+var specific = getAppSpecific("Exemption", capId);
 logDebug("specific: " + specific);
 
-if (specific == 'CHECKED')
+if (specific == 'Specific')
 {	
 	var excemptionRecord = createChildLocal("ConsumerAffairs", "Local Laws", "Living Wage", "Exemption", "Created from Living Wage Contract", capId);
    
