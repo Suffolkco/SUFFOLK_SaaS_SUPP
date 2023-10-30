@@ -1,8 +1,8 @@
 
 // PHP-96
 // Add a Faciility Information Contact
-//if(wfTask == "Status" && (wfStatus == "No Plans Required" || wfStatus == "Plans Approved"))
-{   
+if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStatus == "Plans Approved"))
+{   	
    // Use facility name
    var dbaName = getAppSpecific("Facility Name", capId);		
    logDebug("*********************************************");		
@@ -31,7 +31,10 @@
 			//Retrieve the addrress from Application to be copied to LP
 			if (addressToUse)
 			{
-				addressLine1 = addressToUse.getAddressLine1();     
+				//debugObject(addressToUse);
+				addressLine1 = addressToUse.getAddressLine1();    
+				addressDescription = addressToUse.getAddressDescription();     
+				fullAddress  = addressToUse.getFullAddress();     
 				addressStreetName = addressToUse.getStreetName();  
 				addressCity = addressToUse.getCity();    
 				addressState = addressToUse.getState();             
@@ -42,6 +45,8 @@
 				addressHouseNumberStart = addressToUse.getHouseNumberStart();			                
 				logDebug("Address Line 1: " + addressLine1 + ", " +  addressCity + ", " +  addressState + ", " + addressZip);
 				logDebug("Street Address: " + addressStreetName + ", Street #: " +  addressHouseNumberStart);
+				logDebug("Location Description: " + addressDescription);
+				logDebug("Street Address: " + fullAddress);
 			}        
 		}
 	}
@@ -73,8 +78,8 @@
 				newContact.setContactType(contactType);
 				logDebug("Set dba name: " + dbaName);
 				newContact.setBusinessName(dbaName);	
-							debugObject(newContact)					;
-				newContact.setAddressLine1(addressLine1);
+				//debugObject(newContact)					;
+				newContact.setAddressLine1(addressStreetAddress);
 				logDebug("Set Address City: " + addressCity);
 				newContact.setCity(addressCity);
 				logDebug("Set Address State: " + addressState);
