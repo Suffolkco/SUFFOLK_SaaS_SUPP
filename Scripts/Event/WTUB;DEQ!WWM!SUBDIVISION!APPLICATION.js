@@ -112,10 +112,13 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         showMessage = true;        
         comment("The custom field 'Permit Conditions Text' is blank, and the workflow was advanced without a notice or permit conditions document being generated, and no email was sent to the public.");
     }*/	
+   
+}
 
-    // EHIMS-4832
-	// Check to see if new document has been updated by public user
-	
+// EHIMS-4832
+// Check to see if new document has been updated by public user
+if (wfTask == "Plans Coordination" && ( wfStatus == "Approved" || wfStatus == "Awaiting Client Reply"))
+{	
 	var readValue =  AInfo["New Documents Uploaded"]
 	// Use ASI instead of TSI
 	//var readValue = loadTaskSpecific(wfTask, "New documents uploaded");

@@ -158,21 +158,25 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         showMessage = true;
         comment("The custom field 'Permit Conditions Text' is blank, and the workflow was advanced without a notice or permit conditions document being generated, and no email was sent to the public.");
     }
-    // EHIMS-4832
-    // Check to see if new document has been updated by public user
+   
+}
 
-    var readValue = AInfo["New Documents Uploaded"]
-    // Use ASI instead of TSI
-    //var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
-    if (readValue != null && readValue == 'CHECKED')
-    {
-        //Reset the flag. Instead user will manually do it.
-        //editAppSpecific("New documents uploaded", "UNCHECKED", capId);
-        cancel = true;
-        showMessage = true;
-        comment("A new submission was made since the start of your review - verify that the latest documents or payments have been reviewed and uncheck the “New Documents” box in custom field.");
-
-    }
+// EHIMS-4832
+// Check to see if new document has been updated by public user
+if (wfTask == "Plans Coordination" && ( wfStatus == "Approved" || wfStatus == "Awaiting Client Reply"))
+{	
+	var readValue =  AInfo["New Documents Uploaded"]
+	// Use ASI instead of TSI
+	//var readValue = loadTaskSpecific(wfTask, "New documents uploaded");
+	if (readValue != null && readValue == 'CHECKED')
+	{
+		//Reset the flag. Instead user will manually do it.
+		//editAppSpecific("New documents uploaded", "UNCHECKED", capId);
+		cancel = true;
+		showMessage = true;
+		comment("A new submission was made since the start of your review - verify that the latest documents or payments have been reviewed and uncheck the “New Documents” box in custom field.");		
+		
+	}
 }
 
 if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
