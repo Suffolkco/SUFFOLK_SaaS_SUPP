@@ -94,24 +94,40 @@ logDebug("*** send5002Report ***:" + send5002Report);
 
 
 
-// Send reports based on the variables.
-if (send5001Report)
-{
-	logDebug("*** Emailing 5001 Report ***");
-	var rptParams = aa.util.newHashMap();
-	rptParams.put("inspectionid", inspId);
-	rptParams.put("agencyid", 'SUFFOLKCO');	
-	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
-}
-else if (send5002Report)
-{
-	logDebug("*** Emailing 5002 Report ***");
-	var rptParams = aa.util.newHashMap();
-	rptParams.put("inspectionid", inspId);
-	rptParams.put("agencyid", 'SUFFOLKCO');	
-	sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5002 Observation Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
-}
+//PHP -96 Do not email if we update only
+var insp = aa.inspection.getInspection(capId, inspId).getOutput();
+logDebug("Get inspection")
+inspModel = insp.getInspection();
+var vInspectionActivity = inspModel.getActivity();
+logDebug("Get inspection activity");
+//debugObject(vInspectionActivity);
+logDebug(vInspectionActivity.getVehicleID())
 
+if(!matches(vInspectionActivity.getVehicleID(), null, "", undefined) && 
+vInspectionActivity.getVehicleID().toUpperCase() == 'NO')
+{
+	logDebug("Do not send email")
+}
+else
+{
+	// Send reports based on the variables.
+	if (send5001Report)
+	{
+		logDebug("*** Emailing 5001 Report ***");
+		var rptParams = aa.util.newHashMap();
+		rptParams.put("inspectionid", inspId);
+		rptParams.put("agencyid", 'SUFFOLKCO');	
+		sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5001 Compliance Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
+	}
+	else if (send5002Report)
+	{
+		logDebug("*** Emailing 5002 Report ***");
+		var rptParams = aa.util.newHashMap();
+		rptParams.put("inspectionid", inspId);
+		rptParams.put("agencyid", 'SUFFOLKCO');	
+		sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5002 Observation Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
+	}
+}
 
 
 function sendNotificationAndGenReport(notificationTemplateName, reportName, rptParams, toTypesArry, attachRptToEmail) {
