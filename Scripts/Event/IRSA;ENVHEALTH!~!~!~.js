@@ -106,7 +106,7 @@ logDebug(vInspectionActivity.getVehicleID())
 if(!matches(vInspectionActivity.getVehicleID(), null, "", undefined) && 
 vInspectionActivity.getVehicleID().toUpperCase() == 'NO')
 {
-	logDebug("Do not send email")
+	logDebug("Do not send email");
 }
 else
 {
