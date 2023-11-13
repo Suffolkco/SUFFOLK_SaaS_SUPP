@@ -164,7 +164,7 @@ function mainProcess()
                                         fTask = wfObj[i];
 										
                                         //logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
-                                        if (!matches(fTask.getDisposition() , null, undefined, "") && (fTask.getTaskDescription() == ("Inspections")))
+										if (fTask.getDisposition() != "Permit Expired" && fTask.getTaskDescription() == ("Inspections"))
                                         {    
 											if (fTask.getActiveFlag().equals("Y")) 
 											{						
