@@ -117,7 +117,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 
 // EHIMS-4832
 // Check to see if new document has been updated by public user
-if (wfTask == "Plans Coordination" && ( wfStatus == "Approved" || wfStatus == "Awaiting Client Reply"))
+if (wfTask == "Plans Coordination" && ( wfStatus == "Approved" || wfStatus == "Awaiting Client Reply" || wfStatus == "Plan Revisions Needed"))
 {	
 	var readValue =  AInfo["New Documents Uploaded"]
 	// Use ASI instead of TSI
