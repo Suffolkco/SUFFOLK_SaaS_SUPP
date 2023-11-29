@@ -216,7 +216,7 @@ function mainProcess() {
                                 var fileRefNumber = getAppSpecific("File Reference Number", capId);
                                 editAppSpecific("File Reference Number/Facility ID", fileRefNumber, enfChild);
                                 editAppSpecific("Enforcement Type", "OP", enfChild);
-                                var appName = getAppName();
+                                var appName = getAppName(capId);
                                 var projDesc = workDescGet(capId);
                                 editAppName(appName, enfChild);
                                 updateWorkDesc(projDesc, enfChild);
