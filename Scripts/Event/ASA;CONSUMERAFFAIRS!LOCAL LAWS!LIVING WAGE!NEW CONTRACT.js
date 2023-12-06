@@ -1,3 +1,35 @@
+// Get Contrct ID if present.
+var contractId = getAppSpecific("Contract ID", capId);
+logDebug("Contract id: " + contractId);
+
+var newCustomId = capId.getCustomID();
+
+// If contract ID is empty, it will use the automatic generated number from the system
+if(!matches(contractId,null,undefined,""))
+{
+  newCustomId = contractId;
+  // Update contract existing record to new contract ID specified by user.    
+  result = aa.cap.updateCapAltID(capId, contractId);  
+
+}
+
+// Create Lawful hiring automatically and relate
+var lawfulHiringRecord = createChildLocal("ConsumerAffairs", "Local Laws", "Lawful Hiring", "NA", "Created from Living Wage Contract", capId);
+   
+	if (lawfulHiringRecord != null)
+  {	
+    aa.cap.updateCapAltID(lawfulHiringRecord, newCustomId + "-LH");
+
+    logDebug("Copy contacts from : " + capId.getCustomID() + " to " + lawfulHiringRecord.getCustomID());   
+		copyPeople(capId, lawfulHiringRecord); 
+
+    editAppSpecific("Contract ID", newCustomId, lawfulHiringRecord);          
+   
+	}
+
+  
+
+// Create exemption record if the custom field select exemption
 var specific = getAppSpecific("Exemption", capId);
 logDebug("specific: " + specific);
 
@@ -11,30 +43,6 @@ if (specific == 'Specific')
 		copyPeople(capId, excemptionRecord);           
 	}
 	
-}
-var contractId = getAppSpecific("Contract ID", capId);
-logDebug("contract id: " + contractId);
-
-var lawfulHiringRecord = createChildLocal("ConsumerAffairs", "Local Laws", "Lawful Hiring", "NA", "Created from Living Wage Contract", capId);
-   
-	if (lawfulHiringRecord != null)
-  {	
-		logDebug("Copy contacts from : " + capId.getCustomID() + " to " + lawfulHiringRecord.getCustomID());   
-    
-    aa.cap.updateCapAltID(lawfulHiringRecord, capId.getCustomID() + "-EX");
-
-		copyPeople(capId, lawfulHiringRecord); 
-
-    if(!matches(contractId,null,undefined,""))
-    {
-      editAppSpecific("Contract ID", contractId, lawfulHiringRecord);          
-    }
-	}
-
-if(!matches(contractId,null,undefined,""))
-{
-  // Updating existing record to what is specififed in Contact Id. 
-  result = aa.cap.updateCapAltID(capId, contractId);
 }
 
 
