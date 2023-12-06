@@ -12,6 +12,24 @@ if (specific == 'Specific')
 	}
 	
 }
+var contractId = getAppSpecific("Contract ID", capId);
+logDebug("contract id: " + contractId);
+
+var lawfulHiringRecord = createChildLocal("ConsumerAffairs", "Local Laws", "Lawful Hiring", "NA", "Created from Living Wage Contract", capId);
+   
+	if (lawfulHiringRecord != null)
+  {	
+		logDebug("Copy contacts from : " + capId.getCustomID() + " to " + lawfulHiringRecord.getCustomID());   
+    
+    aa.cap.updateCapAltID(lawfulHiringRecord, capId.getCustomID() + "-EX");
+
+		copyPeople(capId, lawfulHiringRecord); 
+    editAppSpecific("Contract ID", contractId, lawfulHiringRecord);          
+	}
+
+// Updating existing record to what is specififed in Contact Id. 
+result = aa.cap.updateCapAltID(capId, contractId);
+
 
 function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
 {
