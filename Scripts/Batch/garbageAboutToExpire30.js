@@ -10,7 +10,7 @@
 |
 /------------------------------------------------------------------------------------------------------*/
 var emailText = "";
-var showDebug = false;// Set to true to see debug messages in email confirmation
+var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = false;
 var systemUserObj = aa.person.getUser("ADMIN").getOutput();
@@ -67,7 +67,7 @@ if (paramsOK)
 		mainProcess();
 		//logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
 		logDebug("End Date: " + startDate);
-		aa.sendMail("noreplyehims@suffolkcountyny.gov", emailAddress, "", "Batch Job - GarbageTruckExpiration", emailText);
+		aa.sendMail("noreplyehims@suffolkcountyny.gov", emailAddress, "", "Batch Job - garbageAboutToExpire30", emailText);
 	}
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -78,7 +78,8 @@ function mainProcess()
 {
     if (isOdd(startDate.getYear()))	
     {
-        logDebug("We are in an odd year, batch script will run");
+		var total = 0;
+        logDebug("We are in an odd year, batch script garbageAboutToExpire30 will run");
         try 
         {
             for (var i in rtArray) 
@@ -108,7 +109,7 @@ function mainProcess()
                 {
                     capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput();
 					capIDString = capId.getCustomID();
-					aa.print(capIDString);
+					logDebug("Looping through " + capIDString);
 					cap = aa.cap.getCap(capId).getOutput();	
 					var taskCheck = false;
 
@@ -157,11 +158,12 @@ function mainProcess()
 												if (curSt == "About to Expire")
 												{	
 													var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
-													aa.print(curExpCon);
+													//aa.print(curExpCon);
 													if (curExpCon == "12/31" + "/" + startDate.getFullYear())
 													{
 														//aa.print("We are checking if " + curExpCon + " is equal to " + "12/31" + "/" + startDate.getFullYear())
-														aa.print("<b>" + capIDString + "</b>");
+														//aa.print("<b>" + capIDString + "</b>");
+														logDebug(capIDString);
 														var emailParams = aa.util.newHashtable();
 														var conArray = getContactArray();
 														var conEmail = [];
@@ -174,7 +176,9 @@ function mainProcess()
 														}
 														if (conEmail != null)
 														{
+															logDebug("Sending notification to " + conEmail + ". Record ID: " + altId + ". App Status: " + getAppStatus(capId) + ". Expiration date: " + curExpCon);
 															sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_30", emailParams, null);
+															total++;
 														}
 													
 													}
@@ -193,6 +197,7 @@ function mainProcess()
         {
             logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
         }
+		logDebug("Total of emails sent: " + total);        
     	logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
     }
     else if (isEven(startDate.getYear()))

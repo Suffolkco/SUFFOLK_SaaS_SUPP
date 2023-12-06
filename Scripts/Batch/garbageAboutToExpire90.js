@@ -79,7 +79,7 @@ function mainProcess()
 	var count = 0;
     if (isOdd(startDate.getYear()))	
     {
-        logDebug("We are in an odd year, batch script will run");
+        logDebug("We are in an odd year, batch script garbageAboutToExpire90 will run");
         try 
         {
             for (var i in rtArray) 
@@ -109,7 +109,7 @@ function mainProcess()
                 {
                     capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput();
 					capIDString = capId.getCustomID();
-					aa.print(capIDString);
+					logDebug(capIDString);
 					cap = aa.cap.getCap(capId).getOutput();	
 					var taskCheck = false;
 
@@ -156,7 +156,7 @@ function mainProcess()
 											if (curSt == "Pending")
 											{ 
 												var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
-												aa.print(curExpCon);
+												//aa.print(curExpCon);
 												if (curExpCon == "12/31" + "/" + startDate.getFullYear())
 												{
 													//logDebug("We are checking if " + curExpCon + " is equal to " + "12/31" + "/" + startDate.getFullYear())
@@ -177,7 +177,7 @@ function mainProcess()
 													{
 														sendNotification("", conEmail, "", "DEQ_WWM_GARBAGE_ABOUT_TO_EXPIRE_90", emailParams, null);
 														count++;
-														logDebug("Record Number: " + capIDString + " contact sent.");
+														logDebug("Sending notification to " + conEmail + ". Record ID: " + altId + ". App Status: " + getAppStatus(capId) + ". Expiration date: " + curExpCon);														
 													} 
 												}
 											}
