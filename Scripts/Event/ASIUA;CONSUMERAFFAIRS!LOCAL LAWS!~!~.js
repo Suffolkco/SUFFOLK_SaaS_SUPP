@@ -85,6 +85,8 @@ else
         }
 
         result = aa.cap.updateCapAltID(capId, contractId + tag);
-
+        // Update custom field on new record
+        editAppSpecific("Contract ID", contractId, capId);      
+                
     }
 }
