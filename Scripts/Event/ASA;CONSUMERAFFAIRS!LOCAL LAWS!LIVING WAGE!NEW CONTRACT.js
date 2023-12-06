@@ -40,7 +40,10 @@ if (specific == 'Specific')
 	if (excemptionRecord != null)
     {	
 		logDebug("Copy contacts from : " + capId.getCustomID() + " to " + excemptionRecord.getCustomID());       
-		copyPeople(capId, excemptionRecord);           
+		copyPeople(capId, excemptionRecord);       
+    editAppSpecific("Contract ID", newCustomId, excemptionRecord);              
+    aa.cap.updateCapAltID(excemptionRecord, newCustomId + "-EX");
+
 	}
 	
 }
