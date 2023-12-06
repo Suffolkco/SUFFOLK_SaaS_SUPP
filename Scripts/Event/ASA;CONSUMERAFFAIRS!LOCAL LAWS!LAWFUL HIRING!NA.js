@@ -1,7 +1,7 @@
 // Retrieve contract ID from custom field
 var contractId = getAppSpecific("Contract ID", capId);
 logDebug("contract id: " + contractId);  
-newId = capId.getCustomID() + "-LH";
+newId = contractId + "-LH";
 
 // Update current record to new custom ID 
 result = aa.cap.updateCapAltID(capId, newId);
@@ -15,7 +15,7 @@ editAppSpecific("Contract ID", contractId, capId);
 
 // Get cap by custom alt ID
 contractParent = getApplication(contractId);
-logInfo("Retrieving ID for application AltID: " + contractId);
+logDebug("Retrieving ID for application AltID: " + contractId);
 // Relate contract as parent
 if (contractParent) {
   addParent(contractParent);

@@ -1,6 +1,6 @@
 var contractId = getAppSpecific("Contract ID", capId);
 logDebug("contract id: " + contractId);  
-newId = capId.getCustomID() + "-UO";
+newId = contractId + "-UO";
 result = aa.cap.updateCapAltID(capId, newId);
 editAppSpecific("Contract ID", contractId, capId); 
 
@@ -12,7 +12,7 @@ if (result.getSuccess())
 
 // Get cap by custom alt ID
 contractParent = getApplication(contractId);
-logInfo("Retrieving ID for application AltID: " + contractId);
+logDebug("Retrieving ID for application AltID: " + contractId);
 // Relate contract as parent
 if (contractParent) {
   addParent(contractParent);
