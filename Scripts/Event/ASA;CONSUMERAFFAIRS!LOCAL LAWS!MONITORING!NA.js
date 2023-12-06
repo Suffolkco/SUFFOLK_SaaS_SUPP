@@ -1,16 +1,24 @@
 var contractId = getAppSpecific("Contract ID", capId);
 logDebug("contract id: " + contractId);  
 
+var customId = capId.getCustomID();
+
 if(!matches(contractId,null,undefined,""))
 {
-  newId = contractId + "-MON";
-  result = aa.cap.updateCapAltID(capId, newId);
-  editAppSpecific("Contract ID", contractId, capId); 
+  customId = contractId; 
+}
 
-  if (result.getSuccess())
-          logDebug("Successfully updated alt Id to: " + newId);
-      else
-          logDebug("Problem updating alt Id: " + result.getErrorMessage());
+newId = customId + "-MON";
+result = aa.cap.updateCapAltID(capId, newId);
+if (result.getSuccess())
+logDebug("Successfully updated alt Id to: " + newId);
+else
+logDebug("Problem updating alt Id: " + result.getErrorMessage());
+
+
+if(!matches(contractId,null,undefined,""))
+{
+  editAppSpecific("Contract ID", contractId, capId); 
 
   // Get cap by custom alt ID
   contractParent = getApplication(contractId);
