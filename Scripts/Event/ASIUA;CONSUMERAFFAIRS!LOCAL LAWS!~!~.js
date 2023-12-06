@@ -59,7 +59,7 @@ if (appTypeArray[3] == "New Contract")
 else
 {
     // Get cap by custom alt ID
-    contractParent = getApplication(contractID);
+    contractParent = getApplication(contractId);
     logDebug("Retrieving ID for contract AltID: " + contractId);
 
     if (contractParent) {
@@ -84,7 +84,7 @@ else
             tag = "-EX";
         }
 
-        result = aa.cap.updateCapAltID(capId, contractID + tag);
+        result = aa.cap.updateCapAltID(capId, contractId + tag);
 
     }
 }
