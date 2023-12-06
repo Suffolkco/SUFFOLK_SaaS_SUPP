@@ -6,12 +6,12 @@ var appTypeString = appTypeResult.toString();
 var appTypeArray = appTypeString.split("/");
 var tag = "";
 
+var contractId = getAppSpecific("Contract ID");
+logDebug("contract id: " + contractId);  
+
 // For new contract, we update the contract ID and altid and its child.
 if (appTypeArray[3] == "New Contract")
-{    
-    var contractId = getAppSpecific("Contract ID");
-    logDebug("contract id: " + contractId);  
-
+{   
     if(!matches(contractId,null,undefined,""))
     {
         // Update current record to new custom ID 
