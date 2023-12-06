@@ -24,11 +24,18 @@ var lawfulHiringRecord = createChildLocal("ConsumerAffairs", "Local Laws", "Lawf
     aa.cap.updateCapAltID(lawfulHiringRecord, capId.getCustomID() + "-EX");
 
 		copyPeople(capId, lawfulHiringRecord); 
-    editAppSpecific("Contract ID", contractId, lawfulHiringRecord);          
+
+    if(!matches(contractId,null,undefined,""))
+    {
+      editAppSpecific("Contract ID", contractId, lawfulHiringRecord);          
+    }
 	}
 
-// Updating existing record to what is specififed in Contact Id. 
-result = aa.cap.updateCapAltID(capId, contractId);
+if(!matches(contractId,null,undefined,""))
+{
+  // Updating existing record to what is specififed in Contact Id. 
+  result = aa.cap.updateCapAltID(capId, contractId);
+}
 
 
 function createChildLocal(grp, typ, stype, cat, desc) // optional parent capId
