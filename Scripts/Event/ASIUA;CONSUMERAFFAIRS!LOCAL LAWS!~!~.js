@@ -9,7 +9,7 @@ var tag = "";
 // For new contract, we update the contract ID and altid and its child.
 if (appTypeArray[3] == "New Contract")
 {    
-    var contractID = getAppSpecific("Contract ID");
+    var contractId = getAppSpecific("Contract ID");
     logDebug("contract id: " + contractId);  
 
     if(!matches(contractId,null,undefined,""))
@@ -45,8 +45,8 @@ if (appTypeArray[3] == "New Contract")
            
             var childCustomId = childId.getCustomID();
             logDebug("Orginal child record ID: " + childCustomId);          
-            logDebug("New record ID: " + contractID + tag);
-            result = aa.cap.updateCapAltID(capId, contractID + tag);
+            logDebug("New record ID: " + contractId + tag);
+            result = aa.cap.updateCapAltID(capId, contractId + tag);
             
             // Update custom field on new record
             editAppSpecific("Contract ID", contractId, childId);      
