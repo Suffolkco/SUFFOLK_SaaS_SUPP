@@ -6,8 +6,16 @@ if (publicUser)
     
     var appStatus = getAppStatus(capId);
      
-    // EHIMS-5036     
-    if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")) 
+    
+    // EHIMS-5115
+    if (appStatus == "Pending" && !isTaskActive("Application Review"))
+    {
+         // Do not update
+    }   
+    // EHIMS-5036  
+    else if ((appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")
+    // EHIMS-5115 
+    && appStatus != "Review in Process") )
     {       
         updateAppStatus("Resubmitted");        
     }
