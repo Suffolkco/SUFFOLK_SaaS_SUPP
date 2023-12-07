@@ -10,7 +10,15 @@ if (publicUser)
 
    aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "DUA WWM Resid App", body);
 
-   if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")) 
+    // EHIMS-5115
+    if (appStatus == "Pending" && !isTaskActive("Application Review"))
+    {
+         // Do not update
+    }   
+   // EHIMS-5036  
+   else if (appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")
+    // EHIMS-5115 
+    && appStatus != "Review in Process")
    {       
       updateAppStatus("Resubmitted");        
    }
@@ -40,9 +48,9 @@ if (publicUser)
 
       if (feeEx == "No" || feeEx == null)
       {
-         logDebugLocal("!feeExists is: " + !feeExists("COM-UP"));
+         logDebugLocal("!feeExists is: " + !feeExists("RES-UP"));
 
-         if (!feeExists("COM-UP"))
+         if (!feeExists("RES-UP"))
          {
             var taskFound = false;
             var pastSixYears = false;
@@ -101,8 +109,8 @@ if (publicUser)
                // Only if it has past six years, we add fee.
                if (!pastSixYears)
                {
-                  addFee("COM-UP", "DEQ_OSFR", "FINAL", 1, "Y");
-                  logDebugLocal("Added COM-UP fee");
+                  addFee("RES-UP", "DEQ_SFR", "FINAL", 1, "Y");
+                  logDebugLocal("Added RES-UP fee");
                }
                else
                {
@@ -116,7 +124,7 @@ if (publicUser)
          }
          else
          {
-            logDebugLocal("COM-UP fee already exists. Not adding");
+            logDebugLocal("RES-UP fee already exists. Not adding");
          }
       }
    }
