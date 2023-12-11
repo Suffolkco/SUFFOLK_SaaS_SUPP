@@ -589,7 +589,16 @@ function makeTable(labResults, resId, inspEmail) {
         t["Lab Sample Number"] = r[15];
         t["Lab Analysis Code"] = analysisCode;
         // < MDL logic
-        t["Results"] = rawNumericResult;
+        // EHIMS-5173
+        if (textResult.equals("Present < MDL"))
+        {
+            // Text results is Analyte MDT is it is Present < MDL
+            t["Results"] = doNullTranslation("STRING", r[8]);
+        }
+        else // Otherwise, Text results is numeric result
+        {
+            t["Results"] = rawNumericResult;
+        }
         if (rawNumericResult == "-0-" || rawNumericResult == "0") {
             t["Results"] = doNullTranslation("STRING", r[8]);
         }
