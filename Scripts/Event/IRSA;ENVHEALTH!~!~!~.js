@@ -94,6 +94,7 @@ logDebug("*** send5002Report ***:" + send5002Report);
 
 
 
+
 //PHP -96 Do not email if we update only
 var insp = aa.inspection.getInspection(capId, inspId).getOutput();
 logDebug("Get inspection")
@@ -103,12 +104,41 @@ logDebug("Get inspection activity");
 //debugObject(vInspectionActivity);
 logDebug(vInspectionActivity.getVehicleID())
 
+// 1. When UPDATE button has been pressed and no email to be sent. We want the Inpsection result report to be updated
+// so ACA user can get the latest. 
 if(!matches(vInspectionActivity.getVehicleID(), null, "", undefined) && 
 vInspectionActivity.getVehicleID().toUpperCase() == 'NO')
 {
-	logDebug("Do not send email");
+	logDebug("User selected NOT to send email");
+
+	logDebug("Attached inspection result report");
+	// Update new report to the system
+	runReportAndAttachAsync("Inspection Result", "Inspection Result", "EH_FOOD", "Correspondence", inspId, inspType);
+
 }
-else
+// 2. When UPDATE button has been pressed yes/Yes to send email.address.
+// Update report
+else if (!matches(vInspectionActivity.getVehicleID(), null, "", undefined) &&
+vInspectionActivity.getVehicleID().toUpperCase() == 'YES')
+{
+	logDebug("User selected: " + vInspectionActivity.getVehicleID().toUpperCase());
+	logDebug("Attached inspection result report");
+	
+	// Update new report to the system
+	runReportAndAttachAsync("Inspection Result", "Inspection Result", "EH_FOOD", "Correspondence", inspId, inspType);
+}
+ // 3. When UPDATE button has been pressed or any text with the exception of yes/Yes to send email.address.
+// This scenario is to make sure to cover all UPDATE button scenarios.
+else if (!matches(vInspectionActivity.getVehicleID(), null, "", undefined))
+{
+	logDebug("User selected: " + vInspectionActivity.getVehicleID().toUpperCase());
+	logDebug("Attached inspection result report");
+	
+	// Update new report to the system
+	runReportAndAttachAsync("Inspection Result", "Inspection Result", "EH_FOOD", "Correspondence", inspId, inspType);
+}
+
+else // 4. Below is scenario where user hits result inspection with SAVE button.
 {
 	// Send reports based on the variables.
 	if (send5001Report)
@@ -245,6 +275,30 @@ function sendNotificationAndGenReport(notificationTemplateName, reportName, rptP
 		}//contact type matched
 	}//for all contacts
 }
+function runReportAndAttachAsync(reportName, documentName, documentGroup, documentCategory, inspectionId, inspectionType) {
+    var scriptName = "STDBASE_RUNREPORTANDATTACHASYNC";
+    var envParameters = aa.util.newHashMap();
+    envParameters.put("DocumentName", String(documentName));
+    envParameters.put("DocumentGroup", String(documentGroup));
+    envParameters.put("DocumentCategory", String(documentCategory));
+    envParameters.put("InspectionID", inspectionId);
+    envParameters.put("InspectionType", String(inspectionType));
+    envParameters.put("ReportName", String(reportName));
+    envParameters.put("ReportUser", currentUserID);
+    envParameters.put("CustomCapId", capId.getCustomID());
+    envParameters.put("CapID", capId);
+    envParameters.put("ServProvCode", servProvCode);
+    envParameters.put("EventName", controlString);
+
+
+
+
+
+    logDebug("(runReportAndAttachAsync) Calling runAsyncScript for [" + reportName + "]");
+    aa.runAsyncScript(scriptName, envParameters);
+
+}
+
 
 function debugObject(object) {
 	var output = ''; 
