@@ -24,7 +24,7 @@ if (cap)
             {
                 logDebug("No Facility code exists yet");
 
-                var newFacCode = villageCode + "0000001";
+                var newFacCode = villageCode + " " + "0000001";
                 logDebug("New Facility code to be created: " + newFacCode);    
 
                 aa.cap.updateCapAltID(capId, newFacCode);
@@ -45,13 +45,15 @@ if (cap)
                     var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                     if (capmodel.isCompleteCap())
                     {
-                        var facNum = capIDString.substr(2);
+                        // Include the space 2 (village) + space
+                        var facNum = capIDString.substr(3);
                         logDebug("facNum " + facNum);
+
                         var facSeq = parseInt(facNum);   
                         logDebug("facSeq " + facSeq);                 
                         var newFacSeq = facSeq++;
                         logDebug("newFacSeq " + newFacSeq);    
-                        var newFacCode = villageCode + newFacSeq;
+                        var newFacCode = villageCode + " " + newFacSeq;
                         logDebug("newFacCode " + newFacCode);    
 
                         aa.cap.updateCapAltID(capId, newFacCode);
