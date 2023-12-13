@@ -36,24 +36,27 @@ if (cap)
             {
                 recordID = vExistingRecordIDs[0]["recordNumber"];              
                 logDebug("Looking at record: " + recordID);     
-                capId = getApplication(recordID);
-                capIDString = capId.getCustomID();
-                logDebug("CapIdString: " + capIDString);       
-                cap = aa.cap.getCap(capId).getOutput();
-                if (cap)
+                existingCapId = getApplication(recordID);
+                existingCapIDString = existingCapId.getCustomID();
+                logDebug("Existing CapIdString: " + existingCapIDString);       
+                existingCap = aa.cap.getCap(existingCapId).getOutput();
+                if (existingCap)
                 {
-                    var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+                    var capmodel = aa.cap.getCap(existingCapId).getOutput().getCapModel();
                     if (capmodel.isCompleteCap())
                     {
                         // Include the space 2 (village) + space
-                        var facNum = capIDString.substr(3);
+                        var facNum = existingCapIDString.substr(3);
                         logDebug("facNum " + facNum);
 
                         var facSeq = parseInt(facNum);   
                         logDebug("facSeq " + facSeq);                 
-                        var newFacSeq = facSeq++;
+                        var newFacSeq = facSeq + 1;
                         logDebug("newFacSeq " + newFacSeq);    
-                        var newFacCode = villageCode + " " + newFacSeq;
+                        var padded = pad(newFacSeq, 7);
+                        logDebug("padded " + padded);    
+                       
+                        var newFacCode = villageCode + " " + padded;
                         logDebug("newFacCode " + newFacCode);    
 
                         aa.cap.updateCapAltID(capId, newFacCode);
@@ -64,6 +67,12 @@ if (cap)
         }
         
     }    
+}
+
+function pad(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
 }
 
 function doSQLSelect_local(sql)
