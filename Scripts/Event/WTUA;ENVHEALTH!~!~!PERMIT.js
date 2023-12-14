@@ -2,12 +2,11 @@ var showDebug = true;
 var emailText = "";
 
 try {
-    // If the permit is inactive, we disable the FA LP
-    if(wfStatus == "Closed" || wfStatus == "Revoked"){
-
+    // If the permit is inactive, we disable the FA LP. If the permit is reactivate, we enable the FA LP.
+    if(wfStatus == "Closed" || wfStatus == "Revoked" ||  wfStatus == "Active")    
+    {
 
         var lpResult = aa.licenseScript.getLicenseProf(capId);
-    
         
         if (lpResult.getSuccess())
         { 
@@ -24,17 +23,28 @@ try {
                 {   
                     var refLp = getRefLicenseProf(lpID)
 
-                    if (refLp.getAuditStatus() == 'A')
+                    if (wfStatus == "Active")
                     {
-                        refLp.setAuditStatus("I");
-                        
-                        aa.licenseScript.editRefLicenseProf(refLp);
-                                        
-                        logDebugLocal(lpID + ": deactivated linked License");
+                        if (refLp.getAuditStatus() == 'I')
+                        {
+                            refLp.setAuditStatus("A");
+                            aa.licenseScript.editRefLicenseProf(refLp);
+                            logDebugLocal(lpID + ": has been reactivated");
+                        }
                     }
-                    else
+                    else if (wfStatus == "Closed" || wfStatus == "Revoked")
                     {
-                        logDebugLocal(lpID + " is already disabled");
+                        if (refLp.getAuditStatus() == 'A')
+                        {
+                            refLp.setAuditStatus("I");
+                            
+                            aa.licenseScript.editRefLicenseProf(refLp);                                            
+                            logDebugLocal(lpID + ": deactivated linked License");
+                        }
+                        else
+                        {
+                            logDebugLocal(lpID + " is already disabled");
+                        }
                     }
                     
                 }
@@ -46,6 +56,7 @@ try {
             logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
         }
     }
+
 }    	        
 catch (err) {
     aa.print("A JavaScript Error occurred: " + err.message);
