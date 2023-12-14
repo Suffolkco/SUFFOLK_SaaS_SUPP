@@ -3,32 +3,36 @@ if(wfStatus == "Closed" || wfStatus == "Revoked"){
 
 
     var lpResult = aa.licenseScript.getLicenseProf(capId);
+  
+    
 	if (lpResult.getSuccess())
 	{ 
 		var lpArr = lpResult.getOutput();  
-        logDebugLocal("lpArr: " + lpArr);
+        logDebugLocal("LP Length: " + lpArr.length);
 
         for (var lp in lpArr)
         {            
-            licProfScriptModel = lpArr[lp];
-            logDebugLocal("lp: " + lp);
-            //Deactivating license profesionals
-            var refLic = getRefLicenseProf(lp) // Load the reference License Professional
+            refLic = lpArr[lp];
+            logDebugLocal("LP getLicenseType: " + licProfScriptModel.getLicenseType());
 
-            logDebugLocal("Found LP object: " + refLic);
-            if (refLic)
+            if (refLic.getLicenseType() == "Food Facility")
             {
-                if (refLic.getAuditStatus() == 'A')
+
+                logDebugLocal("Found LP object: " + refLic);
+                if (refLic)
                 {
-                    refLic.setAuditStatus("I");
-                    aa.licenseScript.editRefLicenseProf(refLic);
-                    disabledCnt++;
-                    logDebugLocal(lpID + ": deactivated linked License");
-                }
-                else
-                {
-                    logDebugLocal(lpID + " is already disabled");
-                    alreadyDisabledCnt++;
+                    if (refLic.getAuditStatus() == 'A')
+                    {
+                        refLic.setAuditStatus("I");
+                        aa.licenseScript.editRefLicenseProf(refLic);
+                        disabledCnt++;
+                        logDebugLocal(lpID + ": deactivated linked License");
+                    }
+                    else
+                    {
+                        logDebugLocal(lpID + " is already disabled");
+                        alreadyDisabledCnt++;
+                    }
                 }
             }
         }
