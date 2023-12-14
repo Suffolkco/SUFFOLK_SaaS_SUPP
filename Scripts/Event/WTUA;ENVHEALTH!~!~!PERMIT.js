@@ -1,3 +1,5 @@
+var showDebug = true;
+
 // If the permit is inactive, we disable the FA LP
 if(wfStatus == "Closed" || wfStatus == "Revoked"){
 
@@ -11,8 +13,7 @@ if(wfStatus == "Closed" || wfStatus == "Revoked"){
         logDebugLocal("LP Length: " + lpArr.length);
        
         for (var lp in lpArr)
-        {            
-           
+        {   
             logDebugLocal("LP getLicenseType: " + lpArr[lp].getLicenseType());
             lpID = lpArr[lp].getLicenseNbr()        
             logDebugLocal("LP ID: " + lpID);
