@@ -60,15 +60,15 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 	// Only if there is no existing reference contact for Facility Information, create a new one from accounts Receivable
 	if(matches(conArray, null, "", undefined))
 	{
-		logDebug("No contact found: "  + contactType);
-		logDebug("Retrieve from Accounts Receivable count: "  + conArray.length);
+		logDebug("No contact found: "  + contactType);		
 		conArray = getContactByType("Accounts Receivable", capId);	
-		
+		logDebug("Retrieve from Accounts Receivable count: "  + conArray.length);
 
 		if(matches(conArray, null, "", undefined))
 		{
-			logDebug("Retrieve from Facility Owner count: "  + conArray.length);
-			conArray = getContactByType("Facility Owner", capId);			
+			logDebug("No contact found: Accounts Receivable");				
+			conArray = getContactByType("Facility Owner", capId);	
+			logDebug("Retrieve from Facility Owner count: "  + conArray.length);		
 		}
 
 		if(!matches(conArray, null, "", undefined))
