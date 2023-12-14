@@ -129,9 +129,10 @@ try {
 
 			// / run post script
 			var postScript = rules.postScript;
-			if (!isEmptyOrNull(postScript)) {
-				eval(getScriptText(postScript, null, false));
+			if (!matches(postScript, null, "")) {
+				eval(getScriptText(postScript));
 			}
+				
 		}
 	}
 
