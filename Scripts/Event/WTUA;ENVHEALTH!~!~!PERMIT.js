@@ -22,10 +22,12 @@ try {
 
                 if (lpArr[lp].getLicenseType() == "Food Facility")
                 {   
-                    if (lpArr[lp].getAuditStatus() == 'A')
+                    var refLp = getRefLicenseProf(lpID)
+
+                    if (refLp.getAuditStatus() == 'A')
                     {
-                        lpArr[lp].setAuditStatus("I");
-                        var refLp = getRefLicenseProf(lpID)
+                        refLp.setAuditStatus("I");
+                        
                         aa.licenseScript.editRefLicenseProf(refLp);
                                         
                         logDebugLocal(lpID + ": deactivated linked License");
