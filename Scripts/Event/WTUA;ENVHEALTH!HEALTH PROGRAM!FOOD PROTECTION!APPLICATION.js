@@ -52,15 +52,44 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 	}
 
 	//add contact in FSA
-	var conArray = getContactByType("Accounts Receivable", capId);	
-	var firstName = conArray.getFirstName();	
-	var middleName = conArray.getMiddleName();
-	var lastName = conArray.getLastName();	
-	logDebug(firstName + ", " + middleName + ", " + lastName);
-	
-	contactNbr = addReferenceContactByName(firstName, middleName, lastName);
-	logDebug("contactNbr: "  + contactNbr);
 
+	// Check if Facility Information contact exists
+	var conArray = getContactByType(contactType, capId);	
+	var contactNbr;
+	logDebug(contactType + " length is: " + conArray.length );
+	// Only if there is no existing reference contact for Facility Information, create a new one from accounts Receivable
+	if(matches(conArray, null, "", undefined))
+	{
+		logDebug("No contact found: "  + contactType);
+		logDebug("Retrieve from Accounts Receivable count: "  + conArray.length);
+		conArray = getContactByType("Accounts Receivable", capId);	
+		
+
+		if(matches(conArray, null, "", undefined))
+		{
+			logDebug("Retrieve from Facility Owner count: "  + conArray.length);
+			conArray = getContactByType("Facility Owner", capId);			
+		}
+
+		if(!matches(conArray, null, "", undefined))
+		{
+			logDebug("Retrieve first, middle and last name.");
+			var firstName = conArray.getFirstName();	
+			var middleName = conArray.getMiddleName();
+			var lastName = conArray.getLastName();	
+			logDebug("Creating reference contact for: " + firstName + ", " + middleName + ", " + lastName);
+			
+			contactNbr = addReferenceContactByName(firstName, middleName, lastName);
+			logDebug("contactNbr: "  + contactNbr);
+		}
+		else
+		{
+			logDebug("Unable to add reference contact since there is no Accounts Receivable or Facilit Owner in that record.");
+		}
+	}
+	
+	
+	
 	var capContactResult = aa.people.getCapContactByCapID(capId);
 	if (capContactResult.getSuccess())
 		{
@@ -69,11 +98,15 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 		for (yy in Contacts) {
 			var newContact = Contacts[yy].getCapContactModel();
 
-			logDebug(newContact.getPeople().getContactSeqNumber());
+			logDebug("Contact seq number: " + newContact.getPeople().getContactSeqNumber());
+			logDebug("Contact type: " + newContact.getContactType());
+			logDebug("Looking for contact number to match: " + contactNbr + " or contact type of " + contactType);
 
-			
-			if (contactNbr == newContact.getPeople().getContactSeqNumber())
+			if (contactNbr == newContact.getPeople().getContactSeqNumber() ||
+			newContact.getContactType() == contactType)
 			{
+				logDebug("Contact matched: " + newContact.getPeople().getContactSeqNumber() + " with contact type: " + newContact.getContactType());
+
 				logDebug("Set contactType: " + contactType);
 				newContact.setContactType(contactType);
 				logDebug("Set dba name: " + dbaName);
@@ -86,9 +119,8 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 				newContact.setState(addressState);
 				logDebug("Set Address Zip: " + addressZip);
 				newContact.setZip(addressZip);	
-				aa.people.editCapContact(newContact);
-
-				logDebug("Contact for " + contactNbr + " Updated to " + contactType);
+				aa.people.editCapContact(newContact);				
+				logDebug("Contact for " + newContact.getPeople().getContactSeqNumber() + " updated to " + contactType);
 			}
 
 		}
