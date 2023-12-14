@@ -52,7 +52,7 @@ if (capAddrResult.getSuccess())
             addressCity = addressToUse.getCity();    
             addressState = addressToUse.getState();             
             addressZip = addressToUse.getZip();
-            dbaName
+            
             logDebug(addressLine1 + ", " +  addressCity + ", " +  addressState + ", " + addressZip);
 
         }        
@@ -77,60 +77,132 @@ else
 // No LPs in the record at all
 if (capLicenseArr == null || !capLicenseArr.length)
 {
-     logDebug("**WARNING: no licensed professionals on this CAP");
+    logDebug("**WARNING: no licensed professionals on this CAP");
+
+    if(!matches(facilityCapId,null,undefined,false))
+    {
+        var facLp = getRefLicenseProf(facilityCapId)
+                
+        // Find any reference Facility LP
+        if (facLp)
+        {      
+            if (facLp.getLicenseType() == rlpType)  
+            {
+                logDebug("Found license type " + rlpType + " in " + capId.getCustomID());
+
+                updating = true;
+                logDebug("Updating existing Ref Lic Prof : " + facilityCapId);
+                logDebug("Existing license type is: " + facLp.getLicenseType());  
+                logDebug("Existing business name is: " + facLp.getBusinessName());  
+                logDebug("Existing address is: " + facLp.getAddress1());        
+                logDebug("Existing city is: " + facLp.getCity());  
+                logDebug("Existing state is: " + facLp.getState());  
+                logDebug("Existing zip is: " + facLp.getZip());  
+            }
+
+        }
+        else
+        {
+            logDebug("Did not find existing LP " + facilityCapId);        
+            logDebug("Createing new Ref Lic Prof : " + facilityCapId);
+            facLp = aa.licenseScript.createLicenseScriptModel();        
+            facLp.setAgencyCode(aa.getServiceProviderCode());
+            facLp.setAuditDate(sysDate);
+            facLp.setAuditID(currentUserID);
+            facLp.setAuditStatus("A");
+            facLp.setStateLicense(facilityCapId);
+        }
+        
+        facLp.setLicenseType(rlpType);       
+        facLp.setBusinessName(dbaName);
+        facLp.setAddress1(addressLine1);        
+        facLp.setCity(addressCity);
+        facLp.setState(addressState);
+        facLp.setZip(addressZip);      
+
+        if (updating)
+            myResult = aa.licenseScript.editRefLicenseProf(facLp);
+            else
+            myResult = aa.licenseScript.createRefLicenseProf(facLp);
+
+        if (myResult.getSuccess())
+        {
+            logDebug("Successfully created/edit License No. " + facilityCapId + ", Type: " + rlpType);
+            logMessage("Successfully created/edit License No. " + facilityCapId + ", Type: " + rlpType); 
+            // Added new below. Test to see if it works.
+            assocResult = aa.licenseScript.associateLpWithCap(capId, facLp);       
+        }
+        else
+        {
+            logDebug("**ERROR: can't create ref lic prof: " + myResult.getErrorMessage());
+            logMessage("**ERROR: can't create ref lic prof: " + myResult.getErrorMessage());    
+        } 
+    }
+
 }
 else // There is LP
-{
-    // Retrieve existing LP if it is of Food Facility License Type
-    rlpId = itemCap.getCustomID();
-    var newLic = getRefLicenseProf(rlpId)
-    // Existing Food Facility LP has been found
-	if (newLic)
-    {
-        updating = true;
-        logDebug("Updating existing Ref Lic Prof : " + rlpId);
-        logDebug("Existing license type is: " + newLic.getLicenseType());  
-        logDebug("Existing business name is: " + newLic.getBusinessName());  
-        logDebug("Existing address is: " + newLic.getAddress1());        
-        logDebug("Existing city is: " + newLic.getCity());  
-        logDebug("Existing state is: " + newLic.getState());  
-        logDebug("Existing zip is: " + newLic.getZip());  
+{    
+    logDebugLocal("LP Length: " + capLicenseArr.length);
 
-    }
-	else
-    {
-        logDebug("Createing new Ref Lic Prof : " + rlpId);
-		newLic = aa.licenseScript.createLicenseScriptModel();        
-        newLic.setAgencyCode(aa.getServiceProviderCode());
-        newLic.setAuditDate(sysDate);
-        newLic.setAuditID(currentUserID);
-        newLic.setAuditStatus("A");
-    }
-	
-    newLic.setLicenseType(rlpType);       
-    newLic.setBusinessName(dbaName);
-    newLic.setAddress1(addressLine1);        
-    newLic.setCity(addressCity);
-    newLic.setState(addressState);
-    newLic.setZip(addressZip);      
+    for (var lp in capLicenseArr)
+    {   
+        logDebugLocal("LP getLicenseType: " + capLicenseArr[lp].getLicenseType());
+        rlpId = capLicenseArr[lp].getLicenseNbr()        
+        logDebugLocal("LP ID: " + rlpId);
 
-	if (updating)
-		myResult = aa.licenseScript.editRefLicenseProf(newLic);
-	else
-		myResult = aa.licenseScript.createRefLicenseProf(newLic);
+        if (capLicenseArr[lp].getLicenseType() == "Food Facility")
+        {   
+            var refLp = getRefLicenseProf(rlpId)
+            
+            // Existing Food Facility LP has been found
+            if (refLp)
+            {
+                updating = true;
+                logDebug("Updating existing Ref Lic Prof : " + rlpId);
+                logDebug("Existing license type is: " + refLp.getLicenseType());  
+                logDebug("Existing business name is: " + refLp.getBusinessName());  
+                logDebug("Existing address is: " + refLp.getAddress1());        
+                logDebug("Existing city is: " + refLp.getCity());  
+                logDebug("Existing state is: " + refLp.getState());  
+                logDebug("Existing zip is: " + refLp.getZip());  
 
-	if (myResult.getSuccess())
-    {
-        logDebug("Successfully added/updated License No. " + rlpId + ", Type: " + rlpType);
-        logMessage("Successfully added/updated License No. " + rlpId + ", Type: " + rlpType); 
-        // Added new below. Test to see if it works.
-        assocResult = aa.licenseScript.associateLpWithCap(capId, newLic);       
+            }
+            else
+            {
+                logDebug("Createing new Ref Lic Prof : " + rlpId);
+                refLp = aa.licenseScript.createLicenseScriptModel();        
+                refLp.setAgencyCode(aa.getServiceProviderCode());
+                refLp.setAuditDate(sysDate);
+                refLp.setAuditID(currentUserID);
+                refLp.setAuditStatus("A");
+            }
+            
+            refLp.setLicenseType(rlpType);       
+            refLp.setBusinessName(dbaName);
+            refLp.setAddress1(addressLine1);        
+            refLp.setCity(addressCity);
+            refLp.setState(addressState);
+            refLp.setZip(addressZip);      
+
+            if (updating)
+                myResult = aa.licenseScript.editRefLicenseProf(newLic);
+            else
+                myResult = aa.licenseScript.createRefLicenseProf(newLic);
+
+            if (myResult.getSuccess())
+            {
+                logDebug("Successfully added/updated License No. " + rlpId + ", Type: " + rlpType);
+                logMessage("Successfully added/updated License No. " + rlpId + ", Type: " + rlpType); 
+                // Added new below. Test to see if it works.
+                assocResult = aa.licenseScript.associateLpWithCap(capId, newLic);       
+            }
+            else
+            {
+                logDebug("**ERROR: can't create ref lic prof: " + myResult.getErrorMessage());
+                logMessage("**ERROR: can't create ref lic prof: " + myResult.getErrorMessage());    
+            } 
+        }
     }
-	else
-    {
-        logDebug("**ERROR: can't create ref lic prof: " + myResult.getErrorMessage());
-        logMessage("**ERROR: can't create ref lic prof: " + myResult.getErrorMessage());    
-    } 
 }
 
 function getFacilityId(vCapId){
