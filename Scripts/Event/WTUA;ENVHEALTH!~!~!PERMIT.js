@@ -1,47 +1,54 @@
 var showDebug = true;
+var emailText = "";
 
-// If the permit is inactive, we disable the FA LP
-if(wfStatus == "Closed" || wfStatus == "Revoked"){
+try {
+    // If the permit is inactive, we disable the FA LP
+    if(wfStatus == "Closed" || wfStatus == "Revoked"){
 
 
-    var lpResult = aa.licenseScript.getLicenseProf(capId);
-  
+        var lpResult = aa.licenseScript.getLicenseProf(capId);
     
-	if (lpResult.getSuccess())
-	{ 
-		var lpArr = lpResult.getOutput();  
-        logDebugLocal("LP Length: " + lpArr.length);
-       
-        for (var lp in lpArr)
-        {   
-            logDebugLocal("LP getLicenseType: " + lpArr[lp].getLicenseType());
-            lpID = lpArr[lp].getLicenseNbr()        
-            logDebugLocal("LP ID: " + lpID);
-
-            if (lpArr[lp].getLicenseType() == "Food Facility")
+        
+        if (lpResult.getSuccess())
+        { 
+            var lpArr = lpResult.getOutput();  
+            logDebugLocal("LP Length: " + lpArr.length);
+        
+            for (var lp in lpArr)
             {   
-                if (lpArr[lp].getAuditStatus() == 'A')
-                {
-                    lpArr[lp].setAuditStatus("I");
-                    var refLp = getRefLicenseProf(lpID)
-                    aa.licenseScript.editRefLicenseProf(refLp);
-                                    
-                    logDebugLocal(lpID + ": deactivated linked License");
-                }
-                else
-                {
-                    logDebugLocal(lpID + " is already disabled");
-                }
-                   
-            }
-        }
+                logDebugLocal("LP getLicenseType: " + lpArr[lp].getLicenseType());
+                lpID = lpArr[lp].getLicenseNbr()        
+                logDebugLocal("LP ID: " + lpID);
 
-	} 
-	else 
-	{ 
-		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
-	}
+                if (lpArr[lp].getLicenseType() == "Food Facility")
+                {   
+                    if (lpArr[lp].getAuditStatus() == 'A')
+                    {
+                        lpArr[lp].setAuditStatus("I");
+                        var refLp = getRefLicenseProf(lpID)
+                        aa.licenseScript.editRefLicenseProf(refLp);
+                                        
+                        logDebugLocal(lpID + ": deactivated linked License");
+                    }
+                    else
+                    {
+                        logDebugLocal(lpID + " is already disabled");
+                    }
+                    
+                }
+            }
+
+        } 
+        else 
+        { 
+            logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+        }
+    }
+}    	        
+catch (err) {
+    aa.print("A JavaScript Error occurred: " + err.message);
 }
+
 function getRefLicenseProf(refstlic)
 {
     
