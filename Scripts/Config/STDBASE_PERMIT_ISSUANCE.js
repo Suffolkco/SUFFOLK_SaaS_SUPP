@@ -82,6 +82,11 @@ try {
 		if (!isEmptyOrNull(rules.postScript)) {
 			eval(getScriptText(rules.postScript, null, false));
 		}
+
+		if (!isEmptyOrNull(rules.postScript1)) {
+			eval(getScriptText(rules.postScript1, null, false));
+		}
+
 	}//for all settingsArray
 } catch (ex) {
 	logDebug("**ERROR: Exception while verifying the rules for " + scriptSuffix + ". Error: " + ex);
