@@ -7,7 +7,8 @@ if (wfTask == "Review" && (wfStatus == "Complete" || wfStatus == "OWM Review Req
     //if (wfComment !== null)
     {
         logDebug("A report will be fired, with the Standard Comment inside.")
-        workflowFoodReviewCompleteWWMLocal("Food Review Notice", "RecordID");        
+        workflowFoodReviewCompleteWWMLocal("Food Review Notice Script", "RecordID");       
+              
     }
     
 }
@@ -26,14 +27,17 @@ function workflowFoodReviewCompleteWWMLocal(reportName, reportParamRecID)
 	appTypeArray = appTypeString.split("/");
     var alternateID = capId.getCustomID();
 
+   
     reportParams.put(reportParamRecID, alternateID.toString());
 
+     // Save to record   
+     var rFile = new Array();          
     rFile = generateReport(reportName,reportParams, appTypeArray[0])
     logDebug("This is the rFile: " + rFile);           
     
-        if (rFile) {
-        reportFile.push(rFile);
-        }
+    if (rFile) {
+    reportFile.push(rFile);
+    }
 
 	if(matches(fromEmail, null, "", undefined))
 	{
