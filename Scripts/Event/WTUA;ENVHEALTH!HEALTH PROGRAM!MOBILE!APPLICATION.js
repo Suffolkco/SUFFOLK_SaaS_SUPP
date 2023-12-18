@@ -52,6 +52,58 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 		}
 	}
 	
+	
+	// Check if Facility Information contact exists
+	var contactNbr;		
+	var acFound = false;
+	var foFound = false;
+	var newContact;
+	var lpContactResult = aa.people.getCapContactByCapID(capId);
+	if (lpContactResult.getSuccess())
+		{
+		var Contacts = lpContactResult.getOutput();
+		logDebug(Contacts + " length is: " + Contacts.length );
+		for (yy in Contacts) {
+			newContact = Contacts[yy].getCapContactModel();	
+			if (newContact.getContactType() == "Accounts Receivable")
+			{
+				acFound = true;
+				logDebug("Retrieve first, middle and last name.");
+				var firstName = newContact.getFirstName();	
+				var middleName = newContact.getMiddleName();
+				var lastName = newContact.getLastName();	
+				logDebug("Creating reference contact for: " + firstName + ", " + middleName + ", " + lastName);
+				
+				contactNbr = addReferenceContactByName(firstName, middleName, lastName);
+				logDebug("contactNbr: "  + contactNbr);
+				break;
+				
+			}
+			else if (newContact.getContactType() == "Facility Owner")
+			{
+				foFound = true;
+			}
+		}
+
+		// Only if no account receibale has been found, we use facility owner instead to create LP.
+		if (!acFound || foFound)
+		{		
+			logDebug("No account receivable contact has been found. Use facility owner instead");
+			logDebug("Retrieve first, middle and last name.");
+			var firstName = newContact.getFirstName();	
+			var middleName = newContact.getMiddleName();
+			var lastName = newContact.getLastName();	
+			logDebug("Creating reference contact for: " + firstName + ", " + middleName + ", " + lastName);
+			
+			contactNbr = addReferenceContactByName(firstName, middleName, lastName);
+			logDebug("contactNbr: "  + contactNbr);
+		}
+		else if (!acFound && !foFound)
+		{
+			logDebug("Unable to add reference contact since there is no Accounts Receivable or Facility Owner in that record.");
+		}
+	}
+	
 	var capContactResult = aa.people.getCapContactByCapID(capId);
 	if (capContactResult.getSuccess())
 		{
