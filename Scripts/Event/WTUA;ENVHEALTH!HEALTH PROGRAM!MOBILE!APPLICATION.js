@@ -55,20 +55,21 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 	var contactNbr;		
 	var acFound = false;
 	var foFound = false;
+	var newContact;
 	var lpContactResult = aa.people.getCapContactByCapID(capId);
 	if (lpContactResult.getSuccess())
 		{
 		var Contacts = lpContactResult.getOutput();
 		logDebug(Contacts + " length is: " + Contacts.length );
 		for (yy in Contacts) {
-			var newContact = Contacts[yy].getCapContactModel();
+			newContact = Contacts[yy].getCapContactModel();	
 			if (newContact.getContactType() == "Accounts Receivable")
 			{
 				acFound = true;
 				logDebug("Retrieve first, middle and last name.");
-				var firstName = conArray.getFirstName();	
-				var middleName = conArray.getMiddleName();
-				var lastName = conArray.getLastName();	
+				var firstName = newContact.getFirstName();	
+				var middleName = newContact.getMiddleName();
+				var lastName = newContact.getLastName();	
 				logDebug("Creating reference contact for: " + firstName + ", " + middleName + ", " + lastName);
 				
 				contactNbr = addReferenceContactByName(firstName, middleName, lastName);
@@ -87,9 +88,9 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 		{		
 			logDebug("No account receivable contact has been found. Use facility owner instead");
 			logDebug("Retrieve first, middle and last name.");
-			var firstName = conArray.getFirstName();	
-			var middleName = conArray.getMiddleName();
-			var lastName = conArray.getLastName();	
+			var firstName = newContact.getFirstName();	
+			var middleName = newContact.getMiddleName();
+			var lastName = newContact.getLastName();	
 			logDebug("Creating reference contact for: " + firstName + ", " + middleName + ", " + lastName);
 			
 			contactNbr = addReferenceContactByName(firstName, middleName, lastName);
