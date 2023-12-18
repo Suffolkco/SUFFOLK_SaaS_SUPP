@@ -51,28 +51,41 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 		}
 	}
 
-	//add contact in FSA
-
 	// Check if Facility Information contact exists
-	var conArray = getContactByType(contactType, capId);	
-	var contactNbr;
-	logDebug(contactType + " length is: " + conArray.length );
-	// Only if there is no existing reference contact for Facility Information, create a new one from accounts Receivable
-	if(matches(conArray, null, "", undefined))
-	{
-		logDebug("No contact found: "  + contactType);		
-		conArray = getContactByType("Accounts Receivable", capId);	
-		logDebug("Retrieve from Accounts Receivable count: "  + conArray.length);
-
-		if(matches(conArray, null, "", undefined))
+	var contactNbr;		
+	var acFound = false;
+	var foFound = false;
+	var lpContactResult = aa.people.getCapContactByCapID(capId);
+	if (lpContactResult.getSuccess())
 		{
-			logDebug("No contact found: Accounts Receivable");				
-			conArray = getContactByType("Facility Owner", capId);	
-			logDebug("Retrieve from Facility Owner count: "  + conArray.length);		
+		var Contacts = lpContactResult.getOutput();
+		logDebug(Contacts + " length is: " + Contacts.length );
+		for (yy in Contacts) {
+			var newContact = Contacts[yy].getCapContactModel();
+			if (newContact.getContactType() == "Accounts Receivable")
+			{
+				acFound = true;
+				logDebug("Retrieve first, middle and last name.");
+				var firstName = conArray.getFirstName();	
+				var middleName = conArray.getMiddleName();
+				var lastName = conArray.getLastName();	
+				logDebug("Creating reference contact for: " + firstName + ", " + middleName + ", " + lastName);
+				
+				contactNbr = addReferenceContactByName(firstName, middleName, lastName);
+				logDebug("contactNbr: "  + contactNbr);
+				break;
+				
+			}
+			else if (newContact.getContactType() == "Facility Owner")
+			{
+				foFound = true;
+			}
 		}
 
-		if(!matches(conArray, null, "", undefined))
-		{
+		// Only if no account receibale has been found, we use facility owner instead to create LP.
+		if (!acFound || foFound)
+		{		
+			logDebug("No account receivable contact has been found. Use facility owner instead");
 			logDebug("Retrieve first, middle and last name.");
 			var firstName = conArray.getFirstName();	
 			var middleName = conArray.getMiddleName();
@@ -82,13 +95,12 @@ if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStat
 			contactNbr = addReferenceContactByName(firstName, middleName, lastName);
 			logDebug("contactNbr: "  + contactNbr);
 		}
-		else
+		else if (!acFound && !foFound)
 		{
-			logDebug("Unable to add reference contact since there is no Accounts Receivable or Facilit Owner in that record.");
+			logDebug("Unable to add reference contact since there is no Accounts Receivable or Facility Owner in that record.");
 		}
 	}
-	
-	
+		
 	
 	var capContactResult = aa.people.getCapContactByCapID(capId);
 	if (capContactResult.getSuccess())
