@@ -9,7 +9,30 @@ if (cap)
         var facID = getAppSpecific("Facility ID")
         logDebug("Facility ID: " + facID);
       
-      
+        var vioType = getAppSpecific("Type of Violation")
+        logDebug("Type of Violation: " + vioType);
+
+        // Update record ID
+        if (vioType && vioType != "")
+        {
+            var altIdString = String(capId.getCustomID());
+            var altIdLastFive = capId.getCustomID().slice(-5); //AT001
+            var altIdLastThree = capId.getCustomID().slice(-3); // 001
+            var oldAltId = capId.getCustomID(); //DHS $$YY$$ AT001
+            var servProvCode = aa.getServiceProviderCode();
+
+            logDebug("last five of alt id is " + altIdLastFive);
+                        
+            if (vioType == 'CIAA')
+            {
+                replaced = 'CI' + altIdLastThree;
+                logDebug("replaced: " + replaced);
+                //change last five digits of mask
+                altIdString = altIdString.replace(altIdLastFive, replaced)
+                logDebug("Updating Alt ID to: " + altIdString);
+                updateAltID(altIdString, capId);
+            }
+        }
         if (facID && facID != "")
         {
             var vSQL0 = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID like '"+ facID + "' and B1.SERV_PROV_CODE = 'SUFFOLKCO' and  B1_PER_GROUP = 'TE' and B1.B1_PER_TYPE = 'Facility' and B1_PER_CATEGORY = 'NA'";
