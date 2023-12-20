@@ -68,6 +68,18 @@ if (cap)
     }    
 }
 
+function updateAltID(newId) {
+    var itemCap = capId;
+    if (arguments.length > 1 && arguments[1])
+        itemCap = arguments[1];
+
+    var result = aa.cap.updateCapAltID(itemCap, newId);
+    if (result.getSuccess())
+        logDebug("Successfully updated alt Id to: " + newId);
+    else
+        logDebug("Problem updating alt Id: " + result.getErrorMessage());
+}
+
 function doSQLSelect_local(sql)
 {
     try
