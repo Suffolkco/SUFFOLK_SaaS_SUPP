@@ -15,9 +15,9 @@ if (appTypeArray[3] == "New Contract")
     if(!matches(contractId,null,undefined,""))
     {
         // Update current record to new custom ID 
-        result = aa.cap.updateCapAltID(capId, contractID);
+        result = aa.cap.updateCapAltID(capId, contractId);
         if (result.getSuccess())
-        logDebug("Successfully updated alt Id to: " + contractID);
+        logDebug("Successfully updated alt Id to: " + contractId);
         else
         logDebug("Problem updating alt Id: " + result.getErrorMessage());   
     
@@ -46,7 +46,7 @@ if (appTypeArray[3] == "New Contract")
             var childCustomId = childId.getCustomID();
             logDebug("Orginal child record ID: " + childCustomId);          
             logDebug("New record ID: " + contractId + tag);
-            result = aa.cap.updateCapAltID(capId, contractId + tag);
+            result = aa.cap.updateCapAltID(childId, contractId + tag);
             
             // Update custom field on new record
             editAppSpecific("Contract ID", contractId, childId);      
@@ -61,6 +61,25 @@ else
     // Get cap by custom alt ID
     contractParent = getApplication(contractId);
     logDebug("Retrieving ID for contract AltID: " + contractId);
+
+    existingContractId = getParent(capId);
+    if(!matches(existingContractId,null,undefined,"")){
+
+        logDebug("Existing Contract Parent Id: " + existingContractId);
+        logDebug("Remove first")
+        logDebug("New contract ID: " + contractParent);
+      
+        var linkResult = aa.cap.removeAppHierarchy(existingContractId, capId);
+		if (linkResult.getSuccess())
+		{
+			logDebug("Successfully removed from Parent Application : " + existingContractId.getCustomID());
+		}
+		else
+		{
+			logDebug( "**ERROR: removing from parent application parent cap id (" + existingContractId.getCustomID() + "): " + linkResult.getErrorMessage());
+		}
+
+    }
 
     if (contractParent) {
         logDebug("Found contract ID and relate");
