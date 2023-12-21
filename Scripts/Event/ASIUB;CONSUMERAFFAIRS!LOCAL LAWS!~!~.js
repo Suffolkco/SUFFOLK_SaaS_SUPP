@@ -16,22 +16,15 @@ if (appTypeArray[3] == "New Contract")
 
     if (contractId != capId.getCustomID())
     {
-		var vSQL0 = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID = '" + contractId + "'";
-		logDebug(vSQL0);
+		recordID = getApplication(contractId);
 
-		// SQL to pull active OPC site records that has NO child Tank records		
-		var vRecordID = doSQLSelect_local(vSQL0);  	
-				
-		logDebug("Pulling number of records with matching new alt id:" +  vRecordID.length);
-		// Only there is no existing custom ID already in the system
-		if (vRecordID.length > 0)
+        if (recordID)
         {
             showMessage = true;
-		    comment("Please confirm the Contract ID. There is another contract ID with the same number already in the system.");
-            cancel = true;
-
+            comment("Please confirm the Contract ID " + contractId + " . This contract ID already exists in the system.");
+            cancel = true;        
         }
-   }
+    }
 }
 
 
