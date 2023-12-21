@@ -6,7 +6,7 @@ var appTypeString = appTypeResult.toString();
 var appTypeArray = appTypeString.split("/");
 var tag = "";
 
-var contractId = getAppSpecific("Contract ID");
+var contractId = AInfo("Contract ID");
 logDebug("contract id: " + contractId);  
 
 // For new contract, we update the contract ID and altid and its child.
