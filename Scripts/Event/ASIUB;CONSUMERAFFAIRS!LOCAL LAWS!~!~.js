@@ -12,17 +12,17 @@ logDebug("contract id: " + contractId);
 // For new contract, we update the contract ID and altid and its child.
 if (appTypeArray[3] == "New Contract")
 {   		
-    logDebug("capId.getCustomID(: " + capId.getCustomID());  
+    logDebug("capId.getCustomID(): " + capId.getCustomID());  
 
     if (contractId != capId.getCustomID())
     {
 		var vSQL0 = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID = '" + contractId + "'";
-		logDebugLocal(vSQL0);
+		logDebug(vSQL0);
 
 		// SQL to pull active OPC site records that has NO child Tank records		
 		var vRecordID = doSQLSelect_local(vSQL0);  	
 				
-		logDebugLocal("Pulling number of records with matching new alt id:" +  vRecordID.length);
+		logDebug("Pulling number of records with matching new alt id:" +  vRecordID.length);
 		// Only there is no existing custom ID already in the system
 		if (vRecordID.length > 0)
         {
