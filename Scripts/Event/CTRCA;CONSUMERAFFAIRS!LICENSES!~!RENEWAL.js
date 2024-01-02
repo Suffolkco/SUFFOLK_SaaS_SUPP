@@ -74,6 +74,12 @@ if (!publicUser)
                     logDebug("parentCapId:" + parentCapId);
                     addParameter(emailParams, "$$altID$$", parentCapId.getCustomID());
                     addParameter(emailParams, "$$name$$", fName + " " + lName);
+                    exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+                    commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                    logDebug(exec + ", " + commissioner);
+                    addParameter(emailParams, "$$exec$$", exec);
+                    addParameter(emailParams, "$$comm$$", commissioner);
+                    
                     logDebug("fName:" + fName);
                     logDebug("parentCapId.getCustomID():" + parentCapId.getCustomID());		
             
@@ -88,7 +94,17 @@ if (!publicUser)
     }
 
 }
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
 
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
 function getAppStatus(pcapId) {
 	var itemCap = pcapId;
     logDebug("pcapId: " + pcapId);

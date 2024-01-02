@@ -44,12 +44,28 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
     {
         addParameter(vEParams, '$$altID$$', parentCapId.getCustomID());
         addParameter(vEParams, "$$expDate$$", newExpDate);
+        exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+        commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+        logDebug(exec + ", " + commissioner);
+        addParameter(vEParams, "$$exec$$", exec);
+        addParameter(vEParams, "$$comm$$", commissioner);
+
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", "CA_TLC_RENEWAL_APPLICANT_NOTICE", vEParams, null);
     }
 }
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
 
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
     var itemCap = capId;

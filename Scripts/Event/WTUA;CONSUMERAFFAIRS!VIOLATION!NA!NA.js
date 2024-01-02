@@ -121,6 +121,11 @@ if (!publicUser)
             addParameter(vEParams, '$$altID$$', capId.getCustomID());
             addParameter(vEParams, "$$acaRecordURL$$", acaSite + getACAUrl());
             addParameter(vEParams, "$$PINNumber$$", PIN);
+            exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+            commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+            logDebug(exec + ", " + commissioner);
+            addParameter(vEParams, "$$exec$$", exec);
+            addParameter(vEParams, "$$comm$$", commissioner);
             conEmail += conArray.email + "; ";
             logDebug("Email addresses: " + conEmail);
             sendNotification("", conEmail, "", "CA_VIOLATION_FEES_DUE", vEParams, null);
@@ -128,7 +133,17 @@ if (!publicUser)
     }
 }
 
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
 
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
 
 function debugObject(object)
 {
