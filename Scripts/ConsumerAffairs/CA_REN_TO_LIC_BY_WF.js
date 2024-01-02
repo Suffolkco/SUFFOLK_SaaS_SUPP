@@ -184,12 +184,29 @@ if ((appTypeArray[2] != "Polygraph Examiner" && wfTask == "Issuance" && wfStatus
         logDebug("parentCapId.getCustomID(): " + parentCapId.getCustomID());
         
         addParameter(vEParams, '$$altID$$', parentAltID);
+        exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+        commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+        logDebug(exec + ", " + commissioner);
+        addParameter(vEParams, "$$exec$$", exec);
+        addParameter(vEParams, "$$comm$$", commissioner);
+
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", emailTemplate, vEParams, null);
     }
 }
 
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
 
 function editAppSpecificLOCAL(itemName, itemValue)  // optional: itemCap
 {
