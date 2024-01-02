@@ -134,7 +134,7 @@ function mainProcess()
                     {
                         var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                         if (capmodel.isCompleteCap())
-                        {
+                        {                            
                             if (getAppStatus() != "Expired")
                             {
                                 b1ExpResult = aa.expiration.getLicensesByCapID(capId)
@@ -162,8 +162,10 @@ function mainProcess()
                                                 {
                                                     var curExpCon = curExp.getMonth() + "/" + curExp.getDayOfMonth() + "/" + curExp.getYear();
                                                     var dateDif;
+                                                   
                                                     dateDif = parseFloat(dateDiff(todayDate, curExpCon));
                                                     var dateDifRound = Math.floor(dateDif);
+                                                  
                                                     if (dateDifRound == 0)
                                                     {
                                                         //Setting renewal info status to Expired
@@ -181,18 +183,24 @@ function mainProcess()
                                                         // DAP-602: Generate PIN if it doesn't exist
                                                         if (matches(PIN, null, "", undefined))
                                                         {
-                                                            logDebugLocal("PIN in : " + capIDString + " is empty.");
+                                                            logDebug("PIN in : " + capIDString + " is empty.");
                                                             var pinNumber = makePIN(8);
-                                                            logDebugLocal("New PIN number generated: " + pinNumber);
+                                                            logDebug("New PIN number generated: " + pinNumber);
                                                             if(editAppSpecificL('PIN INFORMATION.PIN Number',pinNumber,capId))
                                                             {
                                                                 PIN = pinNumber;
-                                                                logDebugLocal("Assigned PIn to " + capIDString);
+                                                                logDebug("Assigned PIn to " + capIDString);
                                                             }
                                                         }
                                                         addParameter(vEParams, "$$altID$$", capIDString);
                                                         addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                                                         addParameter(vEParams, "$$PINNumber$$", PIN);
+
+                                                        exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+                                                        commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                                                        logDebug(exec + ", " + commissioner);
+                                                        addParameter(vEParams, "$$exec$$", exec);
+                                                        addParameter(vEParams, "$$comm$$", commissioner);
 
                                                         logDebug("<b>" + capIDString + "</b>" + " Expired");
                                                         var contactResult = aa.people.getCapContactByCapID(capId);
@@ -252,6 +260,19 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
+
+
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
 {
     var itemCap = capId;
@@ -497,3 +518,12 @@ function loadAppSpecific(thisArr) {
         }
         return result;
     }
+    function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
+}

@@ -203,7 +203,12 @@ function mainProcess()
                             addParameter(vEParams, "$$altID$$", capIDString);
                             addParameter(vEParams, "$$capAlias$$", cap.getCapType().getAlias());
                             addParameter(vEParams, "$$expirDate$$", expirationDate);                          
-                                                 
+                            exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+                            commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                            logDebug(exec + ", " + commissioner);
+                            addParameter(vEParams, "$$exec$$", exec);
+                            addParameter(vEParams, "$$comm$$", commissioner);
+
                             logDebugLocal("<b>" + capIDString + "</b>" + " Insurance Policy is About to Expire");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess()) 
@@ -250,6 +255,17 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
 function getContactName(vConObj)
 {
     if (vConObj.people.getContactTypeFlag() == "organization")
