@@ -10,7 +10,7 @@
 | USER CONFIGURABLE PARAMETERS
 /------------------------------------------------------------------------------------------------------*/
 currentUserID = "ADMIN";
-useAppSpecificGroupName = true;
+useAppSpecificGroupName = false;
 /*------------------------------------------------------------------------------------------------------/
 | GLOBAL VARIABLES
 /------------------------------------------------------------------------------------------------------*/
@@ -206,7 +206,7 @@ function mainProcess()
                                logDebugLocal("PIN in : " + capIDString + " is empty.");
                                var pinNumber = makePIN(8);
                                logDebugLocal("New PIN number generated: " + pinNumber);
-                               if(editAppSpecificL('PIN INFORMATION.PIN Number',pinNumber,capId))
+                               if(editAppSpecificL('PIN Number',pinNumber,capId))
                                {
                                    PIN = pinNumber;
                                    logDebugLocal("Assigned PIn to " + capIDString);

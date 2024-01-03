@@ -16,7 +16,7 @@ var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = false;
 var systemUserObj = aa.person.getUser("ADMIN").getOutput();
-var useAppSpecificGroupName = true;
+var useAppSpecificGroupName = false;
 var timeExpired = false;
 var br = "<BR>";
 var emailAddress = "";
@@ -186,7 +186,7 @@ function mainProcess()
                                                             logDebug("PIN in : " + capIDString + " is empty.");
                                                             var pinNumber = makePIN(8);
                                                             logDebug("New PIN number generated: " + pinNumber);
-                                                            if(editAppSpecificL('PIN INFORMATION.PIN Number',pinNumber,capId))
+                                                            if(editAppSpecificL('PIN Number',pinNumber,capId))
                                                             {
                                                                 PIN = pinNumber;
                                                                 logDebug("Assigned PIn to " + capIDString);
@@ -217,6 +217,7 @@ function mainProcess()
                                                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                                                         {
                                                                             sendNotification("", capContacts[c].email, "", "CA_DRIVER_EXPIRATION", vEParams, null);
+                                                                            logDebug("Sent email: " + capIDString + ": " + capContacts[c].email);
                                                                         }
                                                                     }
                                                                 }
@@ -228,6 +229,7 @@ function mainProcess()
                                                                         if (!matches(capContacts[c].email, null, undefined, ""))
                                                                         {
                                                                             sendNotification("", capContacts[c].email, "", "CA_VEHICLE_REG_EXPIRATION", vEParams, null);
+                                                                            logDebug("Sent email: " + capIDString + ": " + capContacts[c].email);
                                                                         }
                                                                     }
                                                                 }
