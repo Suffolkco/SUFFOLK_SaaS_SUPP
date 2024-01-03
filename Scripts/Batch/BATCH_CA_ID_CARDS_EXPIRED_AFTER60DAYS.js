@@ -250,7 +250,7 @@ function mainProcess()
                                             addParameter(vRParams, "Email", "Yes");
 
                                             
-                                            conEmail = capContacts[c].email;
+                                            conEmail += capContacts[c].email;
                                             
 
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
