@@ -24,7 +24,7 @@ if (cap)
             {
                 logDebug("No Facility code exists yet");
 
-                var newFacCode = villageCode + " " + "0001";
+                var newFacCode = villageCode + " " + "001";
                 logDebug("New Facility code to be created: " + newFacCode);    
 
                 aa.cap.updateCapAltID(capId, newFacCode);
