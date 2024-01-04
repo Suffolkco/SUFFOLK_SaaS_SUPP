@@ -13,75 +13,132 @@ if (cap)
         var docID = getAppSpecific("Docket Number")
         logDebug("Docket Number: " + docID);
 
+        var comID = getAppSpecific("Complaint Number")
+        logDebug("Complaint Number: " + comID);
+
+        var validFacility = false;
+        var validComplaint = false;
+        var validDocket = false;
+        var facCapId;
+        var facCapIDString;
+        var compCapId;
+        var compCapIdString;
+        var docCapId;
+        var docCapIdString;
         
-        if (docID && docID != "")
-        {
-            var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID like '"+ docID + "' and B1.SERV_PROV_CODE = 'SUFFOLKCO' and  B1_PER_GROUP = 'TE' and B1.B1_PER_TYPE = 'Docket' and B1_PER_CATEGORY = 'NA'";
-
-            var dockRecordIDs = doSQLSelect_local(vSQL);  	
-            logDebug("Pulling number of docket records with matching alt id:" +  dockRecordIDs.length);
-
-            if (dockRecordIDs.length == 0)
+        // Determine if facility is valid
+        if (facID && facID != "")
+       {
+            var facCapResult = aa.cap.getCapID(facID);
+            if (facCapResult.getSuccess())
             {
-                logDebug("No docket ID exists");              
-
+                facCapId = getApplication(facID);
+                facCapIDString = facCapId.getCustomID();
+                logDebug("Facility ID found: " + facCapIDString);       
+                
+                var capmodel = aa.cap.getCap(facCapId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
+                {
+                    validFacility = true;                  
+                }
+                
             }
-            else
+       }
+       // Determine if Complaint is valid
+       if (comID && comID != "")
+       {
+            var comCapResult = aa.cap.getCapID(comID);
+            if (comCapResult.getSuccess())
+            {           
+                compCapId = getApplication(comID);
+                comCapIDString = compCapId.getCustomID();
+                logDebug("Complaint ID found: " + comCapIDString);       
+                
+                var compcapmodel = aa.cap.getCap(compCapId).getOutput().getCapModel();
+                if (compcapmodel.isCompleteCap())
+                {
+                    validComplaint = true;
+                }               
+                
+            }   
+       }
+       // Determine if Docket is valid
+       if (docID && docID != "")
+        {
+            var docCapResult = aa.cap.getCapID(docID);
+            if (docCapResult.getSuccess())
             {
-                docID = dockRecordIDs[0]["recordNumber"];              
-                logDebug("Looking at record: " + docID);     
                 docCapId = getApplication(docID);
                 docCapIDString = docCapId.getCustomID();
-                logDebug("Existing CapIdString: " + docCapIDString);       
-                docCap = aa.cap.getCap(docCapId).getOutput();
-                if (docCap)
+                logDebug("Docket ID found: " + docCapIDString);       
+                
+                var capmodel = aa.cap.getCap(docCapId).getOutput().getCapModel();
+                if (capmodel.isCompleteCap())
                 {
-                    var doccapmodel = aa.cap.getCap(docCapId).getOutput().getCapModel();
-                    if (doccapmodel.isCompleteCap())
-                    {
-                        logDebug("Add " + docCapIDString + ' as parent to ' + capId.getCustomID());         
-                        addParent(docCapId);
-                    }
-                }
+                    validDocket = true;                  
+                }              
                 
             }
 
         }
-      
-        if (facID && facID != "")
+
+
+        // Link them: Facility -> Complaint -> Docket -> Violations
+        if (validFacility && validComplaint && validDocket)
         {
-            var vSQL0 = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID like '"+ facID + "' and B1.SERV_PROV_CODE = 'SUFFOLKCO' and  B1_PER_GROUP = 'TE' and B1.B1_PER_TYPE = 'Facility' and B1_PER_CATEGORY = 'NA'";
-
-            var vExistingRecordIDs = doSQLSelect_local(vSQL0);  	
-            logDebug("Pulling number of records with matching alt id:" +  vExistingRecordIDs.length);
-
-            if (vExistingRecordIDs.length == 0)
-            {
-                logDebug("No Facility ID exists");              
-
-            }
-            else if (vExistingRecordIDs.length > 0)
-            {
-                recordID = vExistingRecordIDs[0]["recordNumber"];              
-                logDebug("Looking at record: " + recordID);     
-                existingCapId = getApplication(recordID);
-                existingCapIDString = existingCapId.getCustomID();
-                logDebug("Existing CapIdString: " + existingCapIDString);       
-                existingCap = aa.cap.getCap(existingCapId).getOutput();
-                if (existingCap)
-                {
-                    var capmodel = aa.cap.getCap(existingCapId).getOutput().getCapModel();
-                    if (capmodel.isCompleteCap())
-                    {
-                        logDebug("Add " + existingCapIDString + ' as parent to ' + capId.getCustomID());         
-                        addParent(existingCapId);
-                    }
-                }
-            }
+            // Add Facility to be the parent of violation
+            logDebug("Add " + facCapIDString + ' as parent to ' + capId.getCustomID());     
+            addParentChildRelationship(facCapId, compCapId);
+            logDebug("Add " + compCapIdString + ' as parent to ' + docCapId.getCustomID());     
+            addParentChildRelationship(compCapId, docCapId);
+            logDebug("Add " + docCapIdString + ' as parent to ' + capId.getCustomID());     
+            addParent(docCapId);         
         }
+        else if (!validFacility && validComplaint && !validDocket)
+        {
+
+        }
+
+        
+       
+
+
+        
+
+        
+        
         
     }    
+        
+
+   
 }
+
+function addParentChildRelationship(parentAppNum, childAppNum) 
+//
+// adds the current application to the parent
+//
+	{
+	var getCapResult = aa.cap.getCapID(parentAppNum);
+	if (getCapResult.getSuccess())
+	{
+		var parentId = getCapResult.getOutput();
+
+        var childCapResult = aa.cap.getCapID(childAppNum);
+        if (childCapResult.getSuccess())
+        {
+            var childId = getCapResult.getOutput();
+            var linkResult = aa.cap.createAppHierarchy(parentId, childId);
+            if (linkResult.getSuccess())
+                logDebug("Successfully linked to Parent Application : " + parentAppNum);
+            else
+                logDebug( "**ERROR: linking to parent application parent cap id (" + parentAppNum + "): " + linkResult.getErrorMessage());
+		}
+    }
+	else
+		{ logDebug( "**ERROR: getting parent cap id (" + parentAppNum + "): " + getCapResult.getErrorMessage()) }
+	}
+			
 
 function pad(num, size) {
     num = num.toString();

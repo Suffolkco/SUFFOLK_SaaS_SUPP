@@ -53,7 +53,7 @@ if (cap)
                         logDebug("facSeq " + facSeq);                 
                         var newFacSeq = facSeq + 1;
                         logDebug("newFacSeq " + newFacSeq);    
-                        var padded = pad(newFacSeq, 4);
+                        var padded = pad(newFacSeq, 3);
                         logDebug("padded " + padded);    
                        
                         var newFacCode = villageCode + " " + padded;
