@@ -503,7 +503,7 @@ function latestInspectionResultWithComments()
 				logDebugLocal("inspDate: " + inspDate);			
 	
 				var year = insps[i].getInspectionDate().getYear();
-				var month = insps[i].getInspectionDate().getMonth() - 1;
+				var month = insps[i].getInspectionDate().getMonth();
 				var day = insps[i].getInspectionDate().getDayOfMonth();
 				var hr = insps[i].getInspectionDate().getHourOfDay();
 				var min = insps[i].getInspectionDate().getMinute();
