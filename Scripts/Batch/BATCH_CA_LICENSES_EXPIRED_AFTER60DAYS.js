@@ -218,10 +218,11 @@ function mainProcess()
                             addACAUrlsVarToEmail(vEParams); 
                             exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
                             commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                            dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
                             logDebug(exec + ", " + commissioner);
                             addParameter(vEParams, "$$exec$$", exec);
                             addParameter(vEParams, "$$comm$$", commissioner);
-                          
+                            addParameter(vEParams, "$$title$$", dca_title_commissioner);
                             logDebugLocal("<b>" + capIDString + "</b>" + " Expired");
 
                              // As per DAP-349, do not send email until after 60 days of the expiration. Blocking sending email here
@@ -244,7 +245,7 @@ function mainProcess()
                                             addParameter(vRParams, "ToDate", dateToCheck);
                                             addParameter(vRParams, "Email", "Yes");
 
-                                            conEmail = capContacts[c].email;
+                                            conEmail += capContacts[c].email;
 
                                             var caReport = generateReportBatch(capId, "CA Renewal Notifications SSRS V2", "ConsumerAffairs", vRParams);
                                             if (caReport)

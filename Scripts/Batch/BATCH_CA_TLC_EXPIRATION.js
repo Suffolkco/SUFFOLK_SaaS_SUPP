@@ -198,10 +198,11 @@ function mainProcess()
 
                                                         exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
                                                         commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                                                        dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
                                                         logDebug(exec + ", " + commissioner);
                                                         addParameter(vEParams, "$$exec$$", exec);
                                                         addParameter(vEParams, "$$comm$$", commissioner);
-
+                                                        addParameter(vEParams, "$$title$$", dca_title_commissioner);
                                                         logDebug("<b>" + capIDString + "</b>" + " Expired");
                                                         var contactResult = aa.people.getCapContactByCapID(capId);
                                                         if (contactResult.getSuccess())

@@ -253,10 +253,11 @@ function mainProcess()
                             addParameter(vEParams, "$$PINNumber$$", PIN);
                             exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
                             commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                            dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
                             logDebug(exec + ", " + commissioner);
                             addParameter(vEParams, "$$exec$$", exec);
                             addParameter(vEParams, "$$comm$$", commissioner);
-                            
+                            addParameter(vEParams, "$$title$$", dca_title_commissioner);
                             for (i in wfObj)
                             {
                                 if (wfObj[i].getTaskDescription() == "Issuance")

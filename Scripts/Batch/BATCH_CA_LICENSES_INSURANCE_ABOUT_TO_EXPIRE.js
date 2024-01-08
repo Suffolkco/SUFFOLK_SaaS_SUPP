@@ -205,10 +205,11 @@ function mainProcess()
                             addParameter(vEParams, "$$expirDate$$", expirationDate);                          
                             exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
                             commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                            dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
                             logDebug(exec + ", " + commissioner);
                             addParameter(vEParams, "$$exec$$", exec);
                             addParameter(vEParams, "$$comm$$", commissioner);
-
+                            addParameter(vEParams, "$$title$$", dca_title_commissioner);
                             logDebugLocal("<b>" + capIDString + "</b>" + " Insurance Policy is About to Expire");
                             var contactResult = aa.people.getCapContactByCapID(capId);
                             if (contactResult.getSuccess()) 
