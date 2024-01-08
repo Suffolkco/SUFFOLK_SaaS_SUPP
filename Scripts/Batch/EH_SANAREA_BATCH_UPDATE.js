@@ -87,7 +87,7 @@ function mainProcess() {
 
 function buildZipToSanAreaMap() {
     var zipToSanAreaMap = {};
-    for (var i = 1; i <= 18; i++) {
+    for (var i = 1; i <= 19; i++) {
         var zipCodesString = lookup("EH_SANAREA_BATCH_UPDATE", i.toString()) || "";
         if (zipCodesString !== "") {
             var zipCodes = zipCodesString.split(",");
