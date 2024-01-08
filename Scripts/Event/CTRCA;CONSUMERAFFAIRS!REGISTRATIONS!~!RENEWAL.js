@@ -32,9 +32,11 @@ try{
                 addParameter(emailParams, "$$name$$", fName + " " + lName);
                 exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
                 commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+                dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
                 logDebug(exec + ", " + commissioner);
                 addParameter(emailParams, "$$exec$$", exec);
                 addParameter(emailParams, "$$comm$$", commissioner);
+                addParameter(emailParams, "$$title$$", dca_title_commissioner);
                 logDebug("fName:" + fName);
                 logDebug("parentCapId.getCustomID():" + parentCapId.getCustomID());		
         

@@ -46,10 +46,11 @@ if (wfTask == "Renewal Review" && wfStatus == "Complete")
         addParameter(vEParams, "$$expDate$$", newExpDate);
         exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
         commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+        dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
         logDebug(exec + ", " + commissioner);
         addParameter(vEParams, "$$exec$$", exec);
         addParameter(vEParams, "$$comm$$", commissioner);
-
+        addParameter(vEParams, "$$title$$", dca_title_commissioner);
         conEmail += conArray.email + "; ";
         logDebug("Email addresses: " + conEmail);
         sendNotification("", conEmail, "", "CA_TLC_RENEWAL_APPLICANT_NOTICE", vEParams, null);
