@@ -96,7 +96,8 @@ catch (err)
 
     
     // Only if the application has been reviewed
-    if(appStatus != "Resubmitted" && appStatus != "Received" && !matches(appStatus, null, undefined, "", "null")) 
+    // EHIMS-5115 
+    if (appStatus != "Review in Process" && appStatus != "Resubmitted" && appStatus != "Received" && !matches(appStatus, null, undefined, "", "null")) 
     {
         updateAppStatus("Resubmitted");
     } 
