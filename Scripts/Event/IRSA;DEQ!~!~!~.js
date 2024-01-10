@@ -385,7 +385,7 @@ else
                                                                             var name = "UR TANK"
                                                                             updateShortNotes(name, childTankCapId);
                                                                             editAppName(name, childTankCapId);
-
+                                                                            updateAppStatus("Active", "", childTankCapId);
 
                                                                         }
                                                                     }
