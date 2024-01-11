@@ -104,16 +104,15 @@ logDebug("Get inspection activity");
 //debugObject(vInspectionActivity);
 logDebug(vInspectionActivity.getVehicleID())
 
-// 1. When UPDATE button has been pressed and no email to be sent. We want the Inpsection result report to be updated
-// so ACA user can get the latest. 
+// 1. When UPDATE button has been pressed and no email to be sent. We DO NOT want the Inpsection result report to be updated
+// NOR ACA user able to see it. 
 if(!matches(vInspectionActivity.getVehicleID(), null, "", undefined) && 
 vInspectionActivity.getVehicleID().toUpperCase() == 'NO')
 {
 	logDebug("User selected NOT to send email");
-
-	logDebug("Attached inspection result report");
-	// Update new report to the system
-	runReportAndAttachAsync("Inspection Result", "Inspection Result", "EH_FOOD", "Correspondence", inspId, inspType);
+	logDebug("We do not attached inspection result report");
+	//PHP-112: Do not publish the report if no email is to be sent to operator);
+	//	runReportAndAttachAsync("Inspection Result", "Inspection Result", "EH_FOOD", "Correspondence", inspId, inspType);
 
 }
 // 2. When UPDATE button has been pressed yes/Yes to send email.address.
@@ -158,7 +157,6 @@ else // 4. Below is scenario where user hits result inspection with SAVE button.
 		sendNotificationAndGenReport("SS_INSPECTION_RESULTED", "5002 Observation Inspection Report SSRS", rptParams, [ "Facility Contact", "Facility Owner" ], true);
 	}
 }
-
 
 function sendNotificationAndGenReport(notificationTemplateName, reportName, rptParams, toTypesArry, attachRptToEmail) {
 	var reportFiles = null;
