@@ -151,7 +151,7 @@ if (paramsOK)
         mainProcess();
         //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
         logDebugLocal("End Date: " + startDate);
-        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_TLC_MASS_EMAIL_UPDATE", emailText);
+        aa.sendMail("monthlycalicensingrenewals@suffolkcountyny.gov", emailAddress, "", "Batch Job - BATCH_CA_TLC_MASS_BUSNAME_UPDATE", emailText);
     }
 }
 /*------------------------------------------------------------------------------------------------------/
@@ -163,7 +163,7 @@ function mainProcess()
     try
     {        
 
-        var vSQL = "select B1_ALT_ID as recordNumber, b3.B1_EMAIL as emailAdd, b3.b1_contact_type as contactType, b3.B1_FNAME, b3.B1_MName, b3.B1_LNAME, b3.B1_BUSINESS_NAME, b3.B1_CONTACT_NBR as contactId from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' and b1.b1_per_group = 'ConsumerAffairs' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 and b3.b1_contact_type = 'Vendor' and B3.B1_BUSINESS_NAME = 'Trinity Solar Inc'";
+        var vSQL = "select B1_ALT_ID as recordNumber, b3.B1_EMAIL as emailAdd, b3.b1_contact_type as contactType, b3.B1_FNAME, b3.B1_MName, b3.B1_LNAME, b3.B1_BUSINESS_NAME, b3.B1_CONTACT_NBR as contactId from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' and b1.b1_per_group = 'ConsumerAffairs' and b1.b1_per_type = 'ID Cards' AND b1.B1_PER_SUB_TYPE = 'Home Improvement-Sales' and b1_per_category = 'NA' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 and b3.b1_contact_type = 'Vendor' and B3.B1_BUSINESS_NAME = 'Trinity Solar Inc'";
         var count = 0;
         var vResult = doSQLSelect_local(vSQL);
         logDebugLocal("Total Result Count: " + vResult.length);
@@ -182,19 +182,10 @@ function mainProcess()
             {
                 var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
                 if (capmodel.isCompleteCap())
-                {                                    
-                    // Get and set expiration Date
-                    b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-                    logDebugLocal(" ************* " + capIDString + " *************"); 
-                    logDebugLocal("App Status: " + getAppStatus(capId));
-                    // Custom Field expiration date as well
-                    licExpDate = getAppSpecific("Expiration Date", capId);
-                    logDebugLocal("Custom Field expiration date is: " + licExpDate);
-                    if (!matches(licExpDate, null, undefined, ""))
-                    {
-                        editAppSpecific("Expiration Date", "01/01/2026", capId);
-                        logDebugLocal("Custom Field expiration date set to 01/01/2026");
-                    }
+                {        
+                     // Get and set expiration Date
+                     b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+                     logDebugLocal(" ************* " + capIDString + " *************"); 
 
                     if (b1ExpResult.getSuccess())
                     {
@@ -204,7 +195,31 @@ function mainProcess()
                             try
                             {                           
                                 if (!matches(b1Exp, null, undefined, ""))
-                                {                                   
+                                {                                  
+                                     
+                                    logDebugLocal("App Status: " + getAppStatus(capId));
+
+                                    updateAppStatus("Active", "Updated via batch script");
+                                    logDebugLocal("Update App Status to: " + getAppStatus(capId));
+                                    // Custom Field expiration date as well
+                                    licExpDate = getAppSpecific("Expiration Date", capId);
+                                    logDebugLocal("Custom Field expiration date is: " + licExpDate);
+                                    if (!matches(licExpDate, null, undefined, ""))
+                                    {
+                                        editAppSpecific("Expiration Date", "01/01/2026", capId);
+                                        logDebugLocal("Custom Field expiration date set to : " +  getAppSpecific("Expiration Date", capId));
+                                    }
+
+                                    // Update task
+                                    var taskResult1 = aa.workflow.getTask(capId,"Issuance");
+                                    if (taskResult1.getSuccess()){
+                                        tTask = taskResult1.getOutput();
+                                        logDebugLocal("Task Status: " + tTask.getDisposition());                       
+                                        updateTask("Issuance", "Renewed", "", "");       
+                                        logDebugLocal("Update to Task Status: " +aa.workflow.getTask(capId,"Issuance").getOutput().getDisposition()); 
+                                    
+                                    }
+                                                               
                                     var curExp = b1Exp.getExpDate();
                                     if (curExp != null)
                                     {                                    
@@ -222,11 +237,9 @@ function mainProcess()
                                         var curSt = b1Exp.getExpStatus();
                                         logDebugLocal("Expiration Status: " + curSt);
                                         if (curSt != null)
-                                        {
-                                            if (curSt == "About to Expire")
-                                            {
-                                                b1Exp.setExpStatus("Active");
-                                            }
+                                        {                                            
+                                            b1Exp.setExpStatus("Active");
+                                            logDebugLocal("New Expiration Status: " + b1Exp.getExpStatus());
                                         }
 
                                         aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
@@ -265,13 +278,14 @@ function mainProcess()
                                 capPeoples[loopk].getCapContactModel().getPeople().setBusinessName(newBusName);							                                                                                                                     ;
                                 aa.people.editCapContactWithAttribute(capPeoples[loopk].getCapContactModel());
                                 logDebugLocal("Business Name set to:" + capPeoples[loopk].getCapContactModel().getPeople().getBusinessName());                                             
+                                count++;
                             }
                         }
                                                                             
                                 
                     }      
             
-                    count++;
+                   
                     
                 }
             }
