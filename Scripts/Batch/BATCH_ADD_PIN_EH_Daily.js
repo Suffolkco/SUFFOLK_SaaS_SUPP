@@ -163,7 +163,9 @@
         logMessage("Begin date: " + beginRecDt);
         logMessage("End date: " + todayDate);
         endRecDt = todayDate;
-
+        logMessage("parmRecordTypeList: " + parmRecordTypeList);
+        pinCharLen = '8';
+        logMessage("pinCharLen: " + pinCharLen);
 
         /*------------------------------------------------------------------------------------------------------/
         | <===========Main=Loop================>
