@@ -1,6 +1,6 @@
         /*------------------------------------------------------------------------------------------------------/
         | Program: BATCH_REFLP_FACILITYINFO_CREATE
-        |          Finds candidate Ref LPs. Using this collection, a 'Facility Info' Ref LP is created
+        |          Use Facility Contact to create "Food Facility" Ref LP
         |          and added to the record.
         |
         | Trigger: Batch    
@@ -174,7 +174,8 @@
                 capId = getCapIdLOCAL(parts[1], parts[2], parts[3]);
                 altId = capId.getCustomID();
 
-                if (altId == 'FSP-23-00047')
+                // For testing on one specific record
+                //if (altId == 'LMP-22-0012102')
                 {
                 cap = aa.cap.getCap(capId).getOutput();
                 appTypeResult = cap.getCapType();
@@ -326,12 +327,12 @@
                 selectString += "   AND B1P.SERV_PROV_CODE = '" + aa.getServiceProviderCode() +"' ";
                 selectString += "   AND B1P.REC_STATUS = 'A' ";
                 selectString += "   AND B1P.B1_PER_GROUP = 'EnvHealth' ";
-                selectString += "   AND B1P.B1_PER_TYPE = 'Health Program' ";
-                selectString += "   AND B1P.B1_PER_SUB_TYPE = 'Food Protection' ";
+                selectString += "   AND B1P.B1_PER_TYPE = 'Health Program' ";               
+                selectString += "   AND B1P.B1_PER_SUB_TYPE in ('Food Protection', 'Mobile') ";
                 selectString += "   AND B1P.B1_PER_CATEGORY = 'Permit' ";
                 selectString += "   AND B1P.B1_APPL_STATUS not in ('Inactive, non-billable', 'Temp inactive, non-billable') ";
                 // below is for testing specific record ID only
-                selectString += " AND B1P.B1_ALT_ID = 'FSP-23-00047' ";
+                //selectString += " AND B1P.B1_ALT_ID = 'LMP-22-0012102' ";
                 //selectString += "   AND B1P.B1_APPL_STATUS IN ('Assigned','Awaiting Response','Contract Under Review','In Collections External','In Mediation','In Review','Ongoing Investigation','Open Case','Pending Contact','Pending Contract Review','Pending Disposition','Pending Field Investigation','Pending Mediation','Ready for Assignment','To Mediation') ";
                 //selectString += "   AND ROWNUM < 200 ";
 
