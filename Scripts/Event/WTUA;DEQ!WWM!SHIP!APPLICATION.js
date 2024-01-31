@@ -72,7 +72,16 @@ else
 {
     logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
 }
-var lpAgentEmail = agentEmail + lpEmail + createByEmail;
+var lpAgentEmail;
+
+if (!matches(createByEmail, null, undefined, ""))
+{
+    lpAgentEmail = agentEmail + lpEmail + createByEmail;
+}
+else
+{
+    lpAgentEmail = agentEmail + lpEmail;
+}
 var capIDString = capId.getCustomID();
 var otpReportParams = aa.util.newHashtable();
 var rcReportParams = aa.util.newHashtable();
@@ -565,7 +574,10 @@ if (wfTask == "Final Review")
                         if (rcRFiles != undefined)
                         {
                             sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
-                            sendNotification("", createByEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                            if (!matches(createByEmail, null, undefined, ""))
+                            {
+                                sendNotification("", createByEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                            }
                         }
                     }
                 }
@@ -580,7 +592,10 @@ if (wfTask == "Final Review")
                     if (rcRFiles != undefined)
                     {
                         sendNotification("", allEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
-                        sendNotification("", createByEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                        if (!matches(createByEmail, null, undefined, ""))
+                        {
+                            sendNotification("", createByEmail, "", "DEQ_SHIP_REGISTRATION_COMPLETE", vEParams, rcRFiles);
+                        }
                         //Removed Per Edward's comment
                         //sendNotification("", allEmail, "", "DEQ_SANITARY_REPLACEMENT", vEParams, null);
                     }
@@ -611,7 +626,10 @@ if (wfTask == "Final Review")
                     addParameter(vEParams, "$$Parcel$$", parcelNumber);
                     updateAppStatus("Awaiting O&M Contract");
                     sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-                    sendNotification("", createByEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    if (!matches(createByEmail, null, undefined, ""))
+                    {
+                        sendNotification("", createByEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    }
                 }
 
                 if (matches(getAppSpecific("IA Number"), null, undefined, ""))
@@ -761,7 +779,10 @@ if (wfTask == "Final Review")
                     addParameter(vEParams, "$$wwmAltID$$", altId);
                     addParameter(vEParams, "$$Parcel$$", parcelNumber);
                     sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-                    sendNotification("", createByEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    if (!matches(createByEmail, null, undefined, ""))
+                    {
+                        sendNotification("", createByEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    }
                     updateAppStatus("Awaiting O&M Contract");
                 }
             }
@@ -944,7 +965,10 @@ if (wfTask == "Final Review")
                     addParameter(vEParams, "$$Parcel$$", parcelNumber);
 
                     sendNotification("", allEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
-                    sendNotification("", createByEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    if (!matches(createByEmail, null, undefined, ""))
+                    {
+                        sendNotification("", createByEmail, "", "DEQ_IA_APPLICATION_NOTIFICATION", vEParams, null);
+                    }
                     if (matches(getAppSpecific("O&M Contract Approved"), null, undefined, ""))
                     {
                         updateAppStatus("Documents Requested");
