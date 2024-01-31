@@ -180,216 +180,230 @@ else
     OPC PBS Site OP Inspection
     OPC PBS Site Other Inspection
     OPC PBS Site Re-Inspection*/
-    var test = inspType.toUpperCase();
-    logDebug("The upper case is: " + test);
+    // Revise version EHIMS-4613 bug
+    logDebug("inspType: " + inspType);
+    logDebug("inspResult: " + inspResult);
+    logDebug(inspType.toUpperCase());    
+    logDebug(inspType.toUpperCase().contains("OPC NON-PBS"));
+    logDebug(inspType.toUpperCase().contains("OPC PBS SITE"));
     var inspResultObj = aa.inspection.getInspections(capId);
-
     if (inspResultObj.getSuccess())
     {
+        logDebug("Success? " + inspResultObj.getSuccess());
+
         var inspList = inspResultObj.getOutput();
+
+        logDebug("inspList.length? " + inspList.length);
+
         if (inspList && inspList.length > 0)
         {
             for (var xx in inspList)
-            {
-                //  if (String(insp2Check).equals(inspList[xx].getInspectionType()) && inspList[xx].getInspection().getInspSequenceNumber() == inspSeqNum) {
+            {                
+                logDebug("inspList.length? " + inspList[xx].getInspection().getIdNumber());
+
                 if (inspList[xx].getInspection().getIdNumber() == inspId)
                 {
-                    if ((inspList[xx].getInspectionType().toUpperCase().contains("OPC NON-PBS") || inspList[xx].getInspectionType().toUpperCase().toUpperCase().contains("OPC PBS SITE")) &&
-                        (inspList[xx].getInspectionStatus() == "Completed" || inspList[xx].getInspectionStatus() == "Fail" 
-                        || inspList[xx].getInspectionStatus() == "Violations Found"))
+                    logDebug("Matched inspId = " + inspId);
+                    logDebug("inspList[xx].getInspectionType().toUpperCase() = " + inspList[xx].getInspectionType().toUpperCase());
+                    logDebug("inspList[xx].getInspectionStatus() = " + inspList[xx].getInspectionStatus());
+
+                    if ((inspType.toUpperCase().contains("OPC NON-PBS") || inspType.toUpperCase().contains("OPC PBS SITE")) &&
+                    (inspResult == "Completed" || inspResult == "Fail" || inspResult == "Violations Found"))
                     {
                         inspObj = inspList[xx];
                         logDebug("Inspection number: " + inspList[xx].getInspection().getIdNumber());
                         logDebug("Inspection type: " + inspList[xx].getInspectionType());
                         logDebug("Inspection Status: " + inspList[xx].getInspectionStatus());
-
                     }
                 }
             }
-        }
-    }
-    if (!inspObj)
-    {
-        logDebug("No inspection found to update");
-    }
-    else
-    {
-        inspModel = inspObj.getInspection();
-        gsList = inspModel.getGuideSheets();
-        if (gsList)
-        {
-            gsArr = gsList.toArray();
-            for (gsi in gsArr)
-            {
-                gs = gsArr[gsi];
-                gsItemList = gs.getItems();
-                if (gsItemList)
+        }   
+        logDebug("inspObj: " + inspObj);
+        if (!matches(inspObj, null, "", undefined))
+        {   
+            logDebug("here.");
+            inspModel = inspObj.getInspection();
+            logDebug("Inspection model: " + inspModel);       
+            gsList = inspModel.getGuideSheets();
+            logDebug("gsList: " + gsList);
+            if (gsList)
+            {           
+                gsArr = gsList.toArray();
+                logDebug("gsArr: " + gsArr);
+            
+                for (gsi in gsArr)
                 {
-                    gsItemArr = gsItemList.toArray();
-                    for (gsii in gsItemArr)
+                    gs = gsArr[gsi];
+                    logDebug("gs: " + gs);
+                    gsItemList = gs.getItems();
+                    if (gsItemList)
                     {
-                        gsItem = gsItemArr[gsii];
-                        logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
-                        
-                    
-                        if (gsItem.getGuideItemText().toUpperCase().contains("3 (UNREGISTERED TANK)"))
+                        gsItemArr = gsItemList.toArray();
+                        for (gsii in gsItemArr)
                         {
-
-                            logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
-                            logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
-                            logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
-                            logDebug("gguidesheetItemModel.getGuideItemComment(): " + gsItem.getGuideItemComment());
-                            logDebug("gsItem.getGuideType(): " + gsItem.getGuideType());
-
-                            if (gsItem.getGuideType() == "PBS Inspection Checklist" || gsItem.getGuideType() == "Non-PBS Inspection Checklist") 
+                            gsItem = gsItemArr[gsii];
+                            logDebug("gsItem.getGuideItemText() : " + gsItem.getGuideItemText());
+                            
+                        
+                            if (gsItem.getGuideItemText().toUpperCase().contains("3 (UNREGISTERED TANK)"))
                             {
-                                logDebug("Guide Type is: " + gsItem.getGuideType());
-                                logDebug("ASI Group Name is: " + gsItem.getGuideItemASIGroupName());
 
-                                if (gsItem.getGuideItemASIGroupName() == "PBS_040" || gsItem.getGuideItemASIGroupName() == "NONPBS_010")
+                                logDebug("gsItem.getGuideItemASIGroupName()" + gsItem.getGuideItemASIGroupName());
+                                logDebug("gsItem.getGuideItemStatus() : " + gsItem.getGuideItemStatus());
+                                logDebug("getGuideItemScore(): " + gsItem.getGuideItemScore());
+                                logDebug("gguidesheetItemModel.getGuideItemComment(): " + gsItem.getGuideItemComment());
+                                logDebug("gsItem.getGuideType(): " + gsItem.getGuideType());
+
+                                if (gsItem.getGuideType() == "PBS Inspection Checklist" || gsItem.getGuideType() == "Non-PBS Inspection Checklist") 
                                 {
-                                    var ASISubGroups = gsItem.getItemASISubgroupList();
+                                    logDebug("Guide Type is: " + gsItem.getGuideType());
+                                    logDebug("ASI Group Name is: " + gsItem.getGuideItemASIGroupName());
 
-                                    logDebug("ASI subroups");
-
-                                    if (ASISubGroups) 
+                                    if (gsItem.getGuideItemASIGroupName() == "PBS_040" || gsItem.getGuideItemASIGroupName() == "NONPBS_010")
                                     {
-                                        logDebug("ASISubGroups.size(): " + ASISubGroups.size());
-                                        for (var k = 0; k < ASISubGroups.size(); k++) 
+                                        var ASISubGroups = gsItem.getItemASISubgroupList();
+
+                                        logDebug("ASI subroups");
+
+                                        if (ASISubGroups) 
                                         {
-                                            var ASISubGroup = ASISubGroups.get(k);
-                                            logDebug("ASISubGroup.getSubgroupCode():" + ASISubGroup.getSubgroupCode());
-
-                                            if (ASISubGroup && (ASISubGroup.getSubgroupCode() == "IS THE REGISTRATION INFORMA" ||
-                                                ASISubGroup.getSubgroupCode() == "IS THE PERMIT TO OPERATE CURRE")) 
+                                            logDebug("ASISubGroups.size(): " + ASISubGroups.size());
+                                            for (var k = 0; k < ASISubGroups.size(); k++) 
                                             {
-                                                var ASIModels = ASISubGroup.getAsiList();
-                                                if (ASIModels) 
+                                                var ASISubGroup = ASISubGroups.get(k);
+                                                logDebug("ASISubGroup.getSubgroupCode():" + ASISubGroup.getSubgroupCode());
+
+                                                if (ASISubGroup && (ASISubGroup.getSubgroupCode() == "IS THE REGISTRATION INFORMA" ||
+                                                    ASISubGroup.getSubgroupCode() == "IS THE PERMIT TO OPERATE CURRE")) 
                                                 {
-                                                    for (var m = 0; m < ASIModels.size(); m++) 
+                                                    var ASIModels = ASISubGroup.getAsiList();
+                                                    if (ASIModels) 
                                                     {
-                                                        var ASIModel = ASIModels.get(m);
-                                                        logDebug("ASIModel.getAsiName" + ASIModel.getAsiName() + "," + "ASI value: " + ASIModel.getAttributeValue());
-
-                                                        if (ASIModel && ASIModel.getAsiName() == "3") 
+                                                        for (var m = 0; m < ASIModels.size(); m++) 
                                                         {
-                                                            logDebug("ASI value: " + ASIModel.getAttributeValue());
-                                                            asiValue = ASIModel.getAttributeValue();
-                                                            if (asiValue == "CHECKED")	
+                                                            var ASIModel = ASIModels.get(m);
+                                                            logDebug("ASIModel.getAsiName" + ASIModel.getAsiName() + "," + "ASI value: " + ASIModel.getAttributeValue());
+
+                                                            if (ASIModel && ASIModel.getAsiName() == "3") 
                                                             {
-                                                                // Create Tank
-                                                                gs0 = new guideSheetObjectLOCAL(gs, gsItem);
-
-                                                                gs0.loadInfoTables();
-                                                                childTable = gs0.infoTables["UNREGISTERED TANK"];
-                                                                logDebug("childTable: " + childTable);
-
-                                                                if (childTable)
+                                                                logDebug("ASI value: " + ASIModel.getAttributeValue());
+                                                                asiValue = ASIModel.getAttributeValue();
+                                                                if (asiValue == "CHECKED")	
                                                                 {
-                                                                    for (var rowIndex in childTable)
+                                                                    // Create Tank
+                                                                    gs0 = new guideSheetObjectLOCAL(gs, gsItem);
+
+                                                                    gs0.loadInfoTables();
+                                                                    childTable = gs0.infoTables["UNREGISTERED TANK"];
+                                                                    logDebug("childTable: " + childTable);
+
+                                                                    if (childTable)
                                                                     {
-                                                                        thisRow = childTable[rowIndex];
-                                                                        tankNo = thisRow["SCDHS Tank #"];
-                                                                        product = thisRow["Product"];
-                                                                        capacity = thisRow["Capacity"];
-                                                                        location = thisRow["Location"];
-                                                                        constMaterial = thisRow["Construction Material"];
-                                                                        epa = thisRow["EPA"];
-                                                                        pbs = thisRow["PBS"];
-                                                                        comments = thisRow["Comments"];
-                                                                        if (tankNo && tankNo != "")
+                                                                        for (var rowIndex in childTable)
                                                                         {
-                                                                            logDebug("tankNo: " + tankNo);
-                                                                        }
-                                                                        if (product && product != "")
-                                                                        {
-                                                                            logDebug("product: " + product);
-                                                                        }
-                                                                        if (capacity && capacity != "")
-                                                                        {
-                                                                            logDebug("capacity: " + capacity);
-                                                                        }
-                                                                        if (location && location != "")
-                                                                        {
-                                                                            logDebug("location: " + location);
-                                                                        }
-                                                                        if (constMaterial && constMaterial != "")
-                                                                        {
-                                                                            logDebug("constMaterial: " + constMaterial);
-                                                                        }
-                                                                        if (epa && epa != "")
-                                                                        {
-                                                                            logDebug("epa: " + epa);
-                                                                        }
-                                                                        if (pbs && pbs != "")
-                                                                        {
-                                                                            logDebug("pbs: " + pbs);
-                                                                        }
-                                                                        if (comments && comments != "")
-                                                                        {
-                                                                            logDebug("comments: " + comments);
-                                                                        }
-                                                                        logDebug("rowIndex: " + rowIndex);
-
-
-                                                                        if (!publicUser)
-                                                                        {
-                                                                            // Add child under SITE
-                                                                            var childTankCapId = createChild("DEQ", "OPC", "Hazardous Tank", "Permit", "UR TANK");
-                                                                            logDebug("Child cap ID is: " + childTankCapId);
-                                                                            logDebug("Child alt ID is: " + childTankCapId.getCustomID());
-
-                                                                            logDebug("Update SCDHS Tank #" + tankNo);
-                                                                            editAppSpecific("SCDHS Tank #", tankNo, childTankCapId);
-
-                                                                            logDebug("Update Official Use Code UR");
-                                                                            editAppSpecific("Official Use Code", "UR", childTankCapId);
-
-
-                                                                            logDebug("PBS Tank" + pbs);
-                                                                            editAppSpecific("PBS Tank", pbs, childTankCapId);
-
-
-                                                                            logDebug("Update EPA Tank" + epa);
-                                                                            editAppSpecific("EPA Tank", epa, childTankCapId);
-
-
-                                                                            logDebug("Update Capacity" + capacity);
-                                                                            editAppSpecific("Capacity", capacity, childTankCapId);
-
-
-                                                                            logDebug("Update Tank Location" + location);
-                                                                            editAppSpecific("Tank Location", location, childTankCapId);
-
-                                                                            // Detailed Description: product + "Construction Material" + 
-                                                                            
-                                                                            if (matches(comments, null, "", undefined)) 
+                                                                            thisRow = childTable[rowIndex];
+                                                                            tankNo = thisRow["SCDHS Tank #"];
+                                                                            product = thisRow["Product"];
+                                                                            capacity = thisRow["Capacity"];
+                                                                            location = thisRow["Location"];
+                                                                            constMaterial = thisRow["Construction Material"];
+                                                                            epa = thisRow["EPA"];
+                                                                            pbs = thisRow["PBS"];
+                                                                            comments = thisRow["Comments"];
+                                                                            if (tankNo && tankNo != "")
                                                                             {
-                                                                                comments = "";
+                                                                                logDebug("tankNo: " + tankNo);
                                                                             }
-                                                                            if (matches(product, null, "", undefined)) 
+                                                                            if (product && product != "")
                                                                             {
-                                                                                product = "";
+                                                                                logDebug("product: " + product);
                                                                             }
-                                                                            if (matches(constMaterial, null, "", undefined)) 
+                                                                            if (capacity && capacity != "")
                                                                             {
-                                                                                constMaterial = "";
+                                                                                logDebug("capacity: " + capacity);
                                                                             }
-                                                                            
+                                                                            if (location && location != "")
+                                                                            {
+                                                                                logDebug("location: " + location);
+                                                                            }
+                                                                            if (constMaterial && constMaterial != "")
+                                                                            {
+                                                                                logDebug("constMaterial: " + constMaterial);
+                                                                            }
+                                                                            if (epa && epa != "")
+                                                                            {
+                                                                                logDebug("epa: " + epa);
+                                                                            }
+                                                                            if (pbs && pbs != "")
+                                                                            {
+                                                                                logDebug("pbs: " + pbs);
+                                                                            }
+                                                                            if (comments && comments != "")
+                                                                            {
+                                                                                logDebug("comments: " + comments);
+                                                                            }
+                                                                            logDebug("rowIndex: " + rowIndex);
 
-                                                                            var description = product + " " + constMaterial + " " + comments;
-                                                                            logDebug("Update description:" + description);
 
-                                                                            updateWorkDesc(description, childTankCapId)
-                                                                            // Project Name
-                                                                            var name = "UR TANK"
-                                                                            updateShortNotes(name, childTankCapId);
-                                                                            editAppName(name, childTankCapId);
-                                                                            updateAppStatus("Active", "", childTankCapId);
+                                                                            if (!publicUser)
+                                                                            {
+                                                                                // Add child under SITE
+                                                                                var childTankCapId = createChild("DEQ", "OPC", "Hazardous Tank", "Permit", "UR TANK");
+                                                                                logDebug("Child cap ID is: " + childTankCapId);
+                                                                                logDebug("Child alt ID is: " + childTankCapId.getCustomID());
 
+                                                                                logDebug("Update SCDHS Tank #" + tankNo);
+                                                                                editAppSpecific("SCDHS Tank #", tankNo, childTankCapId);
+
+                                                                                logDebug("Update Official Use Code UR");
+                                                                                editAppSpecific("Official Use Code", "UR", childTankCapId);
+
+
+                                                                                logDebug("PBS Tank" + pbs);
+                                                                                editAppSpecific("PBS Tank", pbs, childTankCapId);
+
+
+                                                                                logDebug("Update EPA Tank" + epa);
+                                                                                editAppSpecific("EPA Tank", epa, childTankCapId);
+
+
+                                                                                logDebug("Update Capacity" + capacity);
+                                                                                editAppSpecific("Capacity", capacity, childTankCapId);
+
+
+                                                                                logDebug("Update Tank Location" + location);
+                                                                                editAppSpecific("Tank Location", location, childTankCapId);
+
+                                                                                // Detailed Description: product + "Construction Material" + 
+                                                                                
+                                                                                if (matches(comments, null, "", undefined)) 
+                                                                                {
+                                                                                    comments = "";
+                                                                                }
+                                                                                if (matches(product, null, "", undefined)) 
+                                                                                {
+                                                                                    product = "";
+                                                                                }
+                                                                                if (matches(constMaterial, null, "", undefined)) 
+                                                                                {
+                                                                                    constMaterial = "";
+                                                                                }
+                                                                                
+
+                                                                                var description = product + " " + constMaterial + " " + comments;
+                                                                                logDebug("Update description:" + description);
+
+                                                                                updateWorkDesc(description, childTankCapId)
+                                                                                // Project Name
+                                                                                var name = "UR TANK"
+                                                                                updateShortNotes(name, childTankCapId);
+                                                                                editAppName(name, childTankCapId);
+                                                                                updateAppStatus("Active", "", childTankCapId);
+
+                                                                            }
                                                                         }
+
                                                                     }
-
                                                                 }
                                                             }
                                                         }
@@ -405,7 +419,8 @@ else
                 }
             }
         }
-}
+    }
+    
 }
 
 //IA Record Creation from WWM Record 
