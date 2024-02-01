@@ -1,7 +1,7 @@
 
 // PHP-96
 // Add a Faciility Information Contact
-if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStatus == "Plans Approved"))
+if (wfStatus == "No Plans Required" || wfStatus == "Plans Approved")
 {   	
    // Use facility name
    var dbaName = getAppSpecific("Facility Name", capId);		
