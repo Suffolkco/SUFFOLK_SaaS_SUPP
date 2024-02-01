@@ -2,7 +2,7 @@
 // PHP-96
 // This is in Application workflow. We want to autopopulate address fields to LP for the correct value. We update the contact type
 // Facility Information to the correct one first. 
-if (wfTask == "Application Review" && (wfStatus == "No Plans Required" || wfStatus == "Plans Approved"))
+if (wfStatus == "No Plans Required" || wfStatus == "Plans Approved")
 {   	
    // Use facility name
    var dbaName = getAppSpecific("Facility Name", capId);		
