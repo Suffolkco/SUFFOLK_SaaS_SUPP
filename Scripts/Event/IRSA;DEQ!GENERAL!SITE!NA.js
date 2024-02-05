@@ -241,7 +241,9 @@ if (inspResult == "Completed" || inspResult == "Fail")
 
 //EHIMS2-77
 //Code Enforcement Scripting
-if (matches(inspType, "OPC PBS Site OP Inspection", "OPC PBS Site Other Inspection", "OPC PBS Site GSR Inspection", "OPC PBS Site Re-Inspection", "OPC Non-PBS Site OP Inspection", "OPC Non-PBS Site Other Inspection", "OPC Non-PBS Site Re-Inspection", "OPC PBS SITE Enf-Req Inspection", "OPC Non-PBS SITE Enf-Req Inspection", "OPC PBS TANK Enf-Req Inspection", "OPC Non-PBS TANK Enf-Req Inspection"))
+inspTypeCap = inspType.toUpperCase()
+
+if (matches(inspTypeCap, "OPC PBS SITE OP INSPECTION", "OPC PBS SITE OTHER INSPECTION", "OPC PBS SITE GSR INSPECTION", "OPC PBS SITE RE-INSPECTION", "OPC NON_PBS SITE OP INSPECTION", "OPC NON_PBS SITE OTHER INSPECTION", "OPC NON-PBS SITE RE-INSPECTION", "OPC PBS SITE ENF-REQ INSPECTION", "OPC NON-PBS SITE ENF-REQ INSPECTION", "OPC PBS TANK ENF-REQ INSPECTION", "OPC NON-PBS TANK ENF-REQ INSPECTION"))
 {
     if (inspResult == "Violations Found")
     {
