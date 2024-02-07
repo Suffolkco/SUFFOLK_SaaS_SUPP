@@ -162,7 +162,7 @@ function mainProcess()
 {
     try
     {       
-        var dateCheck = dateAdd(null, 60);
+        var dateCheck = dateAdd(null, 45);
         dateCheckString = String(dateCheck).split("/")
         var dateToCheck = (String('0' + dateCheckString[0]).slice(-2) + '/' + String('0' + dateCheckString[1]).slice(-2) + '/' + dateCheckString[2]);
 
