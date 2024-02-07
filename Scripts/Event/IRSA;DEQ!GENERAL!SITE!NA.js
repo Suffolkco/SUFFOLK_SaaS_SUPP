@@ -2,7 +2,7 @@
 
 // EHIMS-4948:
 showDebug = true;
-if (inspResult == "Complete" || inspResult == "Incomplete")
+if (inspResult == "Completed" || inspResult == "Incomplete")
 {
     var primEmailAddress = "";
     var secEmailAddress = "";
