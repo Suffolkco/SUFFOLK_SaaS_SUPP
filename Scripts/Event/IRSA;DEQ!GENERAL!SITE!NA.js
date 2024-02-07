@@ -2,7 +2,7 @@
 
 // EHIMS-4948:
 showDebug = true;
-if (inspResult == "Completed" || inspResult == "Incomplete")
+if (inspResult == "Complete" || inspResult == "Incomplete")
 {
     var primEmailAddress = "";
     var secEmailAddress = "";
@@ -88,7 +88,7 @@ if (inspResult == "Completed" || inspResult == "Incomplete")
         var year = inspObj.getInspectionDate().getYear();
         var month = inspObj.getInspectionDate().getMonth();
         var day = inspObj.getInspectionDate().getDayOfMonth();
-        var hr = inspObj.getInspectionDate().getHourOfDay() - 1;
+        var hr = inspObj.getInspectionDate().getHourOfDay();
         var min = inspObj.getInspectionDate().getMinute();
         var sec = inspObj.getInspectionDate().getSecond();
        
