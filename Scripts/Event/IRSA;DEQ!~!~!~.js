@@ -2,7 +2,7 @@
 
 showDebug = true;
 
-
+logDebug("inspResult: " + inspResult);
 var insYear = inspObj.getInspectionStatusDate().getYear().toString();
 var insMonth = inspObj.getInspectionStatusDate().getMonth().toString();
 var insDay = inspObj.getInspectionStatusDate().getDayOfMonth().toString();
@@ -370,7 +370,22 @@ else
                                                                                 logDebug("Update Capacity" + capacity);
                                                                                 editAppSpecific("Capacity", capacity, childTankCapId);
 
-
+                                                                                if (location == 'Above/In')
+                                                                                {
+                                                                                    location = '1-Aboveground-Indoors';
+                                                                                }
+                                                                                else if (location == 'Above/Out')
+                                                                                {
+                                                                                    location = '2-Aboveground-Outdoors';
+                                                                                }
+                                                                                else if (location == 'Under/In')
+                                                                                {
+                                                                                    location = '3-Underground-Indoors';
+                                                                                }
+                                                                                else if (location == 'Under/Out')
+                                                                                {
+                                                                                    location = '4-Underground-Outdoors';
+                                                                                }
                                                                                 logDebug("Update Tank Location" + location);
                                                                                 editAppSpecific("Tank Location", location, childTankCapId);
 
