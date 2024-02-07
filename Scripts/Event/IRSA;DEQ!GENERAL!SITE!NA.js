@@ -262,6 +262,7 @@ if (matches(inspTypeCap,
         {
             //if there are none, then we create a new one
             var enfChild = createChildLocal("DEQ", "OPC", "Enforcement", "NA");
+            logDebug("Enforcement record created: " + enfChild.getCustomID());
             //copying parcel, address, ASIs, appname, projdesc
             copyParcel(capId, enfChild);
             copyAddress(capId, enfChild);
@@ -284,7 +285,7 @@ if (matches(inspTypeCap,
             var inspectionDateForm = (month) + "/" + day + "/" + (year);
             logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
             assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
-
+           
             //gathering inspectors name from this current Site inspection
             var inspInspectorObj = inspObj.getInspector();
             if (inspInspectorObj)
