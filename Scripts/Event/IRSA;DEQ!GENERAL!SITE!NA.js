@@ -596,6 +596,7 @@ if (matches(inspTypeCap,
                 addParameter(reportParams, "SiteRecordID", alternateID.toString());
                 addParameter(reportParams, "InspectionDate", inspectionDateCon);
                 addParameter(reportParams, "InspectionType", inspType);
+                logDebug("report params are: " + alternateID.toString() + ", " + inspectionDateCon + ", " + inspType);
                 generateReportBatch(enfChild, "Facility Inspection Summary Report Script", 'DEQ', reportParams);
             }
         }
