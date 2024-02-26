@@ -85,7 +85,8 @@ if (publicUser)
     
      // Only if the application has been reviewed
      // EHIMS-5115 
-     if (appStatus != "Review in Process" && appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null"))  
+     if (!matches(appStatus, null, undefined, "", "null", "Review in Process", "Resubmitted" , "Received"))
+     //if (appStatus != "Review in Process" && appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null"))  
      {
          updateAppStatus("Resubmitted");
      }     
