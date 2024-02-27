@@ -95,8 +95,14 @@ catch (err)
     
     
     // Only if the application has been reviewed
-    // EHIMS-5115 
-    if (!matches(appStatus, null, undefined, "", "null", "Review in Process", "Resubmitted" , "Received"))
+
+    // EHIMS-5115
+    if (appStatus == "Pending" && !isTaskActive("Application Review"))
+    {
+        // Do not update
+    }   
+    // EHIMS-5036  
+    else if (!matches(appStatus, null, undefined, "", "null", "Review in Process", "Resubmitted" , "Received"))    
     //if (appStatus != "Review in Process" && appStatus != "Resubmitted" && appStatus != "Received" && !matches(appStatus, null, undefined, "", "null")) 
     {
         updateAppStatus("Resubmitted");
