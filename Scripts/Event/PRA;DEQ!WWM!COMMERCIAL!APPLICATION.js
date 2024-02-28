@@ -84,11 +84,17 @@ if (publicUser)
      var appStatus = getAppStatus(capId);
     
      // Only if the application has been reviewed
-     // EHIMS-5115 
-     if (appStatus != "Review in Process" && appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null"))  
-     {
-         updateAppStatus("Resubmitted");
-     }     
+       // EHIMS-5115
+    if (appStatus == "Pending" && !isTaskActive("Application Review"))
+    {
+         // Do not update
+    }   
+   // EHIMS-5036  
+   else if (!matches(appStatus, null, undefined, "", "null", "Review in Process", "Resubmitted" , "Received"))
+    //if (appStatus != "Review in Process" && appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null"))  
+    {
+        updateAppStatus("Resubmitted");
+    }     
 
 
 }
