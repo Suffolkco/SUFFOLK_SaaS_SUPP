@@ -57,10 +57,39 @@ sendEmailsOnSIPRecord("DEQ_SIP_GRANT_PACKET_MAILED");
 		sendEmailsOnSIPRecordOnlyWWMLP("DEQ_SIP_CLARIFICATION_REQUEST");
 	}
 
-	if (wfTask == "Pre-Install Review" && wfStatus == "Complete")
+		if (wfTask == "Pre-Install Review" && wfStatus == "Complete")
 {
-	sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
-}
+			sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
+			
+		
+var wwmRecords = getAppSpecific("WWM Ref #");
+if(wwmRecords != null)
+
+{
+
+	var parentCapid = aa.cap.getCapID(wwmRecords).getOutput();
+		if (parentCapid != null) 
+		{
+			var capmodel = parentCapid.toString();
+			var ida = capmodel.split("-");
+			var pcapId = aa.cap.getCapID(ida[0], ida[1], ida[2]).getOutput();
+			var pcapResult = aa.cap.getCap(pcapId);
+			var pcap = pcapResult.getOutput();
+			appTypeResult = pcap.getCapType(); //create CapTypeModel object
+			appTypeString = appTypeResult.toString()
+			if(appTypeString == "DEQ/WWM/Residence/Application")
+			{
+var emailParams = aa.util.newHashtable();
+			addParameter(emailParams, "$$WWMRecord$$",pcapId.getCustomID());
+			addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			
+			var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
+			sendNotification("", String(staffEmail), "", "WWM OK TO RELEASE", emailParams, null);
+			}
+		}
+	}
+			
+		}
 	if ((wfTask == "Post-Install Review" || wfTask == "Pre-Install Review" || wfTask == "Payment Processing") && (wfStatus == "Applicant Request"))
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_CLARIFICATION_REQUEST");
@@ -102,6 +131,140 @@ closeTask("Closure", "Ineligible", "Updated via Script", "Updated via Script");
 
 	
 }
+
+
+if (wfTask == "Contract Processing" && wfStatus == "Complete")
+	{
+var tasksCompleted = false;
+var countyStatus = AInfo["County Status"];
+var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+        var wfDates = [];
+        var maxWfDate;
+        if (wfHist.getSuccess())
+        {
+            wfHist = wfHist.getOutput();
+        } else
+        {
+            wfHist = new Array();
+        }
+        for (var h in wfHist)
+        {
+            if (wfHist[h].getTaskDescription() == "Pre-Install Review")
+            {
+                logDebug("epoch milliseconds of status date is: " + wfHist[h].getDispositionDate().getEpochMilliseconds());
+
+                //wfDates.push(wfHist[h].getDispositionDate().getEpochMilliseconds());
+                //maxWfDate = Math.max.apply(null, wfDates);
+                //logDebug("maxWfdate is: " + maxWfDate);
+
+                if (matches(wfHist[h].getDisposition(), "Complete"))
+                {
+                    tasksCompleted = true;
+                }
+
+            }
+        }
+		
+		if(tasksCompleted == true && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+			
+			{
+				deactivateTask("Contract Processing");
+				closeTask("Contract Processing", "Complete", "Updated via Script", "Updated via Script");
+				sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
+				updateAppStatus("OK to Install");
+				activateTask("Post-Install Review");
+
+			}
+			
+			if(tasksCompleted == false && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+			
+			{
+				deactivateTask("Contract Processing");
+				closeTask("Contract Processing", "Complete", "Updated via Script", "Updated via Script");
+				updateAppStatus("Awaiting Pre-Install Requirements");
+				
+
+			}
+			
+			
+			if(countyStatus != "Ineligible" && countyStatus != "Undetermined")
+				
+				{
+					deactivateTask("Contract Processing");
+					closeTask("Contract Processing", "Complete", "Updated via Script", "Updated via Script");
+					updateAppStatus("Pending Post-Install Review");
+					activateTask("Post-Install Review");
+					
+				}
+}
+
+
+
+if (wfTask == "Pre-Install Review" && wfStatus == "Complete")
+	{
+var tasksCompleted = false;
+var countyStatus = AInfo["County Status"];
+var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+        var wfDates = [];
+        var maxWfDate;
+        if (wfHist.getSuccess())
+        {
+            wfHist = wfHist.getOutput();
+        } else
+        {
+            wfHist = new Array();
+        }
+        for (var h in wfHist)
+        {
+            if (wfHist[h].getTaskDescription() == "Contract Processing")
+            {
+                logDebug("epoch milliseconds of status date is: " + wfHist[h].getDispositionDate().getEpochMilliseconds());
+
+                //wfDates.push(wfHist[h].getDispositionDate().getEpochMilliseconds());
+                //maxWfDate = Math.max.apply(null, wfDates);
+                //logDebug("maxWfdate is: " + maxWfDate);
+
+                if (matches(wfHist[h].getDisposition(), "Complete"))
+                {
+                    tasksCompleted = true;
+                }
+
+            }
+        }
+		
+		if(tasksCompleted == true && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+			
+			{
+				deactivateTask("Pre-Install Review");
+				closeTask("Pre-Install Review", "Complete", "Updated via Script", "Updated via Script");
+				sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
+				updateAppStatus("OK to Install");
+				activateTask("Post-Install Review");
+
+			}
+			
+			if(tasksCompleted == false && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+			
+			{
+				deactivateTask("Pre-Install Review");
+				closeTask("Pre-Install Review", "Complete", "Updated via Script", "Updated via Script");
+				updateAppStatus("Awaiting Grant Processing");
+				
+
+			}
+			
+			
+			if(countyStatus != "Ineligible" && countyStatus != "Undetermined")
+				
+				{
+					deactivateTask("Pre-Install Review");
+					closeTask("Pre-Install Review", "Complete", "Updated via Script", "Updated via Script");
+					//updateAppStatus("Pending Post-Install Review");
+					activateTask("Post-Install Review");
+					
+				}
+}
+
 }
 catch (ex)
   {
