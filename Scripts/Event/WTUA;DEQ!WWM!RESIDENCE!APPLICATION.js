@@ -26,6 +26,13 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 	}
 
 }
+//SIP - 1 Pahse 2
+if (wfTask == "Plans Coordination" && wfStatus == "Awaiting Grant Approval")
+{
+	sendGrantDoc();
+	   
+}
+
 if (wfTask == "Inspections" && (wfStatus == "Inspection Failure" || wfStatus == "Inspection Failure- I/A Installed"))
 {
 	var resultComments = inspectionResultComments();
@@ -944,3 +951,191 @@ function convertDate(thisDate) {
 	return null;
 }
 //push
+function sendGrantDoc()
+{
+var emailParams = aa.util.newHashtable();
+	var reportParams = aa.util.newHashtable();
+	var reportFile = new Array();
+	var conArray = getContactArray();
+	var conEmail = "";
+    var fromEmail = ""; 
+	
+	var wwmRecords = getChildren("DEQ/Ecology/SIP/Application", capId);
+if(wwmRecords)
+{	
+
+						
+    for( i in wwmRecords)
+		var wwmrecord = wwmRecords[0];
+	
+	 var rowToUpdate = ""
+     var vgrantTable = loadASITable("DEQ_SIP_GRANT_ELIGIBILITY", wwmrecord)
+                        
+                        if (vgrantTable && vgrantTable.length > 0) {
+                            for (var i in vgrantTable) {
+                                
+  if(vgrantTable[i]["Document Type"] == "Approvable Plans")
+  {
+                                   
+                                         
+                                            rowToUpdate = i;
+                                            break;
+                                        
+                                    }
+                                
+                            }
+                        }
+						
+		var todaysDate = new Date();
+		var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());				
+updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Current Status", "Complete", rowToUpdate, wwmrecord, "Admin", "N");
+updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Status Date", todDateCon, rowToUpdate, wwmrecord, "Admin", "N");
+	
+         copyDocuments(capId, wwmrecord, "Grant Proposal Plan");
+        var wwmcapContactArray = new Array();
+	var wwmcapContResult = aa.people.getCapContactByCapID(wwmrecord);
+	if (wwmcapContResult.getSuccess()) {
+		wwmcapContactArray = wwmcapContResult.getOutput();
+	}
+	
+	for (con in wwmcapContactArray)
+	{
+		if (!matches(wwmcapContactArray[con].email, null, undefined, ""))
+		{
+			conEmail += wwmcapContactArray[con].email + "; ";
+		}
+	}	
+	
+}
+
+	
+    var capContactArray = new Array();
+	var capContResult = aa.people.getCapContactByCapID(capId);
+var capContactArray = new Array();
+	var capContResult = aa.people.getCapContactByCapID(capId);
+	if (capContResult.getSuccess()) {
+		capContactArray  = capContResult.getOutput();
+	}
+	
+	for (con in capContactArray)
+	{
+		if (!matches(capContactArray[con].email, null, undefined, ""))
+		{
+			conEmail += capContactArray[con].email + "; ";
+		}
+	}
+
+	// EHIMS-5117
+	var docList = getDocumentList();
+	var docDates = [];
+	var maxDate;
+
+	for (doc in docList)
+	{
+		if (matches(docList[doc].getDocCategory(), "Grant Proposal Plan"))
+		{
+			logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+			docDates.push(docList[doc].getFileUpLoadDate().getTime());
+			maxDate = Math.max.apply(null, docDates);
+			logDebug("maxdate is: " + maxDate);
+
+			if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+			{
+				var docType = docList[doc].getDocCategory();
+				var docFileName = docList[doc].getFileName();
+			}
+		}
+	}
+
+	//preparing most recent sketch document for email attachment
+	var docToSend = prepareDocumentForEmailAttachment(capId, "Grant Proposal Plan", docFileName);
+	logDebug("docToSend" + docToSend);
+	docToSend = docToSend === null ? [] : [docToSend];
+	if (!matches(docToSend, null, undefined, ""))
+	{
+		reportFile.push(docToSend);
+	}
+
+	//EHIMS-5041: No LP
+	/*var lpResult = aa.licenseScript.getLicenseProf(capId);
+	if (lpResult.getSuccess())
+	{ 
+		var lpArr = lpResult.getOutput();  
+	} 
+	else 
+	{ 
+		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
+	}
+	for (var lp in lpArr)
+	{
+		if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
+		{
+			conEmail += lpArr[lp].getEmail() + "; ";
+		}
+	} */
+	getRecordParams4Notification(emailParams);
+    getWorkflowParams4Notification(emailParams);    
+    //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+	
+	var addrResult = getAddressInALineCustom(capId);
+	addParameter(emailParams, "$$addressInALine$$", addrResult);
+	addParameter(emailParams, "$$WWMRecord$$",wwmrecord.getCustomID());
+    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+	var shortNotes = getShortNotes(capId);
+	addParameter(emailParams, "$$shortNotes$$", shortNotes);	
+	addACAUrlsVarToEmail(emailParams);
+
+	if (conEmail != null)
+	{
+		sendNotification("", conEmail, "", "Pending Grant Approval", emailParams, reportFile);
+	}
+}
+
+
+function getAddressInALine() {
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
+}

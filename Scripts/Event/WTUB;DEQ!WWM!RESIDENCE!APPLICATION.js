@@ -57,6 +57,52 @@ if (wfTask == "Inspections" && wfStatus == "Complete")
 }
 
 
+
+//SIP - 1 Pahse 2
+if (wfTask == "Plans Coordination" && wfStatus == "Awaiting Grant Approval")
+{
+	var grantDocFound = false;
+	var systemDetails = loadASITable("SYSTEM DETAILS");
+ var capDocResult = aa.document.getDocumentListByEntity(capId, "CAP");
+    if (capDocResult.getSuccess())
+    {       
+        logDebug("*** count *** " + capDocResult.getOutput().size());            
+        var docType = "Grant Proposal Plan";
+        for (docInx = 0; docInx < capDocResult.getOutput().size(); docInx++)
+        {
+            var documentObject = capDocResult.getOutput().get(docInx);        
+            
+            var docCat = documentObject.getDocCategory();
+            if (docCat != null)
+            {
+                logDebug("docCat:" + docCat);
+                logDebug("docType:" + docType);
+                if (docCat.equals(docType)) 
+                {
+					grantDocFound= true;
+				}
+
+			}
+		}
+	}
+	
+	if(grantDocFound == false)
+	{
+		cancel = true;
+        showMessage = true;
+        comment("Must save Approvable Plan as 'Grant Proposal Plan' document type.");
+	}
+	
+	if(!systemDetails)
+		{
+		cancel = true;
+        showMessage = true;
+        comment("Complete Proposed System custom list.");
+	}
+	
+		
+}	
+
 // EHIMS-4747 IA System
 var methSew = AInfo["Method of Sewage Disposal"];
 if (methSew != null)
