@@ -13,7 +13,7 @@ if (publicUser)
          // Do not update
     }   
    // EHIMS-5036  
-   else if (!matches(appStatus, null, undefined, "", "null", "Review in Process", "Resubmitted" , "Received"))
+   else if (!matches(appStatus, null, undefined, "", "null", "Review In Process", "Resubmitted" , "Received"))
     {       
         updateAppStatus("Resubmitted");        
     }

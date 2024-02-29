@@ -102,7 +102,7 @@ catch (err)
         // Do not update
     }   
     // EHIMS-5036  
-    else if (!matches(appStatus, null, undefined, "", "null", "Review in Process", "Resubmitted" , "Received"))    
+    else if (!matches(appStatus, null, undefined, "", "null", "Review In Process", "Resubmitted" , "Received"))    
     //if (appStatus != "Review in Process" && appStatus != "Resubmitted" && appStatus != "Received" && !matches(appStatus, null, undefined, "", "null")) 
     {
         updateAppStatus("Resubmitted");
