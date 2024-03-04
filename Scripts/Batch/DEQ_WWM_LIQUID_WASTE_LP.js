@@ -109,16 +109,18 @@ function processComResSub() {
                 var appStatus = getAppStatus(capId);
 
                 // Only if the application has an "Active" status
-                //if(appStatus == "Active" &&  (capIDString == "LW-168"))
+                //if(appStatus == "Active" &&  (capIDString == "LW-69187"))
                 if (appStatus == "Active" || appStatus == "About to Expire" || appStatus == "Temporary License" || appStatus == "Expired")
                 {
                     if (cap)
                     {
                         createUpdateRefLicProfWWMLW(capId);
+                        count++;
                     }
                 }
             }
         }
+        logDebug("Total of records: " + count);
 
     }
     catch (err) 
@@ -163,13 +165,13 @@ function createUpdateRefLicProfWWMLW(capId) {
                 var type = restrictionTable[p]["Type"];
                 var category = String(restrictionTable[p]["Category"]);
                 var catArray = new Array();
-                logDebug("category is: " + category);
+                logDebug("Category is: " + category);
 
                 if (String(category).indexOf("LW") > -1)
                 {
                     //grab endorsements and store them here to update address line 3 later  ex: LW12, LW9, LW3
                     var tempCatArray = category.split(" ");
-                    logDebug("trimmed category is: " + tempCatArray[0]);
+                    logDebug("Category without description: " + tempCatArray[0]);
                     catArray.push(tempCatArray[0] + ", ");
 
                     for (end in catArray)
@@ -238,12 +240,17 @@ function createUpdateRefLicProfWWMLW(capId) {
                         }
                         // If existing LP is found but the license number and record ID doesn't match. The business license # however matches with
                         // the LW record ID, this means we need to add the latest number in the business license # as information.
+                        // EHIMS-5223: Change logic. We are going to create new lic ref instead if the license number and record ID doesn't match.
                         else if (lp != null && licStateNum != capIDString)                                                
                         {
-                            logDebug("7. Update state license " + capIDString + " business license number custom field to: " + licStateNum);
+                            logDebug("Record ID and license IP does not match: " + capIDString + " and LP " + licStateNum);                           
+                            logDebug("7.1. Create/Update existing LP: " + capIDString + ", Name: " + conArray[con].getCapContactModel().getPeople().getFirstName());
+                            // EHIMS-5223: 
+                            createUpdateRefLicProfWWMLiquidWaste(capId, false, licenType);
+
                             // licStateNum is the old/existing LW LP we found a match in the system.       
                             // capId is the new capid # we want to put in the business license # field on the existing LP.                                                                         
-                            updateRefLicProfBusinessNumber(capId, licStateNum, licenType);
+                            //updateRefLicProfBusinessNumber(capId, licStateNum, licenType);
 
                         }
                         logDebug("*** End ***" + capIDString);
@@ -258,39 +265,41 @@ function createUpdateRefLicProfWWMLW(capId) {
 // First Name, Middle Name and Last Name
 function findExistingRefLicenseProfByName(refstlic, firstName, middleName, lastName, licenseType, businessName, ssn) {
     var refLicObj = null;
+    var cnt = 1;
     // 1. First search License professional based on their first, middle and last name.
     var refLicenseResult = aa.licenseScript.getRefLicensesProfByName(aa.getServiceProviderCode(), firstName, "", lastName);
 
     if (!refLicenseResult.getSuccess())
     {logDebug("**There is no existing ref Lic Profs : " + refLicenseResult.getErrorMessage()); return false;}
     else
-    {
-        logDebug("1. Result returned.");
-
+    {       
         var newLicArray = refLicenseResult.getOutput();
 
         //logDebug("newLicArray.: " + newLicArray);
         //logDebug("refLicenseResult: " + refLicenseResult);
 
         if (!newLicArray) return null;
-        logDebug("COUNT: " + newLicArray.length);
+        logDebug("Result returned total count: " + newLicArray.length);
         for (var thisLic in newLicArray)
         {
-            //logDebug("licenseType: " + licenseType.toUpperCase() + " VS. " + newLicArray[thisLic].getLicenseType().toUpperCase());
-            // logDebug("Business Name: " + businessName.toUpperCase() + " VS. " + newLicArray[thisLic].getBusinessName().toUpperCase());
-            //logDebug("State License ID: " + newLicArray[thisLic].getStateLicense().toUpperCase());
-            //logDebug("2. LP Status: " + newLicArray[thisLic].getAuditStatus());
+            logDebug("**************************");
+            logDebug("License iteration: " + cnt);
+            cnt++;
+            logDebug("Compare License Type: " + licenseType + " Versus existing LP " + newLicArray[thisLic].getLicenseType());
+            logDebug("Compare Business Name: " + businessName + " Versus existing LP " + newLicArray[thisLic].getBusinessName());
+            logDebug("Exiting LP State License ID: " + newLicArray[thisLic].getStateLicense());
+            logDebug("Existing LP Audit Status: " + newLicArray[thisLic].getAuditStatus());
             //logDebug("LP License Type: " + newLicArray[thisLic].getLicenseType());
             if (newLicArray[thisLic].getAuditStatus() == "A")
             {
                 if (!matches(licenseType, null, undefined, ""))
                 {                    
-
                     // 2. Compare the license type and the business name if they match 
                     if (licenseType.toUpperCase().equals(newLicArray[thisLic].getLicenseType().toUpperCase()) &&
                         (businessName != null && businessName.toUpperCase().equals(newLicArray[thisLic].getBusinessName())))
                     {
-                        logDebug("3. State License: " + newLicArray[thisLic].getStateLicense().toUpperCase());
+                        logDebug("** Match license type and business name: " + newLicArray[thisLic].getStateLicense().toUpperCase() + ", " + businessName);
+
                         //3. Compare the State license number with the Liquid Waste Record Id. 
                         if (refstlic.toUpperCase().equals(newLicArray[thisLic].getStateLicense().toUpperCase()))                          
                         {
@@ -809,9 +818,9 @@ function createUpdateRefLicProfWWMLiquidWaste(capId, relate, rlpType) {
     {
         endorsementCats = endorsementCats.slice(0, -2);
     }
-    logDebug("endorsement cats at the end is: " + endorsementCats);
+    logDebug("Endorsement catagory is: " + endorsementCats);
     newLic.setAddress3(endorsementCats);
-    logDebug("address 3 in createupdate is: " + newLic.getAddress3());
+    logDebug("Address 3 is: " + newLic.getAddress3());
     newLic.setCity(compAddr.getCity());
     newLic.setState(compAddr.getState());
     newLic.setZip(compAddr.getZip());
