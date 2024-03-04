@@ -2,10 +2,35 @@
 var showDebug = true; 
 var maxSeconds = 1;   // 1 seconds	
 var emailText = "";
+
+//EHIMS-5151: 
+var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+var wfHistArray = [];
+var taskFound = false;
+if (wfHist.getSuccess())
+{
+	wfHist = wfHist.getOutput();	
+	for (var h in wfHist)
+	{
+		if (wfHist[h].getTaskDescription() == "Plans Coordination" && wfHist[h].getDisposition() == "Approved")
+		{
+			wfHistArray.push(wfHist[h].getTaskDescription());
+		}
+	}
+
+		
+	if (wfHistArray.length != 0)
+	{
+		logDebug("Plans Coordination and Approved found in workflow history");
+		taskFound = true;
+	}
+}
+
+
+
 //If workflow is approved, add 3 years to the Expiration date//
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {
-
 	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
 
 	var prelimCondTxt = AInfo["Permit Conditions Text"];
@@ -13,24 +38,29 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
     {
 		workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
 	}
-    b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-    if (b1ExpResult.getSuccess())
-    {
-        b1Exp = b1ExpResult.getOutput(); 
-        var todaysDate = new Date();
-        var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
-        //logDebug("This is the current month: " + todaysDate.getMonth());
-        //logDebug("This is the current day: " + todaysDate.getDate());
-        //logDebug("This is the current year: " + todaysDate.getFullYear());
-        b1Exp = b1ExpResult.getOutput();
-        var dateAdd = addDays(todDateCon, 1095);
-        var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
 
-        dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-		b1Exp.setExpDate(dateMMDDYYY);
-		b1Exp.setExpStatus("Pending");
-		aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
-		
+	//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//
+	if (!taskFound)
+	{
+		b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+		if (b1ExpResult.getSuccess())
+		{
+			b1Exp = b1ExpResult.getOutput(); 
+			var todaysDate = new Date();
+			var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+			//logDebug("This is the current month: " + todaysDate.getMonth());
+			//logDebug("This is the current day: " + todaysDate.getDate());
+			//logDebug("This is the current year: " + todaysDate.getFullYear());
+			b1Exp = b1ExpResult.getOutput();
+			var dateAdd = addDays(todDateCon, 1095);
+			var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+
+			dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+			b1Exp.setExpDate(dateMMDDYYY);
+			b1Exp.setExpStatus("Pending");
+			aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
+			
+		}
 	}
 }
 if (wfTask == "Inspections" &&  (wfStatus == "Inspection Failure" || wfStatus == "Inspection Failure- I/A Installed"))
