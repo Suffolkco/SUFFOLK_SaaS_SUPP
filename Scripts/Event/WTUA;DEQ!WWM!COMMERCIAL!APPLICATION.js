@@ -4,63 +4,68 @@ var maxSeconds = 1;   // 1 seconds
 var emailText = "";
 
 //EHIMS-5151: 
-var wfHist = aa.workflow.getWorkflowHistory(capId, null);
-var wfHistArray = [];
-var taskFound = false;
-if (wfHist.getSuccess())
-{
-	wfHist = wfHist.getOutput();	
-	for (var h in wfHist)
-	{
-		if (wfHist[h].getTaskDescription() == "Plans Coordination" && wfHist[h].getDisposition() == "Approved")
-		{
-			wfHistArray.push(wfHist[h].getTaskDescription());
-		}
-	}
-
-		
-	if (wfHistArray.length != 0)
-	{
-		logDebug("Plans Coordination and Approved found in workflow history");
-		taskFound = true;
-	}
-}
-
+// Get workflow history to make sure only the very first time we are at this task, we proceed:
 
 
 //If workflow is approved, add 3 years to the Expiration date//
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {
-	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
-
-	var prelimCondTxt = AInfo["Permit Conditions Text"];
-    if (!matches(prelimCondTxt, null, undefined, ""))				
-    {
-		workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
+	
+	var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+	var wfHistArray = [];
+	var count = 0;
+	if (wfHist.getSuccess())
+	{
+		wfHist = wfHist.getOutput();	
+		logDebug("Number of workflow history found for " + wfTask + " is " + wfHist.length);
+		for (var h in wfHist)
+		{
+			if (wfHist[h].getTaskDescription() == "Plans Coordination" && wfHist[h].getDisposition() == "Approved")
+			{
+				count++;
+				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + ", " + taskObj.getProcessID() + ", " +
+					taskObj.getTaskDescription() + ", " + taskObj.getDisposition());
+			}
+		}
+		
 	}
 
-	//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//
-	if (!taskFound)
+	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
+	if (count == 1)
 	{
-		b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-		if (b1ExpResult.getSuccess())
+		var prelimCondTxt = AInfo["Permit Conditions Text"];
+		if (!matches(prelimCondTxt, null, undefined, ""))				
 		{
-			b1Exp = b1ExpResult.getOutput(); 
-			var todaysDate = new Date();
-			var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
-			//logDebug("This is the current month: " + todaysDate.getMonth());
-			//logDebug("This is the current day: " + todaysDate.getDate());
-			//logDebug("This is the current year: " + todaysDate.getFullYear());
-			b1Exp = b1ExpResult.getOutput();
-			var dateAdd = addDays(todDateCon, 1095);
-			var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
-
-			dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-			b1Exp.setExpDate(dateMMDDYYY);
-			b1Exp.setExpStatus("Pending");
-			aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
-			
+			workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
 		}
+
+		//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//
+		if (!taskFound)
+		{
+			b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+			if (b1ExpResult.getSuccess())
+			{
+				b1Exp = b1ExpResult.getOutput(); 
+				var todaysDate = new Date();
+				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+				//logDebug("This is the current month: " + todaysDate.getMonth());
+				//logDebug("This is the current day: " + todaysDate.getDate());
+				//logDebug("This is the current year: " + todaysDate.getFullYear());
+				b1Exp = b1ExpResult.getOutput();
+				var dateAdd = addDays(todDateCon, 1095);
+				var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+
+				dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+				b1Exp.setExpDate(dateMMDDYYY);
+				b1Exp.setExpStatus("Pending");
+				aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
+				
+			}
+		}
+	}
+	else
+	{
+		logDebug("This is not the very first Plans Coordination and Approved task. Skip setting expiration date.")
 	}
 }
 if (wfTask == "Inspections" &&  (wfStatus == "Inspection Failure" || wfStatus == "Inspection Failure- I/A Installed"))
