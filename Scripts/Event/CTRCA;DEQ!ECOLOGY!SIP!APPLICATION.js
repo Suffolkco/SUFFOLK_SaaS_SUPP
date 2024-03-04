@@ -93,7 +93,14 @@ if ((AInfo["Tax liens"] == "Yes") ||
 						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
 			 
-
+	if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
+					
+					{
+						editAppSpecific("County Status", "Withdrawn");
+						editAppSpecific("County Funding Allocated", "N/A");
+						updateWorkDesc("NYS SSRP ONLY");
+						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+					}
 
 	}
 catch (ex)

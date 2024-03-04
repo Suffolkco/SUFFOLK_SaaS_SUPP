@@ -3,29 +3,8 @@ var showDebug = true;
 var maxSeconds = 1;   // 1 seconds	
 var emailText = "";
 var sewMeth = AInfo["Method of Sewage Disposal"];
-//If workflow is approved, add 3 years to the Expiration date//
-if (wfTask == "Plans Coordination" && wfStatus == "Approved")
-{
-	b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-	if (b1ExpResult.getSuccess())
-	{
-		b1Exp = b1ExpResult.getOutput();
-		var todaysDate = new Date();
-		var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
-		//logDebug("This is the current month: " + todaysDate.getMonth());
-		//logDebug("This is the current day: " + todaysDate.getDate());
-		//logDebug("This is the current year: " + todaysDate.getFullYear());
-		b1Exp = b1ExpResult.getOutput();
-		var dateAdd = addDays(todDateCon, 1095);
-		var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
 
-		dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-		b1Exp.setExpDate(dateMMDDYYY);
-		b1Exp.setExpStatus("Pending");
-		aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
-	}
 
-}
 //SIP - 1 Pahse 2
 if (wfTask == "Plans Coordination" && wfStatus == "Awaiting Grant Approval")
 {
@@ -81,6 +60,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 }
 if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 {
+	
 	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
 	var prelimCondTxt = AInfo["Permit Conditions Text"];
 	if (!matches(prelimCondTxt, null, undefined, ""))				
@@ -111,6 +91,27 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 		// Only if it's the very first time, Create new inspection
 		if (count == 1)
 		{
+			// Set expiration date 
+			b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+			if (b1ExpResult.getSuccess())
+			{
+				b1Exp = b1ExpResult.getOutput();
+				var todaysDate = new Date();
+				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+				//logDebug("This is the current month: " + todaysDate.getMonth());
+				//logDebug("This is the current day: " + todaysDate.getDate());
+				//logDebug("This is the current year: " + todaysDate.getFullYear());
+				b1Exp = b1ExpResult.getOutput();
+				var dateAdd = addDays(todDateCon, 1095);
+				var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+
+				dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+				b1Exp.setExpDate(dateMMDDYYY);
+				b1Exp.setExpStatus("Pending");
+				aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
+				logDebug("Setting new expiration date to: " + dateMMDDYYY + " and Pending renewal status.");
+			}
+
 			scheduleInspection("Pre-Inspection Review", 0);
 			var inspectionResult = aa.inspection.getInspections(capId);
 			if (inspectionResult.getSuccess())
@@ -379,7 +380,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 		}
 		else		
 		{
-			logDebug("This is not the very first Plans Coordination and Approved task. Skip creating new inspection.")
+			logDebug("This is not the very first Plans Coordination and Approved task. Skip creating new inspection and setting expiration date.")
 
 		}
 
@@ -1006,7 +1007,7 @@ updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Status Date", todDateCon, rowToU
 		}
 	}	
 	
-}
+
 
 	
     var capContactArray = new Array();
@@ -1087,8 +1088,9 @@ var capContactArray = new Array();
 
 	if (conEmail != null)
 	{
-		sendNotification("", conEmail, "", "Pending Grant Approval", emailParams, reportFile);
+		sendNotification("", conEmail, "", "DEQ_SIP_PENDING_GRANT_APPROVAL", emailParams, reportFile);
 	}
+}
 }
 
 
