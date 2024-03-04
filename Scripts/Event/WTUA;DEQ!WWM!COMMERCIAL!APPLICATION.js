@@ -59,7 +59,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 				b1Exp.setExpDate(dateMMDDYYY);
 				b1Exp.setExpStatus("Pending");
 				aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
-				
+				logDebug("Setting new expiration date to: " + dateMMDDYYY + " and Pending renewal status.");
 			}
 		}
 	}
