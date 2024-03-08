@@ -170,7 +170,8 @@ function mainProcess()
                                                     dateDif = parseFloat(dateDiff(todayDate, curExpCon));
                                                     var dateDifRound = Math.floor(dateDif);
                                                     //logDebug("Number of days out = " + dateDifRound);
-                                                    if (dateDifRound == 32)
+                                                    logDebug("<b>" + capIDString + "<b>" + ": Expiration date: " + curExpCon + " datedif: " + dateDifRound);
+                                                    if (dateDifRound == 90)
                                                     {
                                                         //Setting renewal info status to About to Expire
                                                         b1Exp.setExpStatus("About to Expire");
