@@ -3,8 +3,6 @@ var showDebug = true;
 var emailAddress = "ada.chan@suffolkcountyny.gov";
 
 
-addFee("CAPOS_WT_MRS", "IPW_WM_W1", "FINAL", 1, "Y")
-
 var footage;
 if(!publicUser)
 {
@@ -16,7 +14,7 @@ else
 	footage = AInfo["Gross Square Footage of Store"];
 	logDebug("This is the value for Gross Square Footage of Store: " + footage);
 }
-if (footage != null)
+if (!matches(footage, null, undefined, ""))
 {
 	logDebug("footage: " + parseInt(footage));
 
