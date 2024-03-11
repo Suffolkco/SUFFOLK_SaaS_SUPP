@@ -1,8 +1,16 @@
 //ASA;CONSUMERAFFAIRS!WEIGHTS AND MEAUSRES!WAIVERS!NA//
+var showDebug = true;
+var emailAddress = "ada.chan@suffolkcountyny.gov";
+
+
+
 var footage = AInfo["Gross Square Footage of Store"];
+logDebug("This is the value for Gross Square Footage of Store: " + footage);
 
 if (footage != null)
 {
+	logDebug("footage: " + parseInt(footage));
+
 	if (parseInt(footage) <= 3000)
 	{
 		updateFee("CAPOS_WT_MRS", "IPW_WM_W1", "FINAL", 1, "Y");
@@ -56,5 +64,5 @@ if (footage != null)
 }
 
 
-
+aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "ASA WM", emailText);
 
