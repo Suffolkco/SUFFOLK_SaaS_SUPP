@@ -1,5 +1,4 @@
 //ASA;CONSUMERAFFAIRS!WEIGHTS AND MEAUSRES!WAIVERS!NA//
-
 var footage = AInfo["Gross Square Footage of Store"];
 
 if (footage != null)
