@@ -84,7 +84,7 @@ var emailParams = aa.util.newHashtable();
 			addParameter(emailParams, "$$altID$$", capId.getCustomID());
 			
 			var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
-			sendNotification("", String(staffEmail), "", "WWM OK TO RELEASE", emailParams, null);
+			sendNotification("", String(staffEmail), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
 			}
 		}
 	}
@@ -165,7 +165,7 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
             }
         }
 		
-		if(tasksCompleted == true && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+		if(tasksCompleted == true && (countyStatus == "Eligible" || countyStatus == "Undetermined"))
 			
 			{
 				deactivateTask("Contract Processing");
@@ -176,18 +176,18 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 
 			}
 			
-			if(tasksCompleted == false && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+			if(tasksCompleted == false && (countyStatus == "Eligible" || countyStatus == "Undetermined"))
 			
 			{
 				deactivateTask("Contract Processing");
 				closeTask("Contract Processing", "Complete", "Updated via Script", "Updated via Script");
-				updateAppStatus("Awaiting Pre-Install Requirements");
+				updateAppStatus("Awaiting Pre-InstallRequiremts");
 				
 
 			}
 			
 			
-			if(countyStatus != "Ineligible" && countyStatus != "Undetermined")
+			if(countyStatus != "Eligible" && countyStatus != "Undetermined")
 				
 				{
 					deactivateTask("Contract Processing");
@@ -232,7 +232,7 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
             }
         }
 		
-		if(tasksCompleted == true && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+		if(tasksCompleted == true && (countyStatus == "Eligible" || countyStatus == "Undetermined"))
 			
 			{
 				deactivateTask("Pre-Install Review");
@@ -243,7 +243,7 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 
 			}
 			
-			if(tasksCompleted == false && (countyStatus == "Ineligible" || countyStatus == "Undetermined"))
+			if(tasksCompleted == false && (countyStatus == "Eligible" || countyStatus == "Undetermined"))
 			
 			{
 				deactivateTask("Pre-Install Review");
@@ -254,7 +254,7 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 			}
 			
 			
-			if(countyStatus != "Ineligible" && countyStatus != "Undetermined")
+			if(countyStatus != "Eligible" && countyStatus != "Undetermined")
 				
 				{
 					deactivateTask("Pre-Install Review");

@@ -961,16 +961,17 @@ var emailParams = aa.util.newHashtable();
 	var conEmail = "";
     var fromEmail = ""; 
 	
-	var wwmRecords = getChildren("DEQ/Ecology/SIP/Application", capId);
-if(wwmRecords)
+	var wwmRecord = getAppSpecific("SIP Ref #",capId);
+if(wwmRecord)
 {	
 
-						
-    for( i in wwmRecords)
-		var wwmrecord = wwmRecords[0];
-	
+		var getCapResult = aa.cap.getCapID(wwmRecord);
+if (getCapResult.getSuccess())
+{
+    var GRecord = getCapResult.getOutput();				
+   
 	 var rowToUpdate = ""
-     var vgrantTable = loadASITable("DEQ_SIP_GRANT_ELIGIBILITY", wwmrecord)
+     var vgrantTable = loadASITable("DEQ_SIP_GRANT_ELIGIBILITY", GRecord)
                         
                         if (vgrantTable && vgrantTable.length > 0) {
                             for (var i in vgrantTable) {
@@ -989,12 +990,12 @@ if(wwmRecords)
 						
 		var todaysDate = new Date();
 		var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());				
-updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Current Status", "Complete", rowToUpdate, wwmrecord, "Admin", "N");
-updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Status Date", todDateCon, rowToUpdate, wwmrecord, "Admin", "N");
+updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Current Status", "Complete", rowToUpdate, GRecord, "Admin", "N");
+updateASITableRow("DEQ_SIP_GRANT_ELIGIBILITY", "Status Date", todDateCon, rowToUpdate, GRecord, "Admin", "N");
 	
-         copyDocuments(capId, wwmrecord, "Grant Proposal Plan");
+         copyDocuments(capId, GRecord, "Grant Proposal Plan");
         var wwmcapContactArray = new Array();
-	var wwmcapContResult = aa.people.getCapContactByCapID(wwmrecord);
+	var wwmcapContResult = aa.people.getCapContactByCapID(GRecord);
 	if (wwmcapContResult.getSuccess()) {
 		wwmcapContactArray = wwmcapContResult.getOutput();
 	}
@@ -1080,7 +1081,7 @@ var capContactArray = new Array();
 	
 	var addrResult = getAddressInALineCustom(capId);
 	addParameter(emailParams, "$$addressInALine$$", addrResult);
-	addParameter(emailParams, "$$WWMRecord$$",wwmrecord.getCustomID());
+	addParameter(emailParams, "$$WWMRecord$$",GRecord.getCustomID());
     addParameter(emailParams, "$$altID$$", capId.getCustomID());
 	var shortNotes = getShortNotes(capId);
 	addParameter(emailParams, "$$shortNotes$$", shortNotes);	
@@ -1090,6 +1091,7 @@ var capContactArray = new Array();
 	{
 		sendNotification("", conEmail, "", "DEQ_SIP_PENDING_GRANT_APPROVAL", emailParams, reportFile);
 	}
+}
 }
 }
 

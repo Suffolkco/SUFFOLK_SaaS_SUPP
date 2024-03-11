@@ -4,18 +4,41 @@
 try{
 //EHIMS2-287
 
-                 
+				//Add WWM num and town based on Parcel num
+					//EIHMs282
+					var parcelNumber= getFirstParcelFromCapId(capId);
+					 var latestRecordID = checkForRelatedWWMRecord(parcelNumber);
+var townIdentifier = parcelNumber.slice(0, 2);
+					var town = lookup("TaxNumTownMapping", townIdentifier);
+					editAppSpecific("Town", town);
+					 if(latestRecordID !=null)
+{
+					editAppSpecific("WWM Ref #", latestRecordID);
+var getCapResult = aa.cap.getCapID(latestRecordID);
+if (getCapResult.getSuccess())
+{
+    var RRecord = getCapResult.getOutput();
+  if (appMatch("DEQ/WWM/Residence/Application", RRecord))
+editAppSpecific("SIP Ref #",capId.getCustomID(),RRecord);
+}
+}
 
+var sd = getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME");
+var ld = getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME");
+var p = getGISInfo_Custom("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY");
+
+logDebug("SD..." +sd);
+logDebug("LD..." +ld);
+logDebug("PRIO..." +p);
 					
-                  // EHIMS2-295
-                  // Sewer District
-                  editAppSpecific("Sewer District", getGISInfo("SUFFOLKCO","SanitationDistrictPolygon","SHORTNAME")); 
+                   // Sewer District
+                  editAppSpecific("Sewer District", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 
 
                   // Legislative District
-                  editAppSpecific("Legislative District", getGISInfo("SUFFOLKCO","LegislativeDistrict","NAME")); 
+                  editAppSpecific("Legislative District", getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME")); 
 
                   // Priority Area 
-                  editAppSpecific("Priority Area", getGISInfo("SUFFOLKCO","ReclaimWaterPolygon","PRIORITY")); 
+                  editAppSpecific("Priority Area", getGISInfo_Custom("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY")); 
 
 					
 					//EIHMS2 298
@@ -29,8 +52,9 @@ try{
 					if (AInfo["Priority Area"] == "Priority 2" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
 					  editAppSpecific("SCORE", 70); 
 					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
-					  editAppSpecific("SCORE", 60); 
+					  editAppSpecific("SCORE", 60);
 
+//aa.sendEmail("bhandhavya.nadagoud@scubeenterprise.com", "bhandhavya.nadagoud@scubeenterprise.com", "", "CTRCA debugObject Log", debug, null);
 
                     
 					//EIHMS2 299
@@ -93,7 +117,9 @@ if ((AInfo["Tax liens"] == "Yes") ||
 						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
 			 
-	if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
+
+
+if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
 					
 					{
 						editAppSpecific("County Status", "Withdrawn");
@@ -109,7 +135,35 @@ catch (ex)
 		
   }
   
+function updateWorkDesc(newWorkDes) // optional CapId
+{
+	var itemCap = capId
+		if (arguments.length > 1)
+			itemCap = arguments[1]; // use cap ID specified in args
 
+
+		var workDescResult = aa.cap.getCapWorkDesByPK(itemCap);
+	var workDesObj;
+
+	if (!workDescResult.getSuccess()) {
+		aa.print("**ERROR: Failed to get work description: " + workDescResult.getErrorMessage());
+		return false;
+	}
+
+	var workDesScriptObj = workDescResult.getOutput();
+	if (workDesScriptObj) {
+		workDesObj = workDesScriptObj.getCapWorkDesModel();
+	} else {
+		aa.print("**ERROR: Failed to get workdes Obj: " + workDescResult.getErrorMessage());
+		return false;
+	}
+
+	workDesObj.setDescription(newWorkDes);
+	aa.cap.editCapWorkDes(workDesObj);
+
+	aa.print("Updated Work Description to : " + newWorkDes);
+
+}
 
 function checkForRelatedWWMRecord(parcelNumber) {
 		
@@ -299,4 +353,255 @@ function matches(eVal, argList) {
 		}
 	}
 	return false;
+}
+
+
+function checkForRelatedWWMRecord(parcelNumber) {
+		
+		var listOfRelatedRecorsdFromParcel = capIdsGetByParcel(parcelNumber);
+		var wwmRecord = new Array();
+		var resArray = new Array();
+	
+
+    for (record in listOfRelatedRecorsdFromParcel) 
+	{
+
+        var itemCap = listOfRelatedRecorsdFromParcel[record];
+        var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
+        //aa.print("We found this record: " + itemCap.getCustomID() + " which is a: " + itemCapType);
+        if (itemCapType == "DEQ/WWM/SHIP/Application" || itemCapType == "DEQ/WWM/Residence/Application" || itemCapType== "DEQ/WWM/Commercial/Application")
+		{
+           wwmRecord.push(itemCap);
+        }
+    }
+	for( i in wwmRecord)
+	{
+
+		var altId= wwmRecord[i].getCustomID();
+
+		 var taskHistoryResult = aa.workflow.getWorkflowHistory(wwmRecord[i],null);
+			if(taskHistoryResult.getSuccess())
+			{
+				var taskArr = taskHistoryResult.getOutput();
+				for(obj in taskArr)
+				{
+					var taskObj = taskArr[taskArr.length-1];
+					var ddate = taskObj.getDispositionDate();
+					scheduledDate = dateFormatted(ddate.getMonth(), ddate.getDayOfMonth(), ddate.getYear(), "MM/DD/YYYY");
+
+					var tempArr = new Array();
+					tempArr['altId'] = wwmRecord[i].getCustomID();
+					tempArr['date'] = convertDate(taskObj.getDispositionDate());
+					resArray.push(tempArr);
+					break;
+           
+                }
+			}
+	}
+
+			resArray.sort(function(a,b){
+			  // Turn your strings into dates, and then subtract them
+			  // to get a value that is either negative, positive, or zero.
+			  return new Date(b.date) - new Date(a.date);
+			});
+if(resArray[0] != undefined)
+			return resArray[0].altId;
+
+	}
+
+
+
+function convertDate(thisDate)
+	{
+
+	if (typeof(thisDate) == "string")
+		{
+		var retVal = new Date(String(thisDate));
+		if (!retVal.toString().equals("Invalid Date"))
+			return retVal;
+		}
+
+	if (typeof(thisDate)== "object")
+		{
+
+		if (!thisDate.getClass) // object without getClass, assume that this is a javascript date already
+			{
+			return thisDate;
+			}
+
+		if (thisDate.getClass().toString().equals("class com.accela.aa.emse.dom.ScriptDateTime"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDayOfMonth() + "/" + thisDate.getYear());
+			}
+			
+		if (thisDate.getClass().toString().equals("class com.accela.aa.emse.util.ScriptDateTime"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDayOfMonth() + "/" + thisDate.getYear());
+			}			
+
+		if (thisDate.getClass().toString().equals("class java.util.Date"))
+			{
+			return new Date(thisDate.getTime());
+			}
+
+		if (thisDate.getClass().toString().equals("class java.lang.String"))
+			{
+			return new Date(String(thisDate));
+			}
+		if (thisDate.getClass().toString().equals("class java.sql.Timestamp"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDate() + "/" + thisDate.getYear());
+			}
+		}
+
+	if (typeof(thisDate) == "number")
+		{
+		return new Date(thisDate);  // assume milliseconds
+		}
+
+	logDebug("**WARNING** convertDate cannot parse date : " + thisDate);
+	return null;
+
+	}
+
+  
+  function getFirstParcelFromCapId(capId)
+{
+		var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+							if (capParcelResult.getSuccess())
+							{
+								var Parcels = capParcelResult.getOutput().toArray();
+							}
+
+							for ( i in Parcels)
+							{
+							var parcelNumber = Parcels[0].getParcelNumber();
+							}
+
+		return parcelNumber;
+}
+
+
+function getGISInfo_ASB(svc,layer,attributename)
+{
+	// use buffer info to get info on the current object by using distance 0
+	// usage: 
+	//
+	// x = getGISInfo("flagstaff","Parcels","LOT_AREA");
+	//
+	// to be used with ApplicationSubmitBefore only
+	
+	var distanceType = "feet";
+	var retString;
+   	
+	var bufferTargetResult = aa.gis.getGISType(svc,layer); // get the buffer target
+	if (bufferTargetResult.getSuccess())
+	{
+		var buf = bufferTargetResult.getOutput();
+		buf.addAttributeName(attributename);
+	}
+	else
+	{ logDebug("**ERROR: Getting GIS Type for Buffer Target.  Reason is: " + bufferTargetResult.getErrorType() + ":" + bufferTargetResult.getErrorMessage()) ; return false }
+			
+	var gisObjResult = aa.gis.getParcelGISObjects(ParcelValidatedNumber); // get gis objects on the parcel number
+	if (gisObjResult.getSuccess()) 	
+		var fGisObj = gisObjResult.getOutput();
+	else
+		{ logDebug("**ERROR: Getting GIS objects for Parcel.  Reason is: " + gisObjResult.getErrorType() + ":" + gisObjResult.getErrorMessage()) ; return false }
+
+	for (a1 in fGisObj) // for each GIS object on the Parcel.  We'll only send the last value
+	{
+		var bufchk = aa.gis.getBufferByRadius(fGisObj[a1], "0", distanceType, buf);
+
+		if (bufchk.getSuccess())
+			var proxArr = bufchk.getOutput();
+		else
+			{ logDebug("**ERROR: Retrieving Buffer Check Results.  Reason is: " + bufchk.getErrorType() + ":" + bufchk.getErrorMessage()) ; return false }	
+		
+		for (a2 in proxArr)
+		{
+			var proxObj = proxArr[a2].getGISObjects();  // if there are GIS Objects here, we're done
+			for (z1 in proxObj)
+			{
+				var v = proxObj[z1].getAttributeValues()
+				retString = v[0];
+			}
+		}
+
+
+	}
+	
+	return retString
+}
+
+
+
+
+function getGISInfo_Custom(svc,layer,attributename)
+	{
+	// use buffer info to get info on the current object by using distance 0
+	// usage: 
+	//
+	// x = getGISInfo("flagstaff","Parcels","LOT_AREA");
+	//
+	
+	var distanceType = "feet";
+	var retString;
+   	
+	var bufferTargetResult = aa.gis.getGISType(svc,layer); // get the buffer target
+	if (bufferTargetResult.getSuccess())
+		{
+		var buf = bufferTargetResult.getOutput();
+		buf.addAttributeName(attributename);
+		}
+	else
+		{ logDebug("**WARNING: Getting GIS Type for Buffer Target.  Reason is: " + bufferTargetResult.getErrorType() + ":" + bufferTargetResult.getErrorMessage()) ; return false }
+			
+var parcelNumber= getParcelForCapId();
+if(parcelNumber)
+{
+	var gisObjResult = aa.gis.getParcelGISObjects(parcelNumber); // get gis objects on the parcel number
+	if (gisObjResult.getSuccess()) 	
+		var fGisObj = gisObjResult.getOutput();
+	else
+		{ logDebug("**ERROR: Getting GIS objects for Parcel.  Reason is: " + gisObjResult.getErrorType() + ":" + gisObjResult.getErrorMessage()) ; return false }
+
+	for (a1 in fGisObj) // for each GIS object on the Cap.  We'll only send the last value
+		{
+		var bufchk = aa.gis.getBufferByRadius(fGisObj[a1], "0", distanceType, buf);
+
+		if (bufchk.getSuccess())
+			var proxArr = bufchk.getOutput();
+		else
+			{ logDebug("**WARNING: Retrieving Buffer Check Results.  Reason is: " + bufchk.getErrorType() + ":" + bufchk.getErrorMessage()) ; return false }	
+		
+		for (a2 in proxArr)
+			{
+			var proxObj = proxArr[a2].getGISObjects();  // if there are GIS Objects here, we're done
+			for (z1 in proxObj)
+				{
+				var v = proxObj[z1].getAttributeValues()
+				retString = v[0];
+				}
+			
+			}
+		}
+		}
+	return retString
+	}
+	
+	
+				function getParcelForCapId()
+{
+ var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[0].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+return parcelNumber;
+        }
+    }
 }

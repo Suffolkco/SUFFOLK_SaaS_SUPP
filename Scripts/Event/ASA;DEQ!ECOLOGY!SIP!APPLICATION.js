@@ -74,30 +74,43 @@ try{
 					addRowToASITable("DEQ_SIP_GRANT_PAYMENT", rowArrayPayment, capId);  	
 					
 					
+
+					
+				if(!publicUser)
+{	
+var     useAppSpecificGroupName = false;
+
 					//Add WWM num and town based on Parcel num
 					//EIHMs282
 					var parcelNumber= getFirstParcelFromCapId(capId);
 					 var latestRecordID = checkForRelatedWWMRecord(parcelNumber);
-					 if(latestRecordID !=null)
-					editAppSpecific("WWM Ref #", latestRecordID);
-					var townIdentifier = parcelNumber.slice(0, 2);
+var townIdentifier = parcelNumber.slice(0, 2);
 					var town = lookup("TaxNumTownMapping", townIdentifier);
 					editAppSpecific("Town", town);
-				if(!publicUser)
-{	
+					 if(latestRecordID !=null)
+{
+					editAppSpecific("WWM Ref #", latestRecordID);
+var getCapResult = aa.cap.getCapID(latestRecordID);
+if (getCapResult.getSuccess())
+{
+    var RRecord = getCapResult.getOutput();
+  if (appMatch("DEQ/WWM/Residence/Application", RRecord))
+editAppSpecific("SIP Ref #",capId.getCustomID(),RRecord);
+}
+}
 					
-                  // EHIMS2-295
+             
                   // Sewer District
-                  editAppSpecific("Sewer District", getGISInfo("SUFFOLKCO","SanitationDistrictPolygon","SHORTNAME")); 
+                  editAppSpecific("Sewer District", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 
 
                   // Legislative District
-                  editAppSpecific("Legislative District", getGISInfo("SUFFOLKCO","LegislativeDistrict","NAME")); 
+                  editAppSpecific("Legislative District", getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME")); 
 
                   // Priority Area 
-                  editAppSpecific("Priority Area", getGISInfo("SUFFOLKCO","ReclaimWaterPolygon","PRIORITY")); 
+                  editAppSpecific("Priority Area", getGISInfo_Custom("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY")); 
 
 					
-					//EIHMS2 298
+				//EIHMS2 298
 
 					if (AInfo["Catastrophic Failure"] == "Yes")
 					  editAppSpecific("SCORE", 100); 
@@ -108,9 +121,7 @@ try{
 					if (AInfo["Priority Area"] == "Priority 2" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
 					  editAppSpecific("SCORE", 70); 
 					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
-					  editAppSpecific("SCORE", 60); 
-
-
+					  editAppSpecific("SCORE", 60);
                     
 					//EIHMS2 299
 					
@@ -170,8 +181,8 @@ if ((AInfo["Tax liens"] == "Yes") ||
 						
 						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
-					
-					if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
+
+if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
 					
 					{
 						editAppSpecific("County Status", "Withdrawn");
@@ -179,6 +190,7 @@ if ((AInfo["Tax liens"] == "Yes") ||
 						updateWorkDesc("NYS SSRP ONLY");
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
+
 			 
 
 }
@@ -189,6 +201,7 @@ catch (ex)
 		
   }
   
+
 function updateWorkDesc(newWorkDes) // optional CapId
 {
 	var itemCap = capId
@@ -407,4 +420,124 @@ function matches(eVal, argList) {
 		}
 	}
 	return false;
+}
+
+function getGISInfo_ASB(svc,layer,attributename)
+{
+	// use buffer info to get info on the current object by using distance 0
+	// usage: 
+	//
+	// x = getGISInfo("flagstaff","Parcels","LOT_AREA");
+	//
+	// to be used with ApplicationSubmitBefore only
+	
+	var distanceType = "feet";
+	var retString;
+   	
+	var bufferTargetResult = aa.gis.getGISType(svc,layer); // get the buffer target
+	if (bufferTargetResult.getSuccess())
+	{
+		var buf = bufferTargetResult.getOutput();
+		buf.addAttributeName(attributename);
+	}
+	else
+	{ logDebug("**ERROR: Getting GIS Type for Buffer Target.  Reason is: " + bufferTargetResult.getErrorType() + ":" + bufferTargetResult.getErrorMessage()) ; return false }
+			
+	var gisObjResult = aa.gis.getParcelGISObjects(ParcelValidatedNumber); // get gis objects on the parcel number
+	if (gisObjResult.getSuccess()) 	
+		var fGisObj = gisObjResult.getOutput();
+	else
+		{ logDebug("**ERROR: Getting GIS objects for Parcel.  Reason is: " + gisObjResult.getErrorType() + ":" + gisObjResult.getErrorMessage()) ; return false }
+
+	for (a1 in fGisObj) // for each GIS object on the Parcel.  We'll only send the last value
+	{
+		var bufchk = aa.gis.getBufferByRadius(fGisObj[a1], "0", distanceType, buf);
+
+		if (bufchk.getSuccess())
+			var proxArr = bufchk.getOutput();
+		else
+			{ logDebug("**ERROR: Retrieving Buffer Check Results.  Reason is: " + bufchk.getErrorType() + ":" + bufchk.getErrorMessage()) ; return false }	
+		
+		for (a2 in proxArr)
+		{
+			var proxObj = proxArr[a2].getGISObjects();  // if there are GIS Objects here, we're done
+			for (z1 in proxObj)
+			{
+				var v = proxObj[z1].getAttributeValues()
+				retString = v[0];
+			}
+		}
+	}
+	
+	return retString
+}
+
+
+function getGISInfo_Custom(svc,layer,attributename)
+	{
+	// use buffer info to get info on the current object by using distance 0
+	// usage: 
+	//
+	// x = getGISInfo("flagstaff","Parcels","LOT_AREA");
+	//
+	
+	var distanceType = "feet";
+	var retString;
+   	
+	var bufferTargetResult = aa.gis.getGISType(svc,layer); // get the buffer target
+	if (bufferTargetResult.getSuccess())
+		{
+		var buf = bufferTargetResult.getOutput();
+		buf.addAttributeName(attributename);
+		}
+	else
+		{ logDebug("**WARNING: Getting GIS Type for Buffer Target.  Reason is: " + bufferTargetResult.getErrorType() + ":" + bufferTargetResult.getErrorMessage()) ; return false }
+			
+var parcelNumber= getParcelForCapId();
+if(parcelNumber)
+{
+	var gisObjResult = aa.gis.getParcelGISObjects(parcelNumber); // get gis objects on the parcel number
+	if (gisObjResult.getSuccess()) 	
+		var fGisObj = gisObjResult.getOutput();
+	else
+		{ logDebug("**ERROR: Getting GIS objects for Parcel.  Reason is: " + gisObjResult.getErrorType() + ":" + gisObjResult.getErrorMessage()) ; return false }
+
+	for (a1 in fGisObj) // for each GIS object on the Cap.  We'll only send the last value
+		{
+		var bufchk = aa.gis.getBufferByRadius(fGisObj[a1], "0", distanceType, buf);
+
+		if (bufchk.getSuccess())
+			var proxArr = bufchk.getOutput();
+		else
+			{ logDebug("**WARNING: Retrieving Buffer Check Results.  Reason is: " + bufchk.getErrorType() + ":" + bufchk.getErrorMessage()) ; return false }	
+		
+		for (a2 in proxArr)
+			{
+			var proxObj = proxArr[a2].getGISObjects();  // if there are GIS Objects here, we're done
+			for (z1 in proxObj)
+				{
+				var v = proxObj[z1].getAttributeValues()
+				retString = v[0];
+				}
+			
+			}
+		}
+		}
+	return retString
+	}
+	
+	
+				function getParcelForCapId()
+{
+ var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[0].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+return parcelNumber;
+        }
+    }
 }
