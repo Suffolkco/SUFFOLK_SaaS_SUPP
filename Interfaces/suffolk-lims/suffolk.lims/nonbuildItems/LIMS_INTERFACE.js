@@ -43,6 +43,7 @@ var warningLog = [];
 var errorLog = [];
 var content = "";
 const pfoa = "$PFOA";
+const pfas = "$PFAS";
 const GROUP_NAME = "PERFLUORINATED COMPOUNDS";
 const GROUP_NAME_1 = "PFAS 533";
 const GROUP_NAME_2 = "PFAS 537.1";
@@ -523,9 +524,14 @@ function makeTable(labResults, resId, inspEmail) {
         if (r[3] == pfoa) {
             analysisCode = GROUP_NAME_1
         }
+        else if (r[3] == pfas) {
+            analysisCode = GROUP_NAME_2
+        }
         else {
             analysisCode = r[3];
         }
+       
+
         analyteName = r[4];
 
         // This is for drinking water ammonia. We need special handling since the analyte name for both drinking water ammonia and marine ammonia
@@ -549,6 +555,9 @@ function makeTable(labResults, resId, inspEmail) {
         }
         else if (r[3] == pfoa) {
             t["Group Name"] = GROUP_NAME_1;
+        }
+        else if (r[3] == pfas) {
+            t["Group Name"] = GROUP_NAME_2;
         }
         else {
             t["Group Name"] = getGroupNameValue(key);
