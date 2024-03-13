@@ -6,7 +6,7 @@ voidRemoveFees("WM_12");
 voidRemoveFees("WM_RA");
 
 updateFee("WM_12", "CAPOS_WT_MRS", "FINAL", 1, "Y");	
-updateFee("WM_RA", "CAPOS_WT_MRS", "FINAL", 200, "Y");		
+updateFee("WM_RA", "CAPOS_WT_MRS", "FINAL", 25, "Y");		
 
 
 if (publicUser)
@@ -15,7 +15,6 @@ if (publicUser)
 
 	var docCheck0 = determineACADocumentAttached("dba Certificate");    
     var docCheck1 = determineACADocumentAttached("New York State filing receipt");    
-    var vehicle = AInfo["Do you own any vehicles that are used to transport gasoline within Suffolk County?"]
     
 
     if(!determineACADocumentAttached("dba Certificate"))
@@ -25,11 +24,7 @@ if (publicUser)
     if(!determineACADocumentAttached("New York State filing receipt"))
     {       
 		docComments += "New York State filing receipt" + "<br>";
-	}
-    if(vehicle == 'Y')
-    {       
-		docComments += "List of Vehicles" + "<br>";
-	}
+	}   
     
 }
 
