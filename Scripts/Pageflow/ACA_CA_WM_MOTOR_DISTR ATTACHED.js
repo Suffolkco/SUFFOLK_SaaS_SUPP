@@ -185,12 +185,12 @@ try
     {       
 		docComments += "New York State filing receipt" + "<br>";
 	}   
-	if(vehicle == 'Y')
+	if(vehicle == 'Yes' && !determineACADocumentAttached("Vehicles"))
     {       
 		docComments += "List of Vehicles" + "<br>";
 	}
     
-	
+
     if (docComments != "") 
 	{
 		cancel = true;
