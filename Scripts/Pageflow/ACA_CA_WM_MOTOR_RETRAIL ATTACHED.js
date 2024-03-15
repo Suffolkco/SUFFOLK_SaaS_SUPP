@@ -173,17 +173,11 @@ try
 {
 
     var docComments = "";
-	var docCheck0 = determineACADocumentAttached("dba Certificate");    
-    var docCheck1 = determineACADocumentAttached("New York State filing receipt");    
 	
-    if (!determineACADocumentAttached("dba Certificate"))
-    {       
-		docComments += "dba Certificate" + "<br>";
+	if (!determineACADocumentAttached("dba Certificate") && !determineACADocumentAttached("New York State filing receipt"))
+    {   
+		docComments += "dba Certificate OR New York State filing receipt" + "<br>";		   
 	}
-    if (!determineACADocumentAttached("New York State filing receipt"))
-    {       
-		docComments += "New York State filing receipt" + "<br>";
-	}   
 	   
 
     if (docComments != "") 

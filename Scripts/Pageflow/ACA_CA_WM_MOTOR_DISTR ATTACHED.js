@@ -177,20 +177,16 @@ try
     var docCheck1 = determineACADocumentAttached("New York State filing receipt");    
 	var vehicle = AInfo["Do you own any vehicles that are used to transport gasoline within Suffolk County?"]
 
-    if (!determineACADocumentAttached("dba Certificate"))
-    {       
-		docComments += "dba Certificate" + "<br>";
+    if (!determineACADocumentAttached("dba Certificate") && !determineACADocumentAttached("New York State filing receipt"))
+    {   
+		docComments += "dba Certificate OR New York State filing receipt" + "<br>";		   
 	}
-    if (!determineACADocumentAttached("New York State filing receipt"))
-    {       
-		docComments += "New York State filing receipt" + "<br>";
-	}   
+	   
 	if(vehicle == 'Yes' && !determineACADocumentAttached("Vehicles"))
     {       
 		docComments += "List of Vehicles" + "<br>";
 	}
     
-
     if (docComments != "") 
 	{
 		cancel = true;
