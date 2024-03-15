@@ -114,8 +114,10 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     }
 }
 
+logDebug("itemCapType: " +  itemCapType);
+
 // If record type is WWM and it's a backoffice user, we do not want to update the status
-if (!publicUser && 
+if (//!publicUser &&                      
     (itemCapType == "DEQ/WWM/Residence/Application" || 
     itemCapType == "DEQ/WWM/Subdivision/Application" ||        
     itemCapType == "DEQ/WWM/Commercial/Application" ||
@@ -129,7 +131,7 @@ if (!publicUser &&
 {
     skip = true;
 }
-
+logDebug("skip: " +  skip);
 if (!skip)
 {
     if (isTaskActive('Plans Distribution') && isTaskStatus('Plans Distribution','Awaiting Client Reply')) 
