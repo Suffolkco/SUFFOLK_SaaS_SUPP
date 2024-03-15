@@ -13,7 +13,8 @@ var itemCapType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     itemCapType == "DEQ/WWM/Commercial/Application"))
 {
     // EHIMS-4832
-    if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" || getAppStatus() == "Pending")
+    if (getAppStatus() == "Resubmitted" || getAppStatus() == "Review in Process" 
+    || getAppStatus(capId) == "Review In Process" || getAppStatus() == "Pending")
     {
         var newDocUploaded = AInfo["New Documents Uploaded"]
         logDebug("New Doc Flag Uploaded: " + newDocUploaded);

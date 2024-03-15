@@ -6,7 +6,8 @@ if (publicUser)
     try
    {
         // EHIMS-4832: Resubmission after user already submitted.
-        if (getAppStatus(capId) == "Resubmitted" || getAppStatus(capId) == "Review in Process" || getAppStatus(capId) == "Pending")
+        if (getAppStatus(capId) == "Resubmitted" || getAppStatus(capId) == "Review in Process" 
+        || getAppStatus(capId) == "Review In Process" || getAppStatus(capId) == "Pending")
         {
             var newDocUploaded = AInfo["New Documents Uploaded"]
             logDebug("New Doc Flag Uploaded: " + newDocUploaded);
@@ -87,7 +88,7 @@ if (publicUser)
             // Do not update
        }   
        // EHIMS-5036, 5115
-      else if (!matches(appStatus, null, undefined, "", "null", "Review In Process", "Resubmitted" , "Received"))     
+      else if (!matches(appStatus, null, undefined, "", "null", "Review In Process" , "Review in Process", "Resubmitted" , "Received"))     
      //if (appStatus != "Review in Process" &&appStatus != "Received" && appStatus != "Resubmitted" && !matches(appStatus, null, undefined, "", "null")) 
      {
          updateAppStatus("Resubmitted");
