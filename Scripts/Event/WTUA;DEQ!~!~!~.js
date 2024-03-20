@@ -197,7 +197,7 @@ if (wfTask == "Plans Distribution" && wfStatus == "Routed for Review")
 
         if (appStatus == "Resubmitted")
         {
-            updateAppStatus("Review In Process");
+            updateAppStatus("Review in Process");
         }
     }
 

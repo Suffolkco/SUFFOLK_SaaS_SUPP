@@ -185,7 +185,7 @@ function saveReportAsDocument(binaryData, documentName, documentGroup, documentC
     try {
         var itemCap = aa.cap.getCap(capId).getOutput();
         var newContentModel = aa.document.newDocumentContentModel().getOutput();
-        var inputstream = new java.io.ByteArrayInputStream(binaryData);
+        var inputstream = new aa.io.ByteArrayInputStream(binaryData);
         newContentModel.setDocInputStream(inputstream);
         var documentObject = aa.document.newDocumentModel().getOutput();
         documentObject.setDocumentContent(newContentModel);
