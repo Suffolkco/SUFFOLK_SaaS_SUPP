@@ -70,6 +70,8 @@ if (publicUser)
         aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "PRA SUB debug", debug);
     }
      
+    // Hide this section as per Eddie EHIMS-5115
+    /*
     if (isTaskActive("Application Review") && isTaskStatus("Application Review","Awaiting Client Reply"))
     {
         updateTask("Application Review", "Resubmitted", "Additional payment submitted by Applicant", "Additional payment submitted by Applicant");       
@@ -79,6 +81,8 @@ if (publicUser)
     {
         updateTask("Plans Distribution", "Resubmitted", "Additional payment submitted by Applicant", "Additional payment submitted by Applicant");       
     }
+    */
+
      // EHIMS-5036
      var appStatus = getAppStatus(capId);
     // Only if the application has been reviewed
