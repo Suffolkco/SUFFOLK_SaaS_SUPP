@@ -94,6 +94,158 @@ if(capmodel.isCompleteCap() && capmodel.getCreatedByACA() == "N")
 	}
 }
 
+//Populate G rerocd and WWM Record
+if(!publicUser)
+{
+
+ var parcelNumber= getFirstParcelFromCapId(capId);
+					 var latestRecordID = checkForRelatedSIPRecord(parcelNumber);
+aa.print(latestRecordID);
+if(latestRecordID !=null)
+{
+
+var ssrecord= getAppSpecific("SIP Ref #",capId);
+if(ssrecord !=null)
+					editAppSpecific("SIP Ref #", latestRecordID);
+var getCapResult = aa.cap.getCapID(latestRecordID);
+if (getCapResult.getSuccess())
+{
+    var RRecord = getCapResult.getOutput();
+  if (appMatch("DEQ/Ecology/SIP/Application", RRecord))
+{
+var wrecord= getAppSpecific("WWM Ref #",capId);
+if(wrecord != null)
+editAppSpecific("WWM Ref #",capId.getCustomID(),RRecord);
+}
+}
+}
+
+}
+
+function checkForRelatedSIPRecord(parcelNumber) {
+		
+		var listOfRelatedRecorsdFromParcel = capIdsGetByParcel(parcelNumber);
+		var sipRecord = new Array();
+		var resArray = new Array();
+	
+
+    for (record in listOfRelatedRecorsdFromParcel) 
+	{
+
+        var itemCap = listOfRelatedRecorsdFromParcel[record];
+//aa.print(itemCap);
+        var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
+        //aa.print("We found this record: " + itemCap.getCustomID() + " which is a: " + itemCapType);
+        if (itemCapType == "DEQ/Ecology/SIP/Application")
+		{
+aa.print(itemCap);
+           sipRecord.push(itemCap);
+        }
+    }
+	for( i in sipRecord)
+	{
+
+		var altId= sipRecord[i].getCustomID();
+
+		//aa.print(altId);
+					
+					var ddate =   aa.cap.getCap(capId).getOutput().getFileDate();
+					scheduledDate = dateFormatted(ddate.getMonth(), ddate.getDayOfMonth(), ddate.getYear(), "MM/DD/YYYY");
+
+					var tempArr = new Array();
+					tempArr['altId'] = sipRecord[i].getCustomID();
+					tempArr['date'] = convertDate(ddate);
+					resArray.push(tempArr);
+					break;
+           
+                
+			
+	}
+
+			resArray.sort(function(a,b){
+			  // Turn your strings into dates, and then subtract them
+			  // to get a value that is either negative, positive, or zero.
+			  return new Date(b.date) - new Date(a.date);
+			});
+if(resArray[0] != undefined)
+			return resArray[0].altId;
+
+	}
+
+
+
+
+
+function convertDate(thisDate)
+	{
+
+	if (typeof(thisDate) == "string")
+		{
+		var retVal = new Date(String(thisDate));
+		if (!retVal.toString().equals("Invalid Date"))
+			return retVal;
+		}
+
+	if (typeof(thisDate)== "object")
+		{
+
+		if (!thisDate.getClass) // object without getClass, assume that this is a javascript date already
+			{
+			return thisDate;
+			}
+
+		if (thisDate.getClass().toString().equals("class com.accela.aa.emse.dom.ScriptDateTime"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDayOfMonth() + "/" + thisDate.getYear());
+			}
+			
+		if (thisDate.getClass().toString().equals("class com.accela.aa.emse.util.ScriptDateTime"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDayOfMonth() + "/" + thisDate.getYear());
+			}			
+
+		if (thisDate.getClass().toString().equals("class java.util.Date"))
+			{
+			return new Date(thisDate.getTime());
+			}
+
+		if (thisDate.getClass().toString().equals("class java.lang.String"))
+			{
+			return new Date(String(thisDate));
+			}
+		if (thisDate.getClass().toString().equals("class java.sql.Timestamp"))
+			{
+			return new Date(thisDate.getMonth() + "/" + thisDate.getDate() + "/" + thisDate.getYear());
+			}
+		}
+
+	if (typeof(thisDate) == "number")
+		{
+		return new Date(thisDate);  // assume milliseconds
+		}
+
+	logDebug("**WARNING** convertDate cannot parse date : " + thisDate);
+	return null;
+
+	}
+
+  
+  function getFirstParcelFromCapId(capId)
+{
+		var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+							if (capParcelResult.getSuccess())
+							{
+								var Parcels = capParcelResult.getOutput().toArray();
+							}
+
+							for ( i in Parcels)
+							{
+							var parcelNumber = Parcels[0].getParcelNumber();
+							}
+
+		return parcelNumber;
+}
+
 function determineACADocumentAttached(docType) 
 {
     var docList = aa.document.getDocumentListByEntity(capId, "TMP_CAP");
