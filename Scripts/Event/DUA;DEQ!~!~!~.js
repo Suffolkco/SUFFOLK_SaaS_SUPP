@@ -197,6 +197,36 @@ if (publicUser)
             }
         }
     }
+
+    // EHIMS-5262   
+    if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
+    {
+        assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
+        
+        if (matches(assignedUserid, null,undefined,""))
+        {
+        assignedUserId = getUserIDAssignedToTask(capId, 'Plan Distribution')
+        }
+    
+        if (assignedUserid !=  null)
+        {
+            iNameResult = aa.person.getUser(assignedUserid)
+
+            if(iNameResult.getSuccess())
+            {
+                assignedUser = iNameResult.getOutput();                   
+                var emailParams = aa.util.newHashtable();               
+                getRecordParams4Notification(emailParams);             
+                logDebugLocal("capId.getCustomID(): " + capId.getCustomID());
+                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                if (assignedUser.getEmail() != null)
+                {
+                    logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
+                    sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_EMAIL_ASSIGNNEE", emailParams, null);
+                }
+            }
+        }
+    }
    
 }
 
