@@ -202,13 +202,13 @@ if (publicUser)
     if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
     {
         assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
-        
+        logDebug(assignedUserId);
         if (matches(assignedUserid, null,undefined,""))
         {
-        assignedUserId = getUserIDAssignedToTask(capId, 'Plan Distribution')
+            assignedUserId = getUserIDAssignedToTask(capId, 'Plan Distribution')
         }
     
-        if (assignedUserid !=  null)
+        if (!matches(assignedUserid, null,undefined,""))
         {
             iNameResult = aa.person.getUser(assignedUserid)
 
@@ -217,9 +217,10 @@ if (publicUser)
                 assignedUser = iNameResult.getOutput();                   
                 var emailParams = aa.util.newHashtable();               
                 getRecordParams4Notification(emailParams);             
-                logDebugLocal("capId.getCustomID(): " + capId.getCustomID());
+                logDebug("capId.getCustomID(): " + capId.getCustomID());
                 addParameter(emailParams, "$$altID$$", capId.getCustomID());
-                if (assignedUser.getEmail() != null)
+
+                if (!matches(assignedUser.getEmail(), null,undefined,""))               
                 {
                     logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
                     sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_EMAIL_ASSIGNNEE", emailParams, null);
