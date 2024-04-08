@@ -199,8 +199,8 @@ if (publicUser)
     }
 
     // EHIMS-5262   
-    if (itemCapType == "DEQ/OPC/Global Containment/Application" && 
-    itemCapType == "DEQ/OPC/Hazardous Tank/Application" &&       
+    if (itemCapType == "DEQ/OPC/Global Containment/Application" ||
+    itemCapType == "DEQ/OPC/Hazardous Tank/Application" ||
     itemCapType == "DEQ/OPC/Swimming Pool/Application")
     {
         if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
