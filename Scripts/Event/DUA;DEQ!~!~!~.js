@@ -199,31 +199,36 @@ if (publicUser)
     }
 
     // EHIMS-5262   
-    if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
+    if (itemCapType == "DEQ/OPC/Global Containment/Application" && 
+    itemCapType == "DEQ/OPC/Hazardous Tank/Application" &&       
+    itemCapType == "DEQ/OPC/Swimming Pool/Application")
     {
-        assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
-        logDebug(assignedUserId);
-        if (matches(assignedUserid, null,undefined,""))
+        if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
         {
-            assignedUserId = getUserIDAssignedToTask(capId, 'Plan Distribution')
-        }
-    
-        if (!matches(assignedUserid, null,undefined,""))
-        {
-            iNameResult = aa.person.getUser(assignedUserid)
-
-            if(iNameResult.getSuccess())
+            assignedUserId = getUserIDAssignedToTask(capId, 'Plan Coordination')
+            logDebug(assignedUserId);
+            if (matches(assignedUserid, null,undefined,""))
             {
-                assignedUser = iNameResult.getOutput();                   
-                var emailParams = aa.util.newHashtable();               
-                getRecordParams4Notification(emailParams);             
-                logDebug("capId.getCustomID(): " + capId.getCustomID());
-                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+                assignedUserId = getUserIDAssignedToTask(capId, 'Plan Distribution')
+            }
+        
+            if (!matches(assignedUserid, null,undefined,""))
+            {
+                iNameResult = aa.person.getUser(assignedUserid)
 
-                if (!matches(assignedUser.getEmail(), null,undefined,""))               
+                if(iNameResult.getSuccess())
                 {
-                    logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
-                    sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_EMAIL_ASSIGNNEE", emailParams, null);
+                    assignedUser = iNameResult.getOutput();                   
+                    var emailParams = aa.util.newHashtable();               
+                    getRecordParams4Notification(emailParams);             
+                    logDebug("capId.getCustomID(): " + capId.getCustomID());
+                    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+
+                    if (!matches(assignedUser.getEmail(), null,undefined,""))               
+                    {
+                        logDebug("Sending email to assignee: " + assignedUser.getEmail()); 
+                        sendNotification("", assignedUser.getEmail(), "", "DEQ_OPC_EMAIL_ASSIGNNEE", emailParams, null);
+                    }
                 }
             }
         }
