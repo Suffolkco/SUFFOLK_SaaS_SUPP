@@ -247,3 +247,29 @@ function logDebug(dstr)
 	}
 }
 
+function getUserIDAssignedToTask(vCapId, taskName) {
+    currentUsrVar = null;
+    var taskResult1 = aa.workflow.getTask(vCapId, taskName);
+    if (taskResult1.getSuccess())
+    {
+        tTask = taskResult1.getOutput();
+    } else
+    {
+        logMessage("**ERROR: Failed to get workflow task object ");
+        return false;
+    }
+    taskItem = tTask.getTaskItem();
+    taskUserObj = tTask.getTaskItem().getAssignedUser();
+    taskUserObjLname = taskUserObj.getLastName();
+    taskUserObjFname = taskUserObj.getFirstName();
+    taskUserObjMname = taskUserObj.getMiddleName();
+    currentUsrVar = aa.person.getUser(taskUserObjFname, taskUserObjMname, taskUserObjLname).getOutput();
+    if (currentUsrVar != null)
+    {
+        currentUserIDVar = currentUsrVar.getGaUserID();
+        return currentUserIDVar;
+    } else
+    {
+        return false;
+    }
+}
