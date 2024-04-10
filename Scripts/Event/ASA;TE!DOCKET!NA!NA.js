@@ -60,6 +60,7 @@ if (cap)
                     {
                         logDebug("Add " + existingCapIDString + ' as parent to ' + capId.getCustomID());         
                         addParent(existingCapId);
+                        copyContacts(existingCapId, capId);
                     }
                 }
             }
