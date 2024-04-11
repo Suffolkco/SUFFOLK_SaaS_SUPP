@@ -197,6 +197,40 @@ if (publicUser)
             }
         }
     }
+
+    // EHIMS-5262   
+    if (itemCapType == "DEQ/OPC/Global Containment/Application" ||
+    itemCapType == "DEQ/OPC/Hazardous Tank/Application" ||
+    itemCapType == "DEQ/OPC/Swimming Pool/Application")
+    {     
+        if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
+        {
+            assignedUserId = getUserIDAssignedToTask(capId, 'Plans Coordination')
+          
+            if (!assignedUserId)
+            {
+                assignedUserId = getUserIDAssignedToTask(capId, 'Plans Distribution')
+            }
+            logDebug(assignedUserId);
+            if (!matches(assignedUserId, null,undefined,"", false))
+            {               
+               
+                staffUsrEmail = getUserEmail(assignedUserId);
+                logDebug("staffUsrEmail: " + staffUsrEmail);
+                var emailParams = aa.util.newHashtable();               
+                getRecordParams4Notification(emailParams);             
+                logDebug("capId.getCustomID(): " + capId.getCustomID());
+                addParameter(emailParams, "$$altID$$", capId.getCustomID());
+
+                if (!matches(staffUsrEmail, null,undefined,""))               
+                {
+                    logDebug("Sending email to assignee: " + staffUsrEmail); 
+                    sendNotification("", staffUsrEmail, "", "DEQ_OPC_EMAIL_ASSIGNNEE", emailParams, null);
+                }
+             
+            }
+        }
+    }
    
 }
 
@@ -211,3 +245,34 @@ function logDebug(dstr)
 	}
 }
 
+function getUserIDAssignedToTask(vCapId, taskName) {
+    currentUsrVar = null;
+    logDebug("CapId: " + vCapId + ". Task: " + taskName);
+    var taskResult1 = aa.workflow.getTask(vCapId, taskName);
+    if (taskResult1.getSuccess())
+    {
+        tTask = taskResult1.getOutput();
+    } else
+    {
+        logDebug("**ERROR: Failed to get workflow task object ");
+        return false;
+    }
+    taskItem = tTask.getTaskItem();
+    taskUserObj = tTask.getTaskItem().getAssignedUser();
+    taskUserObjLname = taskUserObj.getLastName();
+    taskUserObjFname = taskUserObj.getFirstName();
+    taskUserObjMname = taskUserObj.getMiddleName();
+    currentUsrVar = aa.person.getUser(taskUserObjFname, taskUserObjMname, taskUserObjLname).getOutput();
+
+    logDebug("taskUserObjFname: " + taskUserObjFname + ", taskUserObjMname: " + taskUserObjMname +  ". taskUserObjLname: " + taskUserObjLname);
+    logDebug("currentUsrVar: " + currentUsrVar);
+    if (!matches(currentUsrVar, null,undefined,""))               
+    {
+        currentUserIDVar = currentUsrVar.getGaUserID();
+        logDebug("currentUserIDVar: " + currentUserIDVar);
+        return currentUserIDVar;
+    } else
+    {
+        return false;
+    }
+}

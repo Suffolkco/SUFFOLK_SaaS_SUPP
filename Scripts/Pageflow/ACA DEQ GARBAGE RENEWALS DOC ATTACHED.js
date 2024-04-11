@@ -52,16 +52,12 @@ try
     {
         docComments += "Disposal Site Authorization" + "<br>";
     }
-
-    
-
-    
-
+   
     if (docComments != "") 
     {
         cancel = true;
         showMessage = true;
-        comment("This submission requires you to submit the following documents: <br>" + docComments);
+        comment("You cannot proceed until all the required document types are provided (see below for required documents). When uploading documents, verfiy the correct document 'type' is selected. The following document types are still required: " + docComments);        
     }
 }
 catch (error)

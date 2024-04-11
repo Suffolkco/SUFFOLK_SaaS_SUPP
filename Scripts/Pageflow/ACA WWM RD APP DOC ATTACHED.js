@@ -186,7 +186,7 @@ try
     {       
         cancel = true;
         showMessage = true;
-        comment("Missing required documents for this application. Before you can save this application, you must attach the following documents:");
+        comment("You cannot proceed until all the required document types are provided (see below for required documents). When uploading documents, verfiy the correct document 'type' is selected. The following document types are still required:");
         if (!vehReg)                
         { 
             cancel = true;

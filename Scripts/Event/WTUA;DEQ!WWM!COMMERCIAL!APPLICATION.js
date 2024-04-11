@@ -23,8 +23,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			if (wfHist[h].getTaskDescription() == "Plans Coordination" && wfHist[h].getDisposition() == "Approved")
 			{
 				count++;
-				logDebug("Found history step: Count " + count + ": " + taskObj.getStepNumber() + ", " + taskObj.getProcessID() + ", " +
-					taskObj.getTaskDescription() + ", " + taskObj.getDisposition());
+				logDebug("Found history step: Count " + count + ": " + wfHist[h].getStepNumber() + ", " + wfHist[h].getProcessID() + ", " +
+				wfHist[h].getTaskDescription() + ", " + wfHist[h].getDisposition());
 			}
 		}
 		
