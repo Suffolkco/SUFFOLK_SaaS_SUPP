@@ -34,6 +34,12 @@ editAppSpecific("County Status", "Ineligible");
 	if (wfTask == "Grant Review" && wfStatus == "Complete")
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_APP_COMPLETE");
+var countyStatus = AInfo["County Status"];
+		if(countyStatus == "Ineligible" || countyStatus == "Withdrawn")
+		{
+			//activateTask("Pre-Install Review");
+			
+		}
 	}
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Grant Awarded")
@@ -57,42 +63,27 @@ sendEmailsOnSIPRecord("DEQ_SIP_GRANT_PACKET_MAILED");
 		sendEmailsOnSIPRecordOnlyWWMLP("DEQ_SIP_CLARIFICATION_REQUEST");
 	}
 
-		if (wfTask == "Pre-Install Review" && wfStatus == "Complete")
-{
-			sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
-			
 		
-var wwmRecords = getAppSpecific("WWM Ref #");
-if(wwmRecords != null)
-
-{
-
-	var parentCapid = aa.cap.getCapID(wwmRecords).getOutput();
-		if (parentCapid != null) 
-		{
-			var capmodel = parentCapid.toString();
-			var ida = capmodel.split("-");
-			var pcapId = aa.cap.getCapID(ida[0], ida[1], ida[2]).getOutput();
-			var pcapResult = aa.cap.getCap(pcapId);
-			var pcap = pcapResult.getOutput();
-			appTypeResult = pcap.getCapType(); //create CapTypeModel object
-			appTypeString = appTypeResult.toString()
-			if(appTypeString == "DEQ/WWM/Residence/Application")
-			{
-var emailParams = aa.util.newHashtable();
-			addParameter(emailParams, "$$WWMRecord$$",pcapId.getCustomID());
-			addParameter(emailParams, "$$altID$$", capId.getCustomID());
-			
-			var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
-			sendNotification("", String(staffEmail), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
-			}
-		}
-	}
-			
-		}
 	if ((wfTask == "Post-Install Review" || wfTask == "Pre-Install Review" || wfTask == "Payment Processing") && (wfStatus == "Applicant Request"))
 	{
 		sendEmailsOnSIPRecord("DEQ_SIP_CLARIFICATION_REQUEST");
+	}
+	
+	if ((wfTask == "Application Review") && (wfStatus == "Complete"))
+	{
+		var countyStatus = AInfo["County Status"];
+		if(countyStatus == "Eligible" || countyStatus == "Undetermined")
+		{
+			activateTask("Pre-Install Review");
+			
+		}
+		
+		if(countyStatus == "Ineligible" || countyStatus == "Withdrawn")
+		{
+			deactivateTask("Pre-Install Review");
+			
+		}
+		
 	}
 	
 		
@@ -109,61 +100,61 @@ var emailParams = aa.util.newHashtable();
 if (matches(wfStatus, "Withdrawn", "Ineligible"))
 	   {
 	
-		wfTasks = aa.workflow.getTaskItemByCapID(capId, null).getOutput();
-		for (i in wfTasks) 
-	        {
-			var vWFTask = wfTasks[i];
-			//closeTask(vWFTask.getDisposition(), "Withdrawn", "Updated via Script", "Updated via Script");
-			deactivateTask(vWFTask.getTaskDescription());
-		}
-if(wfStatus == "Withdrawn")
-{
-editAppSpecific("County Status", "Withdrawn");
-editAppSpecific("State Status", "Withdrawn");
-closeTask("Closure", "Withdrawn", "Updated via Script", "Updated via Script");
-}
-if(wfStatus == "Ineligible")
-{
-editAppSpecific("County Status", "Ineligible");
-editAppSpecific("State Status", "Ineligible");
-closeTask("Closure", "Ineligible", "Updated via Script", "Updated via Script");
-}
+					wfTasks = aa.workflow.getTaskItemByCapID(capId, null).getOutput();
+					for (i in wfTasks) 
+						{
+						var vWFTask = wfTasks[i];
+						//closeTask(vWFTask.getDisposition(), "Withdrawn", "Updated via Script", "Updated via Script");
+						deactivateTask(vWFTask.getTaskDescription());
+					}
+			if(wfStatus == "Withdrawn")
+			{
+			editAppSpecific("County Status", "Withdrawn");
+			editAppSpecific("State Status", "Withdrawn");
+			closeTask("Closure", "Withdrawn", "Updated via Script", "Updated via Script");
+			}
+			if(wfStatus == "Ineligible")
+			{
+			editAppSpecific("County Status", "Ineligible");
+			editAppSpecific("State Status", "Ineligible");
+			closeTask("Closure", "Ineligible", "Updated via Script", "Updated via Script");
+			}
 
 	
-}
+	}
 
 
 if (wfTask == "Contract Processing" && wfStatus == "Complete")
 	{
-var tasksCompleted = false;
-var countyStatus = AInfo["County Status"];
-var wfHist = aa.workflow.getWorkflowHistory(capId, null);
-        var wfDates = [];
-        var maxWfDate;
-        if (wfHist.getSuccess())
-        {
-            wfHist = wfHist.getOutput();
-        } else
-        {
-            wfHist = new Array();
-        }
-        for (var h in wfHist)
-        {
-            if (wfHist[h].getTaskDescription() == "Pre-Install Review")
-            {
-                logDebug("epoch milliseconds of status date is: " + wfHist[h].getDispositionDate().getEpochMilliseconds());
+			var tasksCompleted = false;
+			var countyStatus = AInfo["County Status"];
+			var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+					var wfDates = [];
+					var maxWfDate;
+					if (wfHist.getSuccess())
+					{
+						wfHist = wfHist.getOutput();
+					} else
+					{
+						wfHist = new Array();
+					}
+					for (var h in wfHist)
+					{
+						if (wfHist[h].getTaskDescription() == "Pre-Install Review")
+						{
+							logDebug("epoch milliseconds of status date is: " + wfHist[h].getDispositionDate().getEpochMilliseconds());
 
-                //wfDates.push(wfHist[h].getDispositionDate().getEpochMilliseconds());
-                //maxWfDate = Math.max.apply(null, wfDates);
-                //logDebug("maxWfdate is: " + maxWfDate);
+							//wfDates.push(wfHist[h].getDispositionDate().getEpochMilliseconds());
+							//maxWfDate = Math.max.apply(null, wfDates);
+							//logDebug("maxWfdate is: " + maxWfDate);
 
-                if (matches(wfHist[h].getDisposition(), "Complete"))
-                {
-                    tasksCompleted = true;
-                }
+							if (matches(wfHist[h].getDisposition(), "Complete"))
+							{
+								tasksCompleted = true;
+							}
 
-            }
-        }
+						}
+					}
 		
 		if(tasksCompleted == true && (countyStatus == "Eligible" || countyStatus == "Undetermined"))
 			
@@ -173,6 +164,33 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 				sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
 				updateAppStatus("OK to Install");
 				activateTask("Post-Install Review");
+				
+				var wwmRecords = getAppSpecific("WWM Ref #");
+			if(wwmRecords != null)
+
+			{
+
+				var parentCapid = aa.cap.getCapID(wwmRecords).getOutput();
+					if (parentCapid != null) 
+					{
+						var capmodel = parentCapid.toString();
+						var ida = capmodel.split("-");
+						var pcapId = aa.cap.getCapID(ida[0], ida[1], ida[2]).getOutput();
+						var pcapResult = aa.cap.getCap(pcapId);
+						var pcap = pcapResult.getOutput();
+						appTypeResult = pcap.getCapType(); //create CapTypeModel object
+						appTypeString = appTypeResult.toString()
+						if(appTypeString == "DEQ/WWM/Residence/Application")
+						{
+			             var emailParams = aa.util.newHashtable();
+						addParameter(emailParams, "$$WWMRecord$$",pcapId.getCustomID());
+						addParameter(emailParams, "$$altID$$", capId.getCustomID());
+						
+						var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
+						sendNotification("", String(staffEmail), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
+						}
+					}
+				}
 
 			}
 			
@@ -240,6 +258,34 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 				sendEmailsOnSIPRecord("DEQ_SIP_OK_TO_INSTALL");
 				updateAppStatus("OK to Install");
 				activateTask("Post-Install Review");
+		
+		
+			var wwmRecords = getAppSpecific("WWM Ref #");
+			if(wwmRecords != null)
+
+			{
+
+				var parentCapid = aa.cap.getCapID(wwmRecords).getOutput();
+					if (parentCapid != null) 
+					{
+						var capmodel = parentCapid.toString();
+						var ida = capmodel.split("-");
+						var pcapId = aa.cap.getCapID(ida[0], ida[1], ida[2]).getOutput();
+						var pcapResult = aa.cap.getCap(pcapId);
+						var pcap = pcapResult.getOutput();
+						appTypeResult = pcap.getCapType(); //create CapTypeModel object
+						appTypeString = appTypeResult.toString()
+						if(appTypeString == "DEQ/WWM/Residence/Application")
+						{
+			             var emailParams = aa.util.newHashtable();
+						addParameter(emailParams, "$$WWMRecord$$",pcapId.getCustomID());
+						addParameter(emailParams, "$$altID$$", capId.getCustomID());
+						
+						var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
+						sendNotification("", String(staffEmail), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
+						}
+					}
+				}
 
 			}
 			
@@ -249,7 +295,7 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 				deactivateTask("Pre-Install Review");
 				closeTask("Pre-Install Review", "Complete", "Updated via Script", "Updated via Script");
 				updateAppStatus("Awaiting Grant Processing");
-				
+				deactivateTask("Post-Install Review");
 
 			}
 			

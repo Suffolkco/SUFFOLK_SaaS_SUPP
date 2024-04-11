@@ -91,27 +91,21 @@ if (b1ExpResult.getSuccess())
 	aa.expiration.editB1Expiration(b1Exp.getB1Expiration());      
 }
 
-//populate G and WWM record
+
+
 
  var parcelNumber= getFirstParcelFromCapId(capId);
 					 var latestRecordID = checkForRelatedSIPRecord(parcelNumber);
 aa.print(latestRecordID);
 if(latestRecordID !=null)
 {
-
-var ssrecord= getAppSpecific("SIP Ref #",capId);
-if(ssrecord !=null)
 					editAppSpecific("SIP Ref #", latestRecordID);
 var getCapResult = aa.cap.getCapID(latestRecordID);
 if (getCapResult.getSuccess())
 {
     var RRecord = getCapResult.getOutput();
   if (appMatch("DEQ/Ecology/SIP/Application", RRecord))
-{
-var wrecord= getAppSpecific("WWM Ref #",capId);
-if(wrecord != null)
 editAppSpecific("WWM Ref #",capId.getCustomID(),RRecord);
-}
 }
 }
 

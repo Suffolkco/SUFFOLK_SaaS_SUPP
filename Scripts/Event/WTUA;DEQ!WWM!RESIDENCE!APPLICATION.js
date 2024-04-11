@@ -108,6 +108,7 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 				dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 				b1Exp.setExpDate(dateMMDDYYY);
 				b1Exp.setExpStatus("Pending");
+				//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//
 				aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
 				logDebug("Setting new expiration date to: " + dateMMDDYYY + " and Pending renewal status.");
 			}
