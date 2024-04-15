@@ -52,7 +52,6 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			b1Exp = b1ExpResult.getOutput();
 			var dateAdd = addDays(todDateCon, 1095);
 			var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
-
 			dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
 			b1Exp.setExpDate(dateMMDDYYY);
 			b1Exp.setExpStatus("Pending");
