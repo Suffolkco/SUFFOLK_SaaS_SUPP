@@ -39,29 +39,27 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 			workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
 		}
 
-		//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//
-		if (!taskFound)
+		//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//		
+		b1ExpResult = aa.expiration.getLicensesByCapID(capId)
+		if (b1ExpResult.getSuccess())
 		{
-			b1ExpResult = aa.expiration.getLicensesByCapID(capId)
-			if (b1ExpResult.getSuccess())
-			{
-				b1Exp = b1ExpResult.getOutput(); 
-				var todaysDate = new Date();
-				var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
-				//logDebug("This is the current month: " + todaysDate.getMonth());
-				//logDebug("This is the current day: " + todaysDate.getDate());
-				//logDebug("This is the current year: " + todaysDate.getFullYear());
-				b1Exp = b1ExpResult.getOutput();
-				var dateAdd = addDays(todDateCon, 1095);
-				var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
+			b1Exp = b1ExpResult.getOutput(); 
+			var todaysDate = new Date();
+			var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
+			//logDebug("This is the current month: " + todaysDate.getMonth());
+			//logDebug("This is the current day: " + todaysDate.getDate());
+			//logDebug("This is the current year: " + todaysDate.getFullYear());
+			b1Exp = b1ExpResult.getOutput();
+			var dateAdd = addDays(todDateCon, 1095);
+			var dateMMDDYYY = jsDateToMMDDYYYY(dateAdd);
 
-				dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
-				b1Exp.setExpDate(dateMMDDYYY);
-				b1Exp.setExpStatus("Pending");
-				aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
-				logDebug("Setting new expiration date to: " + dateMMDDYYY + " and Pending renewal status.");
-			}
+			dateMMDDYYY = aa.date.parseDate(dateMMDDYYY);
+			b1Exp.setExpDate(dateMMDDYYY);
+			b1Exp.setExpStatus("Pending");
+			aa.expiration.editB1Expiration(b1Exp.getB1Expiration());   
+			logDebug("Setting new expiration date to: " + dateMMDDYYY + " and Pending renewal status.");
 		}
+		
 	}
 	else
 	{
