@@ -57,7 +57,7 @@ try
     {
         cancel = true;
         showMessage = true;
-        comment("You cannot proceed until all the required document types are provided (see below for required documents). When uploading documents, verfiy the correct document 'type' is selected. The following document types are still required: " + docComments);        
+        comment("You cannot proceed until all the required document types are provided (see below for required documents). When uploading documents, verfiy the correct document 'type' is selected. The following document types are still required: <br>" + docComments);        
     }
 }
 catch (error)
