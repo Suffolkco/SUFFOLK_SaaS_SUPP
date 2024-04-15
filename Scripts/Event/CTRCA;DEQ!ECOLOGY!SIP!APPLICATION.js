@@ -31,8 +31,8 @@ logDebug("SD..." +sd);
 logDebug("LD..." +ld);
 logDebug("PRIO..." +p);
 					
-                   // Sewer District
-                  editAppSpecific("Sewer District", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 
+            
+     editAppSpecific("Sewer District Name", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 	 
 
                   // Legislative District
                   editAppSpecific("Legislative District", getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME")); 
@@ -127,8 +127,10 @@ if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
 						updateWorkDesc("NYS SSRP ONLY");
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
+   
 
 	}
+
 catch (ex)
   {
 		logDebug("**ERROR** runtime error " + ex.message);

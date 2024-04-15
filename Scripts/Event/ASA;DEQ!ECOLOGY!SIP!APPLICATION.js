@@ -78,7 +78,7 @@ try{
 					
 				if(!publicUser)
 {	
-var     useAppSpecificGroupName = false;
+
 
 					//Add WWM num and town based on Parcel num
 					//EIHMs282
@@ -100,10 +100,12 @@ editAppSpecific("SIP Ref #",capId.getCustomID(),RRecord);
 }
 					
              
-                  // Sewer District
-                  editAppSpecific("Sewer District", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 
+ 
+		                 // Sewer District
 
+editAppSpecific("Sewer District Name", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 	 
                   // Legislative District
+ useAppSpecificGroupName = false;
                   editAppSpecific("Legislative District", getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME")); 
 
                   // Priority Area 
@@ -191,7 +193,6 @@ if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
 
-			 
 
 }
 	}

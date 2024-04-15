@@ -1,5 +1,7 @@
 showDebug= true;
-
+//cancel = true;
+var cap = aa.env.getValue("CapModel");
+//var capId = cap.getCapID();
 // EHIMS2-295
 var sd = getGISInfo_ASB("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME");
 var ld = getGISInfo_ASB("SUFFOLKCO_ACA","LegislativeDistrict","NAME");
@@ -10,13 +12,13 @@ logDebug("LD..." +ld);
 logDebug("PRIO..." +p);
 
                   // Sewer District
-                  editAppSpecific("Sewer District", getGISInfo("SUFFOLKCO","SanitationDistrictPolygon","SHORTNAME")); 
+                  /*editAppSpecific("Sewer District", getGISInfo_ASB("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 
 
                   // Legislative District
-                  editAppSpecific("Legislative District", getGISInfo("SUFFOLKCO","LegislativeDistrict","NAME")); 
+                  editAppSpecific("Legislative District", getGISInfo_ASB("SUFFOLKCO_ACA","LegislativeDistrict","NAME")); 
 
                   // Priority Area 
-                  editAppSpecific("Priority Area", getGISInfo("SUFFOLKCO","ReclaimWaterPolygon","PRIORITY")); 
+                  editAppSpecific("Priority Area", getGISInfo_ASB("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY")); 
 
 					
 					//EIHMS2 298
@@ -30,13 +32,51 @@ logDebug("PRIO..." +p);
 					if (AInfo["Priority Area"] == "Priority 2" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
 					  editAppSpecific("SCORE", 70); 
 					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
-					  editAppSpecific("SCORE", 60);
+					  editAppSpecific("SCORE", 60);*/
 
-aa.sendEmail("bhandhavya.nadagoud@scubeenterprise.com", "bhandhavya.nadagoud@scubeenterprise.com", "", "debugObject Log", debug, null);
-
-
+//aa.sendEmail("bhandhavya.nadagoud@scubeenterprise.com", "bhandhavya.nadagoud@scubeenterprise.com", "", "ASB debugObject Log", debug, null);
 
 
+
+function editAppSpecific4ACA(itemName, itemValue, cap) {
+
+
+
+    var i = cap.getAppSpecificInfoGroups().iterator();
+
+
+
+    while (i.hasNext()) {
+
+        var group = i.next();
+
+        var fields = group.getFields();
+
+        if (fields != null) {
+
+            var iteFields = fields.iterator();
+
+            while (iteFields.hasNext()) {
+
+                var field = iteFields.next();
+
+                if ((useAppSpecificGroupName && itemName.equals(field.getCheckboxType() + "." + 
+
+
+
+field.getCheckboxDesc())) || itemName.equals(field.getCheckboxDesc())) {
+
+                    field.setChecklistComment(itemValue);
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
  
 function getGISInfo_ASB(svc,layer,attributename)
 {

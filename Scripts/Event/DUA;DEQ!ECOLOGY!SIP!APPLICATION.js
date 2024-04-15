@@ -21,10 +21,34 @@ try{
 //need to get this so that it doesn't set this status on submittal, but does each time after that
 if (publicUser)
 {
-    if (cap.isCompleteCap())
+
+var capmodel = aa.cap.getCap(capId).getOutput().getCapModel();
+    if (capmodel.isCompleteCap())
     {
 
-				var appStatus = getAppStatus(capId);
+ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
+            var wfHistArray = [];
+            if (wfHist.getSuccess())
+            {
+                wfHist = wfHist.getOutput();
+                for (var h in wfHist)
+                {
+                    logDebug("wfhist[h] taskdesc is: " + wfHist[h].getTaskDescription());
+
+                    wfHistArray.push(wfHist[h].getTaskDescription());
+                }
+                logDebug("wfhist array length is " + wfHistArray.length);
+            } else
+            {
+                logDebug("not success");
+            }
+
+            if (wfHistArray.length != 0)
+            {
+              
+		var appStatus = getAppStatus(capId);
+
+
 		var documentModelArray = aa.env.getValue("DocumentModelList");
 				var docModel = documentModelArray.toArray();
 				for (i in docModel) 
@@ -45,6 +69,7 @@ if(docName == "Vendor Proposal")
 
 			}
      }
+}
 				  
   }
 }

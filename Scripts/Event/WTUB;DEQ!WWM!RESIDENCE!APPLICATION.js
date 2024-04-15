@@ -44,19 +44,6 @@ if ((wfTask == "Plans Distribution" && wfStatus == "Routed for Review") || (wfTa
     }
 }
 
-// EHIMS-4754
-if (wfTask == "Inspections" && wfStatus == "Complete")
-{
-    var completed = latestCompletedInspection();
-    if (!completed)
-    {
-        cancel = true;
-        showMessage = true;
-        comment("The latest inspeciton has not been completed; workflow was not advanced.</br>");
-    }
-}
-
-
 
 //SIP - 1 Pahse 2
 if (wfTask == "Plans Coordination" && wfStatus == "Awaiting Grant Approval")
@@ -102,6 +89,19 @@ if (wfTask == "Plans Coordination" && wfStatus == "Awaiting Grant Approval")
 	
 		
 }	
+
+// EHIMS-4754
+if (wfTask == "Inspections" && wfStatus == "Complete")
+{
+    var completed = latestCompletedInspection();
+    if (!completed)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("The latest inspeciton has not been completed; workflow was not advanced.</br>");
+    }
+}
+
 
 // EHIMS-4747 IA System
 var methSew = AInfo["Method of Sewage Disposal"];
