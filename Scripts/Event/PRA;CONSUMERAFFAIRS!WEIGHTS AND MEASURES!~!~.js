@@ -27,7 +27,8 @@ if (publicUser)
         addParameter(vEParams, "$$exec$$", exec);
         addParameter(vEParams, "$$comm$$", commissioner);
         addParameter(vEParams, "$$title$$", dca_title_commissioner);
-
+        addParameter(vEParams, "$$FirstName$$", userModel.getFirstName());
+        addParameter(vEParams, "$$LastName$$", userModel.getLastName());
         addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
         addParameter(vEParams, '$$altID$$', capId.getCustomID());
         addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
@@ -40,7 +41,31 @@ if (publicUser)
 }
 
 aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - DCA", emailText);
+function getContactName(vConObj)
+{
+    if (vConObj.people.getContactTypeFlag() == "organization")
+    {
+        if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
+            return vConObj.people.getBusinessName();
 
+        return vConObj.people.getBusinessName2();
+    }
+    else
+    {
+        if (vConObj.people.getFullName() != null && vConObj.people.getFullName() != "")
+        {
+            return vConObj.people.getFullName();
+        }
+        if (vConObj.people.getFirstName() != null && vConObj.people.getLastName() != null)
+        {
+            return vConObj.people.getFirstName() + " " + vConObj.people.getLastName();
+        }
+        if (vConObj.people.getBusinessName() != null && vConObj.people.getBusinessName() != "")
+            return vConObj.people.getBusinessName();
+
+        return vConObj.people.getBusinessName2();
+    }
+}
 function lookupLOCAL(stdChoice, stdValue) {
     var strControl;
     var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
