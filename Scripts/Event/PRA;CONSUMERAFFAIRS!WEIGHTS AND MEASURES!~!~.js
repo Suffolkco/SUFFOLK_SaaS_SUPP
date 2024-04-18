@@ -41,6 +41,18 @@ if (publicUser)
 
 aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - DCA", emailText);
 
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
+
 function logDebug(dstr)
 {
 	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
