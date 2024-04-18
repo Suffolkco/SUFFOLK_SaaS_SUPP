@@ -1,37 +1,56 @@
 //PRA;CONSUMERAFFAIRS!WEIGHTS AND MEASURES!~!~
+showDebug = true;
+var emailText = "";
+var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+
 if (publicUser)
 {        
    
     var currentUserID = aa.env.getValue("CurrentUserID");
-    if (currentUserID.indexOf("PUBLICUSER") == 0) { currentUserID = "ADMIN"; publicUser = true }
-    var capIDString = capId.getCustomID();
-    var systemUserObj = aa.person.getUser(currentUserID).getOutput();
+    logDebug("currentUserID: " + currentUserID);
+    var capIDString = capId.getCustomID();   
     getUserResult = aa.publicUser.getPublicUserByPUser(currentUserID);
-				
-
     if (getUserResult.getSuccess() && getUserResult.getOutput()) {
-        userModel = getUserResult.getOutput();	                            
-        userSeqNum = userModel.getUserSeqNum();
-    
-       
+        userModel = getUserResult.getOutput();	
+         userSeqNum = userModel.getUserSeqNum();    
         
-        var vEParams = aa.util.newHashtable();
-        var vRParams = aa.util.newHashtable()
+        var vEParams = aa.util.newHashtable();       
         var itemCapDetail = capDetailObjResult.getOutput();
         var itemBalanceDue = itemCapDetail.getBalance();
+      	
+        logDebug("Emailing to:" + userModel.getEmail());  
+
+        exec = lookupLOCAL('REPORT_CONFIG', 'COUNTY_EXECUTIVE');
+        commissioner = lookupLOCAL('REPORT_CONFIG', 'DCA_COMMISSIONER');
+        dca_title_commissioner = lookupLOCAL('REPORT_CONFIG', 'COMMISSIONER_TITLE');
+        
+        addParameter(vEParams, "$$exec$$", exec);
+        addParameter(vEParams, "$$comm$$", commissioner);
+        addParameter(vEParams, "$$title$$", dca_title_commissioner);
 
         addParameter(vEParams, "$$paidAmount$$", parseFloat(PaymentTotalPaidAmount).toFixed(2));
         addParameter(vEParams, '$$altID$$', capId.getCustomID());
         addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
-        addParameter(vRParams, "capid", "-1");
-        addParameter(vRParams, "batchtransactionnbr", "-1");                   
-        logDebug("Emailing to :" + userModel.getEmail());  
+              
+    
         sendNotification ("", userModel.getEmail(), "", "CA_WM_PAYMENT_MADE", vEParams, null);
              
     }
 
 }
 
+aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "PRA - DCA", emailText);
+
+function logDebug(dstr)
+{
+	//if (showDebug.substring(0,1).toUpperCase().equals("Y"))
+	if(showDebug)
+	{
+		aa.print(dstr)
+		emailText+= dstr + "<br>";
+		aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"),dstr)
+	}
+}
 function checkFeeCode()
 {
     var recPayments = new Array;
