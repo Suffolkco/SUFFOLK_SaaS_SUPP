@@ -12,8 +12,8 @@ if (publicUser)
     if (getUserResult.getSuccess() && getUserResult.getOutput()) {
         userModel = getUserResult.getOutput();	                            
         userSeqNum = userModel.getUserSeqNum();
-        editAppSpecific("Public User Email Address", userModel.getEmail(), capId);
-        logDebug("Update App Specific:" + userModel.getEmail());  
+    
+       
         
         var vEParams = aa.util.newHashtable();
         var vRParams = aa.util.newHashtable()
@@ -25,8 +25,8 @@ if (publicUser)
         addParameter(vEParams, "$$balanceDue$$", "$" + parseFloat(itemBalanceDue).toFixed(2));
         addParameter(vRParams, "capid", "-1");
         addParameter(vRParams, "batchtransactionnbr", "-1");                   
-
-        sendNotification ("", conEmail, "", "CA_WM_PAYMENT_MADE", vEParams, null);
+        logDebug("Emailing to :" + userModel.getEmail());  
+        sendNotification ("", userModel.getEmail(), "", "CA_WM_PAYMENT_MADE", vEParams, null);
              
     }
 
