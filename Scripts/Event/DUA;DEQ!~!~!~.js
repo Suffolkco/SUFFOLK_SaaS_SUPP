@@ -203,7 +203,7 @@ if (publicUser)
     itemCapType == "DEQ/OPC/Hazardous Tank/Application" ||
     itemCapType == "DEQ/OPC/Swimming Pool/Application")
     {     
-        if (isTaskActive("Plans Distribution") || isTaskActive("Inspection") || isTaskActive("Final Review"))
+        if (isTaskActive("Plans Distribution") || isTaskActive("Inspections") || isTaskActive("Final Review"))
         {
             assignedUserId = getUserIDAssignedToTask(capId, 'Plans Coordination')
           
