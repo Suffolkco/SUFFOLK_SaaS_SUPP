@@ -6,6 +6,45 @@ if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses")) {
 		createUpdateRefLicProfDCA(capId, true);		
 		createUpdateRefLicProfIA(capId);
 	}
+}
+
+//DAP-723
+if (wfTask == "Issuance" || wfTask == "Application")
+{
+	if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses", "TLC", "Inspections")) 
+	{	
+		var sendEmail = false;
+		var staffUsr = null;
+		// Renewal
+		if ((matches(appTypeArray[2], "Renewal")  || matches(appTypeArray[3], "Renewal")) && wfTask == "Issuanace") 
+		{
+			sendEmail= true;
+			staffUsr = getUserIDAssignedToTask(wfTask, capId);
+		}
+		// Application
+		else
+		{
+			sendEmail= true;
+			staffUsr = getUserIDAssignedToTask(wfTask, capId);
+
+		} 
+
+		if (sendEmail)
+		{		
+			if (staffUsr != null) {
+				staffUsrEmail = getUserEmail(staffUsr);
+				var emailTemplate = "DCA_LIC_TASK_ASSIGNED";
+				var eParams = aa.util.newHashtable();
+				eParams.put("$$taskName$$", "Fee Assessment Review");
+				eParams.put("$$taskStatus$$", "Fee Assessment Review in Progress");
+				if(!matches(staffUsrEmail,null,undefined,"")){
+					sendNotification(null, staffUsrEmail, null, emailTemplate, eParams, null, capId);
+					logDebug("Email Notification Sent");
+				}
+			}	
+
+		}
+	}
 
 } 
 // DOCKET-66
@@ -136,3 +175,27 @@ function formatDate(date) {
 
     return [month, day, year].join('/');
 }
+function getUserIDAssignedToTask(taskName,vCapId){
+	currentUsrVar = null
+	var taskResult1 = aa.workflow.getTask(vCapId,taskName);
+	if (taskResult1.getSuccess()){
+		tTask = taskResult1.getOutput();
+		}
+	else{
+		logMessage("**ERROR: Failed to get workflow task object ");
+		return false;
+		}
+	taskItem = tTask.getTaskItem()
+	taskUserObj = tTask.getTaskItem().getAssignedUser()
+	taskUserObjLname = taskUserObj.getLastName()
+	taskUserObjFname = taskUserObj.getFirstName()
+	taskUserObjMname = taskUserObj.getMiddleName()
+	currentUsrVar = aa.person.getUser(taskUserObjFname,taskUserObjMname,taskUserObjLname).getOutput();
+	if(currentUsrVar != null){
+		currentUserIDVar = currentUsrVar.getGaUserID();
+		return currentUserIDVar;
+		}
+	else{
+		return false;
+		}
+	}
