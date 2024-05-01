@@ -35,8 +35,7 @@ if (wfTask == "Issuance" || wfTask == "Application")
 				staffUsrEmail = getUserEmail(staffUsr);
 				var emailTemplate = "DCA_LIC_TASK_ASSIGNED";
 				var eParams = aa.util.newHashtable();
-				eParams.put("$$taskName$$", "Fee Assessment Review");
-				eParams.put("$$taskStatus$$", "Fee Assessment Review in Progress");
+				addParameter(eParams, "$$altID$$", capId.getCustomID());			
 				if(!matches(staffUsrEmail,null,undefined,"")){
 					sendNotification(null, staffUsrEmail, null, emailTemplate, eParams, null, capId);
 					logDebug("Email Notification Sent");
