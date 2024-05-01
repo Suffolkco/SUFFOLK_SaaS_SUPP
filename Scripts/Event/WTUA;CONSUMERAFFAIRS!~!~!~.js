@@ -8,44 +8,6 @@ if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses")) {
 	}
 }
 
-//DAP-723
-if (wfTask == "Issuance" || wfTask == "Application")
-{
-	if (matches(appTypeArray[1], "Registrations", "ID Cards", "Licenses", "TLC", "Inspections")) 
-	{	
-		var sendEmail = false;
-		var staffUsr = null;
-		// Renewal
-		if ((matches(appTypeArray[2], "Renewal")  || matches(appTypeArray[3], "Renewal")) && wfTask == "Issuanace") 
-		{
-			sendEmail= true;
-			staffUsr = getUserIDAssignedToTask(wfTask, capId);
-		}
-		// Application
-		else
-		{
-			sendEmail= true;
-			staffUsr = getUserIDAssignedToTask(wfTask, capId);
-
-		} 
-
-		if (sendEmail)
-		{		
-			if (staffUsr != null) {
-				staffUsrEmail = getUserEmail(staffUsr);
-				var emailTemplate = "DCA_LIC_TASK_ASSIGNED";
-				var eParams = aa.util.newHashtable();
-				addParameter(eParams, "$$altID$$", capId.getCustomID());			
-				if(!matches(staffUsrEmail,null,undefined,"")){
-					sendNotification(null, staffUsrEmail, null, emailTemplate, eParams, null, capId);
-					logDebug("Email Notification Sent");
-				}
-			}	
-
-		}
-	}
-
-} 
 // DOCKET-66
 if (matches(appTypeArray[1], "Licenses") && appTypeArray[2] != "Renewal" && matches(appTypeArray[3], "NA"))
 {
