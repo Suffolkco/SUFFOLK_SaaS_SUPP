@@ -44,7 +44,11 @@ try
     {
         docComments += "Certificate of Liability and Property Damage Insurance" + "<br>";
     }
-    
+    if (!determineACADocumentAttached("Employer Authorization Form on Company Letterhead, Signed by HI License Holder and Notarized"))
+    {
+        docComments += "Employer Authorization Form on Company Letterhead, Signed by HI License Holder and Notarized" + "<br>";
+    }
+
     if (docComments != "")
     {
         cancel = true;

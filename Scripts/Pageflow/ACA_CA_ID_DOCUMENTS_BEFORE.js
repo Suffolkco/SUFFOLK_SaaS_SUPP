@@ -41,7 +41,10 @@ try
     {
         docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
     }
-  
+    if (!determineACADocumentAttached("Employer Authorization Form on Company Letterhead, Signed by HI License Holder and Notarized"))
+    {
+        docComments += "Employer Authorization Form on Company Letterhead, Signed by HI License Holder and Notarized" + "<br>";
+    }
 
     if (docComments != "") 
     {
