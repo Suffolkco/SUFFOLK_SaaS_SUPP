@@ -32,7 +32,7 @@ if (wfTask == "Inspections" && wfStatus == "Complete")
 	var completed = latestCompletedInspection();
 	if (completed)
 	{
-		workflowInspectionResultedWWM("Inspection Completion Notice", "RECORD_ID");
+		workflowInspectionResultedWWM("Inspection Completion Notice Script", "RECORD_ID");
 	}
 }
 if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
