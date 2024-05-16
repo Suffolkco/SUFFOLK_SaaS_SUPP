@@ -44,6 +44,18 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 		wwmWorkflowAdditionalInfoWithPin("Notice of Incomplete Submission", "Notice of Incomplete Submission Script", "RecordID");
 	}
 }
+//EHIMS-5261
+ // NOI report
+ if (wfTask == "Plans Coordination" && wfStatus == "Internal Review")
+{
+	var reportParams1 = aa.util.newHashtable();
+	reportParams1.put("RECORD_ID", capId.getCustomID());
+	thisReport = 'Notice of Incomplete Script';
+	// NOI report - from reportParams in the earlier loop.                           
+	rFile = generateReport(thisReport, reportParams1, appTypeArray[0])
+	logDebug("This is the NOI report: " + rFile);  
+
+}
 if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 {
 	var notOK = isTaskStatus("WWM Review", "Not OK");

@@ -1,6 +1,18 @@
 //WTUA:DEQ/WWM/SUBDIVISION/APPLICATION
 var showDebug = false; 
 var emailText = "";
+//EHIMS-5261
+ // NOI report
+ if (wfTask == "Plans Coordination" && wfStatus == "Internal Review")
+{
+    var reportParams1 = aa.util.newHashtable();
+    reportParams1.put("RECORD_ID", capId.getCustomID());
+    thisReport = 'Notice of Incomplete Script';
+    // NOI report - from reportParams in the earlier loop.                           
+    rFile = generateReport(thisReport, reportParams1, appTypeArray[0])
+    logDebug("This is the NOI report: " + rFile);  
+
+}
 if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 {
     var submissionNoticeTxt = AInfo["Submission Rejection Text"];
