@@ -3,7 +3,7 @@ var emailText = "";
 
 try {
     // If the permit is inactive, we disable the FA LP. If the permit is reactivate, we enable the FA LP.
-    if(wfStatus == "Closed" || wfStatus == "Revoked" ||  wfStatus == "Active")    
+    if(wfStatus == "Inactive" || wfStatus == "Closed" || wfStatus == "Revoked" ||  wfStatus == "Active")    
     {
 
         var lpResult = aa.licenseScript.getLicenseProf(capId);
@@ -32,7 +32,7 @@ try {
                             logDebugLocal(lpID + ": has been reactivated");
                         }
                     }
-                    else if (wfStatus == "Closed" || wfStatus == "Revoked")
+                    else if (wfStatus == "Closed" || wfStatus == "Revoked" || wfStatus == "Inactive")
                     {
                         if (refLp.getAuditStatus() == 'A')
                         {
