@@ -205,7 +205,8 @@ function createChildLocal(grp,typ,stype,cat,desc) // optional parent capId
 			}
 
 		// DO NOT COPY CONTACTS
-
+    logDebug("Do not copy contacts.");
+    
 		// Copy Addresses
 		capAddressResult = aa.address.getAddressByCapId(itemCap);
 		if (capAddressResult.getSuccess())
