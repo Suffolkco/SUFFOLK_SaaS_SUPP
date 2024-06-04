@@ -32,6 +32,25 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         b1Exp.setExpStatus("Pending");
         aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
     }
+
+	// EHIMS-5290: compare and copy contact
+	var parentId = getParents("DEQ/General/Site/NA");                                              
+	if (parentId != null)
+	{
+		for (p in parentId)
+		{
+			var itemCap = aa.cap.getCap(parentId[p]).getOutput();
+			var appTypeResult = itemCap.getCapType();
+			var appTypeString = appTypeResult.toString(); 
+			var appTypeArray = appTypeString.split("/");
+			var siteCheck = false;
+			parentId = parentId[p];
+			logDebug("Found parent site: " + parentId.getCustomID());
+			compareContacts(capId, parentId);				
+			
+		}
+	}
+	
 }
 else if (wfTask == 'Plans Coordination' && wfStatus == 'Plan Revisions Needed')     
 {
@@ -85,4 +104,117 @@ function jsDateToMMDDYYYY(pJavaScriptDate) {
 		logDebug("Parameter is null");
 		return ("NULL PARAMETER VALUE");
 	}
+}
+
+
+function compareContacts(srcCapId, targetCapId)
+{
+  //1. Get people with source CAPID.
+  var capPeoples = getPeople(srcCapId);
+  logDebug("Source Cap ID:" + srcCapId);
+
+  if (capPeoples == null || capPeoples.length == 0)
+  {
+    logDebug("Didn't get the source peoples!");
+    return;
+  }
+  //2. Get people with target CAPID.
+  var targetPeople = getPeople(targetCapId);
+  //3. Check to see which people is matched in both source and target.
+  for (loopk in capPeoples)
+  {
+    sourcePeopleModel = capPeoples[loopk];
+    //3.1 Set target CAPID to source people.
+    sourcePeopleModel.getCapContactModel().setCapID(targetCapId);
+    
+    targetPeopleModel = null;
+    //3.2 Check to see if sourcePeople exist.
+    if (targetPeople != null && targetPeople.length > 0)
+    {
+      for (loop2 in targetPeople)
+      {
+        if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+        {
+          targetPeopleModel = targetPeople[loop2];
+          break;
+        }
+      }
+    }
+    //3.3 It is a matched people model.
+    if (targetPeopleModel != null)
+    {
+	   logDebug("Found match. ");
+      //3.3.1 Copy information from source to target.
+      aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), 
+
+      targetPeopleModel.getCapContactModel());
+      //3.3.2 Edit People with source People information. 
+      aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());
+    }
+    //3.4 It is new People model.
+    else
+    {
+		logDebug("Not match. Inactivate SITE contact.");
+	   // Inactivate the existing SITE contact.
+	   targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
+      //3.4.1 Create new people.
+      aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
+    }
+  }
+}
+
+function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
+{
+  if (capContactScriptModel == null || capContactScriptModel2 == null)
+  {
+    return false;
+  }
+  var contactType1 = capContactScriptModel.getCapContactModel().getPeople().getContactType();
+  var contactType2 = capContactScriptModel2.getCapContactModel().getPeople().getContactType();
+  var firstName1 = capContactScriptModel.getCapContactModel().getPeople().getFirstName();
+  var firstName2 = capContactScriptModel2.getCapContactModel().getPeople().getFirstName();
+  var lastName1 = capContactScriptModel.getCapContactModel().getPeople().getLastName();
+  var lastName2 = capContactScriptModel2.getCapContactModel().getPeople().getLastName();
+  var busName1 = capContactScriptModel.getCapContactModel().getPeople().getBusinessName();
+  var busName2 = capContactScriptModel2.getCapContactModel().getPeople().getBusinessName();
+  
+  logDebug("Compare List: " + contactType1 + ", " + contactType2 + ", " + firstName1 + ", " + firstName2 + ", " + lastName1 + ", " + lastName2 + ", " + busName1 + ", " + busName2);
+
+  if ((contactType1 == null && contactType2 != null) 
+    || (contactType1 != null && contactType2 == null))
+  {
+    return false;
+  }
+  if (contactType1 != null && !contactType1.equals(contactType2))
+  {
+    return false;
+  }
+  if ((firstName1 == null && firstName2 != null) 
+    || (firstName1 != null && firstName2 == null))
+  {
+    return false;
+  }
+  if (firstName1 != null && !firstName1.equals(firstName2))
+  {
+    return false;
+  }
+  if ((lastName1 == null && lastName2 != null) 
+    || (lastName1 != null && lastName2 == null))
+  {
+    return false;
+  }
+  if (lastName1 != null && !lastName1.equals(lastName2))
+  {
+    return false;
+  }
+  if ((busName1 == null && busName2 != null) 
+    || (busName1 != null && busName2 == null))
+  {
+    return false;
+  }
+  if (busName1 != null && !busName1.equals(busName2))
+  {
+    return false;
+  }
+  return  true;
 }
