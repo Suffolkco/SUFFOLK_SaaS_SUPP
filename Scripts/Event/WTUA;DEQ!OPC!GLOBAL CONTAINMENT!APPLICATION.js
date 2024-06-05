@@ -114,6 +114,7 @@ function compareContacts(srcCapId, targetCapId)
   var capPeoples = getPeople(srcCapId);
   logDebug("Source Cap ID:" + srcCapId);
   var matchContactTypeOnly = false;
+  var matchAllContactInfo = false;
   if (capPeoples == null || capPeoples.length == 0)
   {
     logDebug("Didn't get the source peoples!");
@@ -141,12 +142,13 @@ function compareContacts(srcCapId, targetCapId)
           {
             targetPeopleModel = targetPeople[loop2];
             logDebug("Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
-            matchContactTypeOnly = true;
+            matchAllContactInfo = true;
             break;
           }
           else // Contact type match but not first, last or orgnaization name
           {
             targetPeopleModel = targetPeople[loop2];
+            matchContactTypeOnly = true;
           }
          
         }       
@@ -154,7 +156,7 @@ function compareContacts(srcCapId, targetCapId)
       }
     }
     //3.3 It is a matched people model.  
-    if (matchContactTypeOnly)    
+    if (matchAllContactInfo)    
     {         
       logDebug("Found contact type, first name and organization name match. ");
       //3.3.1 Copy information from source to target.
@@ -165,9 +167,9 @@ function compareContacts(srcCapId, targetCapId)
 
     }
     // If contact type is the same but first name, last name, organization are different. 
-    else
+    else if (matchContactTypeOnly)
     {
-      logDebug("Conntact doesn't match. Inactivate contact.");
+      logDebug("Conntact doesn't match. Inactivate contact with the same contact type.");
       // Inactivate the existing SITE contact.
       logDebug("Set contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
@@ -190,7 +192,7 @@ function isMatchContactTypeLocal(capContactScriptModel, capContactScriptModel2)
   var contactType2 = capContactScriptModel2.getCapContactModel().getPeople().getContactType();
   
   
-  logDebug("Compare List: " + contactType1 + ", " + contactType2);
+  logDebug("Compare List: " + capId.getCustomID() + ": " + contactType1 + ", SITE record: " + contactType2);
 
   if ((contactType1 == null && contactType2 != null) 
     || (contactType1 != null && contactType2 == null))
@@ -219,7 +221,7 @@ function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
   var busName1 = capContactScriptModel.getCapContactModel().getPeople().getBusinessName();
   var busName2 = capContactScriptModel2.getCapContactModel().getPeople().getBusinessName();
   
-  logDebug("Compare List: " + firstName1 + ", " + firstName2 + ", " + lastName1 + ", " + lastName2 + ", " + busName1 + ", " + busName2);
+  logDebug("Compare List: " + capId.getCustomID() + ": First name, " + firstName1 + ", SITE record First Name: " + firstName2 + ", " +  capId.getCustomID() + ": Last Name, " + lastName1 + ", Site Last Name: " + lastName2 + ", " +  capId.getCustomID() + ": Business Name, " + busName1 + ", Site Bus Name: " + busName2);
 
   if ((firstName1 == null && firstName2 != null) 
     || (firstName1 != null && firstName2 == null))
