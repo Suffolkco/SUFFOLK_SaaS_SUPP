@@ -171,10 +171,10 @@ function compareContacts(srcCapId, targetCapId)
     {
       logDebug("Conntact doesn't match. Inactivate contact with the same contact type.");
       // Inactivate the existing SITE contact.
-      logDebug("Set contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
+      logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
-      //3.4.1 Create new people.
-      aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
+      aa.people.editCapContact(targetPeopleModel);
+      logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
     }
   }
     
