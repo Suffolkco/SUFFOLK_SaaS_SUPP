@@ -34,7 +34,8 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
     }
 
 	// EHIMS-5290: compare and copy contact
-	var parentId = getParents("DEQ/General/Site/NA");                                              
+	var parentId = getParents("DEQ/General/Site/NA");      
+	logDebug("parentId: "  + parentId);                                      
 	if (parentId != null)
 	{
 		for (p in parentId)
@@ -112,7 +113,7 @@ function compareContacts(srcCapId, targetCapId)
   //1. Get people with source CAPID.
   var capPeoples = getPeople(srcCapId);
   logDebug("Source Cap ID:" + srcCapId);
-
+  var matchContact = false;
   if (capPeoples == null || capPeoples.length == 0)
   {
     logDebug("Didn't get the source peoples!");
@@ -133,17 +134,28 @@ function compareContacts(srcCapId, targetCapId)
     {
       for (loop2 in targetPeople)
       {
-        if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+        if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
         {
-          targetPeopleModel = targetPeople[loop2];
-          break;
-        }
+          // fist name, organization name match aas well
+          if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+          {
+            targetPeopleModel = targetPeople[loop2];
+            matchContact = true;
+            break;
+          }
+          else // Contact type match but not first, last or orgnaization name
+          {
+            targetPeopleModel = targetPeople[loop2];
+          }
+         
+        }       
+        
       }
     }
     //3.3 It is a matched people model.
-    if (targetPeopleModel != null)
-    {
-	   logDebug("Found match. ");
+    if (matchContact)    
+    {     
+      logDebug("Found match. ");
       //3.3.1 Copy information from source to target.
       aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), 
 
@@ -154,16 +166,18 @@ function compareContacts(srcCapId, targetCapId)
     //3.4 It is new People model.
     else
     {
-		logDebug("Not match. Inactivate SITE contact.");
-	   // Inactivate the existing SITE contact.
-	   targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
+      logDebug("Not match. Inactivate SITE contact.");
+      // Inactivate the existing SITE contact.
+      logDebug("Set contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
+      targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
       //3.4.1 Create new people.
       aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
     }
   }
 }
 
-function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
+
+function isMatchContactTypeLocal(capContactScriptModel, capContactScriptModel2)
 {
   if (capContactScriptModel == null || capContactScriptModel2 == null)
   {
@@ -171,14 +185,9 @@ function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
   }
   var contactType1 = capContactScriptModel.getCapContactModel().getPeople().getContactType();
   var contactType2 = capContactScriptModel2.getCapContactModel().getPeople().getContactType();
-  var firstName1 = capContactScriptModel.getCapContactModel().getPeople().getFirstName();
-  var firstName2 = capContactScriptModel2.getCapContactModel().getPeople().getFirstName();
-  var lastName1 = capContactScriptModel.getCapContactModel().getPeople().getLastName();
-  var lastName2 = capContactScriptModel2.getCapContactModel().getPeople().getLastName();
-  var busName1 = capContactScriptModel.getCapContactModel().getPeople().getBusinessName();
-  var busName2 = capContactScriptModel2.getCapContactModel().getPeople().getBusinessName();
   
-  logDebug("Compare List: " + contactType1 + ", " + contactType2 + ", " + firstName1 + ", " + firstName2 + ", " + lastName1 + ", " + lastName2 + ", " + busName1 + ", " + busName2);
+  
+  logDebug("Compare List: " + contactType1 + ", " + contactType2);
 
   if ((contactType1 == null && contactType2 != null) 
     || (contactType1 != null && contactType2 == null))
@@ -189,6 +198,26 @@ function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
   {
     return false;
   }
+  
+  return  true;
+}
+
+function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
+{
+  if (capContactScriptModel == null || capContactScriptModel2 == null)
+  {
+    return false;
+  }
+  
+  var firstName1 = capContactScriptModel.getCapContactModel().getPeople().getFirstName();
+  var firstName2 = capContactScriptModel2.getCapContactModel().getPeople().getFirstName();
+  var lastName1 = capContactScriptModel.getCapContactModel().getPeople().getLastName();
+  var lastName2 = capContactScriptModel2.getCapContactModel().getPeople().getLastName();
+  var busName1 = capContactScriptModel.getCapContactModel().getPeople().getBusinessName();
+  var busName2 = capContactScriptModel2.getCapContactModel().getPeople().getBusinessName();
+  
+  logDebug("Compare List: " + firstName1 + ", " + firstName2 + ", " + lastName1 + ", " + lastName2 + ", " + busName1 + ", " + busName2);
+
   if ((firstName1 == null && firstName2 != null) 
     || (firstName1 != null && firstName2 == null))
   {
