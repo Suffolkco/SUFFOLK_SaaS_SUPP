@@ -113,7 +113,7 @@ function compareContacts(srcCapId, targetCapId)
   //1. Get people with source CAPID.
   var capPeoples = getPeople(srcCapId);
   logDebug("Source Cap ID:" + srcCapId);
-  var matchContact = false;
+  var matchContactTypeOnly = false;
   if (capPeoples == null || capPeoples.length == 0)
   {
     logDebug("Didn't get the source peoples!");
@@ -141,7 +141,7 @@ function compareContacts(srcCapId, targetCapId)
           {
             targetPeopleModel = targetPeople[loop2];
             logDebug("Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
-            matchContact = true;
+            matchContactTypeOnly = true;
             break;
           }
           else // Contact type match but not first, last or orgnaization name
@@ -153,21 +153,21 @@ function compareContacts(srcCapId, targetCapId)
         
       }
     }
-    //3.3 It is a matched people model.
-    if (matchContact)    
-    {     
+    //3.3 It is a matched people model.  
+    if (matchContactTypeOnly)    
+    {         
       logDebug("Found contact type, first name and organization name match. ");
       //3.3.1 Copy information from source to target.
       aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel());
-     
+    
       //3.3.2 Edit People with source People information. 
       aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());    
 
     }
-    //3.4 It is new People model.
+    // If contact type is the same but first name, last name, organization are different. 
     else
     {
-      logDebug("Not match. Inactivate SITE contact.");
+      logDebug("Conntact doesn't match. Inactivate contact.");
       // Inactivate the existing SITE contact.
       logDebug("Set contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
@@ -175,6 +175,8 @@ function compareContacts(srcCapId, targetCapId)
       aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
     }
   }
+    
+  
 }
 
 
