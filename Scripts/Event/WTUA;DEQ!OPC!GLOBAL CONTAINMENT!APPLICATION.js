@@ -140,6 +140,7 @@ function compareContacts(srcCapId, targetCapId)
           if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
           {
             targetPeopleModel = targetPeople[loop2];
+            logDebug("Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
             matchContact = true;
             break;
           }
@@ -155,13 +156,13 @@ function compareContacts(srcCapId, targetCapId)
     //3.3 It is a matched people model.
     if (matchContact)    
     {     
-      logDebug("Found match. ");
+      logDebug("Found contact type, first name and organization name match. ");
       //3.3.1 Copy information from source to target.
-      aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), 
-
-      targetPeopleModel.getCapContactModel());
+      aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel());
+     
       //3.3.2 Edit People with source People information. 
-      aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());
+      aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());    
+
     }
     //3.4 It is new People model.
     else
