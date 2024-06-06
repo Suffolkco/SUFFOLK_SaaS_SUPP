@@ -159,11 +159,11 @@ function compareContacts(srcCapId, targetCapId)
     if (matchAllContactInfo)    
     {         
       logDebug("Found contact type, first name and organization name match. ");
+      
       //3.3.1 Copy information from source to target.
-      aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel());
-    
+      aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), targetPeopleModel.getCapContactModel());
       //3.3.2 Edit People with source People information. 
-      aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());    
+      aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());
 
     }
     // If contact type is the same but first name, last name, organization are different. 
