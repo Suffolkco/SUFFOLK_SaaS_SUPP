@@ -188,7 +188,7 @@ function compareContacts(srcCapId, targetCapId)
 
     }
     // If contact type is the same but first name, last name, organization are different. 
-    else if (!matchAllContactInfo && matchContactTypeOnly)
+    else if (!matchAllContactInfo && matchContactTypeOnly && targetPeopleModel != null)
     {
       logDebug("Contact doesn't match. Inactivate contact with the same contact type.");
       logDebug("********************************************************");
