@@ -173,7 +173,7 @@ function compareContacts(srcCapId, targetCapId)
       // Inactivate the existing SITE contact.
       logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
-      aa.people.editCapContact(targetPeopleModel);
+      aa.people.editCapContact(targetPeopleModel.getCapContactModel());
       logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
     }
     else
