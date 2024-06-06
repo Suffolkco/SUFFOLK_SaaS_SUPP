@@ -167,7 +167,7 @@ function compareContacts(srcCapId, targetCapId)
 
     }
     // If contact type is the same but first name, last name, organization are different. 
-    else if (matchContactTypeOnly)
+    else if (!matchAllContactInfo && matchContactTypeOnly)
     {
       logDebug("Conntact doesn't match. Inactivate contact with the same contact type.");
       // Inactivate the existing SITE contact.
@@ -175,6 +175,10 @@ function compareContacts(srcCapId, targetCapId)
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
       aa.people.editCapContact(targetPeopleModel);
       logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
+    }
+    else
+    {
+      logDebug("Either contact type or info match.");
     }
   }
     
