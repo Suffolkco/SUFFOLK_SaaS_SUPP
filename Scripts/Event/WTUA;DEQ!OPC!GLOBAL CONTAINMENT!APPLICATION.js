@@ -170,8 +170,8 @@ function compareContacts(srcCapId, targetCapId)
     //3.3 It is a matched people model.  
     if (matchAllContactInfo)    
     {         
-      logDebug("Found contact type, first name and organization name match. ");
-      
+      logDebug("Found contact type, first name and organization name match. Copy information from child to SITE.");
+      logDebug("********************************************************");
       //3.3.1 Copy information from source to target.
       aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), targetPeopleModel.getCapContactModel());
       //3.3.2 Edit People with source People information. 
@@ -182,6 +182,7 @@ function compareContacts(srcCapId, targetCapId)
     else if (!matchAllContactInfo && matchContactTypeOnly)
     {
       logDebug("Contact doesn't match. Inactivate contact with the same contact type.");
+      logDebug("********************************************************");
       // Inactivate the existing SITE contact.
       logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
