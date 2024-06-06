@@ -140,7 +140,7 @@ function compareContacts(srcCapId, targetCapId)
         if (auditStatus == 'I')
         {
           logDebug("Audit Status for " + targetCapId.getCustomID() + " for " + targetPeople[loop2].getCapContactModel().getPeople().getContactType() + " is inactive.");
-          break;
+          
         }
         else
         {
