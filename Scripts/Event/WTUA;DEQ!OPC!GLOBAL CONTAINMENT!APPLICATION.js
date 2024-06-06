@@ -159,6 +159,7 @@ function compareContacts(srcCapId, targetCapId)
               targetPeopleModel = targetPeople[loop2];
               logDebug("*** Contact type match but contact information does not.");
               matchContactTypeOnly = true;
+              matchAllContactInfo = false;
             }
           
           }    
