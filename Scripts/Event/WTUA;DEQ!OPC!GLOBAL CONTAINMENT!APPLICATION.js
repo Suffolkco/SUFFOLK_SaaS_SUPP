@@ -175,6 +175,8 @@ function compareContacts(srcCapId, targetCapId)
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
       aa.people.editCapContact(targetPeopleModel.getCapContactModel());
       logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
+      //3.4.1 Create new people.
+			aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
     }
     else
     {
