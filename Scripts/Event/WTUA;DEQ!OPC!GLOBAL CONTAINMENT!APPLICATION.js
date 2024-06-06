@@ -136,8 +136,7 @@ function compareContacts(srcCapId, targetCapId)
       for (loop2 in targetPeople)
       {        
         var auditStatus = targetPeople[loop2].getCapContactModel().getPeople().getAuditStatus();
-        logDebug("Audit status: " + auditStatus);
-        
+       
         if (auditStatus == 'I')
         {
           logDebug("Audit Status for " + targetCapId.getCustomID() + " for " + targetPeople[loop2].getCapContactModel().getPeople().getContactType() + " is inactive.");
@@ -151,13 +150,14 @@ function compareContacts(srcCapId, targetCapId)
             if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
             {
               targetPeopleModel = targetPeople[loop2];
-              logDebug("Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
+              logDebug("***Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
               matchAllContactInfo = true;
               break;
             }
             else // Contact type match but not first, last or orgnaization name
             {
               targetPeopleModel = targetPeople[loop2];
+              logDebug("*** Contact type match but contact information does not.");
               matchContactTypeOnly = true;
             }
           
@@ -166,6 +166,7 @@ function compareContacts(srcCapId, targetCapId)
         
       }
     }
+    logDebug("********************** Done Scanning **********************");
     //3.3 It is a matched people model.  
     if (matchAllContactInfo)    
     {         
@@ -180,7 +181,7 @@ function compareContacts(srcCapId, targetCapId)
     // If contact type is the same but first name, last name, organization are different. 
     else if (!matchAllContactInfo && matchContactTypeOnly)
     {
-      logDebug("Conntact doesn't match. Inactivate contact with the same contact type.");
+      logDebug("Contact doesn't match. Inactivate contact with the same contact type.");
       // Inactivate the existing SITE contact.
       logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
       targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
@@ -191,7 +192,7 @@ function compareContacts(srcCapId, targetCapId)
     }
     else
     {
-      logDebug("Either contact type or info match.");
+      logDebug("Neither contact type or info match.");
     }
   }
     
