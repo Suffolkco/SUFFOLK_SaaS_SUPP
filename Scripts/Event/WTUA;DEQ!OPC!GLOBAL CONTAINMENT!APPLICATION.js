@@ -169,43 +169,45 @@ function compareContacts(srcCapId, targetCapId)
     }
     logDebug("* Done Scanning *");
     //3.3 It is a matched people model.  
-    if (matchAllContactInfo)    
-    {         
-      logDebug("Found contact type, first name and organization name match. Copy information from child to SITE.");
-      logDebug("********************************************************");
-            
-      //3.3.1 Copy information from source to target.
-			aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), targetPeopleModel.getCapContactModel());
-			//3.3.2 Copy contact address from source to target.
-			if(targetPeopleModel.getCapContactModel().getPeople() != null && sourcePeopleModel.getCapContactModel().getPeople())
-			{
-        logDebug("Set contact Address list.");
-				targetPeopleModel.getCapContactModel().getPeople().setContactAddressList(sourcePeopleModel.getCapContactModel().getPeople().getContactAddressList());
-			}			
-
-			//3.3.3 Edit People with source People information. 
-			aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());
-
-    }
-    // If contact type is the same but first name, last name, organization are different. 
-    else if (!matchAllContactInfo && matchContactTypeOnly && targetPeopleModel != null)
+    if (targetPeopleModel != null)
     {
-      logDebug("Contact doesn't match. Inactivate contact with the same contact type.");
-      logDebug("********************************************************");
-      // Inactivate the existing SITE contact.
-      logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
-      targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
-      aa.people.editCapContact(targetPeopleModel.getCapContactModel());
-      logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
-      //3.4.1 Create new people.
-			aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
+      if (matchAllContactInfo)    
+      {         
+        logDebug("Found contact type, first name and organization name match. Copy information from child to SITE.");
+        logDebug("********************************************************");
+              
+        //3.3.1 Copy information from source to target.
+        aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), targetPeopleModel.getCapContactModel());
+        //3.3.2 Copy contact address from source to target.
+        if(targetPeopleModel.getCapContactModel().getPeople() != null && sourcePeopleModel.getCapContactModel().getPeople())
+        {
+          logDebug("Set contact Address list.");
+          targetPeopleModel.getCapContactModel().getPeople().setContactAddressList(sourcePeopleModel.getCapContactModel().getPeople().getContactAddressList());
+        }			
+
+        //3.3.3 Edit People with source People information. 
+        aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());
+
+      }
+      // If contact type is the same but first name, last name, organization are different. 
+      else if (!matchAllContactInfo && matchContactTypeOnly)
+      {
+        logDebug("Contact doesn't match. Inactivate contact with the same contact type.");
+        logDebug("********************************************************");
+        // Inactivate the existing SITE contact.
+        logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
+        targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
+        aa.people.editCapContact(targetPeopleModel.getCapContactModel());
+        logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
+        //3.4.1 Create new people.
+        aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
+      }
+      else
+      {
+        logDebug("Neither contact type or info match.");
+      }
     }
-    else
-    {
-      logDebug("Neither contact type or info match.");
-    }
-  }
-    
+  }    
   
 }
 
