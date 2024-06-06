@@ -134,24 +134,35 @@ function compareContacts(srcCapId, targetCapId)
     if (targetPeople != null && targetPeople.length > 0)
     {
       for (loop2 in targetPeople)
-      {
-        if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
+      {        
+        var auditStatus = targetPeople[loop2].getCapContactModel().getPeople().getAuditStatus();
+        logDebug("Audit status: " + auditStatus);
+        
+        if (auditStatus == 'I')
         {
-          // fist name, organization name match aas well
-          if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+          logDebug("Audit Status for " + targetCapId.getCustomID() + " for " + targetPeople[loop2].getCapContactModel().getPeople().getContactType() + " is inactive.");
+          break;
+        }
+        else
+        {
+          if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
           {
-            targetPeopleModel = targetPeople[loop2];
-            logDebug("Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
-            matchAllContactInfo = true;
-            break;
-          }
-          else // Contact type match but not first, last or orgnaization name
-          {
-            targetPeopleModel = targetPeople[loop2];
-            matchContactTypeOnly = true;
-          }
-         
-        }       
+            // fist name, organization name match aas well
+            if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+            {
+              targetPeopleModel = targetPeople[loop2];
+              logDebug("Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
+              matchAllContactInfo = true;
+              break;
+            }
+            else // Contact type match but not first, last or orgnaization name
+            {
+              targetPeopleModel = targetPeople[loop2];
+              matchContactTypeOnly = true;
+            }
+          
+          }    
+        }   
         
       }
     }
@@ -199,6 +210,7 @@ function isMatchContactTypeLocal(capContactScriptModel, capContactScriptModel2)
   
   
   logDebug("Compare List: " + capId.getCustomID() + ": " + contactType1 + ", SITE record: " + contactType2);
+
 
   if ((contactType1 == null && contactType2 != null) 
     || (contactType1 != null && contactType2 == null))
