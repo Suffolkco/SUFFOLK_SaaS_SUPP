@@ -144,24 +144,26 @@ function compareContacts(srcCapId, targetCapId)
         }
         else
         {
+          // Contact Type match
           if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
           {
-            // fist name, organization name match aas well
-            if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
-            {
-              targetPeopleModel = targetPeople[loop2];
-              logDebug("***Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
-              matchAllContactInfo = true;
-              break;
-            }
-            else // Contact type match but not first, last or orgnaization name
-            {
-              targetPeopleModel = targetPeople[loop2];
-              logDebug("*** Contact type match but contact information does not.");
-              matchContactTypeOnly = true;
-              matchAllContactInfo = false;
-            }
-          
+            // Check Reference Contact ID
+            if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
+            {     // fist name, organization name match aas well
+              if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+              {
+                targetPeopleModel = targetPeople[loop2];
+                logDebug("***Found matching contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
+                matchAllContactInfo = true;
+                break;
+              }
+              else // Contact Type match but not first, last or orgnaization name
+              {
+                targetPeopleModel = targetPeople[loop2];
+                logDebug("*** Contact type match but contact information does not.");
+                matchContactTypeOnly = true;                
+              }
+            }          
           }    
         }   
         
@@ -170,29 +172,11 @@ function compareContacts(srcCapId, targetCapId)
     logDebug("* Done Scanning *");
     //3.3 It is a matched people model.  
     if (targetPeopleModel != null)
-    {
-      if (matchAllContactInfo)    
-      {         
-        logDebug("Found contact type, first name and organization name match. Copy information from child to SITE.");
-        logDebug("********************************************************");
-              
-        //3.3.1 Copy information from source to target.
-        aa.people.copyCapContactModel(sourcePeopleModel.getCapContactModel(), targetPeopleModel.getCapContactModel());
-        //3.3.2 Copy contact address from source to target.
-        if(targetPeopleModel.getCapContactModel().getPeople() != null && sourcePeopleModel.getCapContactModel().getPeople())
-        {
-          logDebug("Set contact Address list.");
-          targetPeopleModel.getCapContactModel().getPeople().setContactAddressList(sourcePeopleModel.getCapContactModel().getPeople().getContactAddressList());
-        }			
-
-        //3.3.3 Edit People with source People information. 
-        aa.people.editCapContactWithAttribute(targetPeopleModel.getCapContactModel());
-
-      }
+    {      
       // If contact type is the same but first name, last name, organization are different. 
-      else if (!matchAllContactInfo && matchContactTypeOnly)
+      if (matchAllContactInfo || matchContactTypeOnly)
       {
-        logDebug("Contact doesn't match. Inactivate contact with the same contact type.");
+        logDebug("Reference contact ID or contact info doesn't match. Inactivate contact with the same contact type.");
         logDebug("********************************************************");
         // Inactivate the existing SITE contact.
         logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
@@ -206,11 +190,10 @@ function compareContacts(srcCapId, targetCapId)
         logDebug("Coped from: " + sourcePeopleModel.getCapContactModel().getPeople().getFirstName() + ", " + sourcePeopleModel.getCapContactModel().getPeople().getLastName() + ", " +
         sourcePeopleModel.getCapContactModel().getPeople().getBusinessName());
 
-
       }
       else
       {
-        logDebug("Neither contact type or info match.");
+        logDebug("Reference contact ID is the same. No change has to be made.");
       }
     }
   }    
@@ -244,6 +227,33 @@ function isMatchContactTypeLocal(capContactScriptModel, capContactScriptModel2)
   return  true;
 }
 
+function isMatchContactRefIDLocal(capContactScriptModel, capContactScriptModel2)
+{
+  if (capContactScriptModel == null || capContactScriptModel2 == null)
+  {
+    return false;
+  }
+  var refContact1 = capContactScriptModel.getCapContactModel().getPeople().getRefContactNumber();
+  var refContact2 = capContactScriptModel2.getCapContactModel().getPeople().getRefContactNumber();
+  
+  
+  logDebug("Compare Contact Reference ID: " + capId.getCustomID() + "|" + refContact1 + ", SITE record|" + refContact2);
+
+
+  if ((refContact1 == null && refContact2 != null) 
+    || (refContact1 != null && refContact2 == null))
+  {
+    return false;
+  }
+  if (refContact1 != null && !contactType1.equals(refContact2))
+  {
+    return false;
+  }
+  
+  return  true;
+}
+
+
 function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
 {
   if (capContactScriptModel == null || capContactScriptModel2 == null)
@@ -257,8 +267,22 @@ function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
   var lastName2 = capContactScriptModel2.getCapContactModel().getPeople().getLastName();
   var busName1 = capContactScriptModel.getCapContactModel().getPeople().getBusinessName();
   var busName2 = capContactScriptModel2.getCapContactModel().getPeople().getBusinessName();
-  
+  var refContact1 = capContactScriptModel.getCapContactModel().getPeople().getRefContactNumber();
+  var refContact2 = capContactScriptModel2.getCapContactModel().getPeople().getRefContactNumber();
+
+
   logDebug("Compare Contact Info: " + capId.getCustomID() + " |First name|" + firstName1 + "; SITE record: |First Name|" + firstName2 + "|, " +  capId.getCustomID() + ": |Last Name|" + lastName1 + "|, Site Last Name: |" + lastName2 + "|, " +  capId.getCustomID() + ": |Business Name|" + busName1 + "|, Site |Business Name: |" + busName2 + "|");
+  logDebug("Reference ID: " + refContact1 + ", " + refContact2);
+
+  if ((refContact1 == null && refContact2 != null) 
+    || (refContact1 != null && refContact2 == null))
+  {
+    return false;
+  }
+  if (refContact1 != null && !refContact1.equals(refContact2))
+  {
+    return false;
+  }
 
   if ((firstName1 == null && firstName2 != null) 
     || (firstName1 != null && firstName2 == null))
