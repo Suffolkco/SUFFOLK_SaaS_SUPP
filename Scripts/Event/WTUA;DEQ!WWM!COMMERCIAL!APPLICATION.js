@@ -38,16 +38,15 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 		}
 		
 	}
+	var prelimCondTxt = AInfo["Permit Conditions Text"];
+	if (!matches(prelimCondTxt, null, undefined, ""))				
+	{
+		workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
+	}
 
 	//workflowPrelimApproval("WWM Permit Conditions Script", "RECORDID");
 	if (count == 1)
-	{
-		var prelimCondTxt = AInfo["Permit Conditions Text"];
-		if (!matches(prelimCondTxt, null, undefined, ""))				
-		{
-			workflowPrelimApprovalWithPin("WWM Permit Conditions", "WWM Permit Conditions Script", "RECORDID");
-		}
-
+	{		
 		//EHIMS-5151: Only if the workflow is the very first time, we add 3 years to the Expiration date//		
 		b1ExpResult = aa.expiration.getLicensesByCapID(capId)
 		if (b1ExpResult.getSuccess())
