@@ -80,7 +80,7 @@ if (wfTask == "Inspections" &&  (wfStatus == "Inspection Failure" || wfStatus ==
 
 	if (resultComments)
 	{
-		workflowInspectionResultedWWM("Inspection Corrections Required", "RECORDID");
+		workflowInspectionResultedWWM("Inspection Corrections Required Script", "RECORDID");
 	}
 }
 if (wfStatus == "Partial Final Approval")
