@@ -65,8 +65,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
 			logDebug("document type is: " + docList[doc].getDocCategory() + ", " + docList[doc].getRefDocumetntNo());
-	
-			if (docList[doc].getRefDocumetntNo() == reportRefDocNo)
+				
 			{
 				var docType = docList[doc].getDocCategory();
 				var docFileName = docList[doc].getFileName();
