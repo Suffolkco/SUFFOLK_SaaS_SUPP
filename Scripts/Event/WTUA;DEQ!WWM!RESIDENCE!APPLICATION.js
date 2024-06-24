@@ -64,20 +64,28 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	{
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
-			logDebug("document type is: " + docList[doc].getDocCategory() + ", " + docList[doc].getRefDocumetntNo());
+			logDebug("document type is: " + docList[doc].getDocCategory());
 				
 			{
 				var docType = docList[doc].getDocCategory();
 				var docFileName = docList[doc].getFileName();
 
 				logDebug("docFileName: " + docFileName);
-				debugObject(rFile);
+				debugObject(docList[doc]);
+				deleteRoleModel = docList[doc].getDeleteRoleModel();
+				debugObject("deleteRoleModel: " + deleteRoleModel);
+			
+				viewTitleRoleModel = docList[doc].getViewRoleModel();
+				debugObject("viewTitleRoleModel: " + viewTitleRoleModel);
+			
+
 				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
 				logDebug("View Title role: " + docList[doc].getViewTitleRole());
 				logDebug("View Delete role: " + docList[doc].getDeleteRole());
-				logDebug("View upload role: " + docList[doc].getUploadRole());
+				
 				logDebug("Set view title to true");
 				docList[doc].setViewTitleable(true)
+				
 				logDebug("View Title role: " + docList[doc].getViewTitleRole());	
 
 			}
