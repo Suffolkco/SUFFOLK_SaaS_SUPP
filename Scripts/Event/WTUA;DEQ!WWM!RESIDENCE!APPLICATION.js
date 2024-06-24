@@ -57,43 +57,38 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 		
 	thisFileDocArray = rFile.split("\\\\");
 	logDebug("Filename: " + thisFileDocArray[thisFileDocArray.length - 1]);
-
-	debugObject(rFile);
-
-	//reportRefDocNo = rFile.getRefDocumetntNo();
-	//logDebug("reportRefDocNo: " + reportRefDocNo);
+	fileName = thisFileDocArray[thisFileDocArray.length - 1];
+	fileName = fileName.replace(/\\/g, '');
+	
 	
 	var docList = getDocumentList();
 	for (doc in docList)
 	{
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
-			logDebug("document type is: " + docList[doc].getDocCategory());
-				
+			var docFileName = docList[doc].getFileName();
+			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
+			if (matches(docFileName, fileName))	
 			{
-				var docType = docList[doc].getDocCategory();
-				var docFileName = docList[doc].getFileName();
-
-				logDebug("docFileName: " + docFileName);
+				var docType = docList[doc].getDocCategory();			
+				logDebug("*");
 				debugObject(docList[doc]);
 				deleteRoleModel = docList[doc].getDeleteRoleModel();
+				logDebug("***");
 				debugObject("deleteRoleModel: " + deleteRoleModel);
 			
 				viewTitleRoleModel = docList[doc].getViewRoleModel();
+				logDebug("******");
 				debugObject("viewTitleRoleModel: " + viewTitleRoleModel);
 				
 				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
 				logDebug("View Title role: " + docList[doc].getViewTitleable());
 				logDebug("View Delete role: " + docList[doc].getDeleteable());
 				
-				logDebug("Set view title to true");
-				docList[doc].setViewTitleable(true)
-				
-				logDebug("View Title role: " + docList[doc].getViewTitleRole());	
-
+				logDebug("Set ACA permission view title to true");				
 				// No ACA Permission to view 
-				docList[doc].viewTitleable(false);
-
+				docList[doc].setViewTitleable(false)
+				logDebug("View Title role: " + docList[doc].getViewTitleRole());	
 			}
 		}
 	}
