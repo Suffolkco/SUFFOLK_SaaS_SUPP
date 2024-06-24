@@ -54,9 +54,10 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	// NOI report - from reportParams in the earlier loop.                           
 	rFile = generateReportLocal(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
+	debugObject(rFile);
 
-	reportRefDocNo = rFile.getRefDocumetntNo();
-	logDebug("reportRefDocNo: " + reportRefDocNo);
+	//reportRefDocNo = rFile.getRefDocumetntNo();
+	//logDebug("reportRefDocNo: " + reportRefDocNo);
 	
 	var docList = getDocumentList();
 	for (doc in docList)
@@ -69,7 +70,9 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 			{
 				var docType = docList[doc].getDocCategory();
 				var docFileName = docList[doc].getFileName();
+
 				logDebug("docFileName: " + docFileName);
+				debugObject(rFile);
 				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
 				logDebug("View Title role: " + docList[doc].getViewTitleRole());
 				logDebug("View Delete role: " + docList[doc].getDeleteRole());
@@ -1230,3 +1233,11 @@ function generateReportLocal(aaReportName,parameters,rModule) {
          return false;
     }
 }
+
+function debugObject(object) {
+	var output = ''; 
+	for (property in object) { 
+	  output += "<font color=red>" + property + "</font>" + ': ' + "<bold>" + object[property] + "</bold>" +'; ' + "<BR>"; 
+	} 
+	logDebug(output);
+} 
