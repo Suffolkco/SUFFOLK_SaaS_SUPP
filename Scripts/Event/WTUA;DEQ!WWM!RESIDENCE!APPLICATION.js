@@ -56,18 +56,17 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	logDebug("This is the NOI report: " + rFile);  
 
 	var docCat = 'Notice of Incomplete';
-   var docCheck = false;
-
-   var documentModelArray = aa.env.getValue("DocumentModelList");
-   
-   for (var d = 0; d < documentModelArray.size(); d++) {
-      var docGrp = documentModelArray.get(d).getDocGroup();
-      var attachDocCat = documentModelArray.get(d).getDocCategory();
+ 
+   documentModels = getDocumentList();
+    
+   for (var d = 0; d < documentModels; d++) {
+      var docGrp = documentModels[d].getDocGroup();
+      var attachDocCat = documentModels[d].getDocCategory();
       logDebugLocal("docGrp " + docGrp); 
       logDebugLocal("attachDocCat " + attachDocCat); 
       if (attachDocCat == docCat)
       {
-		logDebug("ACA Permission:" + documentModelArray.get(d).getAcaPermissions());        
+		logDebug("ACA Permission:" + documentModels[d].getAcaPermissions());        
       }
    }
 
@@ -1172,4 +1171,20 @@ function getAddressInALine() {
         }
     }
     return null;
+}
+
+function getDocumentList()
+{
+    // Returns an array of documentmodels if any
+    // returns an empty array if no documents
+
+    var docListArray = new Array();
+
+    docListResult = aa.document.getCapDocumentList(capId, currentUserID);
+
+    if (docListResult.getSuccess())
+    {
+        docListArray = docListResult.getOutput();
+    }
+    return docListArray;
 }
