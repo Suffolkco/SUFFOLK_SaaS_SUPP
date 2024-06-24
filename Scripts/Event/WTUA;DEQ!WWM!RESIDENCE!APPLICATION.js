@@ -55,7 +55,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	rFile = generateReportLocal(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
 		
-	thisFileDocArray = rFile.split("\\");
+	thisFileDocArray = rFile.split("\\\\");
 	logDebug("Filename: " + thisFileDocArray[thisFileDocArray.length - 1]);
 
 	debugObject(rFile);
