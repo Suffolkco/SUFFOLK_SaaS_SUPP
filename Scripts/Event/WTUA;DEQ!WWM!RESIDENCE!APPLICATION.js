@@ -59,7 +59,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
    var docCheck = false;
 
    var documentModelArray = aa.env.getValue("DocumentModelList");
-   var docModel = documentModelArray.toArray();
+   
    for (var d = 0; d < documentModelArray.size(); d++) {
       var docGrp = documentModelArray.get(d).getDocGroup();
       var attachDocCat = documentModelArray.get(d).getDocCategory();
