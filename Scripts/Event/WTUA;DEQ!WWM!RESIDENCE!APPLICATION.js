@@ -54,7 +54,33 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	// NOI report - from reportParams in the earlier loop.                           
 	rFile = generateReportLocal(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
+
+	reportRefDocNo = rFile.getRefDocumetntNo();
+	logDebug("reportRefDocNo: " + reportRefDocNo);
 	
+	var docList = getDocumentList();
+	for (doc in docList)
+	{
+		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
+		{
+			logDebug("document type is: " + docList[doc].getDocCategory() + ", " + docList[doc].getRefDocumetntNo());
+	
+			if (docList[doc].getRefDocumetntNo() == reportRefDocNo)
+			{
+				var docType = docList[doc].getDocCategory();
+				var docFileName = docList[doc].getFileName();
+				logDebug("docFileName: " + docFileName);
+				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
+				logDebug("View Title role: " + docList[doc].getViewTitleRole());
+				logDebug("View Delete role: " + docList[doc].getDeleteRole());
+				logDebug("View upload role: " + docList[doc].getUploadRole());
+				logDebug("Set view title to true");
+				docList[doc].setViewTitleable(true)
+				logDebug("View Title role: " + docList[doc].getViewTitleRole());	
+
+			}
+		}
+	}
 
 }
 if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
@@ -1181,13 +1207,7 @@ function generateReportLocal(aaReportName,parameters,rModule) {
     report = report.getOutput();
     
     report.setModule(rModule);
-    report.setCapId(capId);
-	logDebug("View Title role: " + report.getViewTitleRole());
-	logDebug("View Delete role: " + report.getDeleteRole());
-	logDebug("View upload role: " + report.getUploadRole());
-	logDebug("Set view title to true");
-	report.setViewTitleable(true)
-	logDebug("View Title role: " + report.getViewTitleRole());	
+    report.setCapId(capId);	
     report.setReportParameters(parameters);
 
     var permit = aa.reportManager.hasPermission(reportName,currentUserID);
