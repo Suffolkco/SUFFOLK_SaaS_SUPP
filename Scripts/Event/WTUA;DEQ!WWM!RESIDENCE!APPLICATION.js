@@ -54,6 +54,10 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	// NOI report - from reportParams in the earlier loop.                           
 	rFile = generateReportLocal(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
+		
+	thisFileDocArray = rFile.split("/");
+	logDebug("Filename: " + thisFileDocArray[thisFileDocArray.length - 1]);
+
 	debugObject(rFile);
 
 	//reportRefDocNo = rFile.getRefDocumetntNo();
@@ -77,16 +81,18 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 			
 				viewTitleRoleModel = docList[doc].getViewRoleModel();
 				debugObject("viewTitleRoleModel: " + viewTitleRoleModel);
-			
-
+				
 				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
-				logDebug("View Title role: " + docList[doc].getViewTitleRole());
-				logDebug("View Delete role: " + docList[doc].getDeleteRole());
+				logDebug("View Title role: " + docList[doc].getViewTitleable());
+				logDebug("View Delete role: " + docList[doc].getDeleteable());
 				
 				logDebug("Set view title to true");
 				docList[doc].setViewTitleable(true)
 				
 				logDebug("View Title role: " + docList[doc].getViewTitleRole());	
+
+				// No ACA Permission to view 
+				docList[doc].viewTitleable(false);
 
 			}
 		}
