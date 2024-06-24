@@ -59,9 +59,9 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	logDebug("Filename: " + thisFileDocArray[thisFileDocArray.length - 1]);
 	fileName = thisFileDocArray[1, thisFileDocArray.length - 1];
 	
-	fileName = thisFileDocArray.substring(1, thisFileDocArray.length - 1)
+	fileName = fileName.substring(1, thisFileDocArray.length - 1)
 	logDebug("fileName: " + fileName);
-	
+
 	var docList = getDocumentList();
 	for (doc in docList)
 	{
