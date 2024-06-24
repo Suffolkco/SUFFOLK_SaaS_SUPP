@@ -60,7 +60,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
    
    for (doc in documentModels)  
 	{
-		logDebugLocal("docGrp " + documentModels[doc].getDocCategory()); 		
+		logDebug("docGrp " + documentModels[doc].getDocCategory()); 		
 
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
