@@ -55,19 +55,17 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	rFile = generateReport(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
 
-	var docCat = 'Notice of Incomplete';
- 
+	
    documentModels = getDocumentList();
-    
-   for (var d = 0; d < documentModels; d++) {
-      var docGrp = documentModels[d].getDocGroup();
-      var attachDocCat = documentModels[d].getDocCategory();
-      logDebugLocal("docGrp " + docGrp); 
-      logDebugLocal("attachDocCat " + attachDocCat); 
-      if (attachDocCat == docCat)
-      {
-		logDebug("ACA Permission:" + documentModels[d].getAcaPermissions());        
-      }
+   
+   for (doc in documentModels)  
+	{
+		logDebugLocal("docGrp " + documentModels[doc].getDocCategory()); 		
+
+		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
+		{
+			logDebug("ACA Permission:" + documentModels[doc].getAcaPermissions());        
+		}   
    }
 
 
