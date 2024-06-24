@@ -55,6 +55,21 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	rFile = generateReport(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
 
+	var docCat = 'Notice of Incomplete';
+   var docCheck = false;
+
+   for (var d = 0; d < documentModelArray.size(); d++) {
+      var docGrp = documentModelArray.get(d).getDocGroup();
+      var attachDocCat = documentModelArray.get(d).getDocCategory();
+      logDebugLocal("docGrp " + docGrp); 
+      logDebugLocal("attachDocCat " + attachDocCat); 
+      if (attachDocCat == docCat)
+      {
+		logDebug("ACA Permission:" + documentModelArray.get(d).getAcaPermissions());        
+      }
+   }
+
+
 }
 if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
 {
