@@ -52,22 +52,9 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	reportParams1.put("RECORD_ID", capId.getCustomID());
 	thisReport = 'Notice of Incomplete Script';
 	// NOI report - from reportParams in the earlier loop.                           
-	rFile = generateReport(thisReport, reportParams1, appTypeArray[0])
+	rFile = generateReportLocal(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
-
 	
-   documentModels = getDocumentList();
-   
-   for (doc in documentModels)  
-	{
-		logDebug("docGrp " + documentModels[doc].getDocCategory()); 		
-
-		if (matches(documentModels[doc].getDocCategory(), "Notice of Incomplete"))
-		{
-			logDebug("ACA Permission:" + documentModels[doc].getAcaPermissions());        
-		}   
-   }
-
 
 }
 if (wfTask == "Plans Coordination" && wfStatus == "Plan Revisions Needed")
@@ -1185,4 +1172,41 @@ function getDocumentList()
         docListArray = docListResult.getOutput();
     }
     return docListArray;
+}
+
+function generateReportLocal(aaReportName,parameters,rModule) {
+	var reportName = aaReportName;
+      
+    report = aa.reportManager.getReportInfoModelByName(reportName);
+    report = report.getOutput();
+    
+    report.setModule(rModule);
+    report.setCapId(capId);
+	logDebug("View Title role: " + report.getViewTitleRole());
+	logDebug("View Delete role: " + report.getDeleteRole());
+	logDebug("View upload role: " + report.getUploadRole());
+	logDebug("Set view title to true");
+	report.setViewTitleable(true)
+	logDebug("View Title role: " + report.getViewTitleRole());	
+    report.setReportParameters(parameters);
+
+    var permit = aa.reportManager.hasPermission(reportName,currentUserID);
+
+    if(permit.getOutput().booleanValue()) {
+       var reportResult = aa.reportManager.getReportResult(report);
+     
+       if(reportResult) {
+	       reportResult = reportResult.getOutput();
+	       var reportFile = aa.reportManager.storeReportToDisk(reportResult);
+			logMessage("Report Result: "+ reportResult);
+	       reportFile = reportFile.getOutput();
+	       return reportFile
+       } else {
+       		logMessage("Unable to run report: "+ reportName + " for Admin" + systemUserObj);
+       		return false;
+       }
+    } else {
+         logMessage("No permission to report: "+ reportName + " for Admin" + systemUserObj);
+         return false;
+    }
 }
