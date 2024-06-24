@@ -62,7 +62,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	{
 		logDebug("docGrp " + documentModels[doc].getDocCategory()); 		
 
-		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
+		if (matches(documentModels[doc].getDocCategory(), "Notice of Incomplete"))
 		{
 			logDebug("ACA Permission:" + documentModels[doc].getAcaPermissions());        
 		}   
