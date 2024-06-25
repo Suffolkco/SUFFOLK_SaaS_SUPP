@@ -106,12 +106,12 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				debugObject(viewRoleModel);
 				docList[doc].setViewTitleRoleModel(viewRoleModel);
 
-				logDebug("Set ACA permission view title to false");				
+				logDebug("Set ACA permission view title to true");				
 
 				// No ACA Permission to view 
 				docList[doc].setViewable(true);				
 				docList[doc].setViewTitleable(true)
-				docList[doc].setViewTitleRole(true)
+				docList[doc].setViewTitleRole("Yes")
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
 				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
 				logDebug("Get View Title Role Model: " + docList[doc].	getViewTitleRoleModel());	
