@@ -113,7 +113,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				docList[doc].setViewTitleable(false)
 				docList[doc].setViewTitleRole(false)
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
-				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole()());	
+				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
 				logDebug("Get View Title Role Model: " + docList[doc].	getViewTitleRoleModel());	
 			}
 		}
