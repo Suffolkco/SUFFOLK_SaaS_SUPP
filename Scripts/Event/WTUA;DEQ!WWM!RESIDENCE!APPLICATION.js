@@ -70,12 +70,17 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	var docList = getDocumentList();
 	for (doc in docList)
 	{
-		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
+		//if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
 			//debugObject(docList[doc]);
 			var docFileName = docList[doc].getFileName();			
+			logDebug("*");
 			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
-			
+			logDebug("***");
+			logDebug("Get ACA Permission: " + docList[doc].getAcaPermissions());
+			logDebug("******");
+			debugObject("docList[doc]: " + docList[doc]);
+			logDebug("******");
 			splitter = '/DEQ/WWM/'
 			var indexOf = docFileName.indexOf(splitter);
 			docFileName = docFileName.slice(indexOf+splitter.length);
@@ -84,17 +89,12 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 
 			if (matches(docFileName, fileName))	
 			{
-				var docType = docList[doc].getDocCategory();			
-				logDebug("*");
-				
-				deleteRoleModel = docList[doc].getDeleteRoleModel();
-				logDebug("***");
-				debugObject("docList[doc]: " + docList[doc]);
+				var docType = docList[doc].getDocCategory();	
+				deleteRoleModel = docList[doc].getDeleteRoleModel();	
+				viewTitleRoleModel = docList[doc].getViewRoleModel();				
 			
-				viewTitleRoleModel = docList[doc].getViewRoleModel();
-				logDebug("******");
-			
-				
+				//docList[doc].setAcaPermissions("Yes");
+
 				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
 				logDebug("View Title role: " + docList[doc].getViewTitleable());
 				logDebug("View Delete role: " + docList[doc].getDeleteable());
