@@ -60,15 +60,20 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	//fileName = thisFileDocArray[1, thisFileDocArray.length - 1];	
 	fileName = "/" + thisFileDocArray[thisFileDocArray.length - 1];
 	logDebug("fileName: " + fileName);
+	fileName = fileName.substring(filename.indexOf("DEQWWM" + 1));
+	logDebug("fileName substring: " + fileName);
 
 	var docList = getDocumentList();
 	for (doc in docList)
 	{
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
-			debugObject(docList[doc]);
-			var docFileName = docList[doc].getFileName();
+			//debugObject(docList[doc]);
+			var docFileName = docList[doc].getFileName();			
 			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
+			docFileName = docFileName.substring(filename.indexOf("WWM/" + 1));
+			logDebug("docFileName is: " + ddocFileName);
+			
 			if (matches(docFileName, fileName))	
 			{
 				var docType = docList[doc].getDocCategory();			
