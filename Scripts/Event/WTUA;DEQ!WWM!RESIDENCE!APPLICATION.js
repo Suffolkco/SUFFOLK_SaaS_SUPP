@@ -68,18 +68,19 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	logDebug("fileName sliced: " + fileName);
 
 	var docList = getDocumentList();
+	debugObject("ddocList: " + docList);
 	for (doc in docList)
 	{
 		//if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
-			//debugObject(docList[doc]);
+			debugObject(docList[doc]);
 			var docFileName = docList[doc].getFileName();			
 			logDebug("*");
 			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
 			logDebug("***");
 			logDebug("Get ACA Permission: " + docList[doc].getAcaPermissions());
 			logDebug("******");
-			debugObject("docList[doc]: " + docList[doc]);
+			logDebug("Get viewable: " + docList[doc].getViewable());
 			logDebug("******");
 			splitter = '/DEQ/WWM/'
 			var indexOf = docFileName.indexOf(splitter);
@@ -109,9 +110,9 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				logDebug("Set ACA permission view title to true");				
 
 				// No ACA Permission to view 
-				docList[doc].setViewable(true);				
-				docList[doc].setViewTitleable(true)
-				docList[doc].setViewTitleRole("Yes")
+				//docList[doc].setViewable(true);				
+				//docList[doc].setViewTitleable(true)
+				//docList[doc].setViewTitleRole("Yes")
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
 				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
 				logDebug("Get View Title Role Model: " + docList[doc].	getViewTitleRoleModel());	
