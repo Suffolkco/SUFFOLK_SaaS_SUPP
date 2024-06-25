@@ -58,7 +58,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	thisFileDocArray = rFile.split("\\\\");
 	
 	//fileName = thisFileDocArray[1, thisFileDocArray.length - 1];	
-	fileName = thisFileDocArray[thisFileDocArray.length - 1];
+	fileName = "/" + thisFileDocArray[thisFileDocArray.length - 1];
 	logDebug("fileName: " + fileName);
 
 	var docList = getDocumentList();
