@@ -66,13 +66,14 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	{
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
+			debugObject(docList[doc]);
 			var docFileName = docList[doc].getFileName();
 			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
 			if (matches(docFileName, fileName))	
 			{
 				var docType = docList[doc].getDocCategory();			
 				logDebug("*");
-				debugObject(docList[doc]);
+				
 				deleteRoleModel = docList[doc].getDeleteRoleModel();
 				logDebug("***");
 				debugObject("deleteRoleModel: " + deleteRoleModel);
