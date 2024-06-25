@@ -86,6 +86,13 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 
 			logDebug("docFileName sliced: " + docFileName);
 
+			logDebug("View Title role: " + docList[doc].getViewTitleable());
+			logDebug("View Delete role: " + docList[doc].getDeleteable());		
+			logDebug("upload role: " + docList[doc].getUploadRoleModel());
+			logDebug("delete role: " + docList[doc].getDeleteRole());
+			logDebug("Get View Role " + docList[doc].getViewRole());	
+						
+
 			if (matches(docFileName, fileName))	
 			{
 				var docType = docList[doc].getDocCategory();	
@@ -96,24 +103,18 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				
 			
 				logDebug("******");
-	
-				logDebug("View Title role: " + docList[doc].getViewTitleable());
-				logDebug("View Delete role: " + docList[doc].getDeleteable());
-		
-				logDebug("upload role: " + docList[doc].getUploadRoleModel());
-				logDebug("delete role: " + docList[doc].getDeleteRole());
-				
-							
+			
 				// No ACA Permission to view 
 				docList[doc].setViewTitleable(true)
 				docList[doc].setViewable(false);								
 				
 				//docList[doc].setViewTitleRole("Yes")
+				logDebug("Get View Role " + docList[doc].getViewRole());	
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
 				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
 				logDebug("Get View Title Role Model: " + docList[doc].getViewTitleRoleModel());	
 
-				setDeleteRole()
+			
 
 			}
 		}
