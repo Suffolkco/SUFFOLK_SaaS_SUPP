@@ -60,8 +60,12 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	fileName = thisFileDocArray[1, thisFileDocArray.length - 1];	
 	//DEQWWM4943_Prelim_NOI_20240625_091638.pdf
 	logDebug("fileName: " + fileName);
-	fileName = fileName.substring(fileName.indexOf("DEQWWM" + 1));
-	logDebug("fileName substring: " + fileName);
+	var splitter = 'DEQWWM'
+	var indexOf = fileName.indexOf(splitter);
+
+	fileName = fileName.slice(indexOf+splitter.length);
+
+	logDebug("fileName sliced: " + fileName);
 
 	var docList = getDocumentList();
 	for (doc in docList)
@@ -72,7 +76,12 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 			var docFileName = docList[doc].getFileName();			
 			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
 			docFileName = docFileName.substring(docFileName.indexOf("WWM/" + 1));
-			logDebug("docFileName is: " + ddocFileName);
+
+			splitter = '/DEQ/WWM/'
+			var indexOf = docFileName.indexOf(splitter);
+			docFileName = docFileName.slice(indexOf+splitter.length);
+
+			logDebug("docFileName sliced: " + ddocFileName);
 
 			if (matches(docFileName, fileName))	
 			{
