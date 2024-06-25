@@ -98,12 +98,20 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
 				logDebug("View Title role: " + docList[doc].getViewTitleable());
 				logDebug("View Delete role: " + docList[doc].getDeleteable());
+				logDebug("Viewable: " + docList[doc].getViewable());
+				logDebug("upload role: " + docList[doc].getUploadRoleModel());
+				logDebug("delete role: " + docList[doc].getDeleteRole());
 				
+				viewRoleModel = docList[doc].getViewTitleRoleModel();
+				debugObject(viewRoleModel);
+				docList[doc].setViewTitleRoleModel(viewRoleModel);
+
 				logDebug("Set ACA permission view title to true");				
+
 				// No ACA Permission to view 
-				docList[doc].setViewable(false);
-				
+				docList[doc].setViewable(false);				
 				docList[doc].setViewTitleable(false)
+				logDebug("View Title: " + docList[doc].getViewTitleable());	
 				logDebug("View Title role: " + docList[doc].getViewTitleRole());	
 			}
 		}
