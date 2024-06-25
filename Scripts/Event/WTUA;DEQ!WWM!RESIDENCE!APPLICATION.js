@@ -98,17 +98,14 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				var docType = docList[doc].getDocCategory();	
 				deleteRoleModel = docList[doc].getDeleteRoleModel();	
 				viewTitleRoleModel = docList[doc].getViewRoleModel();				
-				
-			
-				
+					
 			
 				logDebug("******");
 			
 				// No ACA Permission to view 
+				// If true, use the permission set here rather than default document type
 				docList[doc].setViewTitleable(true)
-				docList[doc].setViewable(false);								
 				
-				//docList[doc].setViewTitleRole("Yes")
 				logDebug("Get View Role " + docList[doc].getViewRole());	
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
 				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
