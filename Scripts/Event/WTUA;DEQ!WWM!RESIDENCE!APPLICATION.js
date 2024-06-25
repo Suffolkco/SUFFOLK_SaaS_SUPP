@@ -74,12 +74,13 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 		{
 			//debugObject(docList[doc]);
 			var docFileName = docList[doc].getFileName();			
-			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);		
+			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
+			
 			splitter = '/DEQ/WWM/'
 			var indexOf = docFileName.indexOf(splitter);
 			docFileName = docFileName.slice(indexOf+splitter.length);
 
-			logDebug("docFileName sliced: " + ddocFileName);
+			logDebug("docFileName sliced: " + docFileName);
 
 			if (matches(docFileName, fileName))	
 			{
