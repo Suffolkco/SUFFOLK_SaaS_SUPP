@@ -73,15 +73,13 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	{
 		//if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
+			logDebug("***");
 			debugObject(docList[doc]);
+			logDebug("******");
 			var docFileName = docList[doc].getFileName();			
 			logDebug("*");
 			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
-			logDebug("***");
-			logDebug("Get ACA Permission: " + docList[doc].getAcaPermissions());
-			logDebug("******");
-			logDebug("Get viewable: " + docList[doc].getViewable());
-			logDebug("******");
+			
 			splitter = '/DEQ/WWM/'
 			var indexOf = docFileName.indexOf(splitter);
 			docFileName = docFileName.slice(indexOf+splitter.length);
@@ -93,29 +91,30 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 				var docType = docList[doc].getDocCategory();	
 				deleteRoleModel = docList[doc].getDeleteRoleModel();	
 				viewTitleRoleModel = docList[doc].getViewRoleModel();				
+				
 			
-				//docList[doc].setAcaPermissions("Yes");
-
-				logDebug("Ref Document No: " + docList[doc].getRefDocumetntNo());
+				
+			
+				logDebug("******");
+	
 				logDebug("View Title role: " + docList[doc].getViewTitleable());
 				logDebug("View Delete role: " + docList[doc].getDeleteable());
-				logDebug("Viewable: " + docList[doc].getViewable());
+		
 				logDebug("upload role: " + docList[doc].getUploadRoleModel());
 				logDebug("delete role: " + docList[doc].getDeleteRole());
 				
-				viewRoleModel = docList[doc].getViewTitleRoleModel();
-				debugObject(viewRoleModel);
-				docList[doc].setViewTitleRoleModel(viewRoleModel);
-
-				logDebug("Set ACA permission view title to true");				
-
+							
 				// No ACA Permission to view 
-				//docList[doc].setViewable(true);				
-				//docList[doc].setViewTitleable(true)
+				docList[doc].setViewTitleable(true)
+				docList[doc].setViewable(false);								
+				
 				//docList[doc].setViewTitleRole("Yes")
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
 				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
-				logDebug("Get View Title Role Model: " + docList[doc].	getViewTitleRoleModel());	
+				logDebug("Get View Title Role Model: " + docList[doc].getViewTitleRoleModel());	
+
+				setDeleteRole()
+
 			}
 		}
 	}
