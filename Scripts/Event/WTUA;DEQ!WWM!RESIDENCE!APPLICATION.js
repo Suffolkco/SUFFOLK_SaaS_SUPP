@@ -56,10 +56,9 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	logDebug("This is the NOI report: " + rFile);  
 		
 	thisFileDocArray = rFile.split("\\\\");
-	logDebug("Filename: " + thisFileDocArray[thisFileDocArray.length - 1]);
-	fileName = thisFileDocArray[1, thisFileDocArray.length - 1];
 	
-	
+	//fileName = thisFileDocArray[1, thisFileDocArray.length - 1];	
+	fileName = thisFileDocArray[thisFileDocArray.length - 1];
 	logDebug("fileName: " + fileName);
 
 	var docList = getDocumentList();
