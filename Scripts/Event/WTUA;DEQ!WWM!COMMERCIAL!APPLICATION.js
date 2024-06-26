@@ -12,7 +12,44 @@ var emailText = "";
 	// NOI report - from reportParams in the earlier loop.                           
 	rFile = generateReport(thisReport, reportParams1, appTypeArray[0])
 	logDebug("This is the NOI report: " + rFile);  
+	thisFileDocArray = rFile.split("\\\\");	
+	fileName = thisFileDocArray[1, thisFileDocArray.length - 1];		
+	logDebug("fileName: " + fileName);
+	var splitter = 'DEQWWM'
+	var indexOf = fileName.indexOf(splitter);
+	fileName = fileName.slice(indexOf+splitter.length);
+	logDebug("fileName sliced: " + fileName);
+	var docList = getDocumentList();
+	
+	for (doc in docList)
+	{
+		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
+		{
+			logDebug("***");
+			debugObject(docList[doc]);
+			logDebug("******");
+			var docFileName = docList[doc].getFileName();			
+			logDebug("*");
+			logDebug("document type is: " + docList[doc].getDocCategory()+  ", " + docFileName);
+			
+			splitter = '/DEQ/WWM/'
+			var indexOf = docFileName.indexOf(splitter);
+			docFileName = docFileName.slice(indexOf+splitter.length);
+			logDebug("docFileName sliced: " + docFileName);
 
+			if (matches(docFileName, fileName))	
+			{
+				var docType = docList[doc].getDocCategory();								
+				logDebug("******");					
+				//it's the combination of two characters. So for first two zeros, 
+				//it's the permission for Registered ACA Users, so if you set it to 00, no permission, set it to 11 and they have the permission. 
+				//Then second two zeros are for CAP Creator and so forth.
+
+				docList[doc].setViewTitleRole("0000000001");
+				aa.document.updateDocument(docList[doc]);	
+			}
+		}
+	}
 }
 //EHIMS-5151: 
 // Get workflow history to make sure only the very first time we are at this task, we proceed:
