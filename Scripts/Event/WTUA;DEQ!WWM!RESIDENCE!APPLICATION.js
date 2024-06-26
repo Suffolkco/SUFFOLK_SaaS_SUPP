@@ -101,10 +101,15 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 					
 			
 				logDebug("******");
-			
+				docList[doc].setViewTitleable(true)
+				//docArray[x].setViewRole("0100000000");
+				aa.document.updateDocument(docList[doc]);			
+				
+
+
 				// No ACA Permission to view 
 				// If true, use the permission set here rather than default document type
-				docList[doc].setViewTitleable(true)
+				
 				
 				logDebug("Get View Role " + docList[doc].getViewRole());	
 				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
