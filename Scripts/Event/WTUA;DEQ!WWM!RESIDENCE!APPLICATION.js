@@ -101,8 +101,8 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 					
 			
 				logDebug("******");
-				docList[doc].setViewTitleable(true)
-				//docArray[x].setViewRole("0100000000");
+				//docList[doc].setViewTitleable(true)
+				docList[doc].setViewRole("0100000000");
 				aa.document.updateDocument(docList[doc]);			
 				
 
