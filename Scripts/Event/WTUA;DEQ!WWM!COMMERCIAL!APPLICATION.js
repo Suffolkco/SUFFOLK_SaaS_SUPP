@@ -26,7 +26,7 @@ var emailText = "";
 		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
 			logDebug("***");
-			debugObject(docList[doc]);
+			//debugObject(docList[doc]);
 			logDebug("******");
 			var docFileName = docList[doc].getFileName();			
 			logDebug("*");
