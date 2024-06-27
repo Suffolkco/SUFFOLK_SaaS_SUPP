@@ -1,4 +1,4 @@
-var showDebug = false;
+var showDebug = true;
  
 // EHIMS-831
 if (wfTask == "Review" && (wfStatus == "Complete" || wfStatus == "OWM Review Required"))
@@ -45,7 +45,11 @@ function workflowFoodReviewCompleteWWMLocal(reportName, reportParamRecID)
 	}
 	for (con in conArray)
 	{
-        conEmail += conArray[con].email + "; ";
+        if (!matches(conArray[con].email, null, undefined, ""))
+        {
+            conEmail += conArray[con].email + "; ";
+        }
+       
 	}
 	getRecordParams4Notification(emailParams);
     getWorkflowParams4Notification(emailParams);
