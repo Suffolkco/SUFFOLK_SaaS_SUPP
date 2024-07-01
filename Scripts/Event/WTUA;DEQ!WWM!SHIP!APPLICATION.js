@@ -545,6 +545,16 @@ if (wfTask == "Final Review")
             if (!matches(docToSend, null, undefined, ""))
             {
                 rcRFiles.push(docToSend);
+
+                 //EHIMS-5224: If it has a child IA app, copy document to child as well  
+                var childArray = getChildren("DEQ/Ecology/IA/Application", capId)
+                for(x in childArray){
+                    var iaCapId = childArray[x];
+                    logDebug("iaCapId: " + iaCapId);
+                    copyDocumentType(capId, iaCapId, "Final Sketch");                            
+                }
+                 
+
             }
             rcRFiles.push(rcReportFile);
         }
