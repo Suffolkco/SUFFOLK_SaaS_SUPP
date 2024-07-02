@@ -149,7 +149,8 @@ function compareContacts(srcCapId, targetCapId)
           {
             // Check Reference Contact ID
             logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getRefContactNumber());
-            
+           
+
             // Then check to see if the reference ID is the same
             if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
             {     
@@ -241,7 +242,7 @@ function overwriteContactsToParent(parentCapId)
 			    var xNewContact = Contacts[yy].getCapContactModel();            
 				var peopleModel = xNewContact.getPeople();
 				var newContact = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
-				newContact.setRefContactNumber(peopleModel.getRefContactNumber());
+				newContact.setRefContactNumber(xNewContact.getRefContactNumber());
 			    peopleModel.setServiceProviderCode(aa.getServiceProviderCode());
 			    peopleModel.setContactSeqNumber(newContact.getPeople().getContactSeqNumber());
 			    peopleModel.setAuditID(aa.getAuditID());
@@ -334,8 +335,8 @@ function isMatchPeopleLocal(capContactScriptModel, capContactScriptModel2)
   var lastName2 = capContactScriptModel2.getCapContactModel().getPeople().getLastName();
   var busName1 = capContactScriptModel.getCapContactModel().getPeople().getBusinessName();
   var busName2 = capContactScriptModel2.getCapContactModel().getPeople().getBusinessName();
-  var refContact1 = capContactScriptModel.getCapContactModel().getPeople().getRefContactNumber();
-  var refContact2 = capContactScriptModel2.getCapContactModel().getPeople().getRefContactNumber();
+  var refContact1 = capContactScriptModel.getCapContactModel().getRefContactNumber();
+  var refContact2 = capContactScriptModel2.getCapContactModel().getRefContactNumber();
 
 
   logDebug("Compare Contact Info: " + capId.getCustomID() + " |First name|" + firstName1 + "; SITE record: |First Name|" + firstName2 + "|, " +  capId.getCustomID() + ": |Last Name|" + lastName1 + "|, Site Last Name: |" + lastName2 + "|, " +  capId.getCustomID() + ": |Business Name|" + busName1 + "|, Site |Business Name: |" + busName2 + "|");
