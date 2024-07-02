@@ -144,16 +144,17 @@ function compareContacts(srcCapId, targetCapId)
         }
         else
         {
-          // Contact Type match
+          // First, compare if the they have the same Contact Type
           if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
           {
             // Check Reference Contact ID
             logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getPeople().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getPeople().getRefContactNumber());
             
+            // Then check to see if the reference ID is the same
             if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
             {     
-               logDebug("Reference IDs do not match.");
-              // 1. If same first, last name and organization name. Copy the contact information to the parent.
+               logDebug("Reference IDs do not match. ");
+              // 1. Compare if they have the same first, last name and organization name. 
               if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
               {
                 targetPeopleModel = targetPeople[loop2];
@@ -161,7 +162,7 @@ function compareContacts(srcCapId, targetCapId)
                 matchAllContactInfo = true;
                 break;
               }
-              //2. If different, inactive the existing parent reference ID and add the child contact to parent.
+              //2. If different contact info, inactive the existing parent reference ID and add the child contact to parent.
               else // Contact Type match but not first, last or orgnaization name
               {
                 targetPeopleModel = targetPeople[loop2];
@@ -181,9 +182,15 @@ function compareContacts(srcCapId, targetCapId)
     logDebug("* Done Scanning *");
     //3.3 It is a matched people model.  
     if (targetPeopleModel != null)
-    {      
-      // If contact type is the same but first name, last name, organization are different. 
-      if (matchAllContactInfo || matchContactTypeOnly)
+    { 
+
+      //If same first name, last name and orgnaization name, copy over other contact fields (phone, email, address) to the Parent contact (NOTE: overwrite)
+      if (matchAllContactInfo)     
+      {
+        overwriteContactsToParent(parentCapId);
+      }
+      // If contact type is the same but first name, last name, organization are different.
+      if (matchContactTypeOnly)
       {
         logDebug("Reference contact ID or contact info doesn't match. Inactivate contact with the same contact type.");
         logDebug("********************************************************");
@@ -209,6 +216,57 @@ function compareContacts(srcCapId, targetCapId)
   
 }
 
+function overwriteContactsToParent(parentCapId)
+{
+	var capContactResult = aa.people.getCapContactByCapID(capId);
+	var copied = 0;
+    var parentCapContactResult = aa.people.getCapContactByCapID(parentCapId);	
+    parentCapContacts = parentCapContactResult.getOutput();
+
+    
+	if (capContactResult.getSuccess())
+	{
+		var Contacts = capContactResult.getOutput();
+        // Route through renewal contacts
+		for (yy in Contacts)
+		{
+            renewalContactType = Contacts[yy].getCapContactModel().getContactType();
+
+			if(renewalContactType == "Billing Contact" ||
+            renewalContactType == "Tank Owner" ||
+            renewalContactType == "Business Owner" ||
+            renewalContactType == "Operator" ||
+            renewalContactType == "Property Owner")
+			{
+			    var xNewContact = Contacts[yy].getCapContactModel();            
+				var peopleModel = xNewContact.getPeople();
+				var newContact = aa.proxyInvoker.newInstance("com.accela.aa.aamain.people.CapContactModel").getOutput();
+				newContact.setRefContactNumber(peopleModel.getRefContactNumber());
+			    peopleModel.setServiceProviderCode(aa.getServiceProviderCode());
+			    peopleModel.setContactSeqNumber(newContact.getPeople().getContactSeqNumber());
+			    peopleModel.setAuditID(aa.getAuditID());
+			    newContact.setPeople(peopleModel);
+			    var contactAddressrs = aa.address.getContactAddressListByCapContact(newContact);
+				if (contactAddressrs.getSuccess()) {
+					var contactAddressModelArr = convertContactAddressModelArr(contactAddressrs.getOutput());
+					newContact.getPeople().setContactAddressList(contactAddressModelArr);
+				}
+					
+				newContact.setCapID(parentCapId);	
+				aa.people.createCapContact(newContact);
+				copied++;
+				logDebug("Copied contact from "+ capId.getCustomID()+" to "+ parentCapId.getCustomID());
+			}
+
+		}
+	}
+	else
+	{
+		logDebug("**ERROR: Failed to get contacts: " + capContactResult.getErrorMessage()); 
+		return false; 
+	}
+	return copied;
+}
 
 function isMatchContactTypeLocal(capContactScriptModel, capContactScriptModel2)
 {
