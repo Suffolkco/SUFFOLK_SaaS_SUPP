@@ -8,7 +8,7 @@ function workflowFinalReviewApprovedWWMWithPin()
 	appTypeString = appTypeResult.toString(); 
 	appTypeArray = appTypeString.split("/");
     var alternateID = capId.getCustomID();  
-    var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
+  
     
 	var capContResult = aa.people.getCapContactByCapID(capId);
 
@@ -165,8 +165,8 @@ function workflowFinalReviewApprovedWWMWithPin()
                         reportFile.push(docToSend);         
                         
                         //EHIMS-5224: If it has a child IA app, copy document to child as well     
-                        logDebug("itemCapType" + itemCapType);                  
-                        (itemCapType != "DEQ/WWM/Subdivision/Application")
+                        logDebug("appTypeString" + appTypeString);                  
+                        (appTypeString != "DEQ/WWM/Subdivision/Application")
                         {
                             var childArray = getChildren("DEQ/Ecology/IA/Application", capId)
                             for(x in childArray){
