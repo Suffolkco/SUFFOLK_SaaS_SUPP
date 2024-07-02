@@ -148,7 +148,7 @@ function compareContacts(srcCapId, targetCapId)
           if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
           {
             // Check Reference Contact ID
-            logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getPeople().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getPeople().getRefContactNumber());
+            logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getRefContactNumber());
             
             // Then check to see if the reference ID is the same
             if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
@@ -300,8 +300,8 @@ function isMatchContactRefIDLocal(capContactScriptModel, capContactScriptModel2)
   {
     return false;
   }
-  var refContact1 = capContactScriptModel.getCapContactModel().getPeople().getRefContactNumber();
-  var refContact2 = capContactScriptModel2.getCapContactModel().getPeople().getRefContactNumber();
+  var refContact1 = capContactScriptModel.getCapContactModel().getRefContactNumber();
+  var refContact2 = capContactScriptModel2.getCapContactModel().getRefContactNumber();
   
   
   logDebug("Compare Contact Reference ID: " + capId.getCustomID() + "|" + refContact1 + ", SITE record|" + refContact2);
