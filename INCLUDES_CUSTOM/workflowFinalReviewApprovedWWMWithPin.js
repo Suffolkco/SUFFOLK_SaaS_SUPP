@@ -8,7 +8,7 @@ function workflowFinalReviewApprovedWWMWithPin()
 	appTypeString = appTypeResult.toString(); 
 	appTypeArray = appTypeString.split("/");
     var alternateID = capId.getCustomID();  
-    
+    var itemCapType = aa.cap.getCap(itemCap).getOutput().getCapType().toString();
     
 	var capContResult = aa.people.getCapContactByCapID(capId);
 
