@@ -148,8 +148,12 @@ function compareContacts(srcCapId, targetCapId)
           if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
           {
             // Check Reference Contact ID
+            logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getPeople().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getPeople().getRefContactNumber());
+            
             if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
-            {     // fist name, organization name match aas well
+            {     
+               logDebug("Reference IDs do not match.");
+              // 1. If same first, last name and organization name. Copy the contact information to the parent.
               if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
               {
                 targetPeopleModel = targetPeople[loop2];
@@ -157,13 +161,18 @@ function compareContacts(srcCapId, targetCapId)
                 matchAllContactInfo = true;
                 break;
               }
+              //2. If different, inactive the existing parent reference ID and add the child contact to parent.
               else // Contact Type match but not first, last or orgnaization name
               {
                 targetPeopleModel = targetPeople[loop2];
                 logDebug("*** Contact type match but contact information does not.");
                 matchContactTypeOnly = true;                
               }
-            }          
+            }     
+            else
+            {
+              logDebug("Same reference ID. Skip.")
+            } 
           }    
         }   
         
