@@ -162,7 +162,20 @@ function workflowFinalReviewApprovedWWMWithPin()
                     docToSend = docToSend === null ? [] : [docToSend];
                     if (!matches(docToSend, null, undefined, ""))
                     {
-                        reportFile.push(docToSend);
+                        reportFile.push(docToSend);         
+                        
+                        //EHIMS-5224: If it has a child IA app, copy document to child as well     
+                        logDebug("itemCapType" + itemCapType);                  
+                        (itemCapType != "DEQ/WWM/Subdivision/Application")
+                        {
+                            var childArray = getChildren("DEQ/Ecology/IA/Application", capId)
+                            for(x in childArray){
+                                var iaCapId = childArray[x];
+                                logDebug("iaCapId: " + iaCapId);
+                                copyDocumentType(capId, iaCapId, "SCDHS Final Approval");                            
+                            }
+                        }
+                       
                     }
 
                     // No public user linkage, send also the ACA Pin instruction letter
