@@ -39,18 +39,7 @@ try
     if (!determineACADocumentAttached("Copy of New York State Driver's License or NYSDMV non-driver photo I.D."))
     {
         docComments += "Copy of New York State Driver's License or NYSDMV non-driver photo I.D." + "<br>";
-    }
-
-    if (!determineACADocumentAttached("Owner Operator Certificate"))
-    {
-        docComments += "Owner Operator Certificate" + "<br>";
-    }
-
-    if (!determineACADocumentAttached("Owner Manager Certificate"))
-    {
-        docComments += "Owner Manager Certificate " + "<br>";
-    }
-  
+    }  
 
     if (docComments != "") 
     {
