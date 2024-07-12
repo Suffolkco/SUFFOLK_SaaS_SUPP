@@ -577,6 +577,10 @@ if (wfTask == "Final Review")
                         copyDocumentType(capId, iaCapId, "Final Sketch");                            
                     }
                 }
+                else
+                {
+                    logDebug("Will not copy Final Sketch since we only copy if it's the very first Final Renew and Registration Complete.");
+                }
                  
             }
             rcRFiles.push(rcReportFile);
