@@ -553,12 +553,12 @@ if (wfTask == "Final Review")
                 if (wfHistDoc.getSuccess())
                 {
                     wfHistDoc = wfHistDoc.getOutput();	
-                    logDebug("Number of workflow history found for " + wfHistDoc + " is " + wfHistDoc.length);
+                    logDebug("Number of workflow history found for " + wfTask + " is " + wfHistDoc.length);
                     for (var h in wfHistDoc)
                     {
                         if (wfHistDoc[h].getTaskDescription() == "Final Review" && wfHistDoc[h].getDisposition() == "Registration Complete")
                         {
-                            count++;
+                            countDoc++;
                             logDebug("Found history step: Count " + count + ": " + wfHistDoc[h].getStepNumber() + ", " + wfHistDoc[h].getProcessID() + ", " +
                             wfHistDoc[h].getTaskDescription() + ", " + wfHistDoc[h].getDisposition());
                         }
