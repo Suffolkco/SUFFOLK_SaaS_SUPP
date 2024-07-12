@@ -553,18 +553,19 @@ if (wfTask == "Final Review")
                 if (wfHistDoc.getSuccess())
                 {
                     wfHistDoc = wfHistDoc.getOutput();	
-                    logDebug("Number of workflow history found for " + wfTask + " is " + wfHistDoc.length);
+                    logDebug("Number of workflow history found: " + wfHistDoc.length);
                     for (var h in wfHistDoc)
                     {
                         if (wfHistDoc[h].getTaskDescription() == "Final Review" && wfHistDoc[h].getDisposition() == "Registration Complete")
                         {
                             countDoc++;
-                            logDebug("Found history step: Count " + count + ": " + wfHistDoc[h].getStepNumber() + ", " + wfHistDoc[h].getProcessID() + ", " +
+                            logDebug("Found history step: Count " + countDoc + ": " + wfHistDoc[h].getStepNumber() + ", " + wfHistDoc[h].getProcessID() + ", " +
                             wfHistDoc[h].getTaskDescription() + ", " + wfHistDoc[h].getDisposition());
                         }
                     }
-                    
+                   
                 }
+                logDebug("Number of workflow history found for Final Review and Registration complete: " + countDoc)
                 // Only the very first time, we copy document
                 if (countDoc == 1)                
                 {
