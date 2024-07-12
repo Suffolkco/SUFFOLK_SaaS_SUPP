@@ -547,12 +547,34 @@ if (wfTask == "Final Review")
                 rcRFiles.push(docToSend);
 
                  //EHIMS-5224: If it has a child IA app, copy document to child as well  
-                var childArray = getChildren("DEQ/Ecology/IA/Application", capId)
-                for(x in childArray){
-                    var iaCapId = childArray[x];
-                    logDebug("iaCapId: " + iaCapId);
-                    logDebug("capId: " + capId);
-                    copyDocumentType(capId, iaCapId, "Final Sketch");                            
+                 // First time only when task = final review and application status is 'Registration Complete"
+                var wfHistDoc = aa.workflow.getWorkflowHistory(capId, null);            
+                var countDoc = 0;
+                if (wfHistDoc.getSuccess())
+                {
+                    wfHistDoc = wfHistDoc.getOutput();	
+                    logDebug("Number of workflow history found for " + wfHistDoc + " is " + wfHistDoc.length);
+                    for (var h in wfHistDoc)
+                    {
+                        if (wfHistDoc[h].getTaskDescription() == "Final Review" && wfHistDoc[h].getDisposition() == "Registration Complete")
+                        {
+                            count++;
+                            logDebug("Found history step: Count " + count + ": " + wfHistDoc[h].getStepNumber() + ", " + wfHistDoc[h].getProcessID() + ", " +
+                            wfHistDoc[h].getTaskDescription() + ", " + wfHistDoc[h].getDisposition());
+                        }
+                    }
+                    
+                }
+                // Only the very first time, we copy document
+                if (countDoc == 1)                
+                {
+                    var childArray = getChildren("DEQ/Ecology/IA/Application", capId)
+                    for(x in childArray){
+                        var iaCapId = childArray[x];
+                        logDebug("iaCapId: " + iaCapId);
+                        logDebug("capId: " + capId);
+                        copyDocumentType(capId, iaCapId, "Final Sketch");                            
+                    }
                 }
                  
             }
