@@ -45,7 +45,7 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	}
 }
 //EHIMS-5261
-// NOI report
+ // NOI report
  if (wfTask == "Plans Coordination" && wfStatus == "Internal Review")
 {
 	var reportParams1 = aa.util.newHashtable();
@@ -53,19 +53,25 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 	thisReport = 'Notice of Incomplete Script';
 	// NOI report - from reportParams in the earlier loop.                           
 	rFile = generateReportLocal(thisReport, reportParams1, appTypeArray[0])
-	logDebug("This is the NOI report: " + rFile);  		
-	thisFileDocArray = rFile.split("\\\\");	
-	fileName = thisFileDocArray[1, thisFileDocArray.length - 1];		
+	logDebug("This is the NOI report: " + rFile);  
+		
+	thisFileDocArray = rFile.split("\\\\");
+	
+	fileName = thisFileDocArray[1, thisFileDocArray.length - 1];	
+	//DEQWWM4943_Prelim_NOI_20240625_091638.pdf
 	logDebug("fileName: " + fileName);
 	var splitter = 'DEQWWM'
 	var indexOf = fileName.indexOf(splitter);
+
 	fileName = fileName.slice(indexOf+splitter.length);
+
 	logDebug("fileName sliced: " + fileName);
+
 	var docList = getDocumentList();
-	
+	debugObject("ddocList: " + docList);
 	for (doc in docList)
 	{
-		if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
+		//if (matches(docList[doc].getDocCategory(), "Notice of Incomplete"))
 		{
 			logDebug("***");
 			debugObject(docList[doc]);
@@ -77,18 +83,41 @@ if (wfTask == "Application Review" && wfStatus == "Awaiting Client Reply")
 			splitter = '/DEQ/WWM/'
 			var indexOf = docFileName.indexOf(splitter);
 			docFileName = docFileName.slice(indexOf+splitter.length);
+
 			logDebug("docFileName sliced: " + docFileName);
+
+			logDebug("View Title role: " + docList[doc].getViewTitleable());
+			logDebug("View Delete role: " + docList[doc].getDeleteable());		
+			logDebug("upload role: " + docList[doc].getUploadRoleModel());
+			logDebug("delete role: " + docList[doc].getDeleteRole());
+			logDebug("Get View Role " + docList[doc].getViewRole());	
+						
 
 			if (matches(docFileName, fileName))	
 			{
-				var docType = docList[doc].getDocCategory();								
-				logDebug("******");					
-				//it's the combination of two characters. So for first two zeros, 
-				//it's the permission for Registered ACA Users, so if you set it to 00, no permission, set it to 11 and they have the permission. 
-				//Then second two zeros are for CAP Creator and so forth.
-
+				var docType = docList[doc].getDocCategory();	
+				deleteRoleModel = docList[doc].getDeleteRoleModel();	
+				viewTitleRoleModel = docList[doc].getViewRoleModel();				
+					
+			
+				logDebug("******");
+				//docList[doc].setViewTitleable(true)
 				docList[doc].setViewTitleRole("0000000001");
-				aa.document.updateDocument(docList[doc]);	
+				aa.document.updateDocument(docList[doc]);			
+				
+
+
+				// No ACA Permission to view 
+				// If true, use the permission set here rather than default document type
+				
+				
+				logDebug("Get View Role " + docList[doc].getViewRole());	
+				logDebug("Get View Titleable: " + docList[doc].getViewTitleable());	
+				logDebug("Get View Title Role: " + docList[doc].getViewTitleRole());	
+				logDebug("Get View Title Role Model: " + docList[doc].getViewTitleRoleModel());	
+
+			
+
 			}
 		}
 	}

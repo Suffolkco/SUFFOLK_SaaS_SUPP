@@ -33,7 +33,18 @@ editAppSpecific("County Status", "Ineligible");
 
 	if (wfTask == "Grant Review" && wfStatus == "Complete")
 	{
+
+var nys = AInfo["New York State Septic System Replacement Program"];
+		var countyStatus = AInfo["County Status"];
+		var stateStatus = AInfo["State Status"];
+
+//if((countyStatus != "Ineligible" && countyStatus != "Withdrawn") && (stateStatus != "Eligible") && (nys != "CHECKED"))
+
+if(nys != "CHECKED")
+		{
 		sendEmailsOnSIPRecord("DEQ_SIP_APP_COMPLETE");
+
+}
 var countyStatus = AInfo["County Status"];
 		if(countyStatus == "Ineligible" || countyStatus == "Withdrawn")
 		{
@@ -44,12 +55,26 @@ var countyStatus = AInfo["County Status"];
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Grant Awarded")
 	{
+		
+		var nys = AInfo["New York State Septic System Replacement Program"];
+		var countyStatus = AInfo["County Status"];
+		var stateStatus = AInfo["State Status"];
+		
+		if((countyStatus == "Ineligible" || countyStatus == "Withdrawn") && (stateStatus == "Eligible") && (nys == "CHECKED"))
+		{
+		sendEmailsOnSIPRecord("DEQ_NYS_GRANT_AWARD");
+		}
+
+		aa.print("nys" +nys);
+		if (nys == "UNCHECKED" || nys == undefined || nys == "")
+		{
 		sendEmailsOnSIPRecord("DEQ_SIP_GRANT_AWARD");
+		}
 	}
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Grant Packet Mailed")
 	{
-sendEmailsOnSIPRecord("DEQ_SIP_GRANT_PACKET_MAILED");
+//sendEmailsOnSIPRecord("DEQ_SIP_GRANT_PACKET_MAILED");
 	}
 	
 	if (wfTask == "Contract Processing" && wfStatus == "Incomplete")
@@ -185,9 +210,29 @@ if (wfTask == "Contract Processing" && wfStatus == "Complete")
 			             var emailParams = aa.util.newHashtable();
 						addParameter(emailParams, "$$WWMRecord$$",pcapId.getCustomID());
 						addParameter(emailParams, "$$altID$$", capId.getCustomID());
-						
+
+ var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[zz].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+        }
+    }
+var capAddresses = getAddress(capId);
+			  if (capAddresses != null)
+			  {
+				logDebug("Record address:" +capAddresses[0]);
+				  addParameter(emailParams, "$$address$$", capAddresses[0]);
+			  }
+						addParameter(emailParams, "$$parcel$$", parcelNumber);
+var staffEmailArray = new Array();
 						var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
-						sendNotification("", String(staffEmail), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
+staffEmailArray =staffEmail.split(",");
+for (k in staffEmailArray)
+						sendNotification("", String(staffEmailArray[k]), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
 						}
 					}
 				}
@@ -280,9 +325,28 @@ var wfHist = aa.workflow.getWorkflowHistory(capId, null);
 			             var emailParams = aa.util.newHashtable();
 						addParameter(emailParams, "$$WWMRecord$$",pcapId.getCustomID());
 						addParameter(emailParams, "$$altID$$", capId.getCustomID());
-						
+						var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[zz].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+        }
+    }
+var capAddresses = getAddress(capId);
+			  if (capAddresses != null)
+			  {
+				logDebug("Record address:" +capAddresses[0]);
+				  addParameter(emailParams, "$$address$$", capAddresses[0]);
+			  }
+						addParameter(emailParams, "$$parcel$$", parcelNumber);
+						var staffEmailArray = new Array();
 						var staffEmail = lookup("WWM OK TO INSTALL NOTIFICATION", "Email");
-						sendNotification("", String(staffEmail), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
+staffEmailArray =staffEmail.split(",");
+for (k in staffEmailArray)
+						sendNotification("", String(staffEmailArray[k]), "", "DEQ_SIP_WWM_OK_TO_RELEASE", emailParams, null);
 						}
 					}
 				}

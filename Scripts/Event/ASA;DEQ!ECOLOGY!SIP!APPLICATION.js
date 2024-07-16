@@ -103,37 +103,64 @@ editAppSpecific("SIP Ref #",capId.getCustomID(),RRecord);
  
 		                 // Sewer District
 
-editAppSpecific("Sewer District Name", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME")); 	 
+  editAppSpecific("Sewer District Name", getGISInfo_Custom("SUFFOLKCO_ACA","SanitationDistrictPolygon","SHORTNAME"), capId); 
+
                   // Legislative District
- useAppSpecificGroupName = false;
-                  editAppSpecific("Legislative District", getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME")); 
+                  editAppSpecific("Legislative District", getGISInfo_Custom("SUFFOLKCO_ACA","LegislativeDistrict","NAME"), capId); 
 
                   // Priority Area 
-                  editAppSpecific("Priority Area", getGISInfo_Custom("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY")); 
+                  editAppSpecific("Priority Area", getGISInfo2("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY"), capId);
 
-					
-				//EIHMS2 298
+
 
 					if (AInfo["Catastrophic Failure"] == "Yes")
-					  editAppSpecific("SCORE", 100); 
-					if (AInfo["Non-Catastrophic"] == "Yes" && AInfo["Catastrophic Failure"] == "No")
-					  editAppSpecific("SCORE", 90); 
-					if (AInfo["Priority Area"] == "Priority 1" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
-					  editAppSpecific("SCORE", 80); 
-					if (AInfo["Priority Area"] == "Priority 2" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
-					  editAppSpecific("SCORE", 70); 
-					if (AInfo["Priority Area"] == "No Priority" && AInfo["Catastrophic Failure"] == "No" &&  AInfo["Non-Catastrophic"] == "No")
-					  editAppSpecific("SCORE", 60);
+					  editAppSpecific("SCORE", 100, capId); 
+					if (AInfo["Non-Catastrophic"] == "Yes" && (AInfo["Catastrophic Failure"] == "No" || AInfo["Catastrophic Failure"] == null))
+					  editAppSpecific("SCORE", 90, capId); 
+					if (getGISInfo2("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY") == "Priority 1" && (AInfo["Catastrophic Failure"] == "No" || AInfo["Catastrophic Failure"] == null) &&  (AInfo["Non-Catastrophic"] == "No" || AInfo["Non-Catastrophic"] == null))
+					  editAppSpecific("SCORE", 80,capId); 
+					if (getGISInfo2("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY") == "Priority 2" && (AInfo["Catastrophic Failure"] == "No" || AInfo["Catastrophic Failure"] == null) &&  (AInfo["Non-Catastrophic"] == "No" || AInfo["Non-Catastrophic"] == null))
+{
+
+					  editAppSpecific("SCORE", 70,capId); 
+
+}
+					if (getGISInfo2("SUFFOLKCO_ACA","ReclaimWaterPolygon","PRIORITY") == "No Priority" && (AInfo["Catastrophic Failure"] == "No" || AInfo["Catastrophic Failure"] == null) &&  (AInfo["Non-Catastrophic"] == "No" || AInfo["Non-Catastrophic"] == null))
+					  editAppSpecific("SCORE", 60,capId);
                     
-					//EIHMS2 299
-					
-					if (AInfo["Previously installed IA OWTS"] == "Yes" && AInfo["Tax liens"] == "Yes" &&
-				    AInfo["Foreclosure"] == "Yes" &&
-				    AInfo["C.O."] == "No")
+					if (AInfo["Previously installed IA OWTS"] == "Yes")
 					{
-						editAppSpecific("County Status", "Ineligible");
+						editAppSpecific("County Status", "Withdrawn");
 						editAppSpecific("State Status", "Undetermined");
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+
+
+var nys = AInfo["New York State Septic System Replacement Program"];
+		
+		
+		
+		sendEmailsOnSIPRecord("DEQ_NYS_APP_RCVD");
+		
+
+
+
+
+					}
+
+
+
+	
+var nys = AInfo["New York State Septic System Replacement Program"];
+		
+		
+		if (nys == "CHECKED")
+{
+		sendEmailsOnSIPRecord("DEQ_NYS_APP_RCVD");
+		
+
+
+
+
 					}
 					
 				if (AInfo["Tax liens"] == "Yes" &&
@@ -144,6 +171,9 @@ editAppSpecific("Sewer District Name", getGISInfo_Custom("SUFFOLKCO_ACA","Sanita
 						editAppSpecific("County Status", "Ineligible");
 						editAppSpecific("State Status", "Ineligible");
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
+
+
+
 					}
  
 if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
@@ -168,12 +198,23 @@ if ((AInfo["Tax liens"] == "Yes" || AInfo["Tax liens"] == "No") &&
 					  
 				if (AInfo["Tax liens"] == "No" &&
 				    AInfo["Foreclosure"] == "No" &&
-				    AInfo["C.O."] == "Yes")
+				    AInfo["C.O."] == "Yes" && AInfo["Previously installed IA OWTS"] == "No")
 				  {
 						 editAppSpecific("County Status", "Undetermined");
 						 editAppSpecific("State Status", "Undetermined");
-						 sendEmailsOnSIPRecord("DEQ_SIP_APP_RCVD");
+
+
+var nys = AInfo["New York State Septic System Replacement Program"];
+	
+
+		aa.print("nys" +nys);
+		if (nys == "UNCHECKED" || nys == undefined || nys == "")
+		{
+		sendEmailsOnSIPRecord("DEQ_SIP_APP_RCVD");
+		}
+						 
 				  }
+
 
 if ((AInfo["Tax liens"] == "Yes") ||
 				      (AInfo["Foreclosure"] == "Yes") ||
@@ -183,6 +224,8 @@ if ((AInfo["Tax liens"] == "Yes") ||
 						
 						sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
 					}
+			 
+
 
 if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
 					
@@ -191,10 +234,22 @@ if (AInfo["New York State Septic System Replacement Program"] == "CHECKED")
 						editAppSpecific("County Funding Allocated", "N/A");
 						updateWorkDesc("NYS SSRP ONLY");
 						//sendEmailsOnSIPRecord("DEQ_SIP_INELIGIBLE");
-					}
+                                                //sendEmailsOnSIPRecord("DEQ_NYS_APP_RCVD");
 
+					}
+   
 
 }
+
+var addressinLine = getAddressInALine(capId);
+aa.print(addressinLine);
+var addressReside = getAppSpecific("Do you reside at the property that you are applying for?");
+aa.print(addressReside);
+if(addressReside == "Yes")
+	editAppSpecific("Address where you reside", addressinLine);
+
+
+
 	}
 catch (ex)
   {
@@ -202,6 +257,70 @@ catch (ex)
 		
   }
   
+function getAddressInALine(capId) {
+
+    var capAddrResult = aa.address.getAddressByCapId(capId);
+    var addressToUse = null;
+    var strAddress = "";
+
+    if (capAddrResult.getSuccess())
+    {
+        var addresses = capAddrResult.getOutput();
+        if (addresses)
+        {
+            for (zz in addresses)
+            {
+                capAddress = addresses[zz];
+                if (capAddress.getPrimaryFlag() && capAddress.getPrimaryFlag().equals("Y"))
+                    addressToUse = capAddress;
+            }
+            if (addressToUse == null)
+                addressToUse = addresses[0];
+aa.print(addressToUse);
+
+            if (addressToUse)
+            {
+                strAddress = addressToUse.getHouseNumberStart();
+                var addPart = addressToUse.getStreetDirection();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getStreetName();
+if(addressToUse.getStreetSuffix() == null)
+{
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+}
+else
+{
+if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+}
+                var addPart = addressToUse.getStreetSuffix();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart + ",";
+                var addPart = addressToUse.getCity();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart+ ",";
+strAddress = titleCase(strAddress);
+                var addPart = addressToUse.getState();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                var addPart = addressToUse.getZip();
+                if (addPart && addPart != "")
+                    strAddress += " " + addPart;
+                return strAddress
+            }
+        }
+    }
+    return null;
+}
+
+
+function titleCase(str) {
+     return str.replace(/\w\S*/g, function(txt){
+       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+     });
+}
 
 function updateWorkDesc(newWorkDes) // optional CapId
 {
@@ -541,4 +660,79 @@ if(parcelNumber)
 return parcelNumber;
         }
     }
+}
+
+
+/*===========================================
+Title : getGISInfo2
+Purpose : Returns an attribute from a layer in GIS with proximity parameters 
+Author : Paul Rose
+Functional Area : GIS
+Description : Optional parameters for buffer distance allow you to shrink or enlarge
+              the GIS feature on the record when overlaying the target layer in GIS.
+              Using -1 "feet" will shrink the parcel shape to help eliminate touching
+              features that the parcel is not actually within.
+Reviewed By : 
+Script Type : EMSE
+General Purpose/Client Specific : General
+Client developed for : 
+Parameters : 
+	svc: Text:  GIS service name, usually found on the map
+	layer: Text: GIS layer name, found in GIS map layers list
+	attributename: GIS field name value to be returned
+	numDistance: Number: Optional, defaults to zero, distance from parcel to check
+	distanceType: One of: feet, meters, miles
+Example: getGISInfo2("SANDIEGO", "Community Plan", "CPNAME", -1, "feet");
+=========================================== */
+function getGISInfo2(svc,layer,attributename) // optional: numDistance, distanceType
+{
+	try{
+	var numDistance = 0
+	if (arguments.length >= 4) numDistance = arguments[3]; // use numDistance in arg list
+	var distanceType = "feet";
+	if (arguments.length == 5) distanceType = arguments[4]; // use distanceType in arg list
+
+	var retString;
+   	
+	var bufferTargetResult = aa.gis.getGISType(svc,layer); // get the buffer target
+	if (bufferTargetResult.getSuccess())
+		{
+		var buf = bufferTargetResult.getOutput();
+		buf.addAttributeName(attributename);
+		}
+	else
+		{ logDebug("**WARNING: Getting GIS Type for Buffer Target.  Reason is: " + bufferTargetResult.getErrorType() + ":" + bufferTargetResult.getErrorMessage()) ; return false }
+			
+	var gisObjResult = aa.gis.getCapGISObjects(capId); // get gis objects on the cap
+	if (gisObjResult.getSuccess()) 	
+		var fGisObj = gisObjResult.getOutput();
+	else
+		{ logDebug("**WARNING: Getting GIS objects for Cap.  Reason is: " + gisObjResult.getErrorType() + ":" + gisObjResult.getErrorMessage()) ; return false }
+
+	for (a1 in fGisObj) // for each GIS object on the Cap.  We'll only send the last value
+		{
+		var bufchk = aa.gis.getBufferByRadius(fGisObj[a1], numDistance, distanceType, buf);
+
+		if (bufchk.getSuccess())
+			var proxArr = bufchk.getOutput();
+		else
+			{ logDebug("**WARNING: Retrieving Buffer Check Results.  Reason is: " + bufchk.getErrorType() + ":" + bufchk.getErrorMessage()) ; return false }	
+		
+		for (a2 in proxArr)
+			{
+			var proxObj = proxArr[a2].getGISObjects();  // if there are GIS Objects here, we're done
+			for (z1 in proxObj)
+				{
+				var v = proxObj[z1].getAttributeValues()
+				retString = v[0];
+				}
+			
+			}
+		}
+	return retString;
+	}
+	catch (err) {
+		logDebug("A JavaScript Error occurred: function getGISInfo2: " + err.message);
+		logDebug(err.stack);
+	}
 }
