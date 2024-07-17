@@ -45,6 +45,7 @@ function checkForRelatedSITERecord(parcelNumber) {
              var myParent = createParent("DEQ", "General", "Site", "NA", "Created from " + updateToName);
  
              copyParcels(capId, myParent);
+             
              // EHIMS-5290
              //copyOwner(capId, myParent);
              copyParcelGisObjectsParent(capId, myParent);
