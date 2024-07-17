@@ -39,10 +39,12 @@ function sendEmailsOnSIPRecordOnlyContacts(templateName)
 		
 				  //getRecordParams4Notification(emailParams);
 //getWorkflowParams4Notification(emailParams);
+ var comments = "";
     if (controlString == "WorkflowTaskUpdateAfter") {
  
 	addParameter(emailParams, "$$wfComments$$", wfComment);
-addParameter(emailParams, "$$WFstatusdate$$", wfDateMMDDYYYY);
+comments = wfComment;
+addParameter(emailParams, "$$WFstatusdate$$", wfDate);
 }
 			var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 		  acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
@@ -86,7 +88,10 @@ var parcelArray = getParcel(capId);
 
 }
 	
-			if (dubCheckemails != null)
+			if(comments != null && comments != "")
+var containsNoemail = comments.contains("NOEMAIL");
+
+			if (dubCheckemails != null && !(containsNoemail))
 			{
 				 
 				  sendNotification("", dubCheckemails, "", templateName, emailParams, reportFile);

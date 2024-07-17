@@ -90,7 +90,7 @@ var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = true;
 var timeExpired = false;
-var emailAddress = "ada.chan@suffolkcountyny.gov";
+var emailAddress = "bhandhavya.nadagoud@scubeenterprises.com";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
@@ -173,9 +173,9 @@ function mainProcess()
         logDebug("Batch script will run");
       
 		// Test one record
-		var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1_PER_ID1 = 'SIPDC' and  B1_CREATED_BY = 'SIPConv'";
+        var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.SERV_PROV_CODE = 'SUFFOLKCO' and B1_PER_GROUP = 'DEQ' and B1_PER_CATEGORY = 'Application' AND  B1.B1_PER_SUB_TYPE = 'SIP' AND B1.B1_PER_TYPE = 'Ecology' and B1.B1_ALT_ID NOT LIKE '%TMP%'"
 		// First set R02180195-ZEC TO R02180215-ZEC		  
-		//var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID IN ('R02180196-ZEC','R02180197-ZEC','R02180198-ZEC','R02180199-ZEC','R02180200-ZEC','R02180201-ZEC','R02180202-ZEC','R02180202-ZEC','R02180204-ZEC','R02180205-ZEC','R02180206-ZEC','R02180207-ZEC','R02180208-ZEC','R02180209-ZEC','R02180210-ZEC','R02180211-ZEC','R02180212-ZEC','R02180213-ZEC','R02180214-ZEC','R02180215-ZEC')";
+		//var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID IN ('G-24-00144')";
 		// Second set R02180233-ZEC TO R02180237-ZEC
 		//var vSQL = "SELECT B1.B1_ALT_ID as recordNumber FROM B1PERMIT B1 WHERE B1.B1_ALT_ID IN ('R02180233-ZEC','R02180234-ZEC','R02180235-ZEC','R02180236-ZEC','R02180237-ZEC')";
 		// Third set R02180265-ZEC TO R02180315-ZEC
@@ -185,34 +185,27 @@ function mainProcess()
         
 		// SQL to pull active OPC site records that has NO child Tank records		
 		var recordIDs = doSQLSelect_local(vSQL);  	
-	
+	    var count = 0;
 		logDebugLocal("Pulling number of records:" +  recordIDs.length);		
 		for (r in recordIDs)
 		{
 			recordID = recordIDs[r]["recordNumber"];      
-			logDebugLocal("Setting fee for record: " + recordID);			
+			logDebugLocal("Setting GIS for record: " + recordID);			
 			capId = getApplication(recordID);
 			capIDString = capId.getCustomID();
-			logDebugLocal("Setting fee for capId: " + capId);
+			logDebugLocal("Setting GIS for capId: " + capId);
 			cap = aa.cap.getCap(capId).getOutput();
 			logDebugLocal("cap: " + cap);
 			if (cap)
 			{
-				logDebugLocal("Batch Job " + batchJobName + "Added GIS for : " + capIDString);  
-				 // EHIMS2-295
-                  // Sewer District
-                  editAppSpecific("Sewer District", getGISInfo("SUFFOLKCO","SanitationDistrictPolygon","SHORTNAME"), capId); 
+				 count++;
+editContactType("Applicant", "Property Owner", capId);
 
-                  // Legislative District
-                  editAppSpecific("Legislative District", getGISInfo("SUFFOLKCO","LegislativeDistrict","NAME"), capId); 
 
-                  // Priority Area 
-                  editAppSpecific("Priority Area", getGISInfo("SUFFOLKCO","ReclaimWaterPolygon","PRIORITY"), capId); 							
-				
 			}
 		}
 			
-		
+		logDebugLocal("Total Records Processed" +count);  
 	
 	}
     catch (err) 
@@ -230,6 +223,143 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+
+function editContactType(existingType,newType)
+//Function will change contact types from exsistingType to newType, 
+//optional paramter capID
+{    
+    if (arguments.length==3)
+    updateCap=arguments[2]
+    capContactResult = aa.people.getCapContactByCapID(updateCap);
+    if (capContactResult.getSuccess())
+	{
+        Contacts = capContactResult.getOutput();
+        for (yy in Contacts)
+		{
+		var theContact = Contacts[yy].getCapContactModel();
+		if(theContact.getContactType() == existingType)
+			{
+			theContact.setContactType(newType);
+			var peopleModel = theContact.getPeople();
+			var contactAddressrs = aa.address.getContactAddressListByCapContact(theContact);
+			if (contactAddressrs.getSuccess())
+			{
+				var contactAddressModelArr = convertContactAddressModelArr(contactAddressrs.getOutput());
+				peopleModel.setContactAddressList(contactAddressModelArr);    
+			}
+			aa.people.editCapContactWithAttribute(theContact);
+			//logDebug("Contact for " + theContact.getFullName() + " Updated to " + newType);
+			}
+		}
+	}
+ }
+
+
+function lookup(stdChoice,stdValue) 
+	{
+	var strControl;
+	var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice,stdValue);
+	
+   	if (bizDomScriptResult.getSuccess())
+   		{
+		var bizDomScriptObj = bizDomScriptResult.getOutput();
+		strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+		logDebug("lookup(" + stdChoice + "," + stdValue + ") = " + strControl);
+		}
+	else
+		{
+		logDebug("lookup(" + stdChoice + "," + stdValue + ") does not exist");
+		}
+	return strControl;
+	}
+
+
+  function getFirstParcelFromCapId(capId)
+{
+		var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+							if (capParcelResult.getSuccess())
+							{
+								var Parcels = capParcelResult.getOutput().toArray();
+							}
+
+							for ( i in Parcels)
+							{
+							var parcelNumber = Parcels[0].getParcelNumber();
+							}
+
+		return parcelNumber;
+}
+
+
+function getGISInfo_Custom(svc,layer,attributename)
+	{
+	// use buffer info to get info on the current object by using distance 0
+	// usage: 
+	//
+	// x = getGISInfo("flagstaff","Parcels","LOT_AREA");
+	//
+	
+	var distanceType = "feet";
+	var retString;
+   	
+	var bufferTargetResult = aa.gis.getGISType(svc,layer); // get the buffer target
+	if (bufferTargetResult.getSuccess())
+		{
+		var buf = bufferTargetResult.getOutput();
+		buf.addAttributeName(attributename);
+		}
+	else
+		{ logDebug("**WARNING: Getting GIS Type for Buffer Target.  Reason is: " + bufferTargetResult.getErrorType() + ":" + bufferTargetResult.getErrorMessage()) ; return false }
+			
+var parcelNumber= getParcelForCapId();
+if(parcelNumber)
+{
+	var gisObjResult = aa.gis.getParcelGISObjects(parcelNumber); // get gis objects on the parcel number
+	if (gisObjResult.getSuccess()) 	
+		var fGisObj = gisObjResult.getOutput();
+	else
+		{ logDebug("**ERROR: Getting GIS objects for Parcel.  Reason is: " + gisObjResult.getErrorType() + ":" + gisObjResult.getErrorMessage()) ; return false }
+
+	for (a1 in fGisObj) // for each GIS object on the Cap.  We'll only send the last value
+		{
+		var bufchk = aa.gis.getBufferByRadius(fGisObj[a1], "0", distanceType, buf);
+
+		if (bufchk.getSuccess())
+			var proxArr = bufchk.getOutput();
+		else
+			{ logDebug("**WARNING: Retrieving Buffer Check Results.  Reason is: " + bufchk.getErrorType() + ":" + bufchk.getErrorMessage()) ; return false }	
+		
+		for (a2 in proxArr)
+			{
+			var proxObj = proxArr[a2].getGISObjects();  // if there are GIS Objects here, we're done
+			for (z1 in proxObj)
+				{
+				var v = proxObj[z1].getAttributeValues()
+				retString = v[0];
+				}
+			
+			}
+		}
+		}
+	return retString
+	}
+	
+	
+				function getParcelForCapId()
+{
+ var capParcelResult = aa.parcel.getParcelandAttribute(capId, null);
+    if (capParcelResult.getSuccess())
+    {
+        var Parcels = capParcelResult.getOutput().toArray();
+        for (zz in Parcels)
+        {
+            var parcelNumber = Parcels[0].getParcelNumber();
+            logDebug("parcelNumber = " + parcelNumber);
+return parcelNumber;
+        }
+    }
+}
+
 
 function getGISInfo(svc,layer,attributename)
 	{

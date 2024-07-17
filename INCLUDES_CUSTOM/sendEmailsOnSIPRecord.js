@@ -26,6 +26,13 @@ function sendEmailsOnSIPRecord(templateName)
 			  if (!matches(conArray[con].email, null, undefined, ""))
 			  {
 				logDebug("Contact email: " + conArray[con].email);
+
+if(conArray[con].contactType == "Property Owner")
+{
+var poEmails =  conArray[con].email;
+ addParameter(emailParams, "$$POEMAIL$$", String(poEmails));
+}
+
 				conEmail = conArray[con].email;
 				 if (conEmail && dubCheckemails.indexOf(conEmail) == -1) {
 					if(dubCheckemails)
@@ -62,34 +69,51 @@ function sendEmailsOnSIPRecord(templateName)
 			}
 			
 			//Email from ASIT table
-			
+			var poEmails = "";
 						for (var k = 0; k < sipPO.length; k++)
 			{
 					  var poEmail = sipPO[k]["Email Address"];
+
+
 					  if (!matches(poEmail, null, undefined, ""))
 					 {
 						  if (poEmail && dubCheckemails.indexOf(poEmail) == -1) {
 					if(dubCheckemails)
+{
 						dubCheckemails = dubCheckemails + ";" + poEmail;
+
+}
 					 else
+{
 						dubCheckemails = "" + poEmail;
+
+}
+
+
 				}
 					 }
 		   }
+		   //addParameter(emailParams, "$$POEMAIL$$", String(poEmails));
+
 			  //getRecordParams4Notification(emailParams);
 //getWorkflowParams4Notification(emailParams);
+
+var comments = "";
     if (controlString == "WorkflowTaskUpdateAfter") {
  
 	addParameter(emailParams, "$$wfComments$$", wfComment);
-addParameter(emailParams, "$$WFstatusdate$$", wfDateMMDDYYYY);
+comments = wfComment;
+addParameter(emailParams, "$$WFstatusdate$$", wfDate);
 }
 			var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 		  acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
 			 addParameter(emailParams, "$$CAPAlias$$", cap.getCapType().getAlias());
 			  //addParameter(emailParams, "$$shortNotes$$", shortNotes); 
 			  //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
-			  addParameter(emailParams, "$$altID$$", capId.getCustomID());
+						  addParameter(emailParams, "$$altID$$", capId.getCustomID());
+
 			  addParameter(emailParams, "$$ACAURL$$", acaSite); 
+
 
  var capAddresses = getAddress(capId);
 			  if (capAddresses != null)
@@ -124,8 +148,12 @@ var parcelArray = getParcel(capId);
 	  addParameter(emailParams, "$$opendate$$", openDateFormatted);
 
 }
-	
-			if (dubCheckemails != null)
+	aa.print(dubCheckemails);
+
+if(comments != null && comments != "")
+var containsNoemail = comments.contains("NOEMAIL");
+
+			if (dubCheckemails != null && !(containsNoemail))
 			{
 				 
 				  sendNotification("", dubCheckemails, "", templateName, emailParams, reportFile);
