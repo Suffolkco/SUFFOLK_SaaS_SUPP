@@ -202,7 +202,7 @@ function createParentOPC(grp,typ,stype,cat,desc)
 				}
 			}
 
-		// DO NOT Copy Contacts
+		// DO NOT Copy Contacts - EHIMS-5290
 		/*capContactResult = aa.people.getCapContactByCapID(capId);
 		if (capContactResult.getSuccess())
 			{
