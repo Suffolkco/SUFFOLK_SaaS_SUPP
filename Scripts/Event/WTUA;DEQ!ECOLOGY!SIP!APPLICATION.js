@@ -38,9 +38,9 @@ var nys = AInfo["New York State Septic System Replacement Program"];
 		var countyStatus = AInfo["County Status"];
 		var stateStatus = AInfo["State Status"];
 
-//if((countyStatus != "Ineligible" && countyStatus != "Withdrawn") && (stateStatus != "Eligible") && (nys != "CHECKED"))
+if((countyStatus != "Ineligible" && countyStatus != "Withdrawn"))
 
-if(nys != "CHECKED")
+//if(nys != "CHECKED")
 		{
 		sendEmailsOnSIPRecord("DEQ_SIP_APP_COMPLETE");
 
@@ -60,13 +60,17 @@ var countyStatus = AInfo["County Status"];
 		var countyStatus = AInfo["County Status"];
 		var stateStatus = AInfo["State Status"];
 		
-		if((countyStatus == "Ineligible" || countyStatus == "Withdrawn") && (stateStatus == "Eligible") && (nys == "CHECKED"))
+		//if((countyStatus == "Ineligible" || countyStatus == "Withdrawn") && (stateStatus == "Eligible") && (nys == "CHECKED"))
+			
+		if((countyStatus == "Ineligible" || countyStatus == "Withdrawn") && (stateStatus == "Eligible"))
 		{
 		sendEmailsOnSIPRecord("DEQ_NYS_GRANT_AWARD");
 		}
 
 		aa.print("nys" +nys);
-		if (nys == "UNCHECKED" || nys == undefined || nys == "")
+		//if (nys == "UNCHECKED" || nys == undefined || nys == "")
+			
+		if(countyStatus == "Eligible")
 		{
 		sendEmailsOnSIPRecord("DEQ_SIP_GRANT_AWARD");
 		}
