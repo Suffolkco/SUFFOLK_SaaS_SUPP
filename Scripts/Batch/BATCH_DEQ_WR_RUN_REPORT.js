@@ -165,26 +165,43 @@ function mainProcess()
     {
               
         logDebugLocal("Script starts:");
-        var emailToSend = "ada.chan@suffolkcountyny.gov; chunchung.ching@suffolkcountyny.gov";                            
+        //var emailToSend = "ada.chan@suffolkcountyny.gov; chunchung.ching@suffolkcountyny.gov";                            
+        var emailToSend = "ada.chan@suffolkcountyny.gov";   
         logDebugLocal("emailToSend is: " + emailToSend);
+        var beginDt = getParam("beginDt");
+        var endDt = getParam("endDt");
+        if (matches(beginDt, "", null, undefined))
+        {
+            beginDt = "01/01/2019";
+        }
+        if (matches(endDt, "", null, undefined))
+        {
+            endDt = "01/03/2019";
+        }
+        logDebugLocal("beginDt: " + beginDt);
+        logDebugLocal("endDt: " + endDt);
+
         var vEParams = aa.util.newHashtable();
         var vRParams = aa.util.newHashtable();
+
         var caReports = new Array();
-        year = "2019";
-        month = "1";
-        addParameter(vRParams, "Year", year);
-            addParameter(vRParams, "Month", month);
+       
+        addParameter(vRParams, "FromDate", beginDt);
+        addParameter(vRParams, "ToDate", endDt);
 
-            addParameter(vEParams, "$$year$$", year);
-            addParameter(vEParams, "$$month$$", month);
+        addParameter(vEParams, "$$FromDate$$", beginDt);
+        addParameter(vEParams, "$$ToDate$$", endDt);
 
-        var caReport = generateReportBatch(capId, "WR_Extract", "DEQ", vRParams);
+        var caReport = generateReportBatchLocal("WR Extract", "DEQ", vRParams);
         if (caReport)
         {                                                
             caReports.push(caReport);
+            logDebugLocal("Reort generated." + caReport);
         }
 
-        sendNotification("", emailToSend, "", "DEQ_WR_EXTRACT_RUN_REPORT", vEParams, caReports);
+        emailSubject = "WR Extract Report: " + beginDt + " to " + endDt;
+        emailContent + "Please refer to the attached " + emailSubject;
+        aa.sendEmail("noreplywwm@suffolkcountyny.gov", emailToSend, "", emailSubject , emailContent , caReports);	
        
     }
                               
@@ -237,6 +254,28 @@ function getContactName(vConObj)
 
         return vConObj.people.getBusinessName2();
     }
+}
+function getParam(pParamName) //gets parameter value and logs message showing param value
+{
+    var ret = "" + aa.env.getValue(pParamName);
+    logDebugLocal("Parameter : " + pParamName + " = " + ret);
+    return ret;
+}
+function sendNotificationLocal(emailFrom, emailTo, emailCC, templateName, params, reportFile)
+{
+	
+	var result = null;
+	result = aa.document.sendEmailAndSaveAsDocument(emailFrom, emailTo, emailCC, templateName, params, null, reportFile);
+	if(result.getSuccess())
+	{
+		logDebugLocal("Sent email successfully!");
+		return true;
+	}
+	else
+	{
+		logDebugLocal("Failed to send mail. - " + result.getErrorType());
+		return false;
+	}
 }
 function matches(eVal, argList)
 {
@@ -371,7 +410,7 @@ function doSQLSelect_local(sql)
 
 
 
-function generateReportBatch(itemCap, reportName, module, parameters)
+function generateReportBatchLocal(reportName, module, parameters)
 {
     //returns the report file which can be attached to an email.
     var user = currentUserID; // Setting the User Name
@@ -383,7 +422,7 @@ function generateReportBatch(itemCap, reportName, module, parameters)
     }
     report = report.getOutput();
     report.setModule(module);
-    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
+    //report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
     report.setReportParameters(parameters);
 
     var permit = aa.reportManager.hasPermission(reportName, user);
