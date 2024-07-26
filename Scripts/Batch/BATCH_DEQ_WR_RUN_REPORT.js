@@ -165,8 +165,8 @@ function mainProcess()
     {
               
         logDebugLocal("Script starts:");
-        //var emailToSend = "ada.chan@suffolkcountyny.gov; chunchung.ching@suffolkcountyny.gov";                            
-        var emailToSend = "ada.chan@suffolkcountyny.gov";   
+        var emailToSend = "chunchung.ching@suffolkcountyny.gov";                            
+        //var emailToSend = "ada.chan@suffolkcountyny.gov";   
         logDebugLocal("emailToSend is: " + emailToSend);
         var beginDt = getParam("beginDt");
         var endDt = getParam("endDt");
@@ -196,11 +196,11 @@ function mainProcess()
         if (caReport)
         {                                                
             caReports.push(caReport);
-            logDebugLocal("Reort generated." + caReport);
+            logDebugLocal("Report generated." + caReport);
         }
 
         emailSubject = "WR Extract Report: " + beginDt + " to " + endDt;
-        emailContent + "Please refer to the attached " + emailSubject;
+        emailContent = "Please refer to the attached " + emailSubject;
         aa.sendEmail("noreplywwm@suffolkcountyny.gov", emailToSend, "", emailSubject , emailContent , caReports);	
        
     }
