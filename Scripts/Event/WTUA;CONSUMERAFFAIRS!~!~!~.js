@@ -272,6 +272,7 @@ function feeExistsWithCapId(feestr,feeStatus,vCapId){
 		logDebug("**ERROR: getting fee items: " + capContResult.getErrorMessage());
 		return false
 	}
+	logDebug("*feeObjArr.length: " + feeObjArr.length);
 	for (ff in feeObjArr)
 	{
 		logDebug("feeObjArr[ff].getFeeCod(): " + feeObjArr[ff].getFeeCod());
