@@ -28,8 +28,7 @@ if (matches(appTypeArray[1], "Licenses")) {
 
 				feeCode = "LIC_REN_01";
 
-				if (feeExistsWithCapId(feeCode, "Invoiced", tChild) ||
-				feeExistsWithCapId(feeCode, "New", tChild))
+				if (feeExistsWithCapId(feeCode, "Invoiced", tChild) || feeExistsWithCapId(feeCode, "New", tChild))
 				{					
 					logDebug("Void and remove fee: " + feeCode);
 					voidRemoveFeesLocal(feeCode, tChild);		
@@ -274,9 +273,13 @@ function feeExistsWithCapId(feestr,feeStatus,vCapId){
 		return false
 	}
 	for (ff in feeObjArr)
-		logDebug("Fee Code: " + feeObjArr[ff].getFeeCod());
+	{
+		logDebug("feeObjArr[ff].getFeeCod(): " + feeObjArr[ff].getFeeCod());
+		logDebug("feeObjArr[ff].getFeeitemStatus(): " + feeObjArr[ff].getFeeitemStatus());
+
 		if (feestr.equals(feeObjArr[ff].getFeeCod()) && feeObjArr[ff].getFeeitemStatus() == feeStatus){
             return true;
         }
+	}
 	return false;
 } 
