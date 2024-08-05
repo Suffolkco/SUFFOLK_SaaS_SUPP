@@ -16,12 +16,12 @@ if (matches(appTypeArray[1], "Licenses")) {
 		var tChild;
 		if (result.getSuccess()) {
 			childrenArr = result.getOutput();
-			logDebugLocal("Found renewal: " + childrenArr.length);
+			logDebug("Found renewal: " + childrenArr.length);
 			if (childrenArr != null && childrenArr.length > 0) {
 				
 				for (var cIdx in childrenArr) {
 					
-					logDebugLocal("Found renewal alt ID: " + childrenArr[cIdx].capID.toString());
+					logDebug("Found renewal alt ID: " + childrenArr[cIdx].capID.toString());
 					var tChildId = childrenArr[cIdx].capID.toString().split("-");
 					tChild = aa.cap.getCapID(tChildId[0],tChildId[1],tChildId[2]).getOutput();						
 				}
@@ -31,7 +31,7 @@ if (matches(appTypeArray[1], "Licenses")) {
 				if (feeExistsWithCapId(feeCode, "Invoiced", tChild) ||
 				feeExistsWithCapId(feeCode, "New", tChild))
 				{					
-					logDebugLocal("Void and remove fee: " + feeCode);
+					logDebug("Void and remove fee: " + feeCode);
 					voidRemoveFeesLocal(feeCode, tChild);		
 					logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
 					updateFee("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null) 
@@ -55,7 +55,7 @@ if (matches(appTypeArray[1], "Licenses") && appTypeArray[2] != "Renewal" && matc
         var vSQLResult = doSQLSelect_local(vSQL);
 		
 
-		logDebugLocal("******** Finding matching license in docket : " + vSQLResult.length + "*********\n");
+		logDebug("******** Finding matching license in docket : " + vSQLResult.length + "*********\n");
 		for (r in vSQLResult)
         {		
             docketId = vSQLResult[r]["recordNumber"];     
@@ -268,7 +268,7 @@ function feeExistsWithCapId(feestr,feeStatus,vCapId){
 	
 	if (feeResult.getSuccess()) {
 		var feeObjArr = feeResult.getOutput();
-		logDebugLocal("Found fee code for : " + feestr + " and status: " + feeStatus);
+		logDebug("Found fee code for : " + feestr + " and status: " + feeStatus);
 	} else {
 		logDebug("**ERROR: getting fee items: " + capContResult.getErrorMessage());
 		return false
