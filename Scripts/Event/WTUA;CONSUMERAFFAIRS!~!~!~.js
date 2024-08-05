@@ -12,7 +12,7 @@ if (matches(appTypeArray[1], "Licenses")) {
 	if (wfTask == "Issuance" && wfStatus == "Shelved")
 	{
 		//1.  Check to see if the renewal was initiated before.
-		result = aa.cap.getProjectByMasterID(capid, "Renewal", "Incomplete");
+		result = aa.cap.getProjectByMasterID(capId, "Renewal", "Incomplete");
 		var tChild;
 		if (result.getSuccess()) {
 			childrenArr = result.getOutput();
