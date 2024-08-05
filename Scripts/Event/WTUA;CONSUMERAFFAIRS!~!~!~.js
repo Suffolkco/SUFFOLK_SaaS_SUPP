@@ -274,6 +274,7 @@ function feeExistsWithCapId(feestr,feeStatus,vCapId){
 		return false
 	}
 	for (ff in feeObjArr)
+		logDebug("Fee Code: " + feeObjArr[ff].getFeeCod());
 		if (feestr.equals(feeObjArr[ff].getFeeCod()) && feeObjArr[ff].getFeeitemStatus() == feeStatus){
             return true;
         }
