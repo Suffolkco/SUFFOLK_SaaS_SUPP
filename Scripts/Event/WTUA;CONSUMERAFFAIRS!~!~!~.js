@@ -268,7 +268,8 @@ function feeExistsWithCapId(feestr,feeStatus,vCapId){
 	if (feeResult.getSuccess()) {
 		var feeObjArr = feeResult.getOutput();
 		logDebug("Found fee code for : " + feestr + " and status: " + feeStatus);
-	} else {
+	} else 
+	{
 		logDebug("**ERROR: getting fee items: " + capContResult.getErrorMessage());
 		return false
 	}
@@ -278,7 +279,7 @@ function feeExistsWithCapId(feestr,feeStatus,vCapId){
 		logDebug("feeObjArr[ff].getFeeCod(): " + feeObjArr[ff].getFeeCod());
 		logDebug("feeObjArr[ff].getFeeitemStatus(): " + feeObjArr[ff].getFeeitemStatus());
 
-		if (feestr.equals(feeObjArr[ff].getFeeCod()) && feeObjArr[ff].getFeeitemStatus() == feeStatus){
+		if (feestr.equals(feeObjArr[ff].getFeeCod()) && feeObjArr[ff].getFeeitemStatus() == feeStatus.toUpperCase()){
             return true;
         }
 	}
