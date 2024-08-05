@@ -28,13 +28,16 @@ if (matches(appTypeArray[1], "Licenses")) {
 
 				feeCode = "LIC_REN_01";
 
-				if (feeExistsWithCapId(feeCode, "Invoiced", tChild) || feeExistsWithCapId(feeCode, "New", tChild))
+				if (feeExistsWithCapId(feeCode, "Invoiced", tChild) || feeExistsWithCapId(feeCode, "New", tChild))					
 				{					
 					logDebug("Void and remove fee: " + feeCode);
 					voidRemoveFeesLocal(feeCode, tChild);		
+					
+				}
+				if (!feeExistsWithCapId("SLS_38", "Invoiced", tChild))
+				{
 					logDebug("Add shelved fee code in renewal.")
-					updateFeeWithCapId("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null, tChild);				
-		
+					updateFeeWithCapId("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null, tChild);	
 				}
 			}
 	
