@@ -33,7 +33,7 @@ if (matches(appTypeArray[1], "Licenses")) {
 					logDebug("Void and remove fee: " + feeCode);
 					voidRemoveFeesLocal(feeCode, tChild);		
 					logDebug("Parent record has a status of Shelved. SLS_8 fee code instead.")
-					updateFeeWithCapId("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null, tdchild);				
+					updateFeeWithCapId("SLS_38", "CA_SALES", "FINAL", 1, "Y", "N", null, tChild);				
 		
 				}
 			}
