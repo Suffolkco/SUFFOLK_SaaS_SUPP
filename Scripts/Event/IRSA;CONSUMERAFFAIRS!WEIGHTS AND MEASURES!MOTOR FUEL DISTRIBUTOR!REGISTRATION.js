@@ -29,6 +29,7 @@ if (b1ExpResult.getSuccess())
 					report.setModule("ConsumerAffairs");
 					report.setCapId(capId);
 					reportInfo = report.getReportInfoModel();
+					var reportParams = aa.util.newHashMap();
 					report.setReportParameters(reportParams);
 					reportRun = aa.reportManager.runReport(reportParams, reportDetail);
 					
