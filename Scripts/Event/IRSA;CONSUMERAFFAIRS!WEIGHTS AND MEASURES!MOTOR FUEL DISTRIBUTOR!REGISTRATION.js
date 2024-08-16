@@ -31,7 +31,7 @@ if (b1ExpResult.getSuccess())
 					reportInfo = report.getReportInfoModel();
 					var reportParams = aa.util.newHashMap();
 					report.setReportParameters(reportParams);
-					reportRun = aa.reportManager.runReport(reportParams, reportDetail);
+					reportRun = aa.reportManager.runReport(reportParams, reportName);
 					
 					showMessage = true;
 					comment(message);
