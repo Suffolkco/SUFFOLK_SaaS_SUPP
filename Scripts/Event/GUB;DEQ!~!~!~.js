@@ -1,3 +1,4 @@
+var emailText ='';
 var showDebug = true;
 logDebugLocal("GUB");
 
