@@ -1,4 +1,5 @@
-
+	//aa.sendMail("noreplyehimslower@suffolkcountyny.gov", "ada.chan@suffolkcountyny.gov", "", "GUB", "Test");
+//EHIMS-4172
 	gGuideSheetModel = aa.env.getValue("GuidesheetModel");
 
 	var guideSheetNumber = gGuideSheetModel.getGuidesheetSeqNbr();
