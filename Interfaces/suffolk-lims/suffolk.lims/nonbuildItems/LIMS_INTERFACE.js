@@ -875,7 +875,7 @@ function processCombos(resId) {
                     svocComboFound = true;
                     svocComboRow = row;
                     break;
-                case "Hazard Index":
+                case "PFAS Hazard Index":
                     logInfo("Pretty Name: " + prettyName);
                     hazardIndexFound = true;
                     hazardIndxRow = row;
@@ -1338,7 +1338,7 @@ function processCombos(resId) {
     //************        
 
     
-    logInfo("Found " + hazardIndexCombos.length + " hazard index rows to combine");
+    logInfo("Found " + hazardIndexCombos.length + " PFAS hazard index rows to combine");
     
     if (hazardIndexCombos.length > 1)
     {
@@ -1475,7 +1475,7 @@ function processCombos(resId) {
                 t["Analysis Date"] = hazardIndexCombos[0]["Analysis Date"];
                 t["Analysis Time"] = hazardIndexCombos[0]["Analysis Time"];
                 t["Lab Name"] = LAB_NAME;
-                prettyName = "Hazard Index";
+                prettyName = "PFAS Hazard Index";
                 analysisCode = hazardIndexCombos[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
@@ -1508,7 +1508,7 @@ function processCombos(resId) {
                 logInfo("Flag: " + t["Flag"]);
                 logInfo("cMethod: " + cMethod);
                 logInfo("prettyName: " + prettyName);
-                logInfo("Added Hazard Index row");
+                logInfo("Added PFAS Hazard Index row");
             }
             else {
                 hazardIndexRow["Numeric Results"] = "" + totalHazardIndex;
