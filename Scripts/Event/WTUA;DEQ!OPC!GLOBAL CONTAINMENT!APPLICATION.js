@@ -208,7 +208,6 @@ function compareContacts(srcCapId, targetCapId)
                     targetPeopleModel = targetPeople[loop2];
                     logDebug("***Found matching SITE contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
                     matchAllContactInfo = true;
-
                     if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I' ||
                     (targetPeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I'))
                     {
