@@ -208,44 +208,54 @@ function compareContacts(srcCapId, targetCapId)
                     targetPeopleModel = targetPeople[loop2];
                     logDebug("***Found matching SITE contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
                     matchAllContactInfo = true;
-                    logDebug("Same first, last and org name. ***Overwrite contact info***");
-                
-                    // Get child contact info
-                    var phone = sourcePeopleModel.getCapContactModel().getPeople().getPhone1();
-                    var phone2 = sourcePeopleModel.getCapContactModel().getPeople().getPhone2();
-                    var phone3 = sourcePeopleModel.getCapContactModel().getPeople().getPhone3();
-                    var fax = sourcePeopleModel.getCapContactModel().getPeople().getFax();
-                    var addr1 = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getAddressLine1();
-                    var city = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getCity();
-                    var state = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getState();
-                    var zip = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getZip();
-                    var email = sourcePeopleModel.getCapContactModel().getPeople().getEmail();
-                    var startdate = sourcePeopleModel.getCapContactModel().getPeople().getStartDate();
-                    logDebug("*** Child CapId: " + capId.getCustomID());               
 
-                    logDebug("*** SITE CapId: " + targetCapId.getCustomID());
-                    logDebug("Updating SITE contact ID " + targetPeopleModel.getCapContactModel().getRefContactNumber());
-                    logDebug("Set phone 1: " + phone);
-                    targetPeopleModel.getCapContactModel().getPeople().setPhone1(phone);
-                    logDebug("Set phone 2: " + phone2);
-                    targetPeopleModel.getCapContactModel().getPeople().setPhone2(phone2);
-                    logDebug("Set phone 3: " + phone3);
-                    targetPeopleModel.getCapContactModel().getPeople().setPhone3(phone3);
-                    logDebug("Set fax: " + fax);
-                    targetPeopleModel.getCapContactModel().getPeople().setFax(fax);
-                    logDebug("Set Address addr1: " + addr1);
-                    targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setAddressLine1(addr1);
-                    logDebug("Set Address city: " + city);
-                    targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setCity(city);
-                    logDebug("Set Address State: " + state);
-                    targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setState(state);
-                    logDebug("Set Address Zip: " + zip);
-                    targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setZip(zip);	
-                    logDebug("Set email: " + email);
-                    targetPeopleModel.getCapContactModel().getPeople().setEmail(email);	
-                    logDebug("Set start date: " + startdate);
-                    targetPeopleModel.getCapContactModel().getPeople().setEmail(startdate);	
-                    aa.people.editCapContact(targetPeopleModel.getCapContactModel());				                
+                    if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I' ||
+                    (targetPeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I'))
+                    {
+                      logDebug("Same first, last and org name. However, the source contact status is: " + sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus());
+                      logDebug("Same first, last and org name. However, the source contact status is: " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
+                    }
+                    else
+                    {
+                      logDebug("Same first, last and org name. ***Overwrite contact info***");
+                  
+                      // Get child contact info
+                      var phone = sourcePeopleModel.getCapContactModel().getPeople().getPhone1();
+                      var phone2 = sourcePeopleModel.getCapContactModel().getPeople().getPhone2();
+                      var phone3 = sourcePeopleModel.getCapContactModel().getPeople().getPhone3();
+                      var fax = sourcePeopleModel.getCapContactModel().getPeople().getFax();
+                      var addr1 = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getAddressLine1();
+                      var city = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getCity();
+                      var state = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getState();
+                      var zip = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getZip();
+                      var email = sourcePeopleModel.getCapContactModel().getPeople().getEmail();
+                      var startdate = sourcePeopleModel.getCapContactModel().getPeople().getStartDate();
+                      logDebug("*** Child CapId: " + capId.getCustomID());               
+
+                      logDebug("*** SITE CapId: " + targetCapId.getCustomID());
+                      logDebug("Updating SITE contact ID " + targetPeopleModel.getCapContactModel().getRefContactNumber());
+                      logDebug("Set phone 1: " + phone);
+                      targetPeopleModel.getCapContactModel().getPeople().setPhone1(phone);
+                      logDebug("Set phone 2: " + phone2);
+                      targetPeopleModel.getCapContactModel().getPeople().setPhone2(phone2);
+                      logDebug("Set phone 3: " + phone3);
+                      targetPeopleModel.getCapContactModel().getPeople().setPhone3(phone3);
+                      logDebug("Set fax: " + fax);
+                      targetPeopleModel.getCapContactModel().getPeople().setFax(fax);
+                      logDebug("Set Address addr1: " + addr1);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setAddressLine1(addr1);
+                      logDebug("Set Address city: " + city);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setCity(city);
+                      logDebug("Set Address State: " + state);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setState(state);
+                      logDebug("Set Address Zip: " + zip);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setZip(zip);	
+                      logDebug("Set email: " + email);
+                      targetPeopleModel.getCapContactModel().getPeople().setEmail(email);	
+                      logDebug("Set start date: " + startdate);
+                      targetPeopleModel.getCapContactModel().getPeople().startdate(startdate);	
+                      aa.people.editCapContact(targetPeopleModel.getCapContactModel());				    
+                    }            
                   }
                   //2. If different contact info, inactive the existing parent reference ID and add the child contact to parent.
                   else // Contact Type match but not first, last or orgnaization name
