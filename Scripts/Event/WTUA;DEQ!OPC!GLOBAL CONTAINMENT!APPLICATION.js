@@ -140,6 +140,10 @@ function compareContacts(srcCapId, targetCapId)
     if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() != 'I')
     {
 
+      var sourceContactType = sourcePeopleModel.getCapContactModel().getPeople().getContactType;
+      logDeubg("Source contact type is for : " + srcCapId.getCustomID() + " is " + sourceContactType);
+      var found = false;
+      
       //3.2 Check to see if sourcePeople exist.
       if (targetPeople != null && targetPeople.length > 0)
       {      
@@ -147,25 +151,34 @@ function compareContacts(srcCapId, targetCapId)
         for (loop2 in targetPeople)
         {        
           var auditStatus = targetPeople[loop2].getCapContactModel().getPeople().getAuditStatus();
-        
+          var targetContactType = targetPeople[loop2].getCapContactModel().getPeople().getContactType();
+          // Flag if no matching contact type in target record
+          if (matches(sourceContactType, targetContactType) && auditStatus != "I" )
+          {
+             found = true;
+             logDebug("Same contact type has been found: " + sourceContactType);
+          }
+
           if (auditStatus == 'I')
           {
-            logDebug("SKIP: Audit Status for " + targetCapId.getCustomID() + " for " + targetPeople[loop2].getCapContactModel().getPeople().getContactType() + " is already inactive.");
+            logDebug("SKIP: Audit Status for " + targetCapId.getCustomID() + " for " + targetContactType + " is already inactive.");
             
           }
-          else if (!matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Billing Contact", "Business Owner", "Property Owner", "Tank Owner", "Operator", "Unregistered New Tank Owner", "Unregistered New Tank Operator"))
+          else if (!matches(targetContactType, 
+          "Billing Contact", "Business Owner", "Property Owner", "Tank Owner", "Operator", 
+          "Unregistered New Tank Owner", "Unregistered New Tank Operator"))
           {
-            logDebug("SKIP: Contact type is not one of the following: Billing Contact, Business Owner or Property Owner: " + targetPeople[loop2].getCapContactModel().getPeople().getContactType());
+            logDebug("SKIP: Contact type is not one of the following: Billing Contact, Business Owner or Property Owner: " + targetContactType);
           
           }  
           // Check if it is Unregistered New Tank Owner      
-          else if (matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Unregistered New Tank Owner"))
+          else if (matches(targetContactType, "Unregistered New Tank Owner"))
           {
             logDebug("Unregistered New Tank Owner found. Process function.");
               processTankOwnerOrOperator(srcCapId, targetCapId, targetPeople[loop2], "Tank Owner");
           }
           // Check if it is Unregistered New Tank Operator      
-          else if (matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Unregistered New Tank Operator"))
+          else if (matches(targetContactType, "Unregistered New Tank Operator"))
           {
             logDebug("Unregistered New Tank Operator found. Process function.");  
             processTankOwnerOrOperator(srcCapId, targetCapId, targetPeople[loop2], "Operator");
@@ -174,13 +187,13 @@ function compareContacts(srcCapId, targetCapId)
           {
             // This scenario is to cover when SITE has a contact Tank Owner and has a New Unregistered Tank Owner, we should skip
             // since it has been taken care in the Unregistered Tank Owner logic above
-            if (unregisteredTankOwner && matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Tank Owner"))
+            if (unregisteredTankOwner && matches(targetContactType, "Tank Owner"))
             {
               logDebug("There is an unregistered Tank Owner contact in SITE and also Tank Owner in SITE.");
             }
             // This scenario is to cover when SITE has a contact Operator and has a New Unregistered Tank Operator, we should skip
             // since it has been taken care in the Unregistered Tank Operator logic above
-            else if (unregisteredTankOperator && matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Operator"))
+            else if (unregisteredTankOperator && matches(targetContactType, "Operator"))
             {
               logDebug("There is an unregistered Tank Operator contact in SITE and also Operator in SITE.");
             }
@@ -206,7 +219,7 @@ function compareContacts(srcCapId, targetCapId)
                   if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
                   {
                     targetPeopleModel = targetPeople[loop2];
-                    logDebug("****Found matching SITE contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
+                    logDebug("****Found matching SITE contact type: " + targetContactType);
                     matchAllContactInfo = true;
                     if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I' ||
                     (targetPeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I'))
@@ -309,7 +322,17 @@ function compareContacts(srcCapId, targetCapId)
     {
       logDebug("Contact is not active: " + sourcePeopleModel.getCapContactModel().getPeople().getContactType());
     }
+
+    // If no target of the same contact type is found, copy
+    if (!found)
+    {
+      logDebug("No target contact type is found in : " + targetCapId.getCustomID());
+      logDebug("Copying...");
+      copyContact(srcCapId, targetCapId, contactType);
+    }
+  
   }
+
   logDebug("* Done Scanning all contacts. *");    
 }
 
