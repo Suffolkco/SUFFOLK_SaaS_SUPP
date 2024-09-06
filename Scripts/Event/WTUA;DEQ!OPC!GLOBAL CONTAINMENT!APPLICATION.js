@@ -206,7 +206,7 @@ function compareContacts(srcCapId, targetCapId)
                   if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
                   {
                     targetPeopleModel = targetPeople[loop2];
-                    logDebug("***Found matching SITE contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
+                    logDebug("****Found matching SITE contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
                     matchAllContactInfo = true;
                     if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I' ||
                     (targetPeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I'))
@@ -252,7 +252,7 @@ function compareContacts(srcCapId, targetCapId)
                       logDebug("Set email: " + email);
                       targetPeopleModel.getCapContactModel().getPeople().setEmail(email);	
                       logDebug("Set start date: " + startdate);
-                      targetPeopleModel.getCapContactModel().getPeople().startdate(startdate);	
+                      targetPeopleModel.getCapContactModel().getPeople().setStartDate(startdate);	
                       aa.people.editCapContact(targetPeopleModel.getCapContactModel());				    
                     }            
                   }
