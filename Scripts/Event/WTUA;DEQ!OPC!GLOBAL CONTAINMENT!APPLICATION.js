@@ -328,7 +328,7 @@ function compareContacts(srcCapId, targetCapId)
     {
       logDebug("No target contact type is found in : " + targetCapId.getCustomID());
       logDebug("Copying...");
-      copyContact(srcCapId, targetCapId, contactType);
+      copyContact(srcCapId, targetCapId, sourceContactType);
     }
   
   }
