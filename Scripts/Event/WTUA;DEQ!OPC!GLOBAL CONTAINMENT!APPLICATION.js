@@ -326,8 +326,8 @@ function compareContacts(srcCapId, targetCapId)
     // If no target of the same contact type is found, copy
     if (!found)
     {
-      logDebug("No target contact type has been found in : " + targetCapId.getCustomID());
-      logDebug("Copying contact type: " + sourceContactType + " to " + targetCapId.getCustomID);
+      logDebug("No source contact type of " + sourceContactType + " has been found in : " + targetCapId.getCustomID());
+      logDebug("Copying contact type: " + sourceContactType + " to " + targetCapId.getCustomID());
       copyContact(srcCapId, targetCapId, sourceContactType);
     }
   
