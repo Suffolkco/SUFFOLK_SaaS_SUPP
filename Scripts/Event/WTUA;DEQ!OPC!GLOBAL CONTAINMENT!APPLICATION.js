@@ -140,7 +140,7 @@ function compareContacts(srcCapId, targetCapId)
     if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() != 'I')
     {
 
-      var sourceContactType = sourcePeopleModel.getCapContactModel().getPeople().getContactType;
+      var sourceContactType = sourcePeopleModel.getCapContactModel().getPeople().getContactType();
       logDebug("Source contact type is for : " + srcCapId.getCustomID() + " is " + sourceContactType);
       var found = false;
       
