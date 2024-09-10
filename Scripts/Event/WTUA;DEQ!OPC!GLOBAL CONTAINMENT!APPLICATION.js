@@ -320,7 +320,8 @@ function compareContacts(srcCapId, targetCapId)
     }    
     else
     {
-      logDebug("Contact is not active: " + sourcePeopleModel.getCapContactModel().getPeople().getContactType());
+      logDebug("Contact is not active: " + sourcePeopleModel.getCapContactModel().getPeople().getContactType());      
+      found = true;
     }
 
     // If no target of the same contact type is found, copy
