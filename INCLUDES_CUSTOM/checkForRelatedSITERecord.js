@@ -88,9 +88,24 @@ function checkForRelatedSITERecord(parcelNumber) {
            }        
         if (appStatus != "Retired")
         {
-            ammendARecord(capId, siteCap);
+            // EHIMS-5328
+            if(matches(capType, "DEQ/WWM/Commercial/Application", "DEQ/WWM/Food Review/Application", 
+                "DEQ/WWM/Garbage/Application", "DEQ/WWM/Residence/Application", 
+                "DEQ/WWM/SHIP/Application","DEQ/WWM/STP/Application","DEQ/WWM/Subdivision/Application")) 
+            {               
+                copyLicenseProfessionalForLic(capId, parentCapId);
+                copyOwnerForLic(capId, parentCapId);               
+                copyAddressForLic(capId, parentCapId);
+                copyParcelForLic(capId, parentCapId);
+            }
+            else
+            {
+                ammendARecord(capId, siteCap);
+            }
+            
             addParent(siteCap);
             copyConditions(siteCap);
+            
         }
         else
         {
