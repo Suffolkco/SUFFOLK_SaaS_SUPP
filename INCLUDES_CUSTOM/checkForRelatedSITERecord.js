@@ -19,10 +19,10 @@ function checkForRelatedSITERecord(parcelNumber) {
 
     //No Site Found: we need to create one and copy everything over. 
     //We should also create a new site record
+    var capType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     if (!foundSite) {
 
-         // Copy project/app name from the child to site when it's created from OPC records.
-         var capType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+         // Copy project/app name from the child to site when it's created from OPC records.        
          logDebug("Cap Type is: " + capType);
          if(matches(capType, "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", "DEQ/OPC/Swimming Pool/Permit","DEQ/OPC/Site Assessment/Application")) 
          {
