@@ -95,8 +95,7 @@ function checkForRelatedSITERecord(parcelNumber) {
                 "DEQ/WWM/Garbage/Application", "DEQ/WWM/Residence/Application", 
                 "DEQ/WWM/SHIP/Application","DEQ/WWM/STP/Application","DEQ/WWM/Subdivision/Application")) 
             {               
-                logDebug("Does not copy contacts.");
-                copyLicenseProfessionalForLic(capId, siteCap);
+                logDebug("Does not copy contacts and LP.");               
                 copyOwnerForLic(capId, siteCap);               
                 copyAddressForLic(capId, siteCap);
                 copyParcelForLic(capId, siteCap);
