@@ -1494,17 +1494,17 @@ function processCombos(resId) {
                 t["Units"] = "ng/L";
                 t["CAS Number"] = aInfo.casNumber;
                 var totalHizardIndex2Sig = parseFloat(totalHazardIndex).toPrecision(2);
-                logInfo("Total Numeric Result: " + totalHizardIndex2Sig);
+                logInfo("Total Numeric Result: " + totalHizardIndex2Sig.toString());
                 if (totalHizardIndex2Sig < 0.1) {
                     logInfo("Total Hazard Index is less than 0.1. Set result notation to < and numeric result to 0.1");
                     t["Result Notation"] = "<";
-                    t["Numeric Result"] = 0.1;
-                    t["Results"] = 0.1;
+                    t["Numeric Result"] = "0.1";
+                    t["Results"] = "0.1";
                 }
                 else {
                     t["Result Notation"] = "=";
-                    t["Numeric Result"] = totalHizardIndex2Sig;
-                    t["Results"] = totalHizardIndex2Sig;
+                    t["Numeric Result"] = "" + totalHizardIndex2Sig;
+                    t["Results"] = "" + totalHizardIndex2Sig;
                 }
                
                 t["Trace Results"] = ""; t["Text Results"] = ""; t["Combination Results"] = ""; t["Analyte MDL"] = "0.1";
@@ -1516,7 +1516,7 @@ function processCombos(resId) {
                 
 
                 asiTableRowArray.push(t);
-                logInfo("TotalHzardIndex Total: " + totalHazardIndex);                
+                logInfo("TotalHzardIndex Total: " + totalHazardIndex);
                 logInfo("Numeric Result after 2 significant figures: " + t["Numeric Result"]);
                 logInfo("Flag: " + t["Flag"]);
                 logInfo("cMethod: " + cMethod);
