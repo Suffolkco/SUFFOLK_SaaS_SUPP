@@ -81,7 +81,8 @@ var capName = cap.getSpecialText();
 var capStatus = cap.getCapStatus();
 
 //aa.env.setValue("ReturnData", "{'PageFlow': {'HidePage' : 'Y'}}");
-
+var AInfo = new Array();
+loadAppSpecific4ACA(AInfo);
 var pinRequest = AInfo("Pin Request");
 aa.debug("Debug","stepIndex:" + stepIndex);
 aa.debug("Debug","pageIndex:" + pageIndex);
