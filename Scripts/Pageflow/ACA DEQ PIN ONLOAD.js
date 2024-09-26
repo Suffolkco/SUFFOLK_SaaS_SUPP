@@ -84,15 +84,17 @@ var capStatus = cap.getCapStatus();
 var AInfo = new Array();
 loadAppSpecific4ACA(AInfo);
 var pinRequest = AInfo["Pin Request"];
-aa.debug("Debug","stepIndex:" + stepIndex);
-aa.debug("Debug","pageIndex:" + pageIndex);
 aa.debug("Debug","pinRequest:" + pinRequest);
-
+aa.print("pinRequest:" + pinRequest);
 if (pinRequest == 'Yes')
 {
-  stepIndex = 0;
-  pageIndex = 1;
-  aa.acaPageFlow.hideCapPage4ACA(capID, stepIndex, pageIndex);
+  // Hide the PIN registration page if it's only for PIN request
+  aa.env.setValue("ReturnData", "{'PageFlow': {'HidePage' : 'Y'}}");
+  
+  // Cannot get the below to work. Use the above line instead.
+  //stepIndex = 1;
+  //pageIndex = 1;  
+  //aa.acaPageFlow.hideCapPage4ACA(capId, stepIndex, pageIndex);
 }
 
 	
