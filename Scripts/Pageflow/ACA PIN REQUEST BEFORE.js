@@ -17,8 +17,8 @@
 |     will no longer be considered a "Master" script and will not be supported in future releases.  If
 |     changes are made, please add notes above.
 /------------------------------------------------------------------------------------------------------*/
-var showMessage = false;						// Set to true to see results in popup window
-var showDebug = false;							// Set to true to see debug messages in popup window
+var showMessage = true;						// Set to true to see results in popup window
+var showDebug = true;							// Set to true to see debug messages in popup window
 var preExecute = "PreExecuteForBeforeEvents"
 //var controlString = "";		// Standard choice for control
 var documentOnly = false;						// Document Only -- displays hierarchy of std choice steps
@@ -163,34 +163,43 @@ logDebug("balanceDue = " + balanceDue);
 if (preExecute.length) doStandardChoiceActions(preExecute,true,0); 	// run Pre-execution code
 
 logGlobals(AInfo); 
+var AInfo = new Array();
+loadAppSpecific4ACA(AInfo);
 /*------------------------------------------------------------------------------------------------------/
 | <===========Main=Loop================>
 |
 /-----------------------------------------------------------------------------------------------------*/
 try
 {       
+    logDebug(AInfo["Pin Request"]);
+
     if (AInfo["Pin Request"] == 'Yes')
     {  
         recordID = AInfo["Record ID"];
         email = AInfo["Email Address"];
-        aa.print(recordID + ", " + email);
+        logDebug(recordID + ", " + email);
         retval = false;
+        capId = getApplication(recordID);
 
-        var capContResult = aa.people.getCapContactByCapID(capId);
+        var capPeoples = getPeople(capId)
+        logDebug(capPeoples.length);
 
-        if (capContResult.getSuccess()) {
-            conArray = capContResult.getOutput();       
-                      
-            for (con in conArray)
-            {         
-                cont = conArray[con];				
+        if (capPeoples == null || capPeoples.length == 0)
+        {            
+           retval = false;
+        }
+        else
+        {
+            for (loopk in capPeoples)
+                {
+                cont = capPeoples[loopk];                 
                 peop = cont.getPeople();
                 conEmail = peop.getEmail();
-                aa.print("Scanning email: " + conEmail);
+                logDebug("Scanning email: " + conEmail);
 
                 if (matches(conEmail, email))
                 {
-                    aa.print("Found matching email: " + conEmail);
+                    logDebug("Found matching email: " + conEmail);
                     retval = true;
                 }
 
