@@ -209,13 +209,11 @@ try
         if (!retval)        
         {
             cancel = true;
-            showMessage = true;
-            urlString = "https://aca.suffolkcountyny.gov/ACA_docs/OPC%20PIN%20Request%20Form.pdf";
-            url = new URL(urlString);
+            showMessage = true;           
 
             comment("Please verify the Record ID and email address. No matching record can be found in the system.");
-            comment("If the system is still unable to find the matching information, please complete this form at");
-            comment (urlString + " and follow the instructions in the document.");
+            comment("If the system is still unable to find the matching information, please call (631) 852-5810.");
+            
         }
     }    
   
