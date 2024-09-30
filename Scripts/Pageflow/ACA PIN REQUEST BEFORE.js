@@ -210,7 +210,12 @@ try
         {
             cancel = true;
             showMessage = true;
-            comment("Please verify the reference ID and email address. No matching information is found in the system.");
+            urlString = "https://aca.suffolkcountyny.gov/ACA_docs/OPC%20PIN%20Request%20Form.pdf";
+            url = new URL(urlString);
+
+            comment("Please verify the Record ID and email address. No matching record can be found in the system.");
+            comment("If the system is still unable to find the matching information, please complete this form at");
+            comment (urlString + " and follow the instructions in the document.");
         }
     }    
   
