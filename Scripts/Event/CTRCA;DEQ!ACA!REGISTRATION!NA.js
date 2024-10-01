@@ -41,8 +41,7 @@ if (publicUser) {
 					addParameter(emailParams, "$$altID$$", capId.getCustomID());					
     				var shortNotes = getShortNotes(capId);
 					addParameter(emailParams, "$$shortNotes$$", shortNotes);					
-					//sendNotification("", conEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY_WITH_ACA_PIN", emailParams, reportFile);
-					sendNotification("", "ada.chan@suffolkcountyny.gov", "", "DEQ_WWM_AWAITING CLIENT REPLY_WITH_ACA_PIN", emailParams, reportFile);    
+					sendNotification("", conEmail, "", "DEQ_WWM_AWAITING CLIENT REPLY_WITH_ACA_PIN", emailParams, reportFile);					
 					break;
 				}
 
