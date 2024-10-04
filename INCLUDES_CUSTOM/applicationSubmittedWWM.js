@@ -1,32 +1,12 @@
 function applicationSubmittedWWM() {
 	var emailParams = aa.util.newHashtable();
 	var reportParams = aa.util.newHashtable();
-	var reportFile = new Array();
-	var conArray;
+	var reportFile = new Array();	
 	var conEmail = "";
-	var fromEmail = "";
-	try
-	{
-		conArray = getContactArrayLocal();
-	}
-	catch (ex)
-	{
-		logDebug("**ERROR** runtime error " + ex.message);
-	}
-	if (matches(fromEmail, null, "", undefined))
-	{
-		fromEmail = "";
-	}
-	if (conArray != null)
-	{
-		for (con in conArray)
-		{
-			if (!matches(conArray[con].email, null, undefined, ""))
-			{
-				conEmail += conArray[con].email + "; ";
-			}
-		}
-	}
+	
+	
+	var shortNotes = getShortNotes(capId);
+
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
 	{
@@ -40,18 +20,70 @@ function applicationSubmittedWWM() {
 	{
 		if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
 		{
-			conEmail += lpArr[lp].getEmail() + "; ";
+			getRecordParams4Notification(emailParams);	
+			addParameter(emailParams, "$$altID$$", capId.getCustomID());
+			addParameter(emailParams, "$$shortNotes$$", shortNotes);					
+			if (conEmail != null)
+			{
+				sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportFile);
+			}			
 		}
 	}
-	getRecordParams4Notification(emailParams);
-	//getWorkflowParams4Notification(emailParams);
-
-	//addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
-	addParameter(emailParams, "$$altID$$", capId.getCustomID());
-	if (conEmail != null)
+	
+	// Send additional PIN information for contacts
+	var capPeoples = getPeople(capId)
+	var reportParams1 = aa.util.newHashtable();
+	var emailParams1 = aa.util.newHashtable();	            
+	for (loopk in capPeoples)
 	{
-		sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportFile);
+		cont = capPeoples[loopk];                 
+		peop = cont.getPeople();
+		conEmail = peop.getEmail();
+		
+		logDebug("Found contact email: " + conEmail);
+		// Local contact ID
+		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();			
+		contactType = cont.getCapContactModel().getPeople().getContactType();
+		reportParams1.put("ContactID", localCId);
+		reportParams1.put("RecordID", capId.getCustomID());
+		reportParams1.put("ContactType", contactType);			
+		// ACA PIN - from reportParams1 above.      
+		rFile = generateReport("ACA Registration Pins-WWM",reportParams1, 'DEQ');
+				
+		if (rFile) {
+			reportFile.push(rFile);
+		}
+
+		getRecordParams4Notification(emailParams1);	
+		addParameter(emailParams1, "$$altID$$", capId.getCustomID());	
+		addParameter(emailParams1, "$$shortNotes$$", shortNotes);					
+		if (conEmail != null)
+		{
+			sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams1, reportFile);
+		}					
+			
 	}
+}
+
+function getPeople(capId)
+{
+  capPeopleArr = null;
+  var s_result = aa.people.getCapContactByCapID(capId);
+  if(s_result.getSuccess())
+  {
+    capPeopleArr = s_result.getOutput();
+    if (capPeopleArr == null || capPeopleArr.length == 0)
+    {
+      aa.print("WARNING: no People on this CAP:" + capId);
+      capPeopleArr = null;
+    }
+  }
+  else
+  {
+    aa.print("ERROR: Failed to People: " + s_result.getErrorMessage());
+    capPeopleArr = null;  
+  }
+  return capPeopleArr;
 }
 
 function getContactArrayLocal()
