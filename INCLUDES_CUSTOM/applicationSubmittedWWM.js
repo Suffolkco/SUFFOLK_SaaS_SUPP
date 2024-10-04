@@ -46,12 +46,14 @@ function applicationSubmittedWWM() {
 		logDebug("localCId: " + localCId);			
 		contactType = cont.getCapContactModel().getPeople().getContactType();
 		logDebug("contactType: " + contactType);	
+		logDebug("altid: " + capId.getCustomID());	
+
 		reportParams1.put("ContactID", localCId);
 		reportParams1.put("RecordID", capId.getCustomID());
 		reportParams1.put("ContactType", contactType);			
 		// ACA PIN - from reportParams1 above.      
 		rFile = generateReport("ACA Registration Pins-WWM",reportParams1, 'DEQ');
-				
+		logDebug("This is the ACA Pin File: " + rFile); 
 		if (rFile) {
 			reportFile.push(rFile);
 		}
