@@ -44,7 +44,7 @@ function sendEmailsOnSIPRecordOnlyContacts(templateName)
  
 	addParameter(emailParams, "$$wfComments$$", wfComment);
 comments = wfComment;
-addParameter(emailParams, "$$WFstatusdate$$", wfDate);
+addParameter(emailParams, "$$WFstatusdate$$", wfDateMMDDYYYY);
 }
 			var acaSite = lookup("ACA_CONFIGS", "ACA_SITE");
 		  acaSite = acaSite.substr(0, acaSite.toUpperCase().indexOf("/ADMIN"));
