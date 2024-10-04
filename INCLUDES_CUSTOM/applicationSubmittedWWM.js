@@ -42,8 +42,10 @@ function applicationSubmittedWWM() {
 		
 		logDebug("Found contact email: " + conEmail);
 		// Local contact ID
-		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();			
+		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();		
+		logDebug("localCId: " + localCId);			
 		contactType = cont.getCapContactModel().getPeople().getContactType();
+		logDebug("contactType: " + contactType);	
 		reportParams1.put("ContactID", localCId);
 		reportParams1.put("RecordID", capId.getCustomID());
 		reportParams1.put("ContactType", contactType);			
