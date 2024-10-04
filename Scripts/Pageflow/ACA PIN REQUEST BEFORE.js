@@ -179,19 +179,19 @@ try
         email = AInfo["Email Address"];
         logDebug(recordID + ", " + email);
         retval = false;
-        capId = getApplication(recordID);
-
+        capId = getApplicationLocal(recordID);
+        logDebug(capId);
         if (matches(capId, null, "", undefined))
         {
+            logDebug("here");
             cancel = true;
             showMessage = true;           
-
-            comment("Invalid record number. Please enter record number exactly as it appears on the SCDHS issued notice or permit. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC.");
-            comment("Pease verify and try again.");
+            comment("Invalid record number. Please enter record number exactly as it appears on the SCDHS issued notice or permit. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC. Please verify and try again.");
             
         }
         else
         {
+            logDebug("There");
             var capPeoples = getPeople(capId)
             logDebug(capPeoples.length);
 
@@ -235,6 +235,13 @@ catch (err) { logDebug(err)	}
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
 
+function getApplicationLocal(appNum) {
+	var getCapResult = aa.cap.getCapID(appNum);
+	if (getCapResult.getSuccess())
+		return getCapResult.getOutput();
+	else
+		return null;
+	}
 
 if (debug.indexOf("**ERROR") > 0)
 	{
