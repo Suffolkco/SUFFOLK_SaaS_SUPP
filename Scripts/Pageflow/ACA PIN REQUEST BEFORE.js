@@ -183,48 +183,50 @@ try
         logDebug(capId);
         if (matches(capId, null, "", undefined))
         {
-            logDebug("here");
             cancel = true;
             showMessage = true;           
-            comment("Invalid record number. Please enter record number exactly as it appears on the SCDHS issued notice or permit. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC. Please verify and try again.");
+            comment("Invalid record number. Please enter record number exactly as it appears on the SCDHS issued notice or permit. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC. Please verify and try again.");            
             
-        }
-                 
-        var capPeoples = getPeople(capId)
-        
-
-        if (capPeoples == null || capPeoples.length == 0)
-        {            
-        retval = false;
         }
         else
-        {
-            for (loopk in capPeoples)
-                {
-                cont = capPeoples[loopk];                 
-                peop = cont.getPeople();
-                conEmail = peop.getEmail();
-                logDebug("Scanning email: " + conEmail);
+        {          
+            var capPeoples = getPeople(capId)
+            
 
-                if (matches(conEmail, email))
-                {
-                    logDebug("Found matching email: " + conEmail);
-                    retval = true;
-                }
-
+            if (capPeoples == null || capPeoples.length == 0)
+            {            
+            retval = false;
             }
-        }
+            else
+            {
+                for (loopk in capPeoples)
+                    {
+                    cont = capPeoples[loopk];                 
+                    peop = cont.getPeople();
+                    conEmail = peop.getEmail();
+                    logDebug("Scanning email: " + conEmail);
 
-        if (!retval)        
-        {
-            cancel = true;
-            showMessage = true;           
+                    if (matches(conEmail, email))
+                    {
+                        logDebug("Found matching email: " + conEmail);
+                        retval = true;
+                    }
 
-            comment("The email address you provided does not match the email address SCDHS has on file for this application.");
-            comment("Please verify and try again. Contact 631.852.5810 if you believe the email address SCDHS has on file needs to be updated.");
+                }
+            }
+            if (!retval)        
+                {
+                    cancel = true;
+                    showMessage = true;           
+        
+                    comment("The email address you provided does not match the email address SCDHS has on file for this application.");
+                    comment("Please verify and try again. Contact 631.852.5810 if you believe the email address SCDHS has on file needs to be updated.");
+                    
+                }
             
         }
-    
+
+       
     }    
   
 }        
