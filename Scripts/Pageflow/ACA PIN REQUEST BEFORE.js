@@ -181,39 +181,51 @@ try
         retval = false;
         capId = getApplication(recordID);
 
-        var capPeoples = getPeople(capId)
-        logDebug(capPeoples.length);
-
-        if (capPeoples == null || capPeoples.length == 0)
-        {            
-           retval = false;
-        }
-        else
-        {
-            for (loopk in capPeoples)
-                {
-                cont = capPeoples[loopk];                 
-                peop = cont.getPeople();
-                conEmail = peop.getEmail();
-                logDebug("Scanning email: " + conEmail);
-
-                if (matches(conEmail, email))
-                {
-                    logDebug("Found matching email: " + conEmail);
-                    retval = true;
-                }
-
-            }
-        }
-
-        if (!retval)        
+        if (matches(capId, null, "", undefined))
         {
             cancel = true;
             showMessage = true;           
 
-            comment("Please verify the Record ID and email address. No matching record can be found in the system.");
-            comment("If the system is still unable to find the matching information, please call (631) 852-5810.");
+            comment("Invalid record number. Please enter record number exactly as it appears on the SCDHS issued notice or permit. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC.");
+            comment("Pease verify and try again.");
             
+        }
+        else
+        {
+            var capPeoples = getPeople(capId)
+            logDebug(capPeoples.length);
+
+            if (capPeoples == null || capPeoples.length == 0)
+            {            
+            retval = false;
+            }
+            else
+            {
+                for (loopk in capPeoples)
+                    {
+                    cont = capPeoples[loopk];                 
+                    peop = cont.getPeople();
+                    conEmail = peop.getEmail();
+                    logDebug("Scanning email: " + conEmail);
+
+                    if (matches(conEmail, email))
+                    {
+                        logDebug("Found matching email: " + conEmail);
+                        retval = true;
+                    }
+
+                }
+            }
+
+            if (!retval)        
+            {
+                cancel = true;
+                showMessage = true;           
+
+                comment("The email address you provided does not match the email address SCDHS has on file for this application.");
+                comment("Please verify and try again. Contact 631.852.5810 if you believe the email address SCDHS has on file needs to be updated.");
+                
+            }
         }
     }    
   
