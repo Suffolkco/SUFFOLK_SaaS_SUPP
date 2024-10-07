@@ -42,7 +42,7 @@ function applicationSubmittedWWM() {
 		conEmail = peop.getEmail();
 		var reportFile = new Array();	
 		var reportParams1 = aa.util.newHashtable();
-		
+		var emailParams1 = aa.util.newHashtable();
 		logDebug("Found contact email: " + conEmail);
 		// Local contact ID
 		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();		
