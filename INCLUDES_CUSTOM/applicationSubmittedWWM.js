@@ -3,7 +3,7 @@ function applicationSubmittedWWM() {
 	var reportParams = aa.util.newHashtable();
 	var reportFile = new Array();	
 	var conEmail = "";
-	
+	var lpEmail = "";
 	
 	var shortNotes = getShortNotes(capId);
 
@@ -22,10 +22,11 @@ function applicationSubmittedWWM() {
 		{
 			getRecordParams4Notification(emailParams);	
 			addParameter(emailParams, "$$altID$$", capId.getCustomID());
-			addParameter(emailParams, "$$shortNotes$$", shortNotes);					
-			if (conEmail != null)
+			addParameter(emailParams, "$$shortNotes$$", shortNotes);	
+			lpEmail = lpArr[lp].getEmail();				
+			if (lpEmail != null)
 			{
-				sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportFile);
+				sendNotification("", lpEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportFile);
 			}			
 		}
 	}
