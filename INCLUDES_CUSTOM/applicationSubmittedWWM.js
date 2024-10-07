@@ -33,15 +33,16 @@ function applicationSubmittedWWM() {
 	
 	// Send additional PIN information for contacts
 	var capPeoples = getPeople(capId)
-	var reportParams1 = aa.util.newHashtable();
-	var emailParams1 = aa.util.newHashtable();	            
+	
+	      
 	for (loopk in capPeoples)
 	{
 		cont = capPeoples[loopk];                 
 		peop = cont.getPeople();
 		conEmail = peop.getEmail();
 		var reportFile = new Array();	
-
+		var reportParams1 = aa.util.newHashtable();
+		
 		logDebug("Found contact email: " + conEmail);
 		// Local contact ID
 		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();		
