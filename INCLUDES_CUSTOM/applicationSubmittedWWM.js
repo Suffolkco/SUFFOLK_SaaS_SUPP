@@ -1,7 +1,7 @@
 function applicationSubmittedWWM() {
 	var emailParams = aa.util.newHashtable();
 	var reportParams = aa.util.newHashtable();
-	var reportFile = new Array();	
+	
 	var conEmail = "";
 	var lpEmail = "";
 	
@@ -26,7 +26,7 @@ function applicationSubmittedWWM() {
 			lpEmail = lpArr[lp].getEmail();				
 			if (lpEmail != null)
 			{
-				sendNotification("", lpEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportFile);
+				sendNotification("", lpEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportParams);
 			}			
 		}
 	}
@@ -40,7 +40,8 @@ function applicationSubmittedWWM() {
 		cont = capPeoples[loopk];                 
 		peop = cont.getPeople();
 		conEmail = peop.getEmail();
-		
+		var reportFile = new Array();	
+
 		logDebug("Found contact email: " + conEmail);
 		// Local contact ID
 		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();		
