@@ -63,7 +63,10 @@ function applicationSubmittedWWM() {
 		reportParams1.put("ContactType", contactType);			
 
 		// ACA PIN - from reportParams1 above.   
-		rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1);			   		
+		//rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1);	
+		
+		rFile = generateReport("ACA Registration Pins-WWM",reportParams1, appTypeArray[0]);
+
 		logDebug("This is the ACA Pin File: " + rFile); 
 		if (rFile) {
 			reportFile.push(rFile);
