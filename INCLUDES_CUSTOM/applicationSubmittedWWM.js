@@ -54,11 +54,11 @@ function applicationSubmittedWWM() {
 
 		var altID = capId.getCustomID();
 		logDebug("altid: " + altID);	
-		vContactSeqNumber = parseInt(localCId);
 		
-		logDebug("vContactSeqNumber: " + vContactSeqNumber);
 		
-		reportParams1.put("ContactID", vContactSeqNumber);
+
+		
+		reportParams1.put("ContactID", localCId.toString());
 		reportParams1.put("RecordID", altID.toString());
 		reportParams1.put("ContactType", contactType);			
 
