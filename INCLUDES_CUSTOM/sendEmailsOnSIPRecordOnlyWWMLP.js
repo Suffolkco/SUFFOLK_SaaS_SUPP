@@ -14,7 +14,6 @@ function sendEmailsOnSIPRecordOnlyWWMLP(templateName)
 			
 			var emailAddressArray = new Array();  
   
-
 			if(matches(fromEmail, null, "", undefined))
 			{
 			  fromEmail = "";
