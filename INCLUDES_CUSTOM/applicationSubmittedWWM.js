@@ -31,59 +31,7 @@ function applicationSubmittedWWM() {
 		}
 	}
 	
-	// Send additional PIN information for contacts
-	var capPeoples = getPeople(capId)
 	
-	      
-	for (loopk in capPeoples)
-	{
-		cont = capPeoples[loopk];                 
-		peop = cont.getPeople();
-		conEmail = peop.getEmail();
-		var reportFile = new Array();	
-		var reportParams1 = aa.util.newHashtable();
-		var emailParams1 = aa.util.newHashtable();
-		logDebug("Found contact email: " + conEmail);
-		// Local contact ID
-		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();						
-		contactType = cont.getCapContactModel().getPeople().getContactType();
-		
-		logDebug("localCId: " + localCId);	
-		logDebug("contactType: " + contactType);	
-		
-
-		var altID = capId.getCustomID();
-		logDebug("altid: " + altID);	
-		
-				
-		//reportParams1.put("ContactID", localCId.toString());
-		//reportParams1.put("RecordID", altID.toString());
-		//reportParams1.put("ContactType", contactType);			
-
-		// Test code to troubeshoot
-		reportParams1.put("ContactID", '99376229');
-		reportParams1.put("RecordID", "RD-0451");
-		reportParams1.put("ContactType", 'Company');		
-
-		// ACA PIN - from reportParams1 above.   
-		//rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1);	
-		
-		rFile = generateReport("ACA Registration Pins-WWM",reportParams1, appTypeArray[0]);
-
-		logDebug("This is the ACA Pin File: " + rFile); 
-		if (rFile) {
-			reportFile.push(rFile);
-		}
-
-		getRecordParams4Notification(emailParams1);	
-		addParameter(emailParams1, "$$altID$$", capId.getCustomID());	
-		addParameter(emailParams1, "$$shortNotes$$", shortNotes);					
-		if (conEmail != null)
-		{
-			sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams1, reportFile);
-		}					
-			
-	}
 }
 function generateReportBatch(itemCap, reportName, module, parameters) {
     //returns the report file which can be attached to an email.
