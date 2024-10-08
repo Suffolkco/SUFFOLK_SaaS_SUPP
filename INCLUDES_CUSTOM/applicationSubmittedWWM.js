@@ -55,9 +55,7 @@ function applicationSubmittedWWM() {
 		var altID = capId.getCustomID();
 		logDebug("altid: " + altID);	
 		
-		
-
-		
+				
 		reportParams1.put("ContactID", localCId.toString());
 		reportParams1.put("RecordID", altID.toString());
 		reportParams1.put("ContactType", contactType);			
