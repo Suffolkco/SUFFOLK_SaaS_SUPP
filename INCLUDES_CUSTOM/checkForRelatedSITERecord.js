@@ -19,10 +19,10 @@ function checkForRelatedSITERecord(parcelNumber) {
 
     //No Site Found: we need to create one and copy everything over. 
     //We should also create a new site record
+    var capType = aa.cap.getCap(capId).getOutput().getCapType().toString();
     if (!foundSite) {
 
-         // Copy project/app name from the child to site when it's created from OPC records.
-         var capType = aa.cap.getCap(capId).getOutput().getCapType().toString();
+         // Copy project/app name from the child to site when it's created from OPC records.        
          logDebug("Cap Type is: " + capType);
          if(matches(capType, "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", "DEQ/OPC/Swimming Pool/Permit","DEQ/OPC/Site Assessment/Application")) 
          {
@@ -42,7 +42,7 @@ function checkForRelatedSITERecord(parcelNumber) {
              {
                  updateToName = shortNotes;               
              }
-             var myParent = createParent("DEQ", "General", "Site", "NA", "Created from " + updateToName);
+             var myParent = createParentOPC("DEQ", "General", "Site", "NA", "Created from " + updateToName);
  
              copyParcels(capId, myParent);                          
              copyOwner(capId, myParent);
@@ -88,9 +88,27 @@ function checkForRelatedSITERecord(parcelNumber) {
            }        
         if (appStatus != "Retired")
         {
-            ammendARecord(capId, siteCap);
+             logDebug("capType: " + capType);
+
+            // EHIMS-5328
+            if(matches(capType, "DEQ/WWM/Commercial/Application", "DEQ/WWM/Food Review/Application", 
+                "DEQ/WWM/Garbage/Application", "DEQ/WWM/Residence/Application", 
+                "DEQ/WWM/SHIP/Application","DEQ/WWM/STP/Application","DEQ/WWM/Subdivision/Application")) 
+            {               
+                logDebug("Does not copy contacts and LP.");               
+                copyOwnerForLic(capId, siteCap);               
+                copyAddressForLic(capId, siteCap);
+                copyParcelForLic(capId, siteCap);
+            }
+            else
+            {
+                logDebug("Copy everything.");
+                ammendARecord(capId, siteCap);
+            }
+            
             addParent(siteCap);
             copyConditions(siteCap);
+            
         }
         else
         {
@@ -158,3 +176,82 @@ function copyConditions(fromCapId) // optional toCapID
 			logDebug("**ERROR: adding condition (" + cImpact + "): " + addCapCondResult.getErrorMessage());
 	}
 } 
+
+function createParentOPC(grp,typ,stype,cat,desc) 
+//
+// creates the new application and returns the capID object
+//
+	{
+	var appCreateResult = aa.cap.createApp(grp,typ,stype,cat,desc);
+	logDebug("creating cap " + grp + "/" + typ + "/" + stype + "/" + cat);
+	if (appCreateResult.getSuccess())
+		{
+		var newId = appCreateResult.getOutput();
+		logDebug("cap " + grp + "/" + typ + "/" + stype + "/" + cat + " created successfully ");
+		
+		// create Detail Record
+		capModel = aa.cap.newCapScriptModel().getOutput();
+		capDetailModel = capModel.getCapModel().getCapDetailModel();
+		capDetailModel.setCapID(newId);
+		aa.cap.createCapDetail(capDetailModel);
+
+		var newObj = aa.cap.getCap(newId).getOutput();	//Cap object
+		var result = aa.cap.createAppHierarchy(newId, capId); 
+		if (result.getSuccess())
+			logDebug("Parent application successfully linked");
+		else
+			logDebug("Could not link applications");
+
+		// Copy Parcels
+
+		var capParcelResult = aa.parcel.getParcelandAttribute(capId,null);
+		if (capParcelResult.getSuccess())
+			{
+			var Parcels = capParcelResult.getOutput().toArray();
+			for (zz in Parcels)
+				{
+				logDebug("adding parcel #" + zz + " = " + Parcels[zz].getParcelNumber());
+				var newCapParcel = aa.parcel.getCapParcelModel().getOutput();
+				newCapParcel.setParcelModel(Parcels[zz]);
+				newCapParcel.setCapIDModel(newId);
+				newCapParcel.setL1ParcelNo(Parcels[zz].getParcelNumber());
+				newCapParcel.setParcelNo(Parcels[zz].getParcelNumber());
+				aa.parcel.createCapParcel(newCapParcel);
+				}
+			}
+
+		// DO NOT Copy Contacts - EHIMS-5290
+		/*capContactResult = aa.people.getCapContactByCapID(capId);
+		if (capContactResult.getSuccess())
+			{
+			Contacts = capContactResult.getOutput();
+			for (yy in Contacts)
+				{
+				var newContact = Contacts[yy].getCapContactModel();
+				newContact.setCapID(newId);
+				aa.people.createCapContact(newContact);
+				logDebug("added contact");
+				}
+			} */	
+
+		// Copy Addresses
+		capAddressResult = aa.address.getAddressByCapId(capId);
+		if (capAddressResult.getSuccess())
+			{
+			Address = capAddressResult.getOutput();
+			for (yy in Address)
+				{
+				newAddress = Address[yy];
+				newAddress.setCapID(newId);
+				aa.address.createAddress(newAddress);
+				logDebug("added address");
+				}
+			}
+		
+		return newId;
+		}
+	else
+		{
+		logDebug( "**ERROR: adding parent App: " + appCreateResult.getErrorMessage());
+		}
+	}

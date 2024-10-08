@@ -2,6 +2,80 @@
 | Program: DEQ Assigned Task Email Notification.js  Trigger: Batch|  
 | This batch script will run daily
 /------------------------------------------------------------------------------------------------------*/
+
+currentUserID = "ADMIN";
+useAppSpecificGroupName = false;
+/*------------------------------------------------------------------------------------------------------/
+| GLOBAL VARIABLES
+/------------------------------------------------------------------------------------------------------*/
+br = "<br>";
+debug = "";
+systemUserObj = aa.person.getUser(currentUserID).getOutput();
+publicUser = false;
+/*------------------------------------------------------------------------------------------------------/
+| INCLUDE SCRIPTS (Core functions, batch includes, custom functions)
+/------------------------------------------------------------------------------------------------------*/
+SCRIPT_VERSION = 3.0;
+var useSA = false;
+var SA = null;
+var SAScript = null;
+var bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_FOR_EMSE");
+if (bzr.getSuccess() && bzr.getOutput().getAuditStatus() != "I")
+{
+    useSA = true;
+    SA = bzr.getOutput().getDescription();
+    bzr = aa.bizDomain.getBizDomainByValue("MULTI_SERVICE_SETTINGS", "SUPER_AGENCY_INCLUDE_SCRIPT");
+    if (bzr.getSuccess())
+    {
+        SAScript = bzr.getOutput().getDescription();
+    }
+}
+
+if (SA)
+{
+    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS", SA));
+    eval(getMasterScriptText(SAScript, SA));
+} else
+{
+    eval(getMasterScriptText("INCLUDES_ACCELA_FUNCTIONS"));
+}
+
+eval(getScriptText("INCLUDES_BATCH"));
+eval(getMasterScriptText("INCLUDES_CUSTOM"));
+
+function getMasterScriptText(vScriptName)
+{
+    var servProvCode = aa.getServiceProviderCode();
+    if (arguments.length > 1)
+        servProvCode = arguments[1]; // use different serv prov code
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
+}
+
+function getScriptText(vScriptName)
+{
+    var servProvCode = aa.getServiceProviderCode();
+    if (arguments.length > 1)
+        servProvCode = arguments[1]; // use different serv prov code
+    vScriptName = vScriptName.toUpperCase();
+    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+    try
+    {
+        var emseScript = emseBiz.getScriptByPK(servProvCode, vScriptName, "ADMIN");
+        return emseScript.getScriptText() + "";
+    } catch (err)
+    {
+        return "";
+    }
+}
 /*------------------------------------------------------------------------------------------------------/
 |
 | START: USER CONFIGURABLE PARAMETERS
@@ -11,23 +85,30 @@ var emailText = "";
 var showDebug = true;// Set to true to see debug messages in email confirmation
 var maxSeconds = 60 * 5;// number of seconds allowed for batch processing, usually < 5*60
 var showMessage = true;
-var systemUserObj = aa.person.getUser("ADMIN").getOutput();
-var useAppSpecificGroupName = false;
 var timeExpired = false;
-var br = "<BR>";
-var emailAddress = "ada.chan@suffolkcountyny.gov";//email to send report
+var emailAddress = "ada.chan@suffolkcountyny.gov";
 sysDate = aa.date.getCurrentDate();
 batchJobResult = aa.batchJob.getJobID();
 batchJobName = "" + aa.env.getValue("BatchJobName");
 batchJobID = 0;
+var pgParms = aa.env.getParamValues();
+var pgParmK = pgParms.keys();
+while (pgParmK.hasNext())
+{
+    k = pgParmK.next();
+    if (k == "Send Batch log to:")
+    {
+        emailAddress = pgParms.get(k);
+    }
+}
 if (batchJobResult.getSuccess()) 
 {
-	batchJobID = batchJobResult.getOutput();
-	logDebug("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
+    batchJobID = batchJobResult.getOutput();
+    logDebugLocal("Batch Job " + batchJobName + " Job ID is " + batchJobID + br);
 }
 else
 {
-	logDebug("Batch job ID not found " + batchJobResult.getErrorMessage());
+    logDebugLocal("Batch job ID not found " + batchJobResult.getErrorMessage());
 }
 /*------------------------------------------------------------------------------------------------------/
 |
@@ -42,10 +123,9 @@ else
 var message = "";
 var startDate = new Date();
 var startTime = startDate.getTime(); // Start timer
-var todayDate = "" + startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate();
-// all record types to check
-//var rtArray = ["DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application"];
-var rtArray = ["DEQ/WWM/Commercial/Application", "DEQ/WWM/Residence/Application", "DEQ/WWM/Subdivision/Application"];
+var todayDate = (startDate.getMonth() + 1) + "/" + startDate.getDate() + "/" + startDate.getFullYear();
+var fromDate = aa.date.parseDate("1/1/1980");
+var toDate = aa.date.parseDate((new Date().getMonth() + 1) + "/" + new Date().getDate() + "/" + new Date().getFullYear());
 /*----------------------------------------------------------------------------------------------------/
 |
 | End: BATCH PARAMETERS//
@@ -59,152 +139,100 @@ var paramsOK = true;
 
 if (paramsOK) 
 {
-	logDebug("Start Date: " + startDate + br);
-	logDebug("Starting the timer for this job.  If it takes longer than 5 minutes an error will be listed at the bottom of the email." + br);
-	if (!timeExpired) 
-	{
-		processComResSub();
-		aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - assigneed Task", emailText);
-	}
+    logDebugLocal("Start Date: " + startDate + br);	
+    if (!timeExpired) 
+    {
+        mainProcess();
+        //logDebugLocal("End of Job: Elapsed Time : " + elapsed() + " Seconds");
+        logDebugLocal("End Date: " + startDate + br);		
+        aa.sendMail("noreplyehimslower@suffolkcountyny.gov", emailAddress, "", "Batch Job - DEQ_OPC_INSPECTION_REPORTS", emailText);
+    }
 }
 /*------------------------------------------------------------------------------------------------------/
 | <===========End Main=Loop================>
 |
 /-----------------------------------------------------------------------------------------------------*/
-function processComResSub() 
-{
-    var sent = false;
+/*----------------------------------------------------------------------------------------------------/
+|
+| End: BATCH PARAMETERS//
+|
+/------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------------/
+| <===========End Main=Loop================>
+|
+/-----------------------------------------------------------------------------------------------------*/
+
+function mainProcess()    
+
+{  
     try 
     {
-        for (var i in rtArray) 
+
+        var vSQL = "SELECT RECORD_ID as recordNumber, ASSIGNED_USERID# as userId,   ASSIGNED_NAME_F as firstName, ASSIGNED_NAME_M as middleName, ASSIGNED_NAME_L as lastName,  DAYS_SINCE_ASSIGNED, RECORD_STATUS, TASK_IS_ACTIVE, TASK_IS_COMPLETE, ASSIGNED_USERID# FROM V_WORKFLOW WF WHERE DAYS_SINCE_ASSIGNED = 1 AND WF.RECORD_STATUS in ('Pending', 'Resubmitted') AND WF.TASK_IS_ACTIVE = 'Y' AND WF.TASK_IS_COMPLETE ='N' AND WF.RECORD_TYPE in ('Single Family Residence Application', 'Other Than Single Family Residence Application', 'Realty Subdivision Application') AND WF.ASSIGNED_USERID# is not NULL"; 
+        var output = "Record ID\n";  		
+        		
+		var vResult = doSQLSelect_local(vSQL);  	     
+		logDebugLocal("Pulling number of WWM records:" +  vResult.length);	
+		
+	
+		for (r in vResult)
         {
-            var thisType = rtArray[i];
-            var capModel = aa.cap.getCapModel().getOutput();
-            var appTypeArray = thisType.split("/");
-            // Specify the record type to query
-            capTypeModel = capModel.getCapType();
-            capTypeModel.setGroup(appTypeArray[0]);
-            capTypeModel.setType(appTypeArray[1]);
-            capTypeModel.setSubType(appTypeArray[2]);
-            capTypeModel.setCategory(appTypeArray[3]);
-            capModel.setCapType(capTypeModel);
-            //capModel.setCapStatus(sArray[i]); if needed
+            recordID = vResult[r]["recordNumber"];     
+            firstName = vResult[r]["firstName"];   	
+            middleName = vResult[r]["middleName"];   			
+            lastName = vResult[r]["lastName"];   	
+            userId = vResult[r]["userId"];  		
+            capId = getApplication(recordID);
+            capIDString = capId.getCustomID();
+            cap = aa.cap.getCap(capId).getOutput();
+			logDebugLocal("recordID:" +  recordID);	
+            logDebugLocal("firstName:" +  firstName);	
+            logDebugLocal("middleName:" +  middleName);	
+            logDebugLocal("lastName:" +  lastName);	
+            logDebugLocal("userId:" +  userId);	
+            var assignUser = aa.person.getUser(userId);
+            logDebugLocal("Assgined user: " + assignUser);		
 
-            var recordListResult = aa.cap.getCapIDListByCapModel(capModel);
-            if (!recordListResult.getSuccess()) 
-            {
-                logDebug("**ERROR: Failed to get capId List : " + recordListResult.getErrorMessage());
-                continue;
-            }
-            var recArray = recordListResult.getOutput();
-            logDebug("<b>" + thisType + " prior to Preliminary Approval" + "</b>");
 
-            for (var j in recArray) 
-            {
-                capId = aa.cap.getCapID(recArray[j].getID1(), recArray[j].getID2(), recArray[j].getID3()).getOutput();
-                capIDString = capId.getCustomID();
-				cap = aa.cap.getCap(capId).getOutput();
-				var appStatus = getAppStatus(capId);
-                if (capIDString == "C-20-0070")
-                {
-				// Only if the application has an "Active" status
-				if(appStatus == "Pending" || appStatus == "Resubmitted")
-				{
-					if (cap)
-					{
-						var workflowResult = aa.workflow.getTasks(capId);
-						var appCheck = false;
-						
-						if (workflowResult.getSuccess())
-						{
-							var wfObj = workflowResult.getOutput();
-						}
-						else
-						{ 
-							logDebug("**ERROR: Failed to get workflow object"); 
-						}
-						for (i in wfObj)
-						{
-                            fTask = wfObj[i];
-                                                       
-							logDebug("Task is: " + fTask.getTaskDescription() + " and the status is: " + fTask.getDisposition());
-                            if (fTask.getTaskDescription() != null && (fTask.getTaskDescription() == ("WWM Review") ||  fTask.getTaskDescription() == ("WR Review") || fTask.getTaskDescription() == ("OPC Review")))
-							{                  
-                                //var assignUser = fTask.getTaskItem().getAssignedUser();
+            userOut = getOutput(assignUser);
+            logDebugLocal("1: " +userOut);
+      
 
-                                var assignUser = aa.people.getUsersByUserIdAndName("", fTask.getAssignedStaff().getFirstName(),fTask.getAssignedStaff().getMiddleName(),fTask.getAssignedStaff().getLastName());
-
-                                if (fTask.getActiveFlag().equals("Y") && assignUser != null)
-                                {						
-                                    userOut = getOutput(assignUser);
-                                    if (userOut != null)
-                                    {                 
-                                         
-                                        var dueDate =  fTask.getDueDate();		
-
-                                        if (dueDate != null)
-                                        {
-                                            dueDateCon = dueDate.getMonth() + "/" + dueDate.getDayOfMonth() + "/" + dueDate.getYear();
-                                            logDebug("Due Date is: " + dueDateCon);					
-                                        
-                                            var todaysDate = new Date();																
-                                            var todDateCon = (todaysDate.getMonth() + 1) + "/" + todaysDate.getDate() + "/" + (todaysDate.getFullYear());
-                                            var assignedDate = fTask.getAssignmentDate();
-                                            assignedDateCon = (assignedDate.getMonth()) + "/" + assignedDate.getDayOfMonth()+ "/" + assignedDate.getYear();
-                                            logDebug("Assigned Date is: " + assignedDateCon);
-                                            logDebug("Today Date is: " + todDateCon + ".Assigned Date is: " + assignedDateCon);	
-                                            
-                                            var dateDiff = parseFloat(dateDifference(assignedDate, todDateCon));
-
-                                            logDebug("Day difference is: " + dateDiff);
-                                                                            
-                                            // Assigned yesterday
-                                            if (dateDiff == 1)
-                                            {
-                                                assUserStr = userOut[0].toString();
-                                                logDebug("assUserStr: " + assUserStr);
-                                                assUsersplit = assUserStr.split("/");
-                                                assName = assUsersplit[6];
-                                                logDebug("assName: " + assName);
-                                                if (assName != undefined)
-                                                {
-                                                    logDebug("Active Flag: " + fTask.getActiveFlag());									       
-                                                   
-                                                    assignedStaffNameCon = fTask.getAssignedStaff().getFirstName() + " " + fTask.getAssignedStaff().getLastName();
-                                                    var emailParams = aa.util.newHashtable();                                
-                                                    var altId = capId.getCustomID();
-                                                    addParameter(emailParams, "$$ALTID$$", altId);
-                                                    var shortNotes = getShortNotes(capId);
-                                                    addParameter(emailParams, "$$shortNotes$$", shortNotes);                                                  
-                                                    //addParameter(emailParams, "$$assignmentDate$$", assignedDateCon);
-                                                    addParameter(emailParams, "$$assignmentName$$", assignedStaffNameCon);
-                                                    //addParameter(emailParams, "$$dueDate$$", dueDateCon);
-                                                    assignEmail = userOut[0].getEmail();
-                                                    //assignTitle = userOut[0].getTitle();
-                                                    logDebug("Assigned User email is: " + assignEmail);
-                                                    //logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
-                                                   
-                                                    sendNotification("", assignEmail, "", "DEQ_ASSIGNED_USER", emailParams, null);
-                                                    logDebug("Email sent to: " + assignEmail);                  
-                                                }
-                                        
-                                            }
-                                        }
-                                        
-                                    }
-                                }	}
-                            }		
-						}		
-				
-					}
-				}
-				
-			}
+            if (userOut != null)
+            {                 
+                    
+                assUserStr = userOut.toString();
+                logDebugLocal("assUserStr: " + assUserStr);
+                assUsersplit = assUserStr.split("/");
+                assName = assUsersplit[6];
+                logDebugLocal("assName: " + assName);
+                if (assName != undefined)
+                {                                                
+                    
+                    assignedStaffNameCon = firstName + " " + lastName;
+                    var emailParams = aa.util.newHashtable();                                
+                    var altId = capId.getCustomID();
+                    addParameter(emailParams, "$$ALTID$$", altId);
+                    var shortNotes = getShortNotes(capId);
+                    addParameter(emailParams, "$$shortNotes$$", shortNotes);                                                  
+                    //addParameter(emailParams, "$$assignmentDate$$", assignedDateCon);
+                    addParameter(emailParams, "$$assignmentName$$", assignedStaffNameCon);
+                    //addParameter(emailParams, "$$dueDate$$", dueDateCon);
+                    assignEmail = userOut.getEmail();
+                    //assignTitle = userOut[0].getTitle();
+                    logDebugLocal("Assigned User email is: " + assignEmail);
+                    //logDebug("Assigned User is: " + assName + " and their title is: " + assignTitle);
+                    
+                    sendNotification("", assignEmail, "", "DEQ_ASSIGNED_USER", emailParams, null);
+                    logDebugLocal("Email sent to: " + assignEmail);                  
+                }                
+                  
+            }		
         }                       
     }
     catch (err) 
     {
-        logDebug("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
+        logDebugLocal("**ERROR** runtime error " + err.message + " at " + err.lineNumber + " stack: " + err.stack);
     }
 }               
   
@@ -215,7 +243,15 @@ function processComResSub()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
-
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
+}
 function sendNotification(emailFrom, emailTo, emailCC, templateName, params, reportFile)
 {
 	var itemCap = capId;
@@ -413,23 +449,53 @@ if (typeof(thisDate) == "number")
 logDebug("**WARNING** convertDate cannot parse date : " + thisDate);
 return null;
 
+} 
+
+function doSQLSelect_local(sql)
+{
+    try
+    {
+        //logdebug("iNSIDE FUNCTION");
+        var array = [];
+		var conn = aa.db.getConnection();
+        var sStmt = conn.prepareStatement(sql);
+        if (sql.toUpperCase().indexOf("SELECT") == 0)
+        {
+            //logdebug("executing " + sql);
+            var rSet = sStmt.executeQuery();
+            while (rSet.next())
+            {
+                var obj = {};
+                var md = rSet.getMetaData();
+                var columns = md.getColumnCount();
+                for (i = 1; i <= columns; i++)
+                {
+                    obj[md.getColumnName(i)] = String(rSet.getString(md.getColumnName(i)));
+                    //logdebug(rSet.getString(md.getColumnName(i)));
+                }
+                obj.count = rSet.getRow();
+                array.push(obj)
+            }
+            rSet.close();
+            //logdebug("...returned " + array.length + " rows");
+            //logdebug(JSON.stringify(array));
+        }
+        sStmt.close();
+        conn.close();
+        return array
+    } catch (err)
+    {
+        //logdebug("ERROR: "+ err.message);
+        return array
+    }
 }
- 
 
-
-function getAppStatus() {
-	var itemCap = capId;
-	if (arguments.length == 1) itemCap = arguments[0]; // use cap ID specified in args
-
-	var appStatus = null;
-   var capResult = aa.cap.getCap(itemCap);
-   if (capResult.getSuccess()) {
-      licCap = capResult.getOutput();
-      if (licCap != null) {
-         appStatus = "" + licCap.getCapStatus();
-      }
-   } else {
-		logDebug("ERROR: Failed to get app status: " + capResult.getErrorMessage());
-	}
-	return appStatus;
+function logDebugLocal(dstr)
+{
+    if (showDebug)
+    {
+        aa.print(dstr)
+        emailText += dstr + "<br>";
+        aa.debug(aa.getServiceProviderCode() + " : " + aa.env.getValue("CurrentUserID"), dstr)
+    }
 }

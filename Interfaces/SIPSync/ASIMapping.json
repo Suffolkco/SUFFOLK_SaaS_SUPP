@@ -1,0 +1,13 @@
+{
+  "County": {
+    "ColumnL": "County Check Number",
+    "ColumnM": "County Check Date",
+    "ColumnH": "Payee Name"
+  },
+  "State": {
+    "ColumnL": "State Check Number",
+    "ColumnM": "State Check Date",
+    "ColumnH": "Payee Name"
+  }
+
+}

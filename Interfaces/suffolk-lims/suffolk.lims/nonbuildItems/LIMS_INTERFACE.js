@@ -875,7 +875,7 @@ function processCombos(resId) {
                     svocComboFound = true;
                     svocComboRow = row;
                     break;
-                case "Hazard Index":
+                case "PFAS Hazard Index":
                     logInfo("Pretty Name: " + prettyName);
                     hazardIndexFound = true;
                     hazardIndxRow = row;
@@ -1338,7 +1338,7 @@ function processCombos(resId) {
     //************        
 
     
-    logInfo("Found " + hazardIndexCombos.length + " hazard index rows to combine");
+    logInfo("Found " + hazardIndexCombos.length + " PFAS hazard index rows to combine");
     
     if (hazardIndexCombos.length > 1)
     {
@@ -1475,7 +1475,7 @@ function processCombos(resId) {
                 t["Analysis Date"] = hazardIndexCombos[0]["Analysis Date"];
                 t["Analysis Time"] = hazardIndexCombos[0]["Analysis Time"];
                 t["Lab Name"] = LAB_NAME;
-                prettyName = "Hazard Index";
+                prettyName = "PFAS Hazard Index";
                 analysisCode = hazardIndexCombos[0]["Lab Analysis Code"];
                 cMethod = getCertifiedMethod(analysisCode);
                 key = prettyName + "|" + cMethod;
@@ -1493,22 +1493,35 @@ function processCombos(resId) {
                 t["MCL Notation"] = aInfo.mclNotation;
                 t["Units"] = "ng/L";
                 t["CAS Number"] = aInfo.casNumber;
-                t["Numeric Result"] = "" + parseFloat(totalHazardIndex).toPrecision(2);
+                var totalHizardIndex2Sig = parseFloat(totalHazardIndex).toPrecision(2);
+                logInfo("Total Numeric Result: " + totalHizardIndex2Sig.toString());
+                if (totalHizardIndex2Sig < 0.1) {
+                    logInfo("Total Hazard Index is less than 0.1. Set result notation to < and numeric result to 0.1");
+                    t["Result Notation"] = "<";
+                    t["Numeric Result"] = "0.1";
+                    t["Results"] = "0.1";
+                }
+                else {
+                    t["Result Notation"] = "=";
+                    t["Numeric Result"] = "" + totalHizardIndex2Sig;
+                    t["Results"] = "" + totalHizardIndex2Sig;
+                }
+               
                 t["Trace Results"] = ""; t["Text Results"] = ""; t["Combination Results"] = ""; t["Analyte MDL"] = "0.1";
-                t["Result Notation"] = "=";
+               
                 t["Flag"] = getFlagValue("=", doNullTranslation("NUMBER", totalHazardIndex), aInfo.mcl);
                 t["Remarks1"] = ""; t["Remarks2"] = ""; t["Remarks3"] = "";
                 t["Remarks4"] = ""; t["Remarks5"] = ""; t["Lab Sample Number"] = "";
                 t["Lab Analysis Code"] = hazardIndexCombos[0]["Lab Analysis Code"];
-                t["Results"] = "" + totalHazardIndex.toPrecision(2);
+                
 
                 asiTableRowArray.push(t);
-                logInfo("TotalHzardIndex Total: " + totalHazardIndex);                
+                logInfo("TotalHzardIndex Total: " + totalHazardIndex);
                 logInfo("Numeric Result after 2 significant figures: " + t["Numeric Result"]);
                 logInfo("Flag: " + t["Flag"]);
                 logInfo("cMethod: " + cMethod);
                 logInfo("prettyName: " + prettyName);
-                logInfo("Added Hazard Index row");
+                logInfo("Added PFAS Hazard Index row");
             }
             else {
                 hazardIndexRow["Numeric Results"] = "" + totalHazardIndex;

@@ -135,162 +135,205 @@ function compareContacts(srcCapId, targetCapId)
     sourcePeopleModel.getCapContactModel().setCapID(targetCapId);
     
     targetPeopleModel = null;
-    //3.2 Check to see if sourcePeople exist.
-    if (targetPeople != null && targetPeople.length > 0)
-    {      
 
-      for (loop2 in targetPeople)
-      {        
-        var auditStatus = targetPeople[loop2].getCapContactModel().getPeople().getAuditStatus();
-       
-        if (auditStatus == 'I')
-        {
-          logDebug("SKIP: Audit Status for " + targetCapId.getCustomID() + " for " + targetPeople[loop2].getCapContactModel().getPeople().getContactType() + " is already inactive.");
-          
-        }
-        else if (!matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Billing Contact", "Business Owner", "Property Owner", "Tank Owner", "Operator", "Unregistered New Tank Owner", "Unregistered New Tank Operator"))
-        {
-          logDebug("SKIP: Contact type is not one of the following: Billing Contact, Business Owner or Property Owner: " + targetPeople[loop2].getCapContactModel().getPeople().getContactType());
-         
-        }  
-        // Check if it is Unregistered New Tank Owner      
-        else if (matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Unregistered New Tank Owner"))
-        {
-           logDebug("Unregistered New Tank Owner found. Process function.");
-            processTankOwnerOrOperator(srcCapId, targetCapId, targetPeople[loop2], "Tank Owner");
-        }
-         // Check if it is Unregistered New Tank Operator      
-        else if (matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Unregistered New Tank Operator"))
-        {
-          logDebug("Unregistered New Tank Operator found. Process function.");  
-          processTankOwnerOrOperator(srcCapId, targetCapId, targetPeople[loop2], "Operator");
-        }
-        else
-        {
-          // This scenario is to cover when SITE has a contact Tank Owner and has a New Unregistered Tank Owner, we should skip
-          // since it has been taken care in the Unregistered Tank Owner logic above
-          if (unregisteredTankOwner && matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Tank Owner"))
+    // Skip if the child contact is inactive
+    if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() != 'I')
+    {
+
+      var sourceContactType = sourcePeopleModel.getCapContactModel().getPeople().getContactType();
+      logDebug("Source contact type is for : " + srcCapId.getCustomID() + " is " + sourceContactType);
+      var found = false;
+      
+      //3.2 Check to see if sourcePeople exist.
+      if (targetPeople != null && targetPeople.length > 0)
+      {      
+
+        for (loop2 in targetPeople)
+        {        
+          var auditStatus = targetPeople[loop2].getCapContactModel().getPeople().getAuditStatus();
+          var targetContactType = targetPeople[loop2].getCapContactModel().getPeople().getContactType();
+          // Flag if no matching contact type in target record
+          if (matches(sourceContactType, targetContactType) && auditStatus != "I" )
           {
-             logDebug("There is an unregistered Tank Owner contact in SITE and also Tank Owner in SITE.");
+             found = true;
+             logDebug("Same contact type has been found: " + sourceContactType);
           }
-          // This scenario is to cover when SITE has a contact Operator and has a New Unregistered Tank Operator, we should skip
-          // since it has been taken care in the Unregistered Tank Operator logic above
-          else if (unregisteredTankOperator && matches(targetPeople[loop2].getCapContactModel().getPeople().getContactType(), "Operator"))
+
+          if (auditStatus == 'I')
           {
-            logDebug("There is an unregistered Tank Operator contact in SITE and also Operator in SITE.");
+            logDebug("SKIP: Audit Status for " + targetCapId.getCustomID() + " for " + targetContactType + " is already inactive.");
+            
+          }
+          else if (!matches(targetContactType, 
+          "Billing Contact", "Business Owner", "Property Owner", "Tank Owner", "Operator", 
+          "Unregistered New Tank Owner", "Unregistered New Tank Operator"))
+          {
+            logDebug("SKIP: Contact type is not one of the following: Billing Contact, Business Owner or Property Owner: " + targetContactType);
+          
+          }  
+          // Check if it is Unregistered New Tank Owner      
+          else if (matches(targetContactType, "Unregistered New Tank Owner"))
+          {
+            logDebug("Unregistered New Tank Owner found. Process function.");
+              processTankOwnerOrOperator(srcCapId, targetCapId, targetPeople[loop2], "Tank Owner");
+          }
+          // Check if it is Unregistered New Tank Operator      
+          else if (matches(targetContactType, "Unregistered New Tank Operator"))
+          {
+            logDebug("Unregistered New Tank Operator found. Process function.");  
+            processTankOwnerOrOperator(srcCapId, targetCapId, targetPeople[loop2], "Operator");
           }
           else
           {
-            // First, compare if the they have the same Contact Type
-            if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
+            // This scenario is to cover when SITE has a contact Tank Owner and has a New Unregistered Tank Owner, we should skip
+            // since it has been taken care in the Unregistered Tank Owner logic above
+            if (unregisteredTankOwner && matches(targetContactType, "Tank Owner"))
             {
-              // Check Reference Contact ID
-              //logDebug("*****************");
-              //debugObject(sourcePeopleModel.getCapContactModel());
-              logDebug("Contact Type Matched.");
-              logDebug("**********************************");
-              logDebug(srcCapId.getCustomID() + " and " + targetCapId.getCustomID())
-              logDebug("**********************************");
-              logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getRefContactNumber());
-            
-              // Then check to see if the reference ID is the same
-              if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
-              {     
-                logDebug("Reference IDs do not match. ");
-                // 1. Compare if they have the same first, last name and organization name. 
-                if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
-                {
-                  targetPeopleModel = targetPeople[loop2];
-                  logDebug("***Found matching SITE contact type: " + targetPeopleModel.getCapContactModel().getPeople().getContactType());
-                  matchAllContactInfo = true;
-                  logDebug("Same first, last and org name. ***Overwrite contact info***");
-              
-                  // Get child contact info
-                  var phone = sourcePeopleModel.getCapContactModel().getPeople().getPhone1();
-                  var phone2 = sourcePeopleModel.getCapContactModel().getPeople().getPhone2();
-                  var phone3 = sourcePeopleModel.getCapContactModel().getPeople().getPhone3();
-                  var fax = sourcePeopleModel.getCapContactModel().getPeople().getFax();
-                  var addr1 = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getAddressLine1();
-                  var city = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getCity();
-                  var state = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getState();
-                  var zip = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getZip();
-                  var email = sourcePeopleModel.getCapContactModel().getPeople().getEmail();
-                  var startdate = sourcePeopleModel.getCapContactModel().getPeople().getStartDate();
-                  logDebug("*** Child CapId: " + capId.getCustomID());               
-
-                  logDebug("*** SITE CapId: " + targetCapId.getCustomID());
-                  logDebug("Updating SITE contact ID " + targetPeopleModel.getCapContactModel().getRefContactNumber());
-                  logDebug("Set phone 1: " + phone);
-                  targetPeopleModel.getCapContactModel().getPeople().setPhone1(phone);
-                  logDebug("Set phone 2: " + phone2);
-                  targetPeopleModel.getCapContactModel().getPeople().setPhone2(phone2);
-                  logDebug("Set phone 3: " + phone3);
-                  targetPeopleModel.getCapContactModel().getPeople().setPhone3(phone3);
-                  logDebug("Set fax: " + fax);
-                  targetPeopleModel.getCapContactModel().getPeople().setFax(fax);
-                  logDebug("Set Address addr1: " + addr1);
-                  targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setAddressLine1(addr1);
-                  logDebug("Set Address city: " + city);
-                  targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setCity(city);
-                  logDebug("Set Address State: " + state);
-                  targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setState(state);
-                  logDebug("Set Address Zip: " + zip);
-                  targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setZip(zip);	
-                  logDebug("Set email: " + email);
-                  targetPeopleModel.getCapContactModel().getPeople().setEmail(email);	
-                  logDebug("Set start date: " + startdate);
-                  targetPeopleModel.getCapContactModel().getPeople().setEmail(startdate);	
-                  aa.people.editCapContact(targetPeopleModel.getCapContactModel());				                
-                }
-                //2. If different contact info, inactive the existing parent reference ID and add the child contact to parent.
-                else // Contact Type match but not first, last or orgnaization name
-                {
-                  targetPeopleModel = targetPeople[loop2];
-                  logDebug("*** Contact type match but contact information does not.");
-                  matchContactTypeOnly = true;        
-                  
-                  logDebug("Reference contact ID or contact info doesn't match. Inactivate contact with the same contact type.");
-                  logDebug("********************************************************");
-                  // Inactivate the existing SITE contact.
-                  logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
-                  targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
-
-                  // Get Start and End date on child 
-                  childStartDate  = sourcePeopleModel.getCapContactModel().getPeople().getStartDate();
-                // childEndDate = sourcePeopleModel.getCapContactModel().getPeople().getEndDate();
-                  logDebug("Get Child Start Date: " + childStartDate);
-                  // (use the “Start Date” of the Child Contact as the “End Date”) existing parent 
-                  // reference ID and Copy the child contact to Parent (include the Start Date)    
-                  logDebug("Set End Date on SITE: " + childStartDate);          
-                  targetPeopleModel.getCapContactModel().getPeople().setEndDate(childStartDate);
-                
-                  aa.people.editCapContact(targetPeopleModel.getCapContactModel());
-                
-                  logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
-                
-                  //3.4.1 Create new people.
-                  aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
-                  
-                  logDebug("Coped from: " + sourcePeopleModel.getCapContactModel().getPeople().getFirstName() + ", " + sourcePeopleModel.getCapContactModel().getPeople().getLastName() + ", " +
-                  sourcePeopleModel.getCapContactModel().getPeople().getBusinessName());
-                  
-                }
-              }     
-              else
-              {
-                logDebug("SKIP: Same reference ID.")
-              } 
-            }    
+              logDebug("There is an unregistered Tank Owner contact in SITE and also Tank Owner in SITE.");
+            }
+            // This scenario is to cover when SITE has a contact Operator and has a New Unregistered Tank Operator, we should skip
+            // since it has been taken care in the Unregistered Tank Operator logic above
+            else if (unregisteredTankOperator && matches(targetContactType, "Operator"))
+            {
+              logDebug("There is an unregistered Tank Operator contact in SITE and also Operator in SITE.");
+            }
             else
             {
-              logDebug("SKIP: Contact type does not match");
-            }
-          }   
+              // First, compare if the they have the same Contact Type
+              if (isMatchContactTypeLocal(sourcePeopleModel, targetPeople[loop2]))
+              {
+                // Check Reference Contact ID
+                //logDebug("*****************");
+                //debugObject(sourcePeopleModel.getCapContactModel());
+                logDebug("Contact Type Matched.");
+                logDebug("**********************************");
+                logDebug(srcCapId.getCustomID() + " and " + targetCapId.getCustomID())
+                logDebug("**********************************");
+                logDebug("Comparing reference ID: Child - " + sourcePeopleModel.getCapContactModel().getRefContactNumber() + " VS Parent - " + targetPeople[loop2].getCapContactModel().getRefContactNumber());
+              
+                // Then check to see if the reference ID is the same
+                if (!isMatchContactRefIDLocal(sourcePeopleModel, targetPeople[loop2]))
+                {     
+                  logDebug("Reference IDs do not match. ");
+                  // 1. Compare if they have the same first, last name and organization name. 
+                  if (isMatchPeopleLocal(sourcePeopleModel, targetPeople[loop2]))
+                  {
+                    targetPeopleModel = targetPeople[loop2];
+                    logDebug("****Found matching SITE contact type: " + targetContactType);
+                    matchAllContactInfo = true;
+                    if (sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I' ||
+                    (targetPeopleModel.getCapContactModel().getPeople().getAuditStatus() == 'I'))
+                    {
+                      logDebug("Same first, last and org name. However, the source contact status is: " + sourcePeopleModel.getCapContactModel().getPeople().getAuditStatus());
+                      logDebug("Same first, last and org name. However, the source contact status is: " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
+                    }
+                    else
+                    {
+                      logDebug("Same first, last and org name. ***Overwrite contact info***");
+                  
+                      // Get child contact info
+                      var phone = sourcePeopleModel.getCapContactModel().getPeople().getPhone1();
+                      var phone2 = sourcePeopleModel.getCapContactModel().getPeople().getPhone2();
+                      var phone3 = sourcePeopleModel.getCapContactModel().getPeople().getPhone3();
+                      var fax = sourcePeopleModel.getCapContactModel().getPeople().getFax();
+                      var addr1 = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getAddressLine1();
+                      var city = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getCity();
+                      var state = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getState();
+                      var zip = sourcePeopleModel.getCapContactModel().getPeople().getCompactAddress().getZip();
+                      var email = sourcePeopleModel.getCapContactModel().getPeople().getEmail();
+                      var startdate = sourcePeopleModel.getCapContactModel().getPeople().getStartDate();
+                      logDebug("*** Child CapId: " + capId.getCustomID());               
+
+                      logDebug("*** SITE CapId: " + targetCapId.getCustomID());
+                      logDebug("Updating SITE contact ID " + targetPeopleModel.getCapContactModel().getRefContactNumber());
+                      logDebug("Set phone 1: " + phone);
+                      targetPeopleModel.getCapContactModel().getPeople().setPhone1(phone);
+                      logDebug("Set phone 2: " + phone2);
+                      targetPeopleModel.getCapContactModel().getPeople().setPhone2(phone2);
+                      logDebug("Set phone 3: " + phone3);
+                      targetPeopleModel.getCapContactModel().getPeople().setPhone3(phone3);
+                      logDebug("Set fax: " + fax);
+                      targetPeopleModel.getCapContactModel().getPeople().setFax(fax);
+                      logDebug("Set Address addr1: " + addr1);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setAddressLine1(addr1);
+                      logDebug("Set Address city: " + city);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setCity(city);
+                      logDebug("Set Address State: " + state);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setState(state);
+                      logDebug("Set Address Zip: " + zip);
+                      targetPeopleModel.getCapContactModel().getPeople().getCompactAddress().setZip(zip);	
+                      logDebug("Set email: " + email);
+                      targetPeopleModel.getCapContactModel().getPeople().setEmail(email);	
+                      logDebug("Set start date: " + startdate);
+                      targetPeopleModel.getCapContactModel().getPeople().setStartDate(startdate);	
+                      aa.people.editCapContact(targetPeopleModel.getCapContactModel());				    
+                    }            
+                  }
+                  //2. If different contact info, inactive the existing parent reference ID and add the child contact to parent.
+                  else // Contact Type match but not first, last or orgnaization name
+                  {
+                    targetPeopleModel = targetPeople[loop2];
+                    logDebug("*** Contact type match but contact information does not.");
+                    matchContactTypeOnly = true;        
+                    
+                    logDebug("Reference contact ID or contact info doesn't match. Inactivate contact with the same contact type.");
+                    logDebug("********************************************************");
+                    // Inactivate the existing SITE contact.
+                    logDebug("Set contact type on SITE: " + targetPeopleModel.getCapContactModel().getPeople().getContactType() + " to inactive.");
+                    targetPeopleModel.getCapContactModel().getPeople().setAuditStatus("I");
+
+                    // Get Start and End date on child 
+                    childStartDate  = sourcePeopleModel.getCapContactModel().getPeople().getStartDate();
+                  // childEndDate = sourcePeopleModel.getCapContactModel().getPeople().getEndDate();
+                    logDebug("Get Child Start Date: " + childStartDate);
+                    // (use the “Start Date” of the Child Contact as the “End Date”) existing parent 
+                    // reference ID and Copy the child contact to Parent (include the Start Date)    
+                    logDebug("Set End Date on SITE: " + childStartDate);          
+                    targetPeopleModel.getCapContactModel().getPeople().setEndDate(childStartDate);
+                  
+                    aa.people.editCapContact(targetPeopleModel.getCapContactModel());
+                  
+                    logDebug("Contact Status for SITE is now : " + targetPeopleModel.getCapContactModel().getPeople().getAuditStatus());
+                  
+                    //3.4.1 Create new people.
+                    aa.people.createCapContactWithAttribute(sourcePeopleModel.getCapContactModel());
+                    
+                    logDebug("Coped from: " + sourcePeopleModel.getCapContactModel().getPeople().getFirstName() + ", " + sourcePeopleModel.getCapContactModel().getPeople().getLastName() + ", " +
+                    sourcePeopleModel.getCapContactModel().getPeople().getBusinessName());
+                    
+                  }
+                }     
+                else
+                {
+                  logDebug("SKIP: Same reference ID.")
+                } 
+              }    
+              else
+              {
+                logDebug("SKIP: Contact type does not match");
+              }
+            }   
+          }
+          
         }
-        
       }
+    }    
+    else
+    {
+      logDebug("Contact is not active: " + sourcePeopleModel.getCapContactModel().getPeople().getContactType());      
+      found = true;
     }
-  }    
+
+    // If no target of the same contact type is found, copy
+    if (!found)
+    {
+      logDebug("No source contact type of " + sourceContactType + " has been found in : " + targetCapId.getCustomID());
+      logDebug("Copying contact type: " + sourceContactType + " to " + targetCapId.getCustomID());
+      copyContact(srcCapId, targetCapId, sourceContactType);
+    }
+  
+  }
+
   logDebug("* Done Scanning all contacts. *");    
 }
 
