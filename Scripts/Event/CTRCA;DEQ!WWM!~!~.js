@@ -22,7 +22,7 @@ if (!publicUser) // VOID fees if it's fee exempt.
 
 if (!appMatch("DEQ/WWM/SHIP/Application"))
 {
-    setTimeout(sendPin, 2000)
+    setTimeout(sendPin, 2000);
 
 }
 
