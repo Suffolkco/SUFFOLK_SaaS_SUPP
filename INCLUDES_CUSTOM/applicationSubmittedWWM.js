@@ -50,17 +50,16 @@ function applicationSubmittedWWM() {
 		
 		logDebug("localCId: " + localCId);	
 		logDebug("contactType: " + contactType);	
-		logDebug("altid: " + capId.getCustomID());	
+		
 
-		// TEST
-		logDebug("TEST data: 99376217 RD-0440 Company");
-		reportParams1.put("ContactID", '99376217');
-		reportParams1.put("RecordID", 'RD-0440');
-		reportParams1.put("ContactType", 'Company');	
+		var altID = capId.getCustomID()
+		logDebug("altid: " + altID);	
+		vContactSeqNumber = parseInt(localCId);
 
-		//reportParams1.put("ContactID", localCId);
-		//reportParams1.put("RecordID", capId.getCustomID());
-		//reportParams1.put("ContactType", contactType);			
+		reportParams1.put("ContactID", vContactSeqNumber);
+		reportParams1.put("RecordID", altID);
+		reportParams1.put("ContactType", contactType);			
+
 		// ACA PIN - from reportParams1 above.   
 		rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1)			   		
 		logDebug("This is the ACA Pin File: " + rFile); 
