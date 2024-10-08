@@ -45,15 +45,22 @@ function applicationSubmittedWWM() {
 		var emailParams1 = aa.util.newHashtable();
 		logDebug("Found contact email: " + conEmail);
 		// Local contact ID
-		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();		
-		logDebug("localCId: " + localCId);			
+		localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();						
 		contactType = cont.getCapContactModel().getPeople().getContactType();
+		
+		logDebug("localCId: " + localCId);	
 		logDebug("contactType: " + contactType);	
 		logDebug("altid: " + capId.getCustomID());	
 
-		reportParams1.put("ContactID", localCId);
-		reportParams1.put("RecordID", capId.getCustomID());
-		reportParams1.put("ContactType", contactType);			
+		// TEST
+		logDebug("TEST data: 99376217 RD-0440 Company");
+		reportParams1.put("ContactID", '99376217');
+		reportParams1.put("RecordID", 'RD-0440');
+		reportParams1.put("ContactType", 'Company');	
+
+		//reportParams1.put("ContactID", localCId);
+		//reportParams1.put("RecordID", capId.getCustomID());
+		//reportParams1.put("ContactType", contactType);			
 		// ACA PIN - from reportParams1 above.   
 		rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1)			   		
 		logDebug("This is the ACA Pin File: " + rFile); 
