@@ -57,14 +57,13 @@ function applicationSubmittedWWM() {
 		vContactSeqNumber = parseInt(localCId);
 		
 		logDebug("vContactSeqNumber: " + vContactSeqNumber);
-		logDebug("BigInt vContactSeqNumber: " + BigInt(vContactSeqNumber));
-
+		
 		reportParams1.put("ContactID", vContactSeqNumber);
-		reportParams1.put("RecordID", altID);
+		reportParams1.put("RecordID", altID.toString());
 		reportParams1.put("ContactType", contactType);			
 
 		// ACA PIN - from reportParams1 above.   
-		rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1)			   		
+		rFile = generateReportBatch(capId, "ACA Registration Pins-WWM", 'DEQ', reportParams1);			   		
 		logDebug("This is the ACA Pin File: " + rFile); 
 		if (rFile) {
 			reportFile.push(rFile);
