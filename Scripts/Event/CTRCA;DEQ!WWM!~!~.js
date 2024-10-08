@@ -23,7 +23,7 @@ if (!appMatch("DEQ/WWM/SHIP/Application"))
 {
 // Send additional PIN information for contacts
 var capPeoples = getPeople(capId)
-	
+var shortNotes = getShortNotes(capId);
 	      
 for (loopk in capPeoples)
 {
