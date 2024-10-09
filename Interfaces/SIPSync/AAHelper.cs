@@ -57,16 +57,29 @@ namespace SIPSync
             }
         }
 
-        //*************************************************************
+        //===================================================
+        // Retrieve encryption key securely from environment variable
+        //===================================================
+        private static string GetEncryptionKey()
+        {
+            string encryptionKey = Environment.GetEnvironmentVariable("ENCRYPTION_KEY");
+            if (string.IsNullOrEmpty(encryptionKey))
+            {
+                throw new Exception("ENCRYPTION_KEY is not set in the environment variables.");
+            }
+            return encryptionKey;
+        }
+
+        //===================================================
         // Method to encrypt password
-        //*************************************************************
+        //===================================================
         public string Encrypt(string clearText)
         {
-            string EncryptionKey = "1GZlqQ+KZfUvF3YY+jiM1Z8JHfQ7RYeqc+TflGJIbkg=";
+            string encryptionKey = GetEncryptionKey();
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
                 encryptor.Key = pdb.GetBytes(32);
                 encryptor.IV = pdb.GetBytes(16);
                 using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
@@ -82,17 +95,17 @@ namespace SIPSync
             return clearText;
         }
 
-        //*************************************************************
+        //===================================================
         // Method to decrypt password
-        //*************************************************************
+        //===================================================
         public string Decrypt(string cipherText)
         {
-            string EncryptionKey = "1GZlqQ+KZfUvF3YY+jiM1Z8JHfQ7RYeqc+TflGJIbkg=";
+            string encryptionKey = GetEncryptionKey();
             cipherText = cipherText.Replace(" ", "+");
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
                 encryptor.Key = pdb.GetBytes(32);
                 encryptor.IV = pdb.GetBytes(16);
                 using (System.IO.MemoryStream ms = new System.IO.MemoryStream())

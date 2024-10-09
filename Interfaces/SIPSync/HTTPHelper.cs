@@ -94,9 +94,6 @@ namespace SIPSync
             // Only use TLS 1.2
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            // Ignore Certificate Validation
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
             if (headers != null)
             {
                 foreach (var header in headers)
