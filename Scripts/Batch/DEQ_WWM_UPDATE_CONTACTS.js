@@ -175,18 +175,21 @@ function mainProcess()
 		
 	
 		// SUPP
-		// Global reference contact
-		//var vSQL = "select distinct G1_CONTACT_NBR contactId from G3CONTACT where G1_EMAIL like 'bgrogan@________pwgrosser.com'";
+		// 1. Global reference contact
+		//var vSQL = "select distinct G1_CONTACT_NBR contactId, G1_CONTACT_TYPE as contactType, G1_FULL_NAME as fullName, G1_FNAME as firstName, G1_LNAME as lastName, G1_EMAIL as email from G3CONTACT where G1_EMAIL like 'astolzenberg@________bbvpc.com'";
 		// Reference record contact
-		//var vSQL = "select distinct CONTACT_REF_ID as contactId from V_CONTACT where RECORD_MODULE = 'DEQ' and EMAIL like 'bgrogan@________pwgrosser.com' and CONTACT_REF_ID is NOT NULL";
-		// In SUPP Transaction contact		
-		//var vSQL = "select b1.B1_ALT_ID as recordId, B1_CONTACT_NBR as contactId, b3.B1_CONTACT_TYPE from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 AND  b3.B1_EMAIL = 'bgrogan@________pwgrosser.com'";
+		//var vSQL = "select distinct CONTACT_REF_ID as contactId from V_CONTACT where RECORD_MODULE = 'DEQ' and EMAIL like 'astolzenberg@________bbvpc.com' and CONTACT_REF_ID is NOT NULL";
+		// 2. In SUPP Transaction contact		
+		var vSQL = "select b1.B1_ALT_ID as recordId, B1_CONTACT_NBR as contactId, b3.B1_CONTACT_TYPE, b3.B1_EMAIL from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 AND  b3.B1_EMAIL = 'astolzenberg@________bbvpc.com'";
 
+		// SUPP data
+		var oldEmail = 'astolzenberg@________bbvpc.com';		
+		var newEmail = 'PELS@________BBVPC.com';
 	
 
 		// PROD data
-		var oldEmail = 'AStolzenberg@BBVPC.com';		
-		var newEmail = 'PELS@BBVPC.com';
+		//var oldEmail = 'AStolzenberg@BBVPC.com';		
+		//var newEmail = 'PELS@BBVPC.com';
 		var newFirstName = 'Joseph';
 		var newLastName = 'Marx';
 		var newFullName = 'Joseph Marx';
@@ -196,9 +199,10 @@ function mainProcess()
         //var vSQL = "select distinct G1_CONTACT_NBR contactId, G1_CONTACT_TYPE as contactType, G1_FULL_NAME as fullName, G1_FNAME as firstName, G1_LNAME as lastName, G1_EMAIL as email from G3CONTACT where G1_EMAIL like 'AStolzenberg@BBVPC.com'";
 		
 		// 2. PROD Transaction contact 
-		var vSQL = "select b1.B1_ALT_ID as recordId, B1_CONTACT_NBR as contactId, b3.B1_CONTACT_TYPE from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 AND  b3.B1_EMAIL = 'AStolzenberg@BBVPC.com'";
+		//var vSQL = "select b1.B1_ALT_ID as recordId, B1_CONTACT_NBR as contactId, b3.B1_CONTACT_TYPE from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 AND  b3.B1_EMAIL = 'AStolzenberg@BBVPC.com'";
 
-		// Retrieve all contacts with the email
+
+		// Optional:  Retrieve all contacts with the email
 		//var vSQL ="select * from b1permit b1, b3contact b3 where b1.serv_prov_code = 'SUFFOLKCO' and b1.b1_per_group = 'DEQ' and b1.b1_PER_TYPE = 'WWM' AND B1.SERV_PROV_CODE = B3.SERV_PROV_CODE AND B1.B1_PER_ID1 = B3.B1_PER_ID1 AND B1.B1_PER_ID2 = B3.B1_PER_ID2 AND B1.B1_PER_ID3 = B3.B1_PER_ID3 and b3.B1_EMAIL in ('AStolzenberg@BBVPC', 'aStolzenberg@BBVPC')";
 		
 		
@@ -207,10 +211,10 @@ function mainProcess()
 		var vResult = doSQLSelect_local(vSQL);  	     
 
 		logDebugLocal("Total number of reference ID with that email address: " +  vResult.length);	
-		/* 1. 
+		// 1. 
 		// Comment this section when updating transaction reference contact
 		// Update all reference contact with email address *****************
-		
+		/*
 		for (r in vResult)
         {
             refNum = vResult[r]["contactId"];      
@@ -240,7 +244,7 @@ function mainProcess()
 							pm.setFirstName(newFirstName);
 							pm.setLastName(newLastName);
 							pm.setFullName(newFullName);			
-							pm.setEmail("PELS@BBVPC.com");
+							pm.setEmail(newEmail);
 							var result = aa.people.editPeopleWithAttribute(pm, pm.getAttributes());
 
 							if (result.getSuccess()) {
@@ -274,66 +278,66 @@ function mainProcess()
 		}
 		logDebugLocal("********************************");
 		logDebugLocal ("Total updated: " + count);
-		*/
 		
+		*/
 		//Uncomment this section for transaction contact query
 		// 2.  Update all record contacts with email address *****************
 		for (r in vResult)
+		{
+			recordId = vResult[r]["recordId"];      
+			contactId = vResult[r]["contactId"];           
+			capId = getApplication(recordId);
+			capIDString = capId.getCustomID();
+			cap = aa.cap.getCap(capId).getOutput();
+			if (cap)
 			{
-				recordId = vResult[r]["recordId"];      
-			    contactId = vResult[r]["contactId"];           
-				capId = getApplication(recordId);
-				capIDString = capId.getCustomID();
-				cap = aa.cap.getCap(capId).getOutput();
-				if (cap)
+				var t = aa.people.getCapContactByCapID(capId);
+				if (t.getSuccess())
 				{
-					var t = aa.people.getCapContactByCapID(capId);
-					if (t.getSuccess())
+					capPeopleArr = t.getOutput();
+					for (cp in capPeopleArr)
 					{
-						capPeopleArr = t.getOutput();
-						for (cp in capPeopleArr)
+						var currentContactEmail = capPeopleArr[cp].getCapContactModel().getPeople().getEmail();
+						if (!matches(oldEmail, null, '', undefined))
 						{
-							var currentContactEmail = capPeopleArr[cp].getCapContactModel().getPeople().getEmail();
-							if (!matches(oldEmail, null, '', undefined))
-							{
-								oldEmail = oldEmail.toUpperCase();
-							}
-							if (!matches(currentContactEmail, null, '', undefined))
-							{
-								currentContactEmail = currentContactEmail.toUpperCase();
-							}
-
-							if(matches(oldEmail, currentContactEmail))
-							{
-								logDebugLocal("******* Record ID ******* " + capIDString);
-								logDebugLocal("Contact Type: " + capPeopleArr[cp].getCapContactModel().getContactType());			
-								logDebugLocal("First, Last, Full Name: " + capPeopleArr[cp].getCapContactModel().getFirstName() + ", "
-								+ capPeopleArr[cp].getCapContactModel().getLastName() + ", "
-								+ capPeopleArr[cp].getCapContactModel().getFullName());				
-								recordContactId = capPeopleArr[cp].getCapContactModel().getContactSeqNumber();
-								logDebugLocal("Contact Seq: " + recordContactId);							
-								var refContactNum = capPeopleArr[cp].getCapContactModel().getRefContactNumber();
-								logDebugLocal("Reference sequence Number: " + refContactNum);																
-								logDebugLocal("Email in contact:" + currentContactEmail + "| Contact ID:  " + recordContactId);  
-								capPeopleArr[cp].getCapContactModel().getPeople().setEmail(newEmail);
-								capPeopleArr[cp].getCapContactModel().getPeople().setFirstName(newFirstName);
-								capPeopleArr[cp].getCapContactModel().getPeople().setLastName(newLastName);
-								capPeopleArr[cp].getCapContactModel().getPeople().setFullName(newFullName);
-								//3.3.2 Edit People with source People information.                                 
-								aa.people.editCapContactWithAttribute(capPeopleArr[cp].getCapContactModel());										
-								logDebugLocal("Email set:" + capPeopleArr[cp].getCapContactModel().getPeople().getEmail());   
-								logDebugLocal("First Name set:" + capPeopleArr[cp].getCapContactModel().getPeople().getFirstName());  
-								logDebugLocal("Last Name set:" + capPeopleArr[cp].getCapContactModel().getPeople().getLastName());  
-								logDebugLocal("Full Name set:" + capPeopleArr[cp].getCapContactModel().getPeople().getFullName());       
-								count++;
-							}
-							else
-							{
-								logDebugLocal(capIDString + ": Email does not match: " + currentContactEmail + ", " + oldEmail + ", Contact type: " + capPeopleArr[cp].getCapContactModel().getContactType());
-								noCount++;
-							}
-						 
+							oldEmail = oldEmail.toUpperCase();
 						}
+						if (!matches(currentContactEmail, null, '', undefined))
+						{
+							currentContactEmail = currentContactEmail.toUpperCase();
+						}
+
+						if(matches(oldEmail, currentContactEmail))
+						{
+							logDebugLocal("******* Record ID ******* " + capIDString);
+							logDebugLocal("Contact Type: " + capPeopleArr[cp].getCapContactModel().getContactType());			
+							logDebugLocal("First, Last, Full Name: " + capPeopleArr[cp].getCapContactModel().getFirstName() + ", "
+							+ capPeopleArr[cp].getCapContactModel().getLastName() + ", "
+							+ capPeopleArr[cp].getCapContactModel().getFullName());				
+							recordContactId = capPeopleArr[cp].getCapContactModel().getContactSeqNumber();
+							logDebugLocal("Contact Seq: " + recordContactId);							
+							var refContactNum = capPeopleArr[cp].getCapContactModel().getRefContactNumber();
+							logDebugLocal("Reference sequence Number: " + refContactNum);																
+							logDebugLocal("Email in contact:" + currentContactEmail + "| Contact ID:  " + recordContactId);  
+							capPeopleArr[cp].getCapContactModel().getPeople().setEmail(newEmail);
+							capPeopleArr[cp].getCapContactModel().getPeople().setFirstName(newFirstName);
+							capPeopleArr[cp].getCapContactModel().getPeople().setLastName(newLastName);
+							capPeopleArr[cp].getCapContactModel().getPeople().setFullName(newFullName);
+							//3.3.2 Edit People with source People information.                                 
+							aa.people.editCapContactWithAttribute(capPeopleArr[cp].getCapContactModel());										
+							logDebugLocal("Email set:" + capPeopleArr[cp].getCapContactModel().getPeople().getEmail());   
+							logDebugLocal("First Name set:" + capPeopleArr[cp].getCapContactModel().getPeople().getFirstName());  
+							logDebugLocal("Last Name set:" + capPeopleArr[cp].getCapContactModel().getPeople().getLastName());  
+							logDebugLocal("Full Name set:" + capPeopleArr[cp].getCapContactModel().getPeople().getFullName());       
+							count++;
+						}
+						else
+						{
+							logDebugLocal(capIDString + ": Email does not match: " + currentContactEmail + ", " + oldEmail + ", Contact type: " + capPeopleArr[cp].getCapContactModel().getContactType());
+							noCount++;
+						}
+						
+					}
 
 				}	
 			} 
