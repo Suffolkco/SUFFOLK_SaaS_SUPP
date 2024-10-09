@@ -85,6 +85,9 @@ else if (wfTask == "Plans Coordination" && wfStatus == "Approved")
 		b1Exp.setExpDate(dateMMDDYYY);
 		aa.expiration.editB1Expiration(b1Exp.getB1Expiration());
     }
+
+	// EHIMS-5290
+	copyAndCompareContacts();
 } 
 
 var parentId = getParent();
