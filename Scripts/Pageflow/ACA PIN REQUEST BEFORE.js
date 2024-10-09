@@ -132,25 +132,6 @@ var AInfo = new Array();						// Create array for tokenized variables
 //loadTaskSpecific(AInfo);						// Add task specific info
 //loadParcelAttributes(AInfo);						// Add parcel attributes
 loadASITables4ACA();
-logDebug("<B>EMSE Script Results for " + capIDString + "</B>");
-logDebug("capId = " + capId.getClass());
-logDebug("cap = " + cap.getClass());
-logDebug("currentUserID = " + currentUserID);
-logDebug("currentUserGroup = " + currentUserGroup);
-logDebug("systemUserObj = " + systemUserObj.getClass());
-logDebug("appTypeString = " + appTypeString);
-logDebug("capName = " + capName);
-logDebug("capStatus = " + capStatus);
-logDebug("sysDate = " + sysDate.getClass());
-logDebug("sysDateMMDDYYYY = " + sysDateMMDDYYYY);
-logDebug("parcelArea = " + parcelArea);
-logDebug("estValue = " + estValue);
-logDebug("calcValue = " + calcValue);
-logDebug("feeFactor = " + feeFactor);
-
-logDebug("houseCount = " + houseCount);
-logDebug("feesInvoicedTotal = " + feesInvoicedTotal);
-logDebug("balanceDue = " + balanceDue);
 
 /*------------------------------------------------------------------------------------------------------/
 | BEGIN Event Specific Variables
