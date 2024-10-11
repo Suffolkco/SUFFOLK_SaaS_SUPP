@@ -19,12 +19,15 @@ if (!publicUser) // VOID fees if it's fee exempt.
     }
 }
 
-// EHIMS-5309: Timeout set delay for report to load
+// EHIMS-5278: Timeout set delay for report to load
 if (!appMatch("DEQ/WWM/SHIP/Application"))
 {    
     var capPeoples = getPeople(capId)
     var shortNotes = getShortNotes(capId);
-                
+    
+    // Add delay so the report can show data
+    delay(4000);
+    
     for (loopk in capPeoples)
     {
         cont = capPeoples[loopk];                 
