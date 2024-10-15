@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
+using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,10 +75,13 @@ namespace SIPSync
         //===================================================
         // Method to encrypt password
         //===================================================
-        public string Encrypt(string clearText)
+        public string Encrypt(SecureString text)
         {
+            string clearText = new NetworkCredential("", text).Password;
             string encryptionKey = GetEncryptionKey();
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            string hash = String.Empty;
+
             using (Aes encryptor = Aes.Create())
             {
                 Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
@@ -89,10 +94,11 @@ namespace SIPSync
                         cs.Write(clearBytes, 0, clearBytes.Length);
                         cs.Close();
                     }
-                    clearText = Convert.ToBase64String(ms.ToArray());
+                    hash = Convert.ToBase64String(ms.ToArray());
                 }
             }
-            return clearText;
+            
+            return hash;
         }
 
         //===================================================

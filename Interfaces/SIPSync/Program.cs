@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Net;
+using System.Security;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Path = System.IO.Path;
@@ -18,24 +20,25 @@ namespace SIPSync
         private static List<string> badRows;
 
         static async Task Main(string[] args)
-        {
-          
+        {          
             // Check for the parameter to encrypt a password
             if (args.Length == 1)
             {
-                string pass = String.Empty;
+                
                 string[] param = args[0].Split('=');               
                 string option = param[0];
 
                 if(option== "encryptpass")
                 {
-                    pass = param[1];
+                    SecureString pass = new NetworkCredential("", param[1]).SecurePassword;
+                                                                                               
+                    string passHash = objAA.Encrypt(pass);                    
 
-                    string newPass = objAA.Encrypt(pass);
-
-                    Console.WriteLine($"Your encrypted password is: {newPass}");
+                    Console.WriteLine($"Your encrypted password is: {passHash}");
                     Console.WriteLine("Press Enter to close this window.");
                     Console.ReadLine();
+
+                    pass.Dispose();
                 }
                 else
                 {
@@ -382,4 +385,5 @@ namespace SIPSync
             return body;
         }
     }
+
 }
