@@ -1,97 +1,58 @@
-function applicationSubmittedWWM() {
+function applicationSubmittedWWM()
+{
 	var emailParams = aa.util.newHashtable();
 	var reportParams = aa.util.newHashtable();
-	
+	var reportFile = new Array();
+	var conArray;
 	var conEmail = "";
-	var lpEmail = "";
-	
-	var shortNotes = getShortNotes(capId);
-
+    var fromEmail = "";
+    try
+	{
+		conArray = getContactArrayLocal();
+	}
+	catch (ex)
+	{
+		logDebug("**ERROR** runtime error " + ex.message);
+	}
+	if(matches(fromEmail, null, "", undefined))
+	{
+		fromEmail = "";
+	}
+	if (conArray != null)
+	{
+		for (con in conArray)
+		{
+			if (!matches(conArray[con].email, null, undefined, ""))
+			{
+				conEmail += conArray[con].email + "; ";
+			}
+		}
+	}
 	var lpResult = aa.licenseScript.getLicenseProf(capId);
 	if (lpResult.getSuccess())
-	{
-		var lpArr = lpResult.getOutput();
-	}
+	{ 
+		var lpArr = lpResult.getOutput();  
+	} 
 	else 
-	{
-		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage());
+	{ 
+		logDebug("**ERROR: getting lic profs from Cap: " + lpResult.getErrorMessage()); 
 	}
 	for (var lp in lpArr)
 	{
 		if (!matches(lpArr[lp].getEmail(), null, undefined, ""))
 		{
-			getRecordParams4Notification(emailParams);	
-			addParameter(emailParams, "$$altID$$", capId.getCustomID());
-			addParameter(emailParams, "$$shortNotes$$", shortNotes);	
-			lpEmail = lpArr[lp].getEmail();				
-			if (lpEmail != null)
-			{
-				sendNotification("", lpEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportParams);
-			}			
+			conEmail += lpArr[lp].getEmail() + "; ";
 		}
 	}
-	
-	
-}
-function generateReportBatch(itemCap, reportName, module, parameters) {
-    //returns the report file which can be attached to an email.
-    var user = currentUserID; // Setting the User Name
-    var report = aa.reportManager.getReportInfoModelByName(reportName);
-    logDebug("This is the Report Parameter " + parameters);
-    if (!report.getSuccess() || report.getOutput() == null)
-    {
-        logDebug("**WARN report generation failed, missing report or incorrect name: " + reportName);
-        return false;
-    }
-    report = report.getOutput();
-    report.setModule(module);
-    report.setCapId(itemCap); //CSG Updated from itemCap.getCustomID() to just itemCap so the file would save to Record
-    report.setReportParameters(parameters);
-
-    var permit = aa.reportManager.hasPermission(reportName, user);
-    aa.print("This is the permission on the report" + permit);
-    logDebug("This is the permission on the report" + permit);
-    if (permit.getOutput().booleanValue())
-    {
-        var reportResult = aa.reportManager.getReportResult(report);
-        logDebug("Report Result" + reportResult.getSuccess());
-        if (reportResult.getSuccess())
-        {
-            reportOutput = reportResult.getOutput();
-            logDebug("This is the Report Output in the next part" + reportOutput);
-            var reportFile = aa.reportManager.storeReportToDisk(reportOutput);
-            reportFile = reportFile.getOutput();
-            return reportFile;
-        } else
-        {
-            logDebug("**WARN System failed get report: " + reportResult.getErrorType() + ":" + reportResult.getErrorMessage());
-            return false;
-        }
-    } else
-    {
-        logDebug("You have no permission.");
-        return false;
-    }
-}
-function getPeople(capId)
-{
-  capPeopleArr = null;
-  var s_result = aa.people.getCapContactByCapID(capId);
-  if(s_result.getSuccess())
-  {
-    capPeopleArr = s_result.getOutput();
-    if (capPeopleArr == null || capPeopleArr.length == 0)
-    {
-      aa.print("WARNING: no People on this CAP:" + capId);
-      capPeopleArr = null;
-    }
-  }
-  else
-  {
-    aa.print("ERROR: Failed to People: " + s_result.getErrorMessage());
-    capPeopleArr = null;  
-  }
-  return capPeopleArr;
+	getRecordParams4Notification(emailParams);
+    //getWorkflowParams4Notification(emailParams);
+    
+    //addParameter(emailParams, "$$applicationName$$", capId.getCapModel().getAppTypeAlias());
+    addParameter(emailParams, "$$altID$$", capId.getCustomID());
+	if (conEmail != null)
+	{
+		sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams, reportFile);
+	}
 }
 
 function getContactArrayLocal()
@@ -103,7 +64,7 @@ function getContactArrayLocal()
 	var thisCap = capId;
 	if (arguments.length == 1) thisCap = arguments[0];
 	var cArray = new Array();
-	if (arguments.length == 0 && !cap.isCompleteCap() && !matches(controlString, "ApplicationSubmitAfter", "ConvertToRealCapAfter")) // we are in a page flow script so use the capModel to get contacts
+	if (arguments.length == 0 && !cap.isCompleteCap() && !matches(controlString, "ApplicationSubmitAfter", "ConvertToRealCAPAfter")) // we are in a page flow script so use the capModel to get contacts
 	{
 	capContactArray = cap.getContactsGroup().toArray() ;
 	}
