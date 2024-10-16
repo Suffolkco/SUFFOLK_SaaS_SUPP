@@ -156,7 +156,7 @@ try
 
     if (AInfo["Pin Request"] == 'Yes')
     {  
-       
+        cancel = false;
         showMessage = true;           
         comment("A letter containing a <strong>Record ID</strong>, <strong>PIN Number</strong> and a <strong>Contact ID</strong> will be sent to the email provided after your complete application has been submitted.");                   
 
