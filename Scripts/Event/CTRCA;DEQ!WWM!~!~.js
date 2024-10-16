@@ -19,62 +19,6 @@ if (!publicUser) // VOID fees if it's fee exempt.
     }
 }
 
-// EHIMS-5278: Timeout set delay for report to load
-if (!appMatch("DEQ/WWM/SHIP/Application"))
-{    
-    var capPeoples = getPeople(capId)
-    var shortNotes = getShortNotes(capId);
-    
-    // Add delay so the report can show data
-    delay(4000);
-    
-    for (loopk in capPeoples)
-    {
-        cont = capPeoples[loopk];                 
-        peop = cont.getPeople();
-        conEmail = peop.getEmail();
-        var reportFile = new Array();	
-        var reportParams1 = aa.util.newHashtable();
-        var emailParams1 = aa.util.newHashtable();
-        logDebug("Found contact email: " + conEmail);
-        // Local contact ID
-        localCId = cont.getCapContactModel().getPeople().getContactSeqNumber();						
-        contactType = cont.getCapContactModel().getPeople().getContactType();
-        
-        logDebug("localCId: " + localCId);	
-        logDebug("contactType: " + contactType);	
-        
-
-        var altID = capId.getCustomID();
-        logDebug("altid: " + altID);	
-        
-                
-        reportParams1.put("ContactID", localCId);
-        reportParams1.put("RecordID", altID.toString());
-        reportParams1.put("ContactType", contactType);			
-
-        
-        rFile = generateReport("ACA Registration Pins-WWM",reportParams1, appTypeArray[0]);
-
-        logDebug("This is the ACA Pin File: " + rFile); 
-        if (rFile) {
-            reportFile.push(rFile);
-        }
-
-        getRecordParams4Notification(emailParams1);	
-        addParameter(emailParams1, "$$altID$$", capId.getCustomID());	
-        addParameter(emailParams1, "$$shortNotes$$", shortNotes);					
-        if (conEmail != null)
-        {
-            sendNotification("", conEmail, "", "DEQ_WWM_APPLICATION SUBMITTAL", emailParams1, reportFile);
-        }					
-    }         
-    
-
-}
-
-
-
 //var body = "feeEx: " + feeEx + "removeFee: " + removeFee;
 //aa.sendMail("noreplyehims@suffolkcountyny.gov","ada.chan@suffolkcountyny.gov", "", "CTRCA Debug Info", body);
 
