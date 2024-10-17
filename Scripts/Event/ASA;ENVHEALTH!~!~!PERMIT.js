@@ -14,8 +14,9 @@ if(!matches(facilityCapId,null,undefined,false)){
     editAppSpecific("Septic/Sewage", disposalSystem);
 
     // Copy Sanitarian Area from Facility to FSP as San Area 
-    var sanArea = getAppSpecific("Sanitarian Area",facilityCapId);
-    editAppSpecific("SAN AREA", sanArea);
+    // PHP-158: As per request, do not copy san area
+    //var sanArea = getAppSpecific("Sanitarian Area",facilityCapId);
+    //editAppSpecific("SAN AREA", sanArea);
 
     // Copy Days/Hours of operation
     var daysOp = getAppSpecific("Days of Operation",facilityCapId);
