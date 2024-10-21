@@ -50,9 +50,10 @@ function copyDocumentType(pFromCapId, pToCapId, documentType)
                 logDebug("Document Category: " + currDocCat)
                 logDebug("Compare doc number: " + documentObject.getDocumentNo() + " vs. " + docNo);
 
-				if (currDocCat == documentType && maxDate == documentObject.getFileUpLoadDate().getTime()) {
+				if (currDocCat == documentType && maxDate == documentObject.getFileUpLoadDate().getTime() && 
+                documentObject.getDocumentNo() == docNo) {
 
-                    logDebug("Doc no: " + docNo);
+                    logDebug("Copy this document : " + docNo + " to " + pToCapId);
 
                     if (categoryArray.length == 0 || exists(currDocCat, categoryArray))
                     {
