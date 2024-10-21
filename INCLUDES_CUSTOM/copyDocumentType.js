@@ -10,6 +10,31 @@ function copyDocumentType(pFromCapId, pToCapId, documentType)
         categoryArray = categoryList.split(",");
     }
 
+    var docList = getDocumentList(pFromCapId);
+    var docDates = [];
+    var maxDate;
+    var docNo;
+    for (doc in docList)
+    {
+        if (matches(docList[doc].getDocCategory(), documentType))
+        {
+            logDebug("document type is: " + docList[doc].getDocCategory() + " and upload datetime of document is: " + docList[doc].getFileUpLoadDate().getTime());
+            docDates.push(docList[doc].getFileUpLoadDate().getTime());
+            maxDate = Math.max.apply(null, docDates);
+            logDebug("maxdate is: " + maxDate);
+
+            if (docList[doc].getFileUpLoadDate().getTime() == maxDate)
+            {
+                var docType = docList[doc].getDocCategory();
+                var docFileName = docList[doc].getFileName();
+                docNo = docList[doc].getDocumentNo();
+               
+                logDebug("Max time found: " + maxDate);
+                logDebug("The latest file is: " + docNo + ', ' + docFileName);
+            }
+        }
+    }
+
     var capDocResult = aa.document.getDocumentListByEntity(pFromCapId, "CAP");
     if (capDocResult.getSuccess())
     {
@@ -21,8 +46,13 @@ function copyDocumentType(pFromCapId, pToCapId, documentType)
                 currDocCat = "" + documentObject.getDocCategory();
 
                 
-				logDebug("Document Category: " + currDocCat);
-				if (currDocCat == documentType) {
+				logDebug("Document Number: " + documentObject.getDocumentNo());
+                logDebug("Document Category: " + currDocCat)
+                logDebug("Compare doc number: " + documentObject.getDocumentNo() + " vs. " + docNo);
+
+				if (currDocCat == documentType && maxDate == documentObject.getFileUpLoadDate().getTime()) {
+
+                    logDebug("Doc no: " + docNo);
 
                     if (categoryArray.length == 0 || exists(currDocCat, categoryArray))
                     {
@@ -75,4 +105,18 @@ function copyDocumentType(pFromCapId, pToCapId, documentType)
             } // end for loop
         }
     }
+}
+
+function getDocumentList() {
+	// Returns an array of documentmodels if any
+	// returns an empty array if no documents
+	itemCapId = (arguments.length == 1) ? arguments[0] : capId;
+	var docListArray = new Array();
+
+	docListResult = aa.document.getCapDocumentList(itemCapId,"ADMIN");
+
+	if (docListResult.getSuccess()) {		
+		docListArray = docListResult.getOutput();
+	}
+	return docListArray;
 }
