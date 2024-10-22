@@ -319,26 +319,29 @@ function getInspectionInfo(fieldNum) {
             
             if (inspectorUser) {
 
+                logInfo("inspectorId: " + inspectorId); 
+                logInfo("User ID: " + inspectorId.getUserID());
+                
                 //EHIMS-5397
-                if (inspectorId.getUserID() == 110 ||   //Justin Andrews
-                    inspectorId.getUserID() == 133 ||   //Doug Hohenschuh
-                    inspectorId.getUserID() == 141 ||   //Sean Drake
-                    inspectorId.getUserID() == 816 ||   //Brian Pedersen
-                    inspectorId.getUserID() == 886 ||   //Amanda Lesiewicz
-                    inspectorId.getUserID() == 959)     //Tyler Pirnak
+                if (inspectorId.getUserID() == 'JUANDREWS' ||   //110 Justin Andrews
+                    inspectorId.getUserID() == 'DHOHENSCHUH' ||   //133 Doug Hohenschuh
+                    inspectorId.getUserID() == 'SDRAKE' ||   //141 Sean Drake
+                    inspectorId.getUserID() == 'BPEDERSEN' ||   //816 Brian Pedersen
+                    inspectorId.getUserID() == 'ALESIEWICZ' ||   //886 Amanda Lesiewicz
+                    inspectorId.getUserID() == 'TPIRNAK')     //959 Tyler Pirnak
                 {
                     tmpEmailStr = "julia.cahill@suffolkcountyny.gov";
-
-                    logInfo("Inspection ID: " + inspectorId.getUserID() + " detected. Sending email to: " + tmpEmailStr);
+                    logInfo("Inspection ID: " + inspectorId.getUserID() + " detected. Diverging email to: " + tmpEmailStr);
                 }
                 else {
-                    tmpEmailStr = inspectorUser.getEmail();
+                    tmpEmailStr = inspectorUser.getEmail();                    
                 }
-                if (tmpEmailStr)
-                    inspectorEmail = tmpEmailStr;
+                if (tmpEmailStr) {
+                    inspectorEmail = tmpEmailStr;                   
+                }
             }
         }
-
+        logInfo("inspectorEmail: " + inspectorEmail + "|inspRecordId && inspSeqNum && inspSeqNum: " + inspRecordId + "," + inspSeqNum + "," + inspSeqNum);
         if (appMatch("DEQ/General/Site/NA", inspRecordId)) {
             siteId = inspRecordId;
         }
@@ -679,6 +682,7 @@ function makeTable(labResults, resId, inspEmail) {
         }
         else {
             sampleErrors.push(t);
+            logInfo("Sample error added. Total error: " + sampleErrors.length);
         }
     }
     if (sampleErrors.length > 0) {
@@ -692,6 +696,7 @@ function makeTable(labResults, resId, inspEmail) {
                 }
                 msg += "\r\n";
             }
+            logInfo("Sending sample error email to: " + inspEmail);
             aa.sendEmail("AccelaAdmin@suffolkcountyny.gov", inspEmail, "", "LIMS Interface", msg, null);           
             
         }
