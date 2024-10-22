@@ -286,15 +286,18 @@ if (matches(inspTypeCap,
             var sec = inspObj.getInspectionDate().getSecond();
             var inspectionDateForm = (month) + "/" + day + "/" + (year);
             logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
-            assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
+            
            
             //gathering inspectors name from this current Site inspection
             var inspInspectorObj = inspObj.getInspector();
             if (inspInspectorObj)
             {
-                var inspInspector = inspInspectorObj.getUserID();
+                var inspInspector = inspInspectorObj.getUserID();                
                 if (inspInspector)
                 {
+                    logDebug("Assigned violation review task to inspector: " + inspInspector);
+                    assignTaskCustom("Violation Review", inspInspector, enfChild);
+
                     inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
                     if (inspInspectorObj != null)
                     {

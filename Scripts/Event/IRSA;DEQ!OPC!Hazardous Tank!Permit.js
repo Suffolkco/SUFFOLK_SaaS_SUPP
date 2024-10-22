@@ -275,13 +275,16 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
             var sec = inspObj.getInspectionDate().getSecond();
             var inspectionDateForm = (month) + "/" + day + "/" + (year);
             logDebug("inspectionDateForm 1 is: " + inspectionDateForm);
-            assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
+            
 
             //gathering inspectors name from this current Site inspection
             var inspInspectorObj = inspObj.getInspector();
             if (inspInspectorObj)
             {
                 var inspInspector = inspInspectorObj.getUserID();
+                logDebug("Assigned violation review task to inspector: " + inspInspector);
+                assignTaskCustom("Violation Review", inspInspector, enfChild);
+
                 if (inspInspector)
                 {
                     inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
@@ -518,13 +521,15 @@ if (matches(inspType, "Non-PBS Tank OP Inspection", "Non-PBS Tank Other Inspecti
                 var inspectionDateForm = (month) + "/" + day + "/" + (year);
             logDebug("inspectionDateForm 3 is: " + inspectionDateForm);
                 var inspInspectorObj = inspObj.getInspector();
-                assignTaskCustom("Violation Review", "MSEAMAN", enfChild);
-
+               
                 if (inspInspectorObj)
                 {
                     var inspInspector = inspInspectorObj.getUserID();
                     if (inspInspector)
                     {
+                        logDebug("Assigned violation review task to inspector: " + inspInspector);
+                        assignTaskCustom("Violation Review", inspInspector, enfChild);
+
                         inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
                         if (inspInspectorObj != null)
                         {
