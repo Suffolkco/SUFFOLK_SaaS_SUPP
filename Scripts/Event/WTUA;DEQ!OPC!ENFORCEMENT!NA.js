@@ -232,6 +232,69 @@ if (wfTask == "Violation Review")
 
                 if (otpRFiles.length > 0)
                 {
+                    var insps;                    
+                    var inspections = aa.inspection.getInspections(capId);
+                    var inspObj;
+                    var inspName;
+                    var inspPhone;
+                    var inspEmail;
+                   
+                    if (inspections.getSuccess()) 
+                    {
+                        insps = inspections.getOutput();
+                        
+                        // Get the latest inspection
+                        for (i in insps) 
+                        {				
+                            
+                            if (insps[i].getInspectionDate() != null)
+                            {
+                                var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
+                                
+                                
+                                var year = insps[i].getInspectionDate().getYear();
+                                var month = insps[i].getInspectionDate().getMonth();
+                                var day = insps[i].getInspectionDate().getDayOfMonth();
+                                
+                                var inspectionDateCon = month + "/" + day + "/" + year;
+                                logDebug("Inspection date is: " + inspectionDateCon);		
+
+                                if (inspectionDateCon == maxDate)
+                                {
+                                    logDebug("Inspection date matched: " + maxDate);
+                                    inspObj = insps[i];
+                                }
+                                                             
+
+                                var inspInspectorObj = inspObj.getInspector();
+                                if (inspInspectorObj)
+                                {
+                                    var inspInspector = inspInspectorObj.getUserID();                
+                                    if (inspInspector)
+                                    {                         
+        
+                                        inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                                        if (inspInspectorObj != null)
+                                        {
+                                            inspName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                                            inspPhone = inspInspectorObj.getPhoneNumber();
+                                            inspEmail = inspInspectorObj.getEmail();
+                                            logDebug("Name is: " + inspName);
+                                            logDebug("Phone is: " + inspPhone);
+                                            logDebug("Email is: " + inspEmail);
+
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    addParameter(emailParams, "$$inspName$$", inspName);
+                    addParameter(emailParams, "$$inspPhone$$", inspPhone);
+                    addParameter(emailParams, "$$inspEmail$$", inspEmail);
+
                     sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
                 }
             }
