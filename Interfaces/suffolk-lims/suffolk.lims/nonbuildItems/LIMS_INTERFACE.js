@@ -97,8 +97,11 @@ if (operation == "PROCESSDATA") {
     d = JSON.parse(jsonIN);
     resultsRecords = d;
     var conn = aa.db.getConnection();
+    logInfo("selectDrillDownSeriesString: " + selectDrillDownSeriesString);
     sDrillDownSeriesStmt = conn.prepareStatement(selectDrillDownSeriesString);
     sChildValueStmt = conn.prepareStatement(selectChildValueString);
+    logInfo("selectChildValueString: " + selectChildValueString);
+    logInfo("selectParentValueString: " + selectParentValueString);
     sParentValueStmt = conn.prepareStatement(selectParentValueString);
     try {
         showDebug = true;
@@ -312,9 +315,25 @@ function getInspectionInfo(fieldNum) {
         var inspectorId = inspObj.getInspector();
         inspectorUser = null;
         if (inspectorId) {
-            inspectorUser = aa.person.getUser(inspectorId.getUserID()).getOutput();
+            inspectorUser = aa.person.getUser(inspectorId.getUserID()).getOutput();            
+            
             if (inspectorUser) {
-                tmpEmailStr = inspectorUser.getEmail();
+
+                //EHIMS-5397
+                if (inspectorId.getUserID() == 110 ||   //Justin Andrews
+                    inspectorId.getUserID() == 133 ||   //Doug Hohenschuh
+                    inspectorId.getUserID() == 141 ||   //Sean Drake
+                    inspectorId.getUserID() == 816 ||   //Brian Pedersen
+                    inspectorId.getUserID() == 886 ||   //Amanda Lesiewicz
+                    inspectorId.getUserID() == 959)     //Tyler Pirnak
+                {
+                    tmpEmailStr = "julia.cahill@suffolkcountyny.gov";
+
+                    logInfo("Inspection ID: " + inspectorId.getUserID() + " detected. Sending email to: " + tmpEmailStr);
+                }
+                else {
+                    tmpEmailStr = inspectorUser.getEmail();
+                }
                 if (tmpEmailStr)
                     inspectorEmail = tmpEmailStr;
             }
@@ -563,7 +582,9 @@ function makeTable(labResults, resId, inspEmail) {
             t["Group Name"] = getGroupNameValue(key);
         }
         t["Analyte & Method"] = key;
+        logInfo("key: " + key);
         aInfo = getAnalyteObject(key);
+       
         if (aInfo && aInfo != "")
             t["Analyte Information"] = aInfo.info;
         else
@@ -585,10 +606,13 @@ function makeTable(labResults, resId, inspEmail) {
         }
         rawTextResult = "" + r[6];
         textResult = doTextResultTranslation(r[6]);
+        logInfo("r[6]: " + r[6]);
+        logInfo("textResult: " + textResult);
         t["Text Results"] = textResult;
         t["Combination Results"] = r[7];
         t["Analyte MDL"] = doNullTranslation("STRING", r[8]);
         t["Result Notation"] = getResultNotation(textResult);
+        logInfo("Result notation: " + t["Result Notation"]);
         t["Flag"] = getFlagValue(textResult, doNullTranslation("NUMBER", r[5]), aInfo.mcl);
         t["Remarks1"] = doNullTranslation("STRING", r[10]);
         t["Remarks2"] = doNullTranslation("STRING", r[11]);
@@ -629,6 +653,7 @@ function makeTable(labResults, resId, inspEmail) {
             if (textResult == "CONC") {
                 t["Results"] = r[7];        // combination reults
                 t["Result Notation"] = "=";
+                logInfo(analyteName + ", " + r[7])
             }
             else {
                 t["Results"] = doNullTranslation("STRING", r[8]);  // changed from r[7] per Josh 1018. Not in the spec.
@@ -667,8 +692,8 @@ function makeTable(labResults, resId, inspEmail) {
                 }
                 msg += "\r\n";
             }
-            aa.sendEmail("AccelaAdmin@suffolkcountyny.gov", inspEmail, "", "LIMS Interface", msg, null);
-
+            aa.sendEmail("AccelaAdmin@suffolkcountyny.gov", inspEmail, "", "LIMS Interface", msg, null);           
+            
         }
     }
     if (asitTableRows.length > 0)
@@ -1769,7 +1794,8 @@ function getGroupName(drillDownInfo, sStmt, am) {
 
 function getResultNotation(textResults) {
     if (textResults) {
-        if (textResult.equals("Trace") || textResults.equals("Present < MDL") || textResults.equals("Not detected") || textResults.equals("<1 or <MRL or <(anything)") ||
+        logInfo("textResult:" + textResults);
+        if (textResults.equals("Trace") || textResults.equals("Present < MDL") || textResults.equals("Not detected") || textResults.equals("<1 or <MRL or <(anything)") ||
             textResults.equals("Below Det Lim") || textResults.equals("Less than") || textResults.equals("Less than MRL")) {
             return "<";
         }
@@ -1858,10 +1884,17 @@ function getAnalyteObject(am) {
     obj.defaultUnits = '';
 
     try {
+       
         drillDownSeriesInfo = getDrillDownSeries(sDrillDownSeriesStmt, "Analyte & Method", "Analyte Information");
+        logInfo("drillDownSeriesInfo: " + drillDownSeriesInfo)
+        logInfo("am: " + am)
+        logInfo("sChildValueStmt: " + sChildValueStmt)
         infoString = "" + getAInfo(drillDownSeriesInfo, sChildValueStmt, am);
         obj.info = infoString;
+        logInfo("InfoString: " + infoString);
+      
         infoPieces = infoString.split("|");
+        logInfo("obj.mcl : " + obj.mcl);
         if (infoPieces.length > 0)
             obj.dmdlNotation = infoPieces[1];
         if (infoPieces.length > 1)
@@ -1883,11 +1916,16 @@ function getAnalyteObject(am) {
     return obj;
 }
 function getAInfo(drillDownInfo, sStmt, am) {
+   
+    logInfo("am: " + am);
     sStmt.setString(1, am);
     sStmt.setInt(2, drillDownInfo.seriesID)
+    logInfo("drillDownInfo.seriesID: " + drillDownInfo.seriesID);
     var rSet = sStmt.executeQuery();
+    logInfo("rSet: " + rSet);
     while (rSet.next()) {
         parentValue = rSet.getString("CHILD_VALUE");
+        logInfo("parentValue: " + parentValue);
         return parentValue;
     }
     return null
@@ -1907,6 +1945,9 @@ function getDrillDownSeries(sStmt, parentColName, childColName) {
         newDDInfo.seriesID = rSet.getInt("DRLLD_SERIES_ID");
         newDDInfo.parentListID = rSet.getInt("PARENT_DDLIST_ID");
         newDDInfo.childListID = rSet.getInt("CHILD_DDLIST_ID");
+        logInfo("newDDInfo.seriesID:" + newDDInfo.seriesID);
+        logInfo("newDDInfo.parentListID:" + newDDInfo.parentListID);
+        logInfo("newDDInfo.childListID:" + newDDInfo.childListID);
         return newDDInfo;
     }
     return null;
