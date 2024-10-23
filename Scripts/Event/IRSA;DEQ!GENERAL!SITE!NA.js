@@ -533,12 +533,12 @@ if (matches(inspTypeCap,
                 if (inspInspectorObj)
                 {
                     var inspInspector = inspInspectorObj.getUserID();
-
-                    logDebug("Assigned violation review task to inspector: " + inspInspector);
-                    assignTaskCustom("Violation Review", inspInspector, enfChild);
-
+                   
                     if (inspInspector)
                     {
+                        logDebug("Assigned violation review task to inspector: " + inspInspector);
+                        assignTaskCustom("Violation Review", inspInspector, enfChild);
+    
                         inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
                         if (inspInspectorObj != null)
                         {
