@@ -233,7 +233,7 @@ if (wfTask == "Violation Review")
                 if (otpRFiles.length > 0)
                 {
                     var insps;                    
-                    var inspections = aa.inspection.getInspections(capId);
+                    var inspections = aa.inspection.getInspections(parentCapId);
                     var inspObj;
                     var inspName;
                     var inspPhone;
