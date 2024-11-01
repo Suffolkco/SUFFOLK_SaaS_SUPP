@@ -263,27 +263,25 @@ if (wfTask == "Violation Review")
                                 {
                                     logDebug("Inspection date matched: " + maxDate);
                                     inspObj = insps[i];
-                                }
-                                                             
-
-                                var inspInspectorObj = inspObj.getInspector();
-                                if (inspInspectorObj)
-                                {
-                                    var inspInspector = inspInspectorObj.getUserID();                
-                                    if (inspInspector)
-                                    {                         
-        
-                                        inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
-                                        if (inspInspectorObj != null)
-                                        {
-                                            inspName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
-                                            inspPhone = inspInspectorObj.getPhoneNumber();
-                                            inspEmail = inspInspectorObj.getEmail();
-                                            logDebug("Name is: " + inspName);
-                                            logDebug("Phone is: " + inspPhone);
-                                            logDebug("Email is: " + inspEmail);
-
-
+                                    var inspInspectorObj = inspObj.getInspector();
+                                    if (inspInspectorObj)
+                                    {
+                                        var inspInspector = inspInspectorObj.getUserID();                
+                                        if (inspInspector)
+                                        {                         
+            
+                                            inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                                            if (inspInspectorObj != null)
+                                            {
+                                                inspName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                                                inspPhone = inspInspectorObj.getPhoneNumber();
+                                                inspEmail = inspInspectorObj.getEmail();
+                                                logDebug("Name is: " + inspName);
+                                                logDebug("Phone is: " + inspPhone);
+                                                logDebug("Email is: " + inspEmail);
+    
+    
+                                            }
                                         }
                                     }
                                 }
