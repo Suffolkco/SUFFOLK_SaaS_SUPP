@@ -1,7 +1,7 @@
 //WTUB:DEQ/WWM/Commercial/Application
 var altId = capId.getCustomID();
 
-EHIMS-5410
+//EHIMS-5410
 if ((wfTask == "Final Review" && wfStatus == "Approved"))
 {
     var docList = getDocumentList();   
