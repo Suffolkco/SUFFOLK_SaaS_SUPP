@@ -1,6 +1,29 @@
 //WTUB:DEQ/WWM/Commercial/Application
 var altId = capId.getCustomID();
 
+EHIMS-5410
+if ((wfTask == "Final Review" && wfStatus == "Approved"))
+{
+    var docList = getDocumentList();   
+    var docFound;
+
+    for (doc in docList)
+    {
+        if (matches(docList[doc].getDocCategory(), "SCDHS Final Approval"))
+        {          
+            docFound = true;        
+        }
+    }
+
+    if (!docFound)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Document type “SCDHS Final Approval” is required - go to the documents tab and categorize the stamped final approval as final approval, then try again. Workflow was not advanced.");
+    }
+
+}
+
 // EHIMS-4806
 if ((wfTask == "Plans Distribution" && wfStatus == "Routed for Review") || (wfTask == "Final Review" && wfStatus == "Approved"))
 {		
@@ -429,3 +452,17 @@ function inspectionResultComments()
 	
 	return inspResultComments;
 }
+
+function getDocumentList() {
+	// Returns an array of documentmodels if any
+	// returns an empty array if no documents
+	itemCapId = (arguments.length == 1) ? arguments[0] : capId;
+	var docListArray = new Array();
+
+	docListResult = aa.document.getCapDocumentList(itemCapId,"ADMIN");
+
+	if (docListResult.getSuccess()) {		
+		docListArray = docListResult.getOutput();
+	}
+	return docListArray;
+} 
