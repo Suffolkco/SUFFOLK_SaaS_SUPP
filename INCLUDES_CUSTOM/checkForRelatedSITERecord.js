@@ -93,7 +93,11 @@ function checkForRelatedSITERecord(parcelNumber) {
             // EHIMS-5328
             if(matches(capType, "DEQ/WWM/Commercial/Application", "DEQ/WWM/Food Review/Application", 
                 "DEQ/WWM/Garbage/Application", "DEQ/WWM/Residence/Application", 
-                "DEQ/WWM/SHIP/Application","DEQ/WWM/STP/Application","DEQ/WWM/Subdivision/Application")) 
+                "DEQ/WWM/SHIP/Application","DEQ/WWM/STP/Application","DEQ/WWM/Subdivision/Application",
+                // EHIMS-5290
+               "DEQ/OPC/Global Containment/Application", "DEQ/OPC/Hazardous Tank/Application", 
+               "DEQ/OPC/Hazardous Tank Closure/Application", "DEQ/OPC/Swimming Pool/Application", 
+               "DEQ/OPC/Swimming Pool/Permit", "DEQ/OPC/Site Assessment/Application"))       
             {               
                 logDebug("Does not copy contacts and LP.");               
                 copyOwnerForLic(capId, siteCap);               
