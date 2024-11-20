@@ -1,11 +1,11 @@
 //WTUB:DEQ/WWM/Commercial/Application
 var altId = capId.getCustomID();
+var docList = getDocumentList();   
 
 //EHIMS-5410
 if ((wfTask == "Final Review" && wfStatus == "Approved"))
 {
-    var docList = getDocumentList();   
-    var docFound;
+    var docFound = false;
 
     for (doc in docList)
     {
@@ -237,6 +237,24 @@ if (wfTask == "Plans Coordination" && wfStatus == "Approved")
         showMessage = true;        
         comment("The custom field 'Permit Conditions Text' is blank, and the workflow was advanced without a notice or permit conditions document being generated, and no email was sent to the public.");
     }	
+
+    // EHIMS-5416: Preliminary Approval Document
+    var prevDocFound = false;
+
+    for (doc in docList)
+    {
+        if (matches(docList[doc].getDocCategory(), "SCDHS Preliminary Approval"))
+        {          
+            prevDocFound = true;        
+        }
+    }
+
+    if (!prevDocFound)
+    {
+        cancel = true;
+        showMessage = true;
+        comment("Document type “SCDHS Preliminary Approval” is required - go to the documents tab and categorize the stamped prelim approval as preliminary approval, then try again. Workflow was not advanced.");
+    }
 
 }
 
