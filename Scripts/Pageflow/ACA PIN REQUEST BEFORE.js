@@ -187,7 +187,7 @@ try
                     conEmail = peop.getEmail();
                     logDebug("Scanning email: " + conEmail);
 
-                    if (matches(conEmail, email))
+                    if (matches(conEmail.toUpperCase(), email.toUpperCase()))
                     {
                         logDebug("Found matching email: " + conEmail);
                         retval = true;
