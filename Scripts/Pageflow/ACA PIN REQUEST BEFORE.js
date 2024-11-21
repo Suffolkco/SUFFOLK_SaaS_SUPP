@@ -166,7 +166,7 @@ try
         {
             cancel = true;
             showMessage = true;           
-            comment("Invalid record number. Please enter record number exactly as it appears on the SCDHS issued notice or permit. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC. Please verify and try again.");            
+            comment("Invalid record number. Please enter record number exactly as it appears on the latest SCDHS issued notice or email. Record number should be entered like C-YY-NNNN or CNNYYNNNN-ZEC. Please verify and try again.");            
             
         }
         else
