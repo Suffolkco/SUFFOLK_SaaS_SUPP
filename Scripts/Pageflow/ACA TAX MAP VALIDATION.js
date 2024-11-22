@@ -198,32 +198,57 @@ try
 			logDebug("Data Entry - Parcel No: " + parcelNo + ", Length: " + parcelNo.length());			
 			
 			var parcelTxt = new String(parcelNo);
-
-			noSpaceParcelNo = parcelTxt.replace(/\s/g, '');	
-			
-			var numeric = /^\d+$/.test(noSpaceParcelNo);
-			//var numeric = isNumeric(noSpaceParcelNo);
-
-			logDebug("numeric? " + numeric);
-			var length = noSpaceParcelNo.length;
-			logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
-			logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
-			if (length != 19 || !numeric)        
-			{            
+			if (parcelTxt.indexOf(' ') >= 0)
+			{
 				cancel = true;
 				showMessage = true;
+				comment ("Parcel (Tax Map) Number must not contain spaces.");
+			}
+			else
+			{
+				noSpaceParcelNo = parcelTxt.replace(/\s/g, '');	
+				
+				var numeric = /^\d+$/.test(noSpaceParcelNo);
+				//var numeric = isNumeric(noSpaceParcelNo);
 
-				comment("You have entered the wrong Parcel (Tax Map) Number.");
-				if (length != 19)
+				logDebug("numeric? " + numeric);
+				var length = noSpaceParcelNo.length;
+				logDebug("Removed space- Parcel No: " + noSpaceParcelNo + ", Length: " + length);
+				logDebug("ParcelNo: " + noSpaceParcelNo + ", " + length);
+
+				/* Below section is to check the first 4 characters. To be uncommented when ticket comes in
+				if (appTypeArray[1] == "WWM")
 				{
-					comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+					var strFirstFour = noSpaceParcelNo.substring(0,4);
+					logDebug("First 4 ParcelNo characters: " + strFirstFour);
+					matchFirstFour = CompareFirstFour(strFirstFour);
+
+					if (!matchFirstFour)
+					{
+						cancel = true;
+						showMessage = true;
+						comment ("Parcel (Tax Map) Number is not valid.");
+					}
 				}
-				if (!numeric)
-				{
-					comment ("Parcel (Tax Map) Number must be a number. Your entry has included a non-numeric value.");
-				}
-				comment ("Please see instructional note in Parcel Section.");
-			}				
+				*/
+				if (length != 19 || !numeric)        
+				{            
+					cancel = true;
+					showMessage = true;
+
+					comment("You have entered the wrong Parcel (Tax Map) Number.");
+					if (length != 19)
+					{
+						comment ("Parcel (Tax Map) Number must be 19 digits; you entered " + length + " digits.");
+					}
+					if (!numeric)
+					{
+						comment ("Parcel (Tax Map) Number must be a number. Your entry has included a non-numeric value.");
+					}
+					
+					comment ("Please see instructional note in Parcel Section.");
+				}				
+			}
 		}
 	}
 	logDebug("Debug info: " + (debug.indexOf("**ERROR")));
@@ -249,7 +274,7 @@ try
 catch (ex)
 {
 	logDebug("**ERROR** runtime error " + ex.message);
-	comment ("Pease see instructional note in Parcel Section." + message);
+	comment ("Please see instructional note in Parcel Section." + message);
 	
 }
 
@@ -259,6 +284,16 @@ catch (ex)
 /*------------------------------------------------------------------------------------------------------/
 | <===========END=Main=Loop================>
 /-----------------------------------------------------------------------------------------------------*/
+function CompareFirstFour(str)
+{
+	// To be provided by DEQ on the list of first 4 characters
+	if (str == '1234')
+	{
+		return true;
+	}
+	return false;
+}
+
 function isNumeric(str) {
 	if (typeof str != "string") return false // we only process strings!  
 	return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
