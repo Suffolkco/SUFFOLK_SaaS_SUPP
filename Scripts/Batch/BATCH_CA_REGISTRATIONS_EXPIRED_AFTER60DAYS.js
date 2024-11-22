@@ -280,6 +280,17 @@ function mainProcess()
 /*------------------------------------------------------------------------------------------------------/
 | <===========Internal Functions and Classes (Used by this script)
 /------------------------------------------------------------------------------------------------------*/
+function lookupLOCAL(stdChoice, stdValue) {
+    var strControl;
+    var bizDomScriptResult = aa.bizDomain.getBizDomainByValue(stdChoice, stdValue);
+
+    if (bizDomScriptResult.getSuccess()) {
+        var bizDomScriptObj = bizDomScriptResult.getOutput();
+        strControl = "" + bizDomScriptObj.getDescription(); // had to do this or it bombs.  who knows why?
+    }
+  
+    return strControl;
+}
 function generateReportBatch(itemCap, reportName, module, parameters)
 {
     //returns the report file which can be attached to an email.
