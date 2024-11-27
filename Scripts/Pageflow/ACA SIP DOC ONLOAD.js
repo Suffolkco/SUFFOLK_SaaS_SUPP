@@ -29,75 +29,85 @@ var cap = aa.env.getValue("CapModel");
 var capId = cap.getCapID();
 var AInfo = new Array();
 loadAppSpecific4ACA(AInfo);
-try
-{
-	
-	var catastrophic= AInfo["Catastrophic Failure"];
-	var nonCatastrophic= AInfo["Non-Catastrophic"];				  
-	var LMI = AInfo["LMI consideration"];			
-    var docComments = "";
-	
-	if(catastrophic == "Yes" || nonCatastrophic== "Yes")
-	{
-		showMessage = true;
-        comment("This submission requires you to submit the following documents: Proof of Failure");
-	
+try {
+
+	var catastrophic = AInfo["Catastrophic Failure"];
+	var nonCatastrophic = AInfo["Non-Catastrophic"];
+	var LMI = AInfo["LMI consideration"];
+	var docComments = "";
+	var isAgent = false;
+	var capModel = aa.env.getValue("CapModel");
+	var capContacts = capModel.getContactsGroup();
+	var capLicenseResult = capModel.getLicenseProfessionalList();
+	if (capContacts != null) {
+		for (var j = 0; j < parseInt(capContacts.size()); j++) {
+			thisContact = capContacts.get(j);
+			if (thisContact.getPeople().getContactType().toString() == "Agent") {
+				isAgent = true;
+			}
+		}
 	}
+
 	
-	if(LMI == "Yes")
-	{
+	showMessage = true;
+		comment("This submission requires you to submit the following documents: Current Tax Bill");
+	
+
+	if (catastrophic == "Yes" || nonCatastrophic == "Yes") {
 		showMessage = true;
-        comment("This submission requires you to submit the following documents: Current, Signed Tax Return");
-	
+		comment("This submission requires you to submit the following documents: Proof of Failure");
+
 	}
-   
-   
-}
-catch (error)
-{
-    logDebug("an error was encoutered: " + error.message);
-    showDebug = true;
-    showMessage = true;
+
+	if (LMI == "Yes") {
+		showMessage = true;
+		comment("This submission requires you to submit the following documents: Current, Signed Tax Return");
+
+	}
+
+	if (isAgent)
+
+	{
+		
+			showMessage = true;
+		        comment("This submission requires you to submit the following documents: Agent Letter");
+		
+
+	}
+} catch (error) {
+	logDebug("an error was encoutered: " + error.message);
+	showDebug = true;
+	showMessage = true;
 }
 
-if (debug.indexOf("**ERROR") > 0 || debug.substr(0, 7) == "**ERROR")
-{
-    aa.env.setValue("ErrorCode", "1");
-    aa.env.setValue("ErrorMessage", debug);
-} else
-{
-    if (cancel)
-    {
-        aa.env.setValue("ErrorCode", "-2");
-        if (showMessage) aa.env.setValue("ErrorMessage", message);
-        if (showDebug) aa.env.setValue("ErrorMessage", debug);
-    } else
-    {
-        aa.env.setValue("ErrorCode", "0");
-        if (showMessage) aa.env.setValue("ErrorMessage", message);
-        if (showDebug) aa.env.setValue("ErrorMessage", debug);
-    }
+if (debug.indexOf("**ERROR") > 0 || debug.substr(0, 7) == "**ERROR") {
+	aa.env.setValue("ErrorCode", "1");
+	aa.env.setValue("ErrorMessage", debug);
+} else {
+	if (cancel) {
+		aa.env.setValue("ErrorCode", "-2");
+		if (showMessage) aa.env.setValue("ErrorMessage", message);
+		if (showDebug) aa.env.setValue("ErrorMessage", debug);
+	} else {
+		aa.env.setValue("ErrorCode", "0");
+		if (showMessage) aa.env.setValue("ErrorMessage", message);
+		if (showDebug) aa.env.setValue("ErrorMessage", debug);
+	}
 }
-
 
 //ACA Functions 
-function getScriptText(vScriptName, servProvCode, useProductScripts)
-{
-    if (!servProvCode) servProvCode = aa.getServiceProviderCode();
-    vScriptName = vScriptName.toUpperCase();
-    var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
-    try
-    {
-        if (useProductScripts)
-        {
-            var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
-        } else
-        {
-            var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
-        }
-        return emseScript.getScriptText() + "";
-    } catch (err)
-    {
-        return "";
-    }
+function getScriptText(vScriptName, servProvCode, useProductScripts) {
+	if (!servProvCode) servProvCode = aa.getServiceProviderCode();
+	vScriptName = vScriptName.toUpperCase();
+	var emseBiz = aa.proxyInvoker.newInstance("com.accela.aa.emse.emse.EMSEBusiness").getOutput();
+	try {
+		if (useProductScripts) {
+			var emseScript = emseBiz.getMasterScript(aa.getServiceProviderCode(), vScriptName);
+		} else {
+			var emseScript = emseBiz.getScriptByPK(aa.getServiceProviderCode(), vScriptName, "ADMIN");
+		}
+		return emseScript.getScriptText() + "";
+	} catch (err) {
+		return "";
+	}
 }
