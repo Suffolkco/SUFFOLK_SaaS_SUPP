@@ -208,7 +208,7 @@ function mainProcess()
 													addParameter(emailParams, "$$expireDate$$", expDateCon);	 
 													addParameter(emailParams, "$$expireDate90$$",ninetyDayCon);
 													addParameter(emailParams, "$$DAY$$", "60 DAYS BEFORE EXPIRE");
-													addParameter(vEParams, "$$address$$", addrResult);
+													addParameter(emailParams, "$$address$$", addrResult);
 													//Save Base ACA URL
 													addParameter(emailParams, "$$acaURL$$", acaSite);													
 													addParameter(emailParams, "$$acaRecordURL$$", acaSite + getACAUrl());	
