@@ -135,8 +135,6 @@ for (i in wfObj)
     }
 }
 
-logDebug("wfTask: " + wfTask);
-logDebug("wfStatus: " + wfStatus);
 //Violation Review
 if (wfTask == "Violation Review") 
 {
@@ -165,18 +163,18 @@ if (wfTask == "Violation Review")
             {
                 docToPrepare = documents[doc];
                 docFileName = documents[doc].getFileName();
-                logDebug("docfilename is: " + docFileName);
+                //logDebug("docfilename is: " + docFileName);
                 //docToSend = prepareDocumentForEmailAttachmentLOCAL(capId, "Inspection Report", docFileName);
                 var catt = documents[doc].getDocCategory();
-                logDebug("doccatt is: " + catt);
+                //logDebug("doccatt is: " + catt);
 
                 var moduleName = cap.getCapType().getGroup();
                 var toClear = docToPrepare.getFileName();
                 toClear = toClear.replace("/", "-").replace("\\", "-").replace("?", "-").replace("%", "-").replace("*", "-").replace(":", "-").replace("|", "-").replace('"', "").replace("'", "").replace("<", "-").replace(">", "-").replace(" ", "_");
                 docToPrepare.setFileName(toClear);
                 var downloadRes = aa.document.downloadFile2Disk(docToPrepare, moduleName, "", "", true);
-                logDebug("downloadRes is: " + downloadRes.getSuccess());
-                logDebug("downloadRes getOutput is: " + downloadRes.getOutput());
+                //logDebug("downloadRes is: " + downloadRes.getSuccess());
+                //logDebug("downloadRes getOutput is: " + downloadRes.getOutput());
                 if (downloadRes.getSuccess() && downloadRes.getOutput())
                 {
                     otpRFiles.push(downloadRes.getOutput().toString());
@@ -194,7 +192,7 @@ if (wfTask == "Violation Review")
         //gathering inspection date information to push into the parameter in the email
         var inspDates = [];
         var aTwelveSite = loadASITable("ARTICLE 12 TANK VIOLATIONS", capId);
-        logDebug("aTwelveSite  is: " + aTwelveSite);
+        //logDebug("aTwelveSite  is: " + aTwelveSite);
 
         if (aTwelveSite)
         {
@@ -222,80 +220,74 @@ if (wfTask == "Violation Review")
 
         if (wfStatus == 'Enforcement Request Sent')
         {
-            
-            logDebug("inspDates.length is: " + inspDates.length);
-            // Only if there are entries in the PBS/NonPBS Violations custom table
-            if (inspDates.length> 0)
+            logDebug("otpRFiles.length is: " + otpRFiles.length);
+
+            if (otpRFiles.length > 0)
             {
-
-                logDebug("otpRFiles.length is: " + otpRFiles.length);
-
-                if (otpRFiles.length > 0)
+                var insps;                    
+                var inspections = aa.inspection.getInspections(parentCapId);
+                var inspObj;
+                var inspName;
+                var inspPhone;
+                var inspEmail;
+                
+                if (inspections.getSuccess()) 
                 {
-                    var insps;                    
-                    var inspections = aa.inspection.getInspections(parentCapId);
-                    var inspObj;
-                    var inspName;
-                    var inspPhone;
-                    var inspEmail;
-                   
-                    if (inspections.getSuccess()) 
-                    {
-                        insps = inspections.getOutput();
+                    insps = inspections.getOutput();
+                    
+                    // Get the latest inspection
+                    for (i in insps) 
+                    {				
                         
-                        // Get the latest inspection
-                        for (i in insps) 
-                        {				
+                        if (insps[i].getInspectionDate() != null)
+                        {
+                            var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
                             
-                            if (insps[i].getInspectionDate() != null)
-                            {
-                                var inspDate = new Date(insps[i].getInspectionDate().getMonth() + "/" + insps[i].getInspectionDate().getDayOfMonth() + "/" + insps[i].getInspectionDate().getYear());
-                                
-                                
-                                var year = insps[i].getInspectionDate().getYear();
-                                var month = insps[i].getInspectionDate().getMonth();
-                                var day = insps[i].getInspectionDate().getDayOfMonth();
-                                
-                                var inspectionDateCon = month + "/" + day + "/" + year;
-                                logDebug("Inspection date is: " + inspectionDateCon);		
+                            
+                            var year = insps[i].getInspectionDate().getYear();
+                            var month = insps[i].getInspectionDate().getMonth();
+                            var day = insps[i].getInspectionDate().getDayOfMonth();
+                            
+                            var inspectionDateCon = month + "/" + day + "/" + year;
+                            logDebug("Inspection date is: " + inspectionDateCon);		
 
-                                if (inspectionDateCon == maxDate)
+                            if (inspectionDateCon == maxDate)
+                            {
+                                logDebug("Inspection date matched: " + maxDate);
+                                inspObj = insps[i];
+                                var inspInspectorObj = inspObj.getInspector();
+                                if (inspInspectorObj)
                                 {
-                                    logDebug("Inspection date matched: " + maxDate);
-                                    inspObj = insps[i];
-                                    var inspInspectorObj = inspObj.getInspector();
-                                    if (inspInspectorObj)
-                                    {
-                                        var inspInspector = inspInspectorObj.getUserID();                
-                                        if (inspInspector)
-                                        {                         
-            
-                                            inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
-                                            if (inspInspectorObj != null)
-                                            {
-                                                inspName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
-                                                inspPhone = inspInspectorObj.getPhoneNumber();
-                                                inspEmail = inspInspectorObj.getEmail();
-                                                logDebug("Name is: " + inspName);
-                                                logDebug("Phone is: " + inspPhone);
-                                                logDebug("Email is: " + inspEmail);
-    
-    
-                                            }
+                                    var inspInspector = inspInspectorObj.getUserID();                
+                                    if (inspInspector)
+                                    {                         
+        
+                                        inspInspectorObj = aa.person.getUser(inspInspector).getOutput();
+                                        if (inspInspectorObj != null)
+                                        {
+                                            inspName = inspInspectorObj.getFirstName() + " " + inspInspectorObj.getLastName();
+                                            inspPhone = inspInspectorObj.getPhoneNumber();
+                                            inspEmail = inspInspectorObj.getEmail();
+                                            logDebug("Name is: " + inspName);
+                                            logDebug("Phone is: " + inspPhone);
+                                            logDebug("Email is: " + inspEmail);
+
+
                                         }
                                     }
                                 }
                             }
                         }
                     }
-
-                    addParameter(emailParams, "$$inspName$$", inspName);
-                    addParameter(emailParams, "$$inspPhone$$", inspPhone);
-                    addParameter(emailParams, "$$inspEmail$$", inspEmail);
-
-                    sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
                 }
+
+                addParameter(emailParams, "$$inspName$$", inspName);
+                addParameter(emailParams, "$$inspPhone$$", inspPhone);
+                addParameter(emailParams, "$$inspEmail$$", inspEmail);
+
+                sendNotification("", conEmailList, "", "DEQ_OPC_ENF_REQUEST_SENT", emailParams, otpRFiles);
             }
+            
         }
         else if (wfStatus == 'NOV Letter Sent')
         {
@@ -344,7 +336,7 @@ if (wfTask == "Enforcement Request Review")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
         activateTask("Request Inspection");
         deactivateTask("Enforcement Request Review");
     }
@@ -614,7 +606,7 @@ if (wfTask == "Commissioner's Order")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
 }
@@ -626,7 +618,7 @@ if (wfTask == "Collection")
     {
         addParameter(emailParams, "$$inspDueDate$$", dateSixtyDaysOut);
         sendNotification("", "Michael.Seaman@suffolkcountyny.gov", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
-        sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
+        //sendNotification("", "ryan.littlefield@scubeenterprise.com", "", "DEQ_OPC_ENF_INSP_REQ", emailParams, null);
 
     }
 }
