@@ -1,0 +1,273 @@
+﻿@page "/opcsite"
+@inherits SearchOpcSiteBase
+
+
+<div class="main-opc-site">
+
+    <DeqHeader Office="OPC"/>
+
+    <div class="content container-sm">
+        <div>
+            <h4 class="text-center mt-4 mb-4">Office of Pollution Control SITE Permit Look Up</h4>
+            <p class="sst-note"><em>If you are looking for the SITE Article 12/18 Permit information, TANK List, Last Inspection Date, please use the following <u>SITE Permit Look Up</u> terminal:</em></p>
+        </div>
+
+        <EditForm id="form-search" class="justify-content-center" Model="@SearchRecord" OnSubmit="HandleValidSubmit">
+            <div class="form-group">
+                <label for="search-by"><b>Search by:</b></label>
+                <InputSelect id="search-by" class="form-control" @bind-Value="SearchRecord.Criteria">
+                    <option value="Record ID">Record ID</option>
+                    <option value="File Reference Number">File Reference Number</option>
+                    <option value="Tax Map">Tax Map Number</option>
+                </InputSelect>
+            </div>
+
+            <div class="form-group">
+                @if (SearchRecord.Criteria == "Record ID")
+                    {
+                <label for="search-record-id"><b>Enter SITE Record ID. It is located on your SITE Operating Permit. If you don't know your SITE Record ID, please contact the Office of Pollution Control. Examples: SITE-yy-nnnnn, SITE-nnnnn-OPC, SITE-yy-nnnnn-OPC, SITE-yy-nnnnn-ZWR, ..., where yy is 2 digit year, nnnnn is a 5 digit number. </b></label>
+                <InputText onfocus="this.select();" id="search-record-id" class="form-control" @bind-Value="SearchRecord.CustomId" />
+                    }
+                    else if (SearchRecord.Criteria == "File Reference Number")
+                    {
+                <label for="search-record-id"><b>Enter 5 digit number only.</b></label>
+                <InputText onfocus="this.select();" id="search-ref-no" class="form-control" @bind-Value="SearchRecord.CustomForms[0].FileReferenceNumber" />
+                    }
+                    else if (SearchRecord.Criteria == "Tax Map")
+                    {
+                <label for="search-taxmap"><b>Enter 19 digit number only, no spaces, no hyphens. If your tax bill shows your Tax Map Number as follows: District:0299 Section:987.00 Block:04.00 Lot:123.000; Please enter the Tax Map Number based on this format: 0299987000400123000</b></label>
+                <InputText onfocus="this.select();" id="search-taxmap" class="form-control" @bind-Value="SearchRecord.Parcel.ParcelNumber" />
+                    }
+                <p style="display:@DisplayError; color:red;">@ErrorMessage</p>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Search</button>
+            </div>
+            <ValidationSummary />
+
+        </EditForm>
+    </div>
+
+
+    @if (IsLoading)
+        {
+            <div class="text-center loading">
+                <p><em>Loading...</em></p>
+            </div>
+        }
+        else if (IsException)
+        {
+            <AppError />
+        }
+        else if (IsClearResults)
+        {
+
+        }
+        else
+        {
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-end">
+                    @if (Links != null)
+                    {
+                        <li class="display-range">
+                            @Records.DisplayRange of @TotalRecords
+                        </li>
+                        @foreach (var link in Links)
+                        {
+                            @if (link.Enabled)
+                            {
+                                <li @onclick="@(() => SelectedPageInternal(link))"
+                                    style="cursor: pointer;"
+                                    class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                                    <span class="page-link" href="#">@link.Text</span>
+                                </li>
+
+                            }
+                            else
+                            {
+                                <li style="cursor: pointer;"
+                                    class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                                    <span class="page-link" href="#">@link.Text</span>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+            </nav>
+
+    @if (Records != null && Records.Result != null && Records.Result.Length > 0)
+            {
+    @foreach (var record in Records.Result)
+                {
+    <div id="search-result-opc-site" class="card">
+        <div class="card-header">
+            <h5>@record.CustomId</h5>
+        </div>
+
+
+        <div id="card-body" class="row">
+            <div class="col-lg-6">
+                <ul>
+                    <li><b>Site:</b> @record.ShortNotes</li>
+                    <li><b>Address:</b> @record.Address</li>
+                    @if (record.Parcels.Length <= 3)
+                                    {
+                    <li><b>Tax Map:</b> @record.ParcelNumber</li>
+                                    }
+                                    else if (record.ShowAllTaxMap)
+                                    {
+                    <li><b>Tax Map:</b> @record.ParcelNumber<span class="text-link" @onclick="@(e => ToggleTaxMap(record.CustomId))"> SHOW LESS</span></li>
+                                    }
+                                    else
+                                    {
+                    <li><b>Tax Map:</b> @record.ParcelNumberShort<span class="text-link" @onclick="@(e => ToggleTaxMap(record.CustomId))"> SHOW MORE</span></li>
+                                    }
+                </ul>
+            </div>
+            <div class="col-lg-5">
+                <ul>
+                    <li><b>File Ref No:</b> @record.FileReferenceNumber</li>
+                    <li><b>Site Record:</b> @record.CustomId</li>
+                    <li><b>Permit to Operate Start Date:</b> @record.OPCPermitToOperateStartDate</li>
+                    <li><b>Permit to Operate End Date:</b> @record.OPCPermitToOperateEndDate</li>
+
+                </ul>
+            </div>
+            <div id="plus-icon" class="col-lg-1" @onclick="@(e => Toggle(record.CustomId))">
+                @if (@record.ShowPlus == true && record.HidePlusMinus == false)
+                                {
+                <div class="show-tank">Show Tanks</div>
+                                }
+                                else if(@record.ShowPlus == false && record.HidePlusMinus == false)
+                                {
+                <div class="show-tank">Hide Tanks</div>
+                                }
+                                else
+                                {
+                <div class="show-tank">Loading ...</div>
+                                }
+            </div>
+        </div>
+
+        @if (@record.ShowDetail)
+                            {
+        <div class="tanks">
+            <div class="row tank-header">
+                <div class="col-1 text-center tank-column">
+                    <b>Tank Record ID</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>SCDHS Tank #</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>Location</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>Capacity</b>
+                </div>
+                <div class="col-2 text-center tank-column">
+                    <b>Product Stored</b>
+                </div>
+                <div class="col-2 text-center tank-column">
+                    <b>Storage Type</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>Status</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>Install Date</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>Closure Date</b>
+                </div>
+                <div class="col-1 text-center tank-column">
+                    <b>Last inspection Date</b>
+                </div>
+            </div>
+            @if (record.FoilableSite == "No")
+                                    {
+            <div>Information is not available for display.</div>
+                                    }
+                                    else if (record.Tanks == null || record.Tanks.Length < 1)
+                                    {
+            <div>There is no tank on this site.</div>
+                                    }
+                                    else
+                                    {
+            @foreach (var tank in record.Tanks)
+                                        {
+            <div class="row tank-row">
+                <div class="col-1 text-left tank-column">@tank.CustomId</div>
+                <div class="col-1 text-right tank-column-number">@tank.SCDHSTankNumber</div>
+                <div class="col-1 text-left tank-column">@tank.TankLocation</div>
+                <div class="col-1 text-right tank-column">@tank.Capacity @tank.UnitsLabel</div>
+                <div class="col-2 text-left tank-column">@tank.ProductStored</div>
+                <div class="col-2 text-left tank-column">@tank.StorageTypeLabel</div>
+                <div class="col-1 text-center tank-column">@tank.AsiStatus</div>
+                <div class="col-1 text-right tank-column-number">@tank.DateInstalled</div>
+                <div class="col-1 text-center tank-column">@tank.DateOfPermanentClosureOrOutOfService</div>
+                @if (tank.showLoading)
+                                                {
+                <div class="col-1 text-center tank-column"><i>Loading...</i></div>
+                                                }
+                                                else
+                                                {
+                <div class="col-1 text-center tank-column">@tank.LastInspectionDate</div>
+                                                }
+            </div>
+                                        }
+                                    }
+        </div>
+                            }
+    </div>
+                }
+            }
+            else
+            {
+    <p class="text-center loading">No record found. Please try again.</p>
+            }
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end">
+            @if (Links != null)
+                    {
+            <li class="display-range">
+                @Records.DisplayRange of @TotalRecords
+            </li>
+            @foreach (var link in Links)
+                        {
+            @if (link.Enabled)
+                            {
+            <li @onclick="@(() => SelectedPageInternal(link))"
+                style="cursor: pointer;"
+                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                <span class="page-link" href="#">@link.Text</span>
+            </li>
+
+                            }
+                            else
+                            {
+            <li style="cursor: pointer;"
+                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                <span class="page-link" href="#">@link.Text</span>
+            </li>
+                            }
+                        }
+                    }
+        </ul>
+    </nav>
+
+    @if (Records != null && Records.Result != null)
+            {
+    <div id="note-opc-site">
+        <p><em>For some sites (facilities), only basic site (facility) information is provided because the Department has determined that releasing additional information could endanger the life or safety of persons or the security of the critical infrastructure.</em></p>
+        <p><em>Once a site (facility) becomes unregulated, the Department no longer updates site (facility) information  (e.g., facility (property) owner). For sites (facilities) that are not active, the search results for the site (facility) represent the information presented in the last registration/license application.</em></p>
+        <p class="text-danger"><em>Note: this terminal is <u>informational purposes only</u> and does not represent any actual approvals and is not to be referred to in lieu of stamped Department approvals.</em></p>
+    </div>
+            }
+        }
+
+    <Footer />
+
+</div>

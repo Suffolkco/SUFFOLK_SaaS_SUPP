@@ -1,0 +1,239 @@
+﻿@page "/opcapp"
+@inherits SearchOpcApplicationBase
+
+<DeqHeader Office="OPC"/>
+
+<div class="content container-sm">
+
+    <div>
+        <h4 class="text-center mt-4 mb-4">Office of Pollution Control Application Status Lookup</h4>
+        <p class="sst-note"><em>If you are looking for the status of your Tank Installation/registration, Tank Closure, Environmental Site Assessment/UIC Evaluation, Swimming Pool, or Global Containment application, please use the following <u>Application status lookup</u> terminal:</em></p>
+        <p class="text-danger sst-note"><em>Please Note: currently this terminal will only show applications that were received by the Office of Pollution Control after November 2019.</em></p>
+
+    </div>
+
+    <EditForm id="form-search" class="justify-content-center" Model="@SearchRecord" OnSubmit="HandleValidSubmit">
+        <div class="form-group">
+            <label for="search-by"><b>Search by:</b></label>
+            <InputSelect id="search-by" class="form-control" @bind-Value="SearchRecord.Criteria">
+                <option value="Record ID">Record ID</option>
+                <option value="Tax Map">Tax Map Number</option>
+            </InputSelect>
+        </div>
+
+        <div class="form-group">
+            @if (SearchRecord.Criteria == "Record ID")
+            {
+                <label for="search-record-id"><b>Enter Record ID in one of the following formats: T-HM-yy-nnnnn, TC-yy-nnnnn, SP-yy-nnnnn, GC-yy-nnnnn, where yy is 2 digit year, nnnnn is a 5 digit number.</b></label>
+                <InputText onfocus="this.select();" id="search-record-id" class="form-control" @bind-Value="SearchRecord.CustomId" />
+            }
+            else
+            {
+                <label for="search-taxmap"><b>Enter 19 digit number only, no spaces, no hyphens. If your tax bill shows your Tax Map Number as follows: District:0299 Section:987.00 Block:04.00 Lot:123.000; Please enter the Tax Map Number based on this format: 0299987000400123000</b></label>
+                <InputText onfocus="this.select();" id="search-taxmap" class="form-control" @bind-Value="SearchRecord.Parcel.ParcelNumber" />
+            }
+            <p style="display:@DisplayError; color:red;">@ErrorMessage</p>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Search</button>
+        </div>
+        <ValidationSummary />
+
+    </EditForm>
+
+
+    @if (IsLoading)
+    {
+        <div class="text-center loading">
+            <p><em>Loading...</em></p>
+        </div>
+    }
+    else if (IsException)
+    {
+        <AppError />
+    }
+    else if (IsClearResults)
+    {
+
+    }
+    else
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-end">
+                @if (Links != null)
+                {
+                    <li class="display-range">
+                        @Records.DisplayRange of @TotalRecords
+                    </li>
+                    @foreach (var link in Links)
+                    {
+                        @if (link.Enabled)
+                        {
+                            <li @onclick="@(() => SelectedPageInternal(link))"
+                                style="cursor: pointer;"
+                                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                                <span class="page-link" href="#">@link.Text</span>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li style="cursor: pointer;"
+                                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                                <span class="page-link" href="#">@link.Text</span>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </nav>
+
+        @if (Records != null && Records.Result != null && Records.Result.Length > 0)
+        {
+
+            @foreach (var record in Records.Result)
+            {
+                <div id="search-result" class="card">
+                    <div class="card-header">
+                        <h5>@record.CustomId</h5>
+                    </div>
+
+
+                    <div id="card-body" class="row">
+                        <div class="col-lg-6">
+                            <ul>
+                                <li><b>Project Name:</b> @record.ShortNotes</li>
+                                <li><b>Address: </b>@record.Address</li>
+                                @if (record.Parcels.Length <= 3)
+                                {
+                                    <li><b>Tax Map:</b> @record.ParcelNumber</li>
+                                }
+                                else if (record.ShowAllTaxMap)
+                                {
+                                    <li><b>Tax Map:</b> @record.ParcelNumber<span class="text-link" @onclick="@(e => ToggleTaxMap(record.CustomId))"> SHOW LESS</span></li>
+                                }
+                                else
+                                {
+                                    <li><b>Tax Map:</b> @record.ParcelNumberShort<span class="text-link" @onclick="@(e => ToggleTaxMap(record.CustomId))"> SHOW MORE</span></li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="col-lg-5">
+                            <ul>
+                                <li><b>Opened Date:</b> @record.OpenedDate</li>
+                                <li>
+                                    <b>Application Status:</b>
+                                    @if (record.Status != null)
+                                    {
+                                        @record.Status.Text
+                                    }
+                                </li>
+                                @if (record.PlansCoordinationApprovedDate != "HIDE")
+                                {
+                                    <li><b>Approval for Construction Issue Date:</b> @record.PlansCoordinationApprovedDate</li>
+                                }
+
+                                <li><b>Final Approval Issue Date:</b> @record.FinalReviewApprovedDate</li>
+
+                            </ul>
+                        </div>
+                        <div id="plus-icon" class="col-lg-1" @onclick="@(e => Toggle(record.CustomId))">
+                            @if (@record.ShowPlus == true)
+                            {
+                                <div class="show-tank">Show History</div>
+                            }
+                            else
+                            {
+                                <div class="show-tank">Hide History</div>
+                            }
+                        </div>
+                    </div>
+
+                    @if (@record.ShowDetail)
+                    {
+                        <div class="tanks">
+                            <div class="row tank-header">
+                                <div class="col-2 text-left tank-column">
+                                    <b>Task Name</b>
+                                </div>
+                                <div class="col-2 text-left tank-column">
+                                    <b>Status</b>
+                                </div>
+                                <div class="col-2 text-left tank-column">
+                                    <b>Date</b>
+                                </div>
+                                <div class="col-6 text-left tank-column">
+                                    <b>Comment</b>
+                                </div>
+                            </div>
+                            @if (record.WorkFlowHistory.Result == null)
+                            {
+                                <div>There is no workflow for this record.</div>
+                            }
+                            else
+                            {
+                                @foreach (var history in record.WorkFlowHistory.Result)
+                                {
+                                    @if (history.Description != "HIDE")
+                                    {
+                                        <div class="row tank-row">
+                                            <div class="col-2 text-left tank-column">@history.Description</div>
+                                            <div class="col-2 text-left tank-column">@history.Status.Text</div>
+                                            <div class="col-2 text-left tank-column">@history.StatusDate</div>
+                                            <div class="col-6 text-left tank-column">@history.Comment</div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-center loading">No record found. Please try again.</p>
+        }
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-end">
+                @if (Links != null)
+                {
+                    <li class="display-range">
+                        @Records.DisplayRange of @TotalRecords
+                    </li>
+                    @foreach (var link in Links)
+                    {
+                        @if (link.Enabled)
+                        {
+                            <li @onclick="@(() => SelectedPageInternal(link))"
+                                style="cursor: pointer;"
+                                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                                <span class="page-link" href="#">@link.Text</span>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li style="cursor: pointer;"
+                                class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                                <span class="page-link" href="#">@link.Text</span>
+                            </li>
+                        }
+                    }
+                }
+            </ul>
+        </nav>
+
+        @if (Records != null && Records.Result != null)
+        {
+            <div>
+                <p class="text-danger"><em>Note: this terminal is <u>informational purposes only</u> and does not represent any actual approvals and is not to be referred to in lieu of stamped Department approvals.</em></p>
+            </div>
+        }
+    }
+</div>
+
+<Footer />
+

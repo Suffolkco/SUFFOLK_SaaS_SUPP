@@ -1,0 +1,34 @@
+﻿@page "/"
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+@using System.Text.RegularExpressions;
+
+<DeqHeader />
+
+<div class="container">
+    <div id="ie-error-ui">
+        It looks like you are using Internet Explorer which is not supported on this site. Please use Microsoft Edge, Google Chrome, Apple Safari or Mozilla Firefox instead.
+    </div>
+    <div>
+        <h3 class="text-center mt-5">Suffolk County Submission & Status Terminal</h3>
+    </div>
+</div>
+
+
+<Footer />
+
+
+@code {
+    public string Browser { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Regex rg = new Regex(@"Chrome|CriOS|Safari|Edge|Firefox|FxiOS");
+
+        Browser = await localStorage.GetItemAsync<string>("UserAgent");
+        if (rg.IsMatch(Browser))
+        {
+            NavigationManager.NavigateTo("./home");
+        }
+    }
+}

@@ -1,0 +1,229 @@
+﻿.main {
+    position: relative;
+    min-height: 100vh;
+    padding-bottom:10rem;
+    overflow: hidden;
+}
+
+/*@media (max-width: 500px) {
+    .main {
+        overflow: auto;
+    }
+}
+*/
+
+@media (max-width: 1280px) {
+    .main {
+        overflow: auto;
+    }
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #123D68;
+}
+
+#sst-footer {
+    margin-top: 1rem;
+    color: white;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#sst-footer a {
+    color: white;
+}
+
+.branding {
+    background-color: #123D68;
+    padding-top:16px;
+    padding-bottom: 16px;
+}
+
+.brand {
+    display:flex;
+}
+
+.brand .column-title {
+    margin-left: 10px;
+    margin-top: 8px;
+}
+
+@media (min-width: 441px) and (max-width: 453px) {
+    .brand img {
+        margin-top: 12px;
+    }
+}
+
+@media (max-width: 440px) {
+    .brand img {
+        margin-top: 25px;
+    }
+}
+
+.brand h5, .brand h4 {
+    color: white;
+}
+
+@keyframes chainReaction {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#ie-error-ui {
+    background: lightyellow;
+    /*box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);*/
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    color: red;
+    animation: chainReaction 3s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+    animation-delay:2s;
+    margin-top: 10px;
+}
+
+#form-search {
+    margin-top: 20px;
+}
+
+#form-search label{
+    margin-top: 6px;
+}
+
+#search-result {
+    margin-top: 15px;
+    min-width: 500px;
+}
+
+#search-result-opc-site {
+    margin-top: 15px;
+    min-width: 1000px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+#search-result .card-header {
+    padding-left: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+#search-result div h3 {
+    margin-top: 0.5rem;
+}
+
+#card-body ul {
+    list-style-type: none;
+    margin-left: -20px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+#plus-icon {
+    cursor: pointer;
+}
+
+#plus-icon i {
+    color: #007bff;
+    margin-left: 21px;
+    margin-bottom: 13px;
+}
+
+@media (min-width: 992px) {
+    #plus-icon i {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 47px;
+        margin-bottom: 0px;
+        width: 30%;
+    }
+}
+
+.show-tank {
+    color: #007bff;
+    margin-left: 20px;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 992px) {
+    .show-tank {
+        margin-top: 30px;
+        margin-left: auto;
+    }
+
+}
+
+.loading {
+    margin-top: 2rem;
+}
+
+.pagination {
+    margin-top: 15px;
+}
+
+.display-range {
+    margin-top: 8px;
+    margin-right: 10px;
+}
+
+#aca-link {
+    margin-left: 20px;
+}
+
+.sst-note {
+    margin-bottom: 2px;
+}
+
+.wf-col {
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.tanks {
+    margin-left: 20px;
+    font-size: 80%;
+    word-wrap: normal;
+}
+
+.tank-header {
+    background-color: lightblue;
+    margin-left: -20px;
+    margin-right: 0px;
+}
+
+.tank-row {
+    margin-left: -20px;
+    margin-right: 0px;
+}
+
+.tank-column {
+    padding-right: 2px;
+    padding-left: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.tank-column-number {
+    padding-right: 22px;
+    padding-left: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+#note-opc-site {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.text-link {
+    cursor: pointer;
+    color: blue;
+}
+
+.bad-address {
+    margin-top: 40px;
+}

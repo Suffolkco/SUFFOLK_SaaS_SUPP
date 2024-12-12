@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\achan\source\Workspaces\Workspace\SST_V2\SST.Web\bin\Release\netcoreapp3.1\publish\AzProd</_PublishTargetUrl>
+    <History>True|2024-12-12T19:17:17.2352321Z;True|2024-12-11T08:17:51.0206194-05:00;True|2024-12-09T14:28:15.2741249-05:00;True|2024-11-19T09:18:35.2117098-05:00;True|2024-10-25T15:03:53.5498819-04:00;</History>
+  </PropertyGroup>
+</Project>
