@@ -401,23 +401,25 @@ namespace SIPSync
                 string query = $"{ConfigurationManager.AppSettings["ConstructBaseUri"]}/v4/scripts/GET_CAP_FROM_CUSTOMFIELD";
                 string results = (await objHTTP.JSONRequest(query, asi, "POST", headers)).Replace("\"[", "[").Replace("]\"", "]").Replace("\\", "");
 
-                dynamic parsedJson = JsonConvert.DeserializeObject<dynamic>(results);
+                if (!results.Contains("undefined"))
+                {
+                    dynamic parsedJson = JsonConvert.DeserializeObject<dynamic>(results);
 
+                    string cap = $"{parsedJson.result.Response.id1}-{parsedJson.result.Response.id2}-{parsedJson.result.Response.id3}";
 
-                //"{\"status\":200,\"result\":{\"Response\":\"undefined\"}}"
+                    logger.Info($"Found a CAP of {cap}");
 
-                //if (string.)
-
-                string cap = $"{parsedJson.result.Response.id1}-{parsedJson.result.Response.id2}-{parsedJson.result.Response.id3}";
-
-                logger.Info($"Found a CAP of {cap}");
-
-                return cap;
+                    return cap;
+                }
+                else
+                {
+                    throw new Exception("Cannot find Accela record");
+                }                         
             }
             catch (Exception ex)
             {
                 logger.Error($"Error in GetCAPFromCustomField: {ex.Message}");
-                throw new Exception($"Unable to get {field}) with a value of {value}" );
+                throw new Exception($"Unable to get {field} with a value of {value}" );
             }
         }
 

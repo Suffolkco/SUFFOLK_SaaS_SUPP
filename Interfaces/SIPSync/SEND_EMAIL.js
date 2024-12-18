@@ -34,7 +34,7 @@ function sendReport(e, b) {
 
     try {
 
-        aa.sendMail("noreplyehims@suffolkcountyny.gov", e, "", "SIP Failed Items", b);
+        aa.sendMail("consumer.affairs@suffolkcountyny.gov", e, "", "SIP Failed Items", b);
 
     } catch (vError) {
         aa.env.setValue("Response", "Error: " + vError);

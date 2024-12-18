@@ -20,7 +20,7 @@ namespace SIPSync
         private static List<string> badRows;
 
         static async Task Main(string[] args)
-        {          
+        {
             // Check for the parameter to encrypt a password
             if (args.Length == 1)
             {
@@ -254,25 +254,23 @@ namespace SIPSync
                 string autoArchive = ConfigurationManager.AppSettings["AutoArchive"];
 
                 if (Directory.Exists(exportPath) && autoArchive.ToUpper() == "YES")
-                {
-                    foreach (string folder in Directory.GetDirectories(exportPath))
+                {                    
+                    foreach (string fileName in Directory.GetFiles(exportPath, fileMask))
                     {
-                        foreach (string fileName in Directory.GetFiles(folder, fileMask))
+                        try
                         {
-                            try
-                            {
-                                string archiveFile = archivePath + Path.GetFileName(fileName);
-                                System.IO.File.Move(fileName, archiveFile);
-                                logger.Info(Path.GetFileName(fileName) + " has been archived.");
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error($"Error archiving file {fileName}: {ex.Message}");
-                            }
+                            string archiveFile = archivePath + Path.GetFileName(fileName);
+                            System.IO.File.Move(fileName, archiveFile);
+                            logger.Info(Path.GetFileName(fileName) + " has been archived.");
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error($"Error archiving file {fileName}: {ex.Message}");
                         }
                     }
+
                     logger.Info("Archiving of old files has completed.");
-                }
+                }                                   
                 else
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(exportPath));

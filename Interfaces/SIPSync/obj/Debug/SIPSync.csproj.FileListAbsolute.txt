@@ -43,3 +43,11 @@ C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffol
 C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.csproj.Up2Date
 C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.exe
 C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.pdb
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\bin\Debug\SIPSync.exe.manifest
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\bin\Debug\SIPSync.application
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.exe.manifest
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.application
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\bin\Debug\System.IO.Pipelines.dll
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\bin\Debug\System.IO.Pipelines.xml
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.csproj.SuggestedBindingRedirects.cache
+C:\Users\AlanPoirier\OneDrive - sCube Inc\Documents\Company Files\Clients\Suffolk\SIPSync\SIPSync\obj\Debug\SIPSync.exe.config
