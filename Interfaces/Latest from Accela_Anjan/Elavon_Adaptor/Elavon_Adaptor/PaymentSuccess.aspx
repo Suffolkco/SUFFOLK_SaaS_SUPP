@@ -1,1 +1,0 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="PaymentSuccess.aspx.cs" Inherits="Accela.ACA.PaymentAdapter.CSPPayAdapter.PaymentSuccess" %>

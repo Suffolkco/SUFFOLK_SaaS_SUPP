@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<MerchantMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Adapter AdapterName="EVA">
-    <!--<Merchant MerchantAccountName="agency"       MerchantID="007446"       UserID="webpage"     PIN="XCJNHN"></Merchant>-->
-    <Merchant MerchantAccountName="DEQ"       MerchantID="007446"       UserID="webpage"     PIN="XCJNHN"></Merchant>
-    <Merchant MerchantAccountName="CONSUMERAFFAIRS"       MerchantID="0022521"       UserID="apiuser"     PIN="0ME3AO83U93W9X4XSI8GMSURT4PNQUGFSA884AM9DSJFZS71HDYZNDEUQ4R0IPIM"></Merchant>
-  </Adapter>
-</MerchantMapping>
